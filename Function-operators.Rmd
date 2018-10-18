@@ -219,7 +219,7 @@ Think carefully before memoising a function. If the function is not __pure__, i.
 Imagine you have a named vector of URLs and you'd like to download each one to disk.
 That's pretty simple with `walk2()` and `file.download()`:
 
-```{r}
+```{r,eval=FALSE}
 urls <- c(
   "adv-r" = "https://adv-r.hadley.nz", 
   "r4ds" = "http://r4ds.had.co.nz/"
@@ -251,7 +251,7 @@ But I think this for loop is suboptimal because it interleaves different concern
 
 First, let's write an FO that adds a small delay. I'm going to call it `delay_by()` for reasons that will be more clear shortly, and it has two arguments: the function to wrap, and the amount of delay to add. The actual implementation is quite simple. The main trick is forcing evaluation of all arguments as described in Section \@ref(factory-pitfalls), because function operators are a special type of function factory:
 
-```{r}
+```{r,eval=FALSE}
 delay_by <- function(f, amount) {
   force(f)
   force(amount)
