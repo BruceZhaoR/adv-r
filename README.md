@@ -1,4 +1,4 @@
-**forked from hadley/adv-r**
+**forked from hadley/adv-r** [![Build Status](https://travis-ci.org/BruceZhaoR/adv-r.svg?branch=master)](https://travis-ci.org/BruceZhaoR/adv-r)
 
 # Advanced R programming
 
