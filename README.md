@@ -1,5 +1,7 @@
 **forked from hadley/adv-r** [![Build Status](https://travis-ci.org/BruceZhaoR/adv-r.svg?branch=master)](https://travis-ci.org/BruceZhaoR/adv-r)
 
+You can download **pdf** and **epub** via <https://brucezhaor.github.io/adv-r/index.html>, which you can read in iBooks.
+
 # Advanced R programming
 
 [![Build Status](https://travis-ci.org/hadley/adv-r.svg?branch=master)](https://travis-ci.org/hadley/adv-r)
