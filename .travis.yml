@@ -19,10 +19,10 @@ branches:
   - master
 
 before_install:
-  - sudo tlmgr update --self
-  - sudo tlmgr install unicode-math
-  - sudo tlmgr install filehook
-  - sudo tlmgr install lm-math
+  - tlmgr update --self
+  - tlmgr install unicode-math
+  - tlmgr install filehook
+  - tlmgr install lm-math
 
 before_script:
   - chmod +x ./_build.sh
