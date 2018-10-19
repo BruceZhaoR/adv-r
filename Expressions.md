@@ -50,7 +50,8 @@ devtools::install_github("r-lib/lobstr")
 
 Quoted expressions are also called abstract syntax trees (ASTs) because the structure of code is hierarchical and can be naturally represented as a tree. To make that more obvious we're going to introduce some graphical conventions, illustrated with the very simple call `f(x, "y", 1)`. \index{abstract syntax tree}
 
-<img src="diagrams/expressions/simple.png" width="227" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=2.36in]{diagrams/expressions/simple} \end{center}
   
 *   Function __calls__ define the hierarchy of the tree. Calls are shown
     with an orange square. The first child (`f`) is the function that gets 
@@ -115,7 +116,8 @@ y <- x * 10
 
 And they have this AST:
 
-<img src="diagrams/expressions/prefix.png" width="227" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=2.36in]{diagrams/expressions/prefix} \end{center}
 
 
 ```r
@@ -246,7 +248,8 @@ Infix functions introduce ambiguity in a way that prefix functions do not. The p
 
 [^ambig]: These two sources of ambiguity do not exist without infix operators, which can be considered an advantage of purely prefix and postfix languages. It's interesting to compare a simple arithmetic operation in Lisp (prefix) and Forth (postfix). In Lisp you'd write `(+ (+ 1 2) 3))`; this avoids ambiguity by requiring parentheses everywhere. In Forth, you'd write `1 2 + 3 +`; this doesn't require any parentheses, but does require more thought when reading.
 
-<img src="diagrams/expressions/ambig-order.png" width="416" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=4.33in]{diagrams/expressions/ambig-order} \end{center}
 
 Programming languages use conventions called __operator precedence__ to resolve this ambiguity. We can use `ast()` to see what R does: 
 
@@ -609,11 +612,11 @@ microbenchmark::microbenchmark(
   l2[[100]]
 )
 #> Unit: nanoseconds
-#>       expr  min   lq mean median   uq  max neval
-#>    l1[[1]]  161  172  242    181  211 4920   100
-#>  l1[[100]]  161  172  200    201  211  622   100
-#>    l2[[1]] 1243 1303 1356   1328 1363 1794   100
-#>  l2[[100]] 1354 1413 1500   1434 1488 4169   100
+#>       expr  min   lq mean median   uq   max neval
+#>    l1[[1]]  350  501 1001    560  611 37140   100
+#>  l1[[100]]  381  491  601    531  606  2004   100
+#>    l2[[1]] 2094 3210 3656   3522 4008  6071   100
+#>  l2[[100]] 2435 3402 4047   3746 4298 20899   100
 ```
 
 ### Expression objects

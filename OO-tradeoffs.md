@@ -22,10 +22,14 @@ One large team effort where S4 is used to good effect is Bioconductor. Bioconduc
 
 S4 is also a good fit when you have a complicated system of interrelated objects, and it's possible to minimise code duplication through careful implementation of methods. The best example of this use of S4 is the Matrix package by Douglas Bates and Martin Mächler. It is designed to efficiently store and compute with many different types of sparse and dense matrices. As of version 1.2.14, it defines 102 classes, 21 generic functions, and 1993 methods. To give you some idea of the complexity, a small subset of the class graph is shown in Figure \@ref(fig:matrix-classes).
 
-<div class="figure" style="text-align: center">
-<img src="diagrams/s4/matrix.png" alt="A small subset of the Matrix class graph showing the inheritance of sparse matrices. Each concrete class inherits from two virtual parents: one that describes how the data is stored (C = column oriented, R = row oriented, T = tagged) and one that describes any restriction on the matrix (s = symmetric, t = triangle, g = general)" width="80%" />
-<p class="caption">(\#fig:matrix-classes)A small subset of the Matrix class graph showing the inheritance of sparse matrices. Each concrete class inherits from two virtual parents: one that describes how the data is stored (C = column oriented, R = row oriented, T = tagged) and one that describes any restriction on the matrix (s = symmetric, t = triangle, g = general)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{diagrams/s4/matrix} 
+
+}
+
+\caption{A small subset of the Matrix class graph showing the inheritance of sparse matrices. Each concrete class inherits from two virtual parents: one that describes how the data is stored (C = column oriented, R = row oriented, T = tagged) and one that describes any restriction on the matrix (s = symmetric, t = triangle, g = general)}(\#fig:matrix-classes)
+\end{figure}
 
 This domain is a good fit for S4 because there are often computational shortcuts for specific types of sparse matrix. S4 makes it easy to provide a general method that works for all inputs, and then provide more specialised methods where the pair of data structures allow for a more efficient implementation. This requires careful planning to avoid method dispatch ambiguity, but the planning pays off for complicated systems.
 

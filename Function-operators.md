@@ -134,7 +134,7 @@ str(out)
 #>   ..$ error :List of 2
 #>   .. ..$ message: chr "invalid 'type' (character) of argument"
 #>   .. ..$ call   : language sum(..., na.rm = na.rm)
-#>   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
+#>   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condit"..
 ```
 
 The output is in a slightly inconvenient form, since we have four lists each containing a list containing the result and the error. We can make it more convenient by using `purrr::transpose()` to turn it "inside-out" so that we get a list of results and a list of errors:
@@ -156,7 +156,7 @@ str(out)
 #>   ..$ :List of 2
 #>   .. ..$ message: chr "invalid 'type' (character) of argument"
 #>   .. ..$ call   : language sum(..., na.rm = na.rm)
-#>   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
+#>   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condit"..
 ```
 
 Now we can easily find the results that worked, or the inputs that failed:
@@ -205,6 +205,7 @@ I think this is a great example of the power of combining functionals and functi
 purrr comes with three other function operators in a similar vein:
 
 * `possibly()`: returns a default value when there's an error.
+<!-- GVW: does it somehow signal where/when it's done this? if not, warn readers of that? -->
 
 * `quietly()`: turns output, messages, and warning side-effects into
   `output`, `message`, and `warning` components of the output.
@@ -237,7 +238,7 @@ system.time(print(slow_function(1)))
 system.time(print(slow_function(1)))
 #> [1] 8.34
 #>    user  system elapsed 
-#>       0       0       1
+#>   0.004   0.000   1.003
 ```
 
 When we memoise this function, it's slow when we call it with new arguments. But when we call it with arguments that it's seen before it's instanteous: it retrieves the previous value of the computation.
@@ -253,7 +254,7 @@ system.time(print(fast_function(1)))
 system.time(print(fast_function(1)))
 #> [1] 6.01
 #>    user  system elapsed 
-#>   0.016   0.000   0.015
+#>   0.020   0.000   0.018
 ```
 
 A relatively realistic use of memoisation is computing the Fibonacci series. The Fibonacci series is defined recursively: the first two values are defined by convention, $f(0) = 0$, $f(n) = 1$, and then $f(n) = f(n - 1) + f(n - 2)$ (for any positive integer). A naive version is slow because, for example, `fib(10)` computes `fib(9)` and `fib(8)`, and `fib(9)` computes `fib(8)` and `fib(7)`, and so on. 
@@ -266,10 +267,10 @@ fib <- function(n) {
 }
 system.time(fib(23))
 #>    user  system elapsed 
-#>   0.044   0.000   0.045
+#>   0.048   0.000   0.048
 system.time(fib(24))
 #>    user  system elapsed 
-#>   0.068   0.008   0.077
+#>   0.076   0.000   0.076
 ```
 
 Memoising `fib()` makes the implementation much faster because each value is computed only once:
@@ -282,7 +283,7 @@ fib2 <- memoise::memoise(function(n) {
 })
 system.time(fib2(23))
 #>    user  system elapsed 
-#>   0.024   0.000   0.025
+#>   0.028   0.000   0.029
 ```
 
 And future calls can rely on previous computations:
@@ -291,7 +292,7 @@ And future calls can rely on previous computations:
 ```r
 system.time(fib2(24))
 #>    user  system elapsed 
-#>   0.000   0.004   0.001
+#>   0.000   0.000   0.001
 ```
 
 This is an example of __dynamic programming__, where a complex problem can be broken down into many overlapping subproblems, and remembering the results of a subproblem considerably improves performance. 
@@ -405,6 +406,8 @@ walk2(
 ```
 
 The pipe works well here because I've carefully chosen the function names to yield an (almost) readable sentence: take `download.file` then (add) a dot every 10 iterations, then delay by 0.1s. The more clearly you can express the intent of your code through function names, the more easily others (including future you!) can read and understand the code.
+
+<!-- GVW: point out that download.file %>% delay_by %>% dot_every also works? -->
 
 ### Exercises
 

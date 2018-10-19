@@ -99,7 +99,8 @@ It's easy to read it as: "create an object named 'x', containing the values 1, 2
 
 Note that the object, or value, doesn't have a name; it's the name that has a value. To make that distinction more clear, I'll draw diagrams like this: 
 
-<img src="diagrams/name-value/binding-1.png" width="160" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.67in]{diagrams/name-value/binding-1} \end{center}
 
 The name, `x`, is drawn with a rounded rectangle, and it has an arrow that points to, binds, or references, the value, the vector `1:3`. Note that the arrow points in opposite direction to the assignment arrow: `<-` creates a binding from the name on the left-hand side to the object on the right-hand side.
 
@@ -109,7 +110,8 @@ You can think of a name as a reference to a value. For example, if you run this 
 ```r
 y <- x
 ```
-<img src="diagrams/name-value/binding-2.png" width="170" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.77in]{diagrams/name-value/binding-2} \end{center}
 
 You might have noticed the value `1:3` has a label: `0x74b`. While the vector doesn't have a name, I'll occasionally need to refer to objects independent of their bindings. To make that possible, I'll label values with a unique identifier. These unique identifers have a special form that looks like the object's memory "address", i.e. the location in memory in which the object is stored. It doesn't make sense to use the actual memory address because that changes every time the code is run.
 
@@ -118,9 +120,9 @@ You can access the address of an object with `lobstr::obj_addr()`. This allows u
 
 ```r
 obj_addr(x)
-#> [1] "0x3f7c7c8"
+#> [1] "0x71b7478"
 obj_addr(y)
-#> [1] "0x3f7c7c8"
+#> [1] "0x71b7478"
 ```
 
 These identifiers are long, and change every time you restart R.
@@ -222,7 +224,8 @@ x
 
 Modifying `y` clearly doesn't modify `x`, so what happened to the shared binding? While the value associated with `y` changes, the original object does not. Instead, R creates a new object, `0xcd2`, a copy of `0x74b` with one value changed, then rebinds `y` to that object.
 
-<img src="diagrams/name-value/binding-3.png" width="160" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.67in]{diagrams/name-value/binding-3} \end{center}
 
 This behaviour is called __copy-on-modify__, and understanding it makes your intuition for the performance of R code radically better. A related way to describe this phenomenon is to say that R objects are __immutable__, or unchangeable. However, I'll generally avoid that term because there are a couple of important exceptions to copy-on-modify that you'll learn about in Section \@ref(modify-in-place). 
 
@@ -273,7 +276,7 @@ f <- function(a) {
 
 x <- c(1, 2, 3)
 cat(tracemem(x), "\n")
-#> <0x16bd148>
+#> <0x22419b8>
 
 z <- f(x)
 # there's no copy here!
@@ -283,7 +286,8 @@ untracemem(x)
 
 While `f()` is running, `a` inside the function will point to the same value as `x` does outside of it:
 
-<img src="diagrams/name-value/binding-f1.png" width="250" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=2.6in]{diagrams/name-value/binding-f1} \end{center}
 
 (You'll learn more about the conventions used in this diagram in [Execution environments].)
 
@@ -291,7 +295,8 @@ While `f()` is running, `a` inside the function will point to the same value as 
 
 And once complete, `x` and `z` will point to the same object. `0x74b` never gets copied because it never gets modified. If `f()` did modify `x`, R would create a new copy, and then `z` would bind that object. 
 
-<img src="diagrams/name-value/binding-f2.png" width="170" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.77in]{diagrams/name-value/binding-f2} \end{center}
 
 ### Lists {#list-references}
 
@@ -306,7 +311,8 @@ The internal representation of the list is actually quite different to that of a
 
 <!-- GVW: isn't this exactly the same as the structure of a vector, just storing a different type? -->
 
-<img src="diagrams/name-value/list.png" width="189" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.97in]{diagrams/name-value/list} \end{center}
 
 This is particularly important when we modify a list:
 
@@ -315,14 +321,16 @@ This is particularly important when we modify a list:
 l2 <- l1
 ```
 
-<img src="diagrams/name-value/l-modify-1.png" width="189" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.97in]{diagrams/name-value/l-modify-1} \end{center}
 
 
 ```r
 l2[[3]] <- 4
 ```
 
-<img src="diagrams/name-value/l-modify-2.png" width="222" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=2.31in]{diagrams/name-value/l-modify-2} \end{center}
 
 Like vectors, lists are copied-on-modify; the original list is left unchanged, and R creates a modified copy. This is a __shallow__ copy: the list object and its bindings are copied, but the values pointed to by the bindings are not. The oppposite of a shallow copy is a deep copy, where the contents of every reference are also copied. Prior to R 3.1.0, copies were always deep copies.
 
@@ -333,15 +341,15 @@ You can use `lobstr::ref()` to see values that are shared across lists. `ref()` 
 
 ```r
 ref(l1, l2)
-#> █ [1:0x71e88d8] <list> 
-#> ├─[2:0x437fef8] <dbl> 
-#> ├─[3:0x437fec0] <dbl> 
-#> └─[4:0x437fe88] <dbl> 
+#> █ [1:0x78b8068] <list> 
+#> ├─[2:0x770e3b8] <dbl> 
+#> ├─[3:0x770e380] <dbl> 
+#> └─[4:0x770e348] <dbl> 
 #>  
-#> █ [5:0x74bc5d8] <list> 
-#> ├─[2:0x437fef8] 
-#> ├─[3:0x437fec0] 
-#> └─[6:0x740ad28] <dbl>
+#> █ [5:0x81f00b8] <list> 
+#> ├─[2:0x770e3b8] 
+#> ├─[3:0x770e380] 
+#> └─[6:0x81535d8] <dbl>
 ```
 
 ### Data frames {#df-modify}
@@ -352,7 +360,8 @@ Data frames are lists of vectors, so copy-on-modify has important consequences w
 ```r
 d1 <- data.frame(x = c(1, 5, 6), y = c(2, 4, 3))
 ```
-<img src="diagrams/name-value/dataframe.png" width="165" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.72in]{diagrams/name-value/dataframe} \end{center}
 
 If you modify a column, only that column needs to be modified; the others can continue to point to the same place:
 
@@ -361,7 +370,8 @@ If you modify a column, only that column needs to be modified; the others can co
 d2 <- d1
 d2[, 2] <- d2[, 2] * 2
 ```
-<img src="diagrams/name-value/d-modify-c.png" width="212" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=2.21in]{diagrams/name-value/d-modify-c} \end{center}
 
 However, if you modify a row, there is no way to share data with the previous version of the data frame, and every column must be copied-and-modified.
 
@@ -372,7 +382,8 @@ However, if you modify a row, there is no way to share data with the previous ve
 d3 <- d1
 d3[1, ] <- d3[1, ] * 3
 ```
-<img src="diagrams/name-value/d-modify-r.png" width="326" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=3.39in]{diagrams/name-value/d-modify-r} \end{center}
 
 ### Character vectors
 \index{string pool}
@@ -383,11 +394,13 @@ The final place that R uses references is in character vectors. I usually draw c
 ```r
 x <- c("a", "a", "abc", "d")
 ```
-<img src="diagrams/name-value/character.png" width="241" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=2.51in]{diagrams/name-value/character} \end{center}
 
 But this is a polite fiction, because R has a __global string pool__. Each element of a character vector is actually a pointer to a unique string in that pool:
 
-<img src="diagrams/name-value/character-2.png" width="250" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=2.6in]{diagrams/name-value/character-2} \end{center}
 
 <!-- GVW: what I brought with me from other languages was that "character vector" referred to a single string (a vector of characters), but what I now understand is that "character vector" means "a vector of character strings".  Might be worth footnoting this for people who make the same mistake I did? -->
 
@@ -396,11 +409,11 @@ You can request that `ref()` show these references:
 
 ```r
 ref(x, character = TRUE)
-#> █ [1:0x6b4c018] <chr> 
-#> ├─[2:0xd2b728] <string: "a"> 
-#> ├─[2:0xd2b728] 
-#> ├─[3:0x3f95438] <string: "abc"> 
-#> └─[4:0x11e1ac8] <string: "d">
+#> █ [1:0x737a318] <chr> 
+#> ├─[2:0x18da728] <string: "a"> 
+#> ├─[2:0x18da728] 
+#> ├─[3:0x726bd08] <string: "abc"> 
+#> └─[4:0x1d90ac8] <string: "d">
 ```
 
 This has a profound impact on the amount of memory a character vector takes, but is otherwise not generally important, so elsewhere in the book I'll draw character vectors as if the strings live inside the vector.
@@ -561,14 +574,16 @@ If an object only has a single name that binds it, R will modify it in place:
 v <- c(1, 2, 3)
 ```
 
-<img src="diagrams/name-value/v-inplace-1.png" width="160" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.67in]{diagrams/name-value/v-inplace-1} \end{center}
 
 
 ```r
 v[[3]] <- 4
 ```
 
-<img src="diagrams/name-value/v-inplace-2.png" width="160" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.67in]{diagrams/name-value/v-inplace-2} \end{center}
 
 (Carefully note the object ids here: `v` continues to bind to the same object, `0x207`.)
 
@@ -660,7 +675,8 @@ e1 <- rlang::env(a = 1, b = 2, c = 3)
 e2 <- e1
 ```
 
-<img src="diagrams/name-value/e-modify-1.png" width="184" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.92in]{diagrams/name-value/e-modify-1} \end{center}
 
 If we change a binding, the environment is modified in place:
 
@@ -670,7 +686,8 @@ e1$c <- 4
 e2$c
 #> [1] 4
 ```
-<img src="diagrams/name-value/e-modify-2.png" width="184" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.92in]{diagrams/name-value/e-modify-2} \end{center}
 
 This basic idea can be used to create functions that "remember" their previous state. See Section \@ref(stateful-funs) for more details. This property is also used to implemented the R6 object oriented programming system, the topic of Chapter \@ref(r6).
 
@@ -682,10 +699,11 @@ e <- rlang::env()
 e$self <- e
 
 ref(e)
-#> █ [1:0x73d3680] <env> 
-#> └─self = [1:0x73d3680]
+#> █ [1:0x73fdf70] <env> 
+#> └─self = [1:0x73fdf70]
 ```
-<img src="diagrams/name-value/e-self.png" width="142" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.48in]{diagrams/name-value/e-self} \end{center}
 
 This is a unique property of environments!
 
@@ -710,19 +728,22 @@ Consider this code:
 ```r
 x <- 1:3
 ```
-<img src="diagrams/name-value/unbinding-1.png" width="160" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.67in]{diagrams/name-value/unbinding-1} \end{center}
 
 
 ```r
 x <- 2:4
 ```
-<img src="diagrams/name-value/unbinding-2.png" width="160" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.67in]{diagrams/name-value/unbinding-2} \end{center}
 
 
 ```r
 rm(x)
 ```
-<img src="diagrams/name-value/unbinding-3.png" width="160" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.67in]{diagrams/name-value/unbinding-3} \end{center}
 
 We create two objects, but by the end of code neither object is bound to a name. How do these objects get deleted? That's the job of the __garbage collector__, or GC, for short. The GC creates more memory by deleting R objects that are no longer used, and if needed, requesting more memory from the operating system. 
 
@@ -740,8 +761,8 @@ You can force the garbage collector to run by calling `gc()`. Despite what you m
 ```r
 gc() 
 #>           used (Mb) gc trigger  (Mb) max used  (Mb)
-#> Ncells  675075 36.1    1233874  65.9  1233874  65.9
-#> Vcells 3675641 28.1   17070477 130.3 17066679 130.3
+#> Ncells  675150 36.1    1233828  65.9  1233828  65.9
+#> Vcells 3675769 28.1   17070228 130.3 17068094 130.3
 ```
 
 `lobstr::mem_used()` is a wrapper around `gc()` that just prints the total number of bytes used:
@@ -749,7 +770,7 @@ gc()
 
 ```r
 mem_used()
-#> 67,207,792 B
+#> 67,212,984 B
 ```
 
 This number won't agree with the amount of memory reported by your operating system for three reasons:
