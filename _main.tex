@@ -5328,15 +5328,10 @@ unless there is no other option.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\tightlist
 \item
   Given a function, like \texttt{"mean"}, \texttt{match.fun()} lets you
   find a function. Given a function, can you find its name? Why doesn't
   that make sense in R?
-\end{enumerate}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
 \item
   It's possible (although typically not useful) to call an anonymous
   function. Which of the two approaches below is correct? Why?
@@ -6388,16 +6383,16 @@ Using \texttt{...} comes with two downsides:
 
 Most functions exit in one of two ways\footnote{Functions can exit in
   other more esoteric ways like signalling a condition that is caught by
-  an exiting handler, invoking a restart, or pressing ``Q'' in an
-  interactive browser.}: either returning a value, indicating successful
-completion, or throwing an error, indicating failure. This section
-describes return values (implicit vs.~explicit; visible vs.~invisible),
-briefly discusses errors, and introduces exit handlers, which allow you
-to run code when a function exits, regardless of how it exits.
+  an exit handler, invoking a restart, or pressing ``Q'' in an
+  interactive browser.}: they either return a value, indicating success,
+or they throw an error, indicating failure. This section describes
+return values (implicit vs.~explicit; visible vs.~invisible), briefly
+discusses errors, and introduces exit handlers, which allow you to run
+code when a function exits.
 
-\hypertarget{implicit-vs.explict-returns}{%
-\subsection{Implicit vs.~explict
-returns}\label{implicit-vs.explict-returns}}
+\hypertarget{implicit-vs.explicit-returns}{%
+\subsection{Implicit vs.~explicit
+returns}\label{implicit-vs.explicit-returns}}
 
 \index{functions!return value} \indexc{return()}
 
@@ -6405,8 +6400,7 @@ There are two ways that a function can return a value:
 
 \begin{itemize}
 \item
-  Implicitly, where the last evaluated expression becomes the return
-  value:
+  Implicitly, where the last evaluated expression is the return value:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6447,7 +6441,7 @@ There are two ways that a function can return a value:
 \index{functions!invisible results}
 
 Most functions return visibly: calling the function in an interactive
-context causes the result to be automatically printed.
+context prints the result.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6457,8 +6451,8 @@ context causes the result to be automatically printed.
 \end{Highlighting}
 \end{Shaded}
 
-However, it's also possible to return an \texttt{invisible()} value,
-which is not automatically printed.
+However, you can prevent automatic printing by applying
+\texttt{invisible()} to the last value:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6467,8 +6461,8 @@ which is not automatically printed.
 \end{Highlighting}
 \end{Shaded}
 
-You can verify that the value exists either by explicitly printing it or
-by wrapping in parentheses:
+To verify that this value does indeed exist, you can explicitly print it
+or wrap it in parentheses:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6480,8 +6474,8 @@ by wrapping in parentheses:
 \end{Highlighting}
 \end{Shaded}
 
-Alternatively, use \texttt{withVisible()} to return the value and a
-visibility flag:
+Alternatively, you can use \texttt{withVisible()} to return the value
+and a visibility flag:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6503,7 +6497,7 @@ visibility flag:
 \end{Highlighting}
 \end{Shaded}
 
-And this is what makes it possible to chain assignment:
+This is what makes it possible to chain assignments:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6511,7 +6505,7 @@ And this is what makes it possible to chain assignment:
 \end{Highlighting}
 \end{Shaded}
 
-In general, any function called primarily for its side effects (like
+In general, any function called primarily for a side effect (like
 \texttt{\textless{}-}, \texttt{print()}, or \texttt{plot()}) should
 return an invisible value (typically the value of the first argument).
 
@@ -6534,11 +6528,11 @@ of the function.
 \end{Highlighting}
 \end{Shaded}
 
-Errors indicate that something has gone wrong, and force the user to
-handle them. Some languages (like C, go, and rust) rely on special
-return values to indicate problems, but in R you should always throw an
-error. You'll learn more about errors, and how to handle them, in
-\protect\hyperlink{conditions}{Conditions}.
+An error indicates that something has gone wrong, and forces the user to
+deal with the problem. Some languages (like C, Go, and Rust) rely on
+special return values to indicate problems, but in R you should always
+throw an error. You'll learn more about errors, and how to handle them,
+in \protect\hyperlink{conditions}{Conditions}.
 
 \hypertarget{on-exit}{%
 \subsection{Exit handlers}\label{on-exit}}
@@ -6547,16 +6541,15 @@ error. You'll learn more about errors, and how to handle them, in
 
 \index{handler!exit}
 
-Sometimes a function needs to make a temporary change to global state
-and you want to ensure those changes are restored when the function
-completes. It's painful to make sure you cleanup before any explicit
-return, and what happens if there's an error? Instead, you can set up an
-\textbf{exiting handler} that is called when the function terminates,
-regardless of whether it returns a value or throws an error.
+Sometimes a function needs to make temporary changes to the global
+state. But having to cleanup those changes can be painful (what happens
+if there's an error?). To ensure that your changes are undone and that
+the global state is restored when the function completes, set up an
+\textbf{exit handler} . You do so by calling \texttt{on.exit()} with the
+code to be run. When the function exits, this code executes regardless
+of whether the function returns a value or throws an error.
 
-To setup an exiting handler, call \texttt{on.exit()} with the code to be
-run. It will execute when the function exits, regardless of what causes
-it to exit:
+To setup an exit handler:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6587,15 +6580,15 @@ it to exit:
 \begin{kframe}
 
 Always set \texttt{add\ =\ TRUE} when using \texttt{on.exit()}. If you
-don't, each call to \texttt{on.exit()} will overwrite the previous
-exiting handler. Even when only registering a single handler, it's good
-practice to set \texttt{add\ =\ TRUE} so that you don't get an
-unpleasant surprise if you later add more exit handlers
+don't, each call to \texttt{on.exit()} will overwrite the previous exit
+handler. Even when only registering a single handler, it's good practice
+to set \texttt{add\ =\ TRUE} so that you won't get any unpleasant
+surprises if you later add more exit handlers
 
 \end{kframe}
 
 \texttt{on.exit()} is important because it allows you to place clean-up
-actions next to actions with their cleanup operations.
+actions next to other actions.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6609,8 +6602,8 @@ actions next to actions with their cleanup operations.
 \end{Highlighting}
 \end{Shaded}
 
-When coupled with lazy evaluation, this leads to a very useful pattern
-for running a block of code in an altered environment:
+Coupled with lazy evaluation, this creates a very useful pattern for
+running a block of code in an altered environment:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6631,8 +6624,8 @@ for running a block of code in an altered environment:
 See the \href{http://withr.r-lib.org}{withr package} for a collection of
 functions of this nature.
 
-In R 3.4 and prior, \texttt{on.exit()} expressions are always run in the
-order in which they are created:
+In R 3.4 and earlier, \texttt{on.exit()} expressions are always run in
+order of creation:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6675,11 +6668,11 @@ be run first. In R 3.5 and later, you can control this by setting
   What does \texttt{write.table()} return? What would be more useful?
 \item
   How does the \texttt{chdir} parameter of \texttt{source()} compare to
-  \texttt{in\_dir()}? Why might you prefer one approach to the other?
+  \texttt{in\_dir()}? Why might you prefer one to the other?
 \item
   Write a function that opens a graphics device, runs the supplied code,
   and closes the graphics device (always, regardless of whether or not
-  the plotting code worked).
+  the plotting code works).
 \item
   We can use \texttt{on.exit()} to implement a simple version of
   \texttt{capture.output()}.
@@ -6703,8 +6696,8 @@ be run first. In R 3.5 and later, you can control this by setting
 
   Compare \texttt{capture.output()} to \texttt{capture.output2()}. How
   do the functions differ? What features have I removed to make the key
-  ideas easier to see? How have I rewritten the key ideas to be easier
-  to understand?
+  ideas easier to see? How have I rewritten the key ideas so they're
+  easier to understand?
 \end{enumerate}
 
 \hypertarget{function-forms}{%
@@ -6848,7 +6841,7 @@ special because you can specify arguments in three ways:
 \item
   By position, like \texttt{help(mean)}.
 \item
-  Using partial matching, like \texttt{help(to\ =\ mean)}. 
+  Using partial matching, like \texttt{help(to\ =\ mean)}.
 \item
   By name, like \texttt{help(topic\ =\ mean)}.
 \end{itemize}
@@ -10708,6 +10701,40 @@ write them for you!
 \hypertarget{outline-5}{%
 \subsection*{Outline}\label{outline-5}}
 
+
+\begin{itemize}
+\item
+  \protect\hyperlink{lapply}{My first functional: lapply()} introduces
+  your first functional: \texttt{lapply()}.
+\item
+  \protect\hyperlink{functionals-loop}{For loop functionals} shows you
+  variants of \texttt{lapply()} that produce different outputs, take
+  different inputs, and distribute computation in different ways.
+\item
+  \protect\hyperlink{functionals-ds}{Data structure functionals}
+  discusses functionals that work with more complex data structures like
+  matrices and arrays.
+\item
+  \protect\hyperlink{functionals-fp}{Functional programming} teaches you
+  about the powerful \texttt{Reduce()} and \texttt{Filter()} functions
+  which are useful for working with lists.
+\item
+  \protect\hyperlink{lists-of-functions}{Lists of functions} shows how
+  to put functions in a list, and explains why you might care.
+\item
+  \protect\hyperlink{functionals-math}{Mathematical functionals}
+  discusses functionals that you might be familiar with from
+  mathematics, like root finding, integration, and optimisation.
+\item
+  \protect\hyperlink{functionals-not}{Loops that shouldn't be converted
+  to functions} provides some important caveats about when you shouldn't
+  attempt to convert a loop into a functional.
+\item
+  \protect\hyperlink{function-family}{A family of functions} finishes
+  off the chapter by showing you how functionals can take a simple
+  building block and use it to create a set of powerful and consistent
+  tools.
+\end{itemize}
 
 \hypertarget{prerequisites-3}{%
 \subsection*{Prerequisites}\label{prerequisites-3}}
@@ -25731,8 +25758,8 @@ root.
 \NormalTok{)}
 \CommentTok{#> Unit: nanoseconds}
 \CommentTok{#>     expr   min    lq mean median    uq    max neval}
-\CommentTok{#>  sqrt(x)   863   942 1064    993 1,080  4,840   100}
-\CommentTok{#>    x^0.5 9,190 9,280 9817  9,340 9,440 53,200   100}
+\CommentTok{#>  sqrt(x)   852   972 1080  1,010 1,100  4,720   100}
+\CommentTok{#>    x^0.5 9,220 9,360 9882  9,430 9,630 47,300   100}
 \end{Highlighting}
 \end{Shaded}
 
@@ -25916,10 +25943,10 @@ comparison. \index{methods!cost of dispatch}
 \NormalTok{)}
 \CommentTok{#> Unit: nanoseconds}
 \CommentTok{#>  expr    min     lq  mean median     uq       max neval}
-\CommentTok{#>   fun    221    256   427    302    326    12,500   100}
-\CommentTok{#>    S3  1,460  1,590  9908  1,760  1,890   789,000   100}
-\CommentTok{#>    S4 15,800 16,400 37727 16,700 17,400 1,220,000   100}
-\CommentTok{#>    RC  9,690 10,200 41484 10,500 11,000 3,090,000   100}
+\CommentTok{#>   fun    211    256   418    302    321    11,500   100}
+\CommentTok{#>    S3  1,450  1,590  9945  1,770  1,940   790,000   100}
+\CommentTok{#>    S4 15,800 16,100 30176 16,600 16,900   873,000   100}
+\CommentTok{#>    RC  9,470  9,930 41699 10,400 10,900 3,120,000   100}
 \end{Highlighting}
 \end{Shaded}
 
@@ -26204,9 +26231,9 @@ subassignment. \indexc{ifelse()} \indexc{pmin()} \indexc{pmax()}
 \NormalTok{)}
 \CommentTok{#> Unit: microseconds}
 \CommentTok{#>             expr   min    lq mean median    uq   max neval}
-\CommentTok{#>       squish_ife 24.40 27.20 56.8  29.90 34.40 2,530   100}
-\CommentTok{#>         squish_p 17.00 17.40 41.0  18.20 19.10 1,650   100}
-\CommentTok{#>  squish_in_place  3.41  3.95 32.3   4.22  4.69 2,800   100}
+\CommentTok{#>       squish_ife 27.90 30.40 60.6  34.60 37.50 2,510   100}
+\CommentTok{#>         squish_p 17.30 18.10 42.4  19.10 20.30 1,700   100}
+\CommentTok{#>  squish_in_place  3.52  4.26 33.9   4.71  5.24 2,860   100}
 \end{Highlighting}
 \end{Shaded}
 
@@ -26257,8 +26284,8 @@ value is less than \texttt{a} and/or greater than \texttt{b}.
 \NormalTok{)}
 \CommentTok{#> Unit: microseconds}
 \CommentTok{#>             expr  min   lq  mean median   uq     max neval}
-\CommentTok{#>  squish_in_place 3.85 4.18  4.73   4.39 4.64    34.2   100}
-\CommentTok{#>       squish_cpp 3.16 3.41 15.97   3.55 3.71 1,220.0   100}
+\CommentTok{#>  squish_in_place 3.87 4.20  4.82   4.37 4.70    38.6   100}
+\CommentTok{#>       squish_cpp 3.20 3.43 16.58   3.57 3.78 1,280.0   100}
 \end{Highlighting}
 \end{Shaded}
 
@@ -26413,9 +26440,9 @@ seen:
   \DataTypeTok{unit =} \StringTok{"ms"}
 \NormalTok{)}
 \CommentTok{#> Unit: milliseconds}
-\CommentTok{#>          expr   min    lq mean median   uq    max neval}
-\CommentTok{#>  cond_sum_cpp  5.26  5.28  5.3   5.29  5.3   6.59   100}
-\CommentTok{#>    cond_sum_r 11.40 13.70 18.4  14.60 17.0 337.00   100}
+\CommentTok{#>          expr   min    lq  mean median    uq    max neval}
+\CommentTok{#>  cond_sum_cpp  5.27  5.29  5.36    5.3  5.32   6.98   100}
+\CommentTok{#>    cond_sum_r 12.00 13.60 17.70   14.7 17.70 179.00   100}
 \end{Highlighting}
 \end{Shaded}
 

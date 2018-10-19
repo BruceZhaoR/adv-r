@@ -207,7 +207,7 @@ This version of the book was built with the following version of R and packages.
 |collate  |en_US.UTF-8                  |
 |ctype    |en_US.UTF-8                  |
 |tz       |UTC                          |
-|date     |2018-10-18                   |
+|date     |2018-10-19                   |
 
 
 |package        |version     |source                            |
@@ -261,7 +261,7 @@ This version of the book was built with the following version of R and packages.
 |Matrix         |1.2-14      |CRAN (R 3.5.1)                    |
 |memoise        |1.1.0       |CRAN (R 3.5.1)                    |
 |mgcv           |1.8-24      |CRAN (R 3.5.1)                    |
-|microbenchmark |1.4-5       |CRAN (R 3.5.1)                    |
+|microbenchmark |1.4-6       |CRAN (R 3.5.1)                    |
 |mime           |0.6         |CRAN (R 3.5.1)                    |
 |munsell        |0.5.0       |CRAN (R 3.5.1)                    |
 |nlme           |3.1-137     |CRAN (R 3.5.1)                    |
@@ -280,7 +280,7 @@ This version of the book was built with the following version of R and packages.
 |Rcpp           |0.12.19     |CRAN (R 3.5.1)                    |
 |readr          |1.1.1       |CRAN (R 3.5.1)                    |
 |reshape2       |1.4.3       |CRAN (R 3.5.1)                    |
-|rlang          |0.2.99.0000 |Github (r-lib/rlang\@b70d83e)     |
+|rlang          |0.2.99.0000 |Github (r-lib/rlang\@7b43bd1)     |
 |rmarkdown      |1.10        |CRAN (R 3.5.1)                    |
 |rprojroot      |1.3-2       |CRAN (R 3.5.1)                    |
 |RSQLite        |2.1.1       |CRAN (R 3.5.1)                    |
@@ -309,8 +309,8 @@ This version of the book was built with the following version of R and packages.
 
 ```r
 ruler()
-#> ----+----1----+----2----+----3----+----4----+----5----+----6----+----
-#> 123456789012345678901234567890123456789012345678901234567890123456789
+#> ----+----1----+----2----+----3----+----4----+----5----+----6----+----7----+
+#> 123456789012345678901234567890123456789012345678901234567890123456789012345
 ```
 
 [r-help]: https://stat.ethz.ch/mailman/listinfo/r-help

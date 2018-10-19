@@ -125,13 +125,11 @@ f(10)
 
 When we run this code in RStudio we see:
 
-
-\begin{center}\includegraphics[width=0.7\linewidth]{screenshots/traceback-hidden} \end{center}
+<img src="screenshots/traceback-hidden.png" width="70%" style="display: block; margin: auto;" />
 
 Two options appear to the right of the error message: "Show Traceback" and "Rerun with Debug".  If you click "Show traceback" you see:
 
-
-\begin{center}\includegraphics[width=0.7\linewidth]{screenshots/traceback-shown} \end{center}
+<img src="screenshots/traceback-shown.png" width="70%" style="display: block; margin: auto;" />
 
 If you're not using RStudio, you can use `traceback()` to get the same information:
 

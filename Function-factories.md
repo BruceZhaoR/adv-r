@@ -21,11 +21,7 @@ square <- power1(2)
 cube <- power1(3)
 ```
 
-<<<<<<< HEAD
-=======
-<!-- GVW: is `force` necessary? (my guess is "yes", because we could call `power1` with an expression as a parameter and be surprised when it's evaluated later) LATER: you touch on this in the factory pitfalls section below, so forward ref? -->
 
->>>>>>> hadley
 I'll call `square()` and `cube()` __manufactured functions__, but this is just a term to ease communication with other humans: from R's perspective they are no different to functions created any other way. 
 
 
@@ -109,14 +105,14 @@ square
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <environment: 0x2f1ecd0>
+#> <environment: 0x9eeea0>
 
 cube
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <bytecode: 0x3d007a0>
-#> <environment: 0x3824ba0>
+#> <bytecode: 0x1ba90e8>
+#> <environment: 0xe57da0>
 ```
 
 Printing manufactured functions is not revealing because the bodies are identical; it's the contents of the enclosing environment that's important. We can get a little more insight by using `rlang::env_print()`. That shows us that we have two different environments (each of which was originally an execution environment of `power1()`). The environments have the same parent, which is the enclosing environment of `power1()`, the global environment.
@@ -124,16 +120,16 @@ Printing manufactured functions is not revealing because the bodies are identica
 
 ```r
 env_print(square)
-#> <environment: 0x2f1ecd0>
-#>   parent: <environment: global>
-#>   bindings:
-#>    * exp: <dbl>
+#> <environment: 0x9eeea0>
+#> parent: <environment: global>
+#> bindings:
+#>  * exp: <dbl>
 
 env_print(cube)
-#> <environment: 0x3824ba0>
-#>   parent: <environment: global>
-#>   bindings:
-#>    * exp: <dbl>
+#> <environment: 0xe57da0>
+#> parent: <environment: global>
+#> bindings:
+#>  * exp: <dbl>
 ```
 
 `env_print()` shows us that both environments have a binding to `exp`, but we want to see its value[^env_print]. That's easily done with `env_get()`:
@@ -150,19 +146,7 @@ env_get(cube, "exp")
 #> [1] 3
 ```
 
-<<<<<<< HEAD
-=======
-<!-- GVW: when I run the above, I get:
 
-Passing an environment wrapper like a function is deprecated.
-Please retrieve the environment before calling `env_get()`
-This warning is displayed once per session.
-
-I'm using R 3.5.1.
-
--->
-
->>>>>>> hadley
 This is what makes manufactured functions behave differently from one another: names in the enclosing environment are bound to different values.
 
 [^env_print]: A future version of `env_print()` is likely to do better at summarising the contents so you don't need this step.
@@ -171,8 +155,7 @@ This is what makes manufactured functions behave differently from one another: n
 
 We can also show these relationships in a diagram:
 
-
-\begin{center}\includegraphics[width=3.69in]{diagrams/function-factories/power-full} \end{center}
+<img src="diagrams/function-factories/power-full.png" width="354" style="display: block; margin: auto;" />
 
 There's a lot going on this diagram and some of the details aren't that important. We can simplify considerably by using two conventions:
 
@@ -181,8 +164,7 @@ There's a lot going on this diagram and some of the details aren't that importan
 * Any environment without an explicit parent inherits from the global 
   environment.
 
-
-\begin{center}\includegraphics[width=3.44in]{diagrams/function-factories/power-simple} \end{center}
+<img src="diagrams/function-factories/power-simple.png" width="330" style="display: block; margin: auto;" />
 
 This view, which focuses on the environments, doesn't show any direct link between `cube()` and `square()`. That's because the link is the through the body of the function, which is identical for both, but is not shown in this diagram.
 
@@ -194,8 +176,7 @@ square(10)
 #> [1] 100
 ```
 
-
-\begin{center}\includegraphics[width=3.44in]{diagrams/function-factories/power-exec} \end{center}
+<img src="diagrams/function-factories/power-exec.png" width="330" style="display: block; margin: auto;" />
 
 
 ### Stateful functions {#stateful-funs}
@@ -230,8 +211,7 @@ counter_one <- new_counter()
 counter_two <- new_counter()
 ```
 
-
-\begin{center}\includegraphics[width=3.69in]{diagrams/function-factories/counter-1} \end{center}
+<img src="diagrams/function-factories/counter-1.png" width="354" style="display: block; margin: auto;" />
 
 When the manufactured function is run `i <<- i + 1` will modify `i` in its enclosing environment. Because manufactured functions have independent enclosing environments, they have independent counts:
 
@@ -245,8 +225,7 @@ counter_two()
 #> [1] 1
 ```
 
-
-\begin{center}\includegraphics[width=3.69in]{diagrams/function-factories/counter-2} \end{center}
+<img src="diagrams/function-factories/counter-2.png" width="354" style="display: block; margin: auto;" />
 
 Stateful functions are best used in moderation. As soon as your function starts managing the state of multiple variables, it's better to switch to R6, the topic of Chapter \@ref(r6).
 
@@ -382,11 +361,7 @@ number_format(scale = 1e-3, suffix = " K")(y)
 
 In other words, the primary interface is a function factory. At first glance, this seems to add extra complexity for little gain. But it enables a nice interaction with ggplot2's scales, because they accept functions in the `label` argument:
 
-<<<<<<< HEAD
-=======
-<!-- GVW: I get "partially matched argument" warnings telling me `label -> labels` below -->
 
->>>>>>> hadley
 
 ```r
 df <- data.frame(x = 1, y = y)
@@ -401,8 +376,7 @@ core + scale_y_continuous(label = number_format(scale = 1e-3, suffix = " K"))
 core + scale_y_continuous(label = scientific_format())
 ```
 
-
-\includegraphics[width=0.25\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-22-1} \includegraphics[width=0.25\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-22-2} \includegraphics[width=0.25\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-22-3} \includegraphics[width=0.25\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-22-4} 
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-22-1.png" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-2.png" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-3.png" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-4.png" width="25%" />
 
 ### Histogram bins
 
@@ -424,9 +398,7 @@ ggplot(df, aes(x)) +
   labs(x = NULL)
 ```
 
-
-
-\begin{center}\includegraphics[width=0.9\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-23-1} \end{center}
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-23-1.png" width="90%" style="display: block; margin: auto;" />
 
 Here each facet has the same number of observations, but the variability is very different. It would be nice if we could request that the binwidths vary so we get approximately the same number of observations in each bin. One way to do that is with a function factory that inputs the desired number of bins (`n`), and outputs a function that takes a numeric vector and returns a binwidth:
 
@@ -446,17 +418,11 @@ ggplot(df, aes(x)) +
   labs(x = NULL)
 ```
 
-
-
-\begin{center}\includegraphics[width=0.9\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-24-1} \end{center}
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" />
 
 We could use this same pattern to wrap around the base R functions that automatically find the "optimal"[^optimal] binwidth, `nclass.Sturges()`, `nclass.scott()`, and `nclass.FD()`:
 
-<<<<<<< HEAD
-=======
-<!-- GVW: just curious - why is 'Sturges' name-cased but 'scott' is lower case? -->
 
->>>>>>> hadley
 
 ```r
 base_bins <- function(type) {
@@ -478,9 +444,7 @@ ggplot(df, aes(x)) +
   labs(x = NULL)
 ```
 
-
-
-\begin{center}\includegraphics[width=0.9\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-25-1} \end{center}
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-25-1.png" width="90%" style="display: block; margin: auto;" />
 
 [^optimal]: ggplot2 doesn't expose these functions directly because I don't think the defintion of optimality needed to make the problem mathematically tractable is a good match to the actual needs of data exploration.
 
@@ -524,12 +488,12 @@ plot_dev <- function(ext, dpi = 96) {
 
 plot_dev("pdf")
 #> function(filename, ...) grDevices::pdf(file = filename, ...)
-#> <bytecode: 0x702c668>
-#> <environment: 0x663c9e0>
+#> <bytecode: 0x3713f30>
+#> <environment: 0x54533c8>
 plot_dev("png")
 #> function(...) grDevices::png(..., res = dpi, units = "in")
-#> <bytecode: 0x483db90>
-#> <environment: 0x2148888>
+#> <bytecode: 0x3335fb0>
+#> <environment: 0x13c72d0>
 ```
 
 ### Exercises
@@ -591,8 +555,7 @@ ggplot(data.frame(x = c(0.01, 1)), aes(x)) +
   scale_colour_viridis_c(limits = c(0, 1.5))
 ```
 
-
-\includegraphics[width=0.5\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-28-1} \includegraphics[width=0.5\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-28-2} 
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-28-1.png" width="50%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-28-2.png" width="50%" />
 
 In general, this allows you to use a Box-Cox transformation with any function that accepts a unary transformation function: you don't have to worry about that function providing `...` to pass along additional arguments. I also think that the partitioning of `lambda` and `x` into two different function arguments is natural since `lambda` plays quite a different role than `x`. 
 
@@ -707,6 +670,7 @@ So far we’ve been thinking of `lambda` as fixed and known and the function tol
 In statistics, we highlight this change in perspective by writing $f_{\mathbf{x}}(\lambda)$ instead of $f(\lambda, \mathbf{x})$. In R, we can use a function factory. We provide `x` and generate a function with a single parameter, `lambda`:
 
 
+
 ```r
 ll_poisson1 <- function(x) {
   n <- length(x)
@@ -780,7 +744,6 @@ The advantage of using a function factory here is fairly small, but there are tw
 
 These advantages get bigger in more complex MLE problems, where you have multiple parameters and multiple data vectors.
 
-<!-- GVW: stepping back, what patterns in existing code should people look for that suggest "Hey, maybe use a function factory here"? -->
 
 ### Exercises
 
@@ -830,13 +793,12 @@ funs$root
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <bytecode: 0x3d007a0>
-#> <environment: 0x2419728>
+#> <bytecode: 0x1ba90e8>
+#> <environment: 0x18ed040>
 ```
 
 This idea extends in a straightforward way if your function factory takes two (replace `map()` with `map2()`) or more (replace with `pmap()`) arguments.
 
-<!-- GVW: I wouldn't start a new subsection here, because on first reading it made me think that this was all you were going to say about this example -->
 
 ### Moving a list to the global environment
 \indexc{with()}
@@ -879,7 +841,6 @@ One downside of the current construction is that you have to prefix every functi
 *   Finally, you could copy the functions to the global environment with 
     `env_bind()`. This is mostly permanent:
     
-<!-- GVW: quasiquotation hasn't yet been introduced, and readers may not know about it, so maybe defer this discussion to that section with a forward ref? -->
 
     
     ```r
@@ -899,7 +860,6 @@ One downside of the current construction is that you have to prefix every functi
 
 ### Another approach
 
-<!-- GVW: as above, defer discussion of quasiquotation (that chapter can refer back to this example for motivation)? -->
 
 You'll learn an alternative approach to the same problem in Section \@ref(quasi-function). Instead of using a function factory, you could construct the function with quasiquotation. This requires additional knowledge, but generates functions with readable bodies, and avoids accidentally capturing large objects in the enclosing scope. The following code is a quick preview of how we could rewrite `power1()` to use quasiquotation:
 
@@ -921,7 +881,7 @@ funs$root
 #> {
 #>     x^0.5
 #> }
-#> <environment: 0x3849e98>
+#> <environment: 0x33155f8>
 ```
 
 As well as `0.5` appearing directly in the body, note that the environment of the function is the global environment, not an execution environment of `power3()`.
@@ -957,8 +917,3 @@ As well as `0.5` appearing directly in the body, note that the environment of th
     mean <- function(x) stop("Hi!") 
     env_unbind(globalenv(), names(funs))
     ```
-<<<<<<< HEAD
-   
-   
-=======
->>>>>>> hadley
