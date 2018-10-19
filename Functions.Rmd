@@ -133,7 +133,6 @@ In R, you'll often see functions called __closures__. This name reflects the fac
 typeof(f01)
 ```
 
-<!-- GVW: move this mention of closures down to the discussion of environments? Feels dangling here -->
 
 ### Function components
 \index{functions!body} 
@@ -213,8 +212,6 @@ Primitive functions are only found in the base package. While they have certain 
 1. Given a function, like `"mean"`, `match.fun()` lets you find a function. 
    Given a function, can you find its name? Why doesn't that make sense in R?
 
-<!-- GVW: should the first sentence be, "Given a **name**"? -->
-
 1.  It's possible (although typically not useful) to call an anonymous function.
     Which of the two approaches below is correct? Why?
 
@@ -292,7 +289,6 @@ x %>%
 
 `x %>% f()` is equivalent to `f(x)`; `x %>% f(y)` is equivalent to `f(x, y)`. The pipe is related to __tacit__ or __point-free programming__[^point-free]. In this style of programming, you don't explicitly refer to variables. Instead, you focus on the high-level composition of functions rather than the low-level flow of data; the focus is on what's being done (the verbs), rather that on what's being modified (the nouns). This style is common in Haskell and F#, the main inspiration for magrittr, and is the default style in stack based programming languages like Forth and Factor. \index{point-free programming} \index{tacit programming}
 
-<!-- GVW: if the terminology "tacit" and "point-free" isn't used anywhere else, I wouldn't introduce it here. -->
 
 [^point-free]: Point-free programming is related to point-free topology. It's just a coincidence that many forms of point-free programming use `.` extensively. Point-free programming is sometimes humorously called pointless programming.
 
@@ -346,7 +342,6 @@ R's lexical scoping follows four primary rules:
 * A fresh start
 * Dynamic lookup
 
-<!-- GVW: what does "NSE" stand for? -->
 
 [^dyn-scope]: Functions that automatically quote one or more arguments (sometimes called NSE functions) can override the default scoping rules to implement other varieties of scoping. You'll learn more about that in [metaprogramming](#meta).
 
@@ -375,18 +370,6 @@ g03 <- function() {
 }
 g03()
 ```
-
-<!-- GVW: I frequently use an example like this to clarify that names are only overriden when the new name appears (i.e., definitions aren't hosted to top of scope):
-
-    x <- 1
-    greg <- function() {
-      y <- x
-      x <- 2
-      c(x, y)
-    }
-    greg()
-
--->
 
 The same rules apply if a function is defined inside another function. First, R looks inside the current function. Then, it looks where that function was defined (and so on, all the way up to the global environment). Finally, it looks in other loaded packages. 
 
@@ -428,7 +411,6 @@ g06()
 
 This seems a little magical: how does R know what the value of `y` is after `g05()` is returned? R knows because `g06()` preserves the environment where it was defined and that environment includes the value of `y`. You'll learn more about how environments work in Chapter \@ref(environments).
 
-<!-- GVW: in which case I'd defer this discussion until environments have been introduced, even if it means doubling back to scope... -->
 
 ### Functions vs. variables
 
@@ -455,8 +437,6 @@ g10()
 ```
 
 Note that for the record, using the same name for two different things makes for confusing code, and is something best avoided!
-
-<!-- GVW: no kidding.  I had no idea R ignored non-funcs when looking up names like this... :-( -->
 
 ### A fresh start {#fresh-start}
 
@@ -571,7 +551,6 @@ It's usually not necessary to force evaluation. However, it is important for cer
 
 Consider this small but surprisingly tricky function. It takes a single argument `x`, and returns a function that returns `x` when called.
 
-<!-- GVW: at this point I'm finding names like `g10` and `capture1` and the like pretty hard to keep track of... -->
 
 ```{r}
 capture1 <- function(x) {
@@ -645,22 +624,6 @@ h06 <- function(x) {
 h06(runif(1))
 ```
 
-<!-- GVW: in order to make sure I understood this I wrote the following:
-
-> e <- function() {
-+   message("in e")
-+   1
-+ }
-> greg <- function(x){
-+   message("top of greg")
-+   c(x, x)
-+ }
-> greg(e())
-top of greg
-in e
-[1] 1 1
-
--->
 
 You can also create promises "by hand" using `delayedAssign()`:
 
@@ -739,8 +702,6 @@ sample <- function(x, size = NULL, replace = FALSE, prob = NULL) {
 ```
 
 With the binary pattern created by the `%||%` infix function, which uses the LHS if it's not `NULL` and the RHS otherwise, we can further simplify `sample()`:
-
-<!-- GVW: "left side" and "right side" rather than "LHS" and "RHS" (jargon) -->
 
 ```{r}
 `%||%` <- function(lhs, rhs) {
@@ -860,7 +821,6 @@ str(i02(x = 1, y = 2, z = 3))
 
 Using a special syntax, it's possible (but rarely useful) to refer to elements of `...` by position:
 
-<!-- GVW: "using a special form `..N`" -->
 
 ```{r}
 i03 <- function(...) {
@@ -921,7 +881,6 @@ Using `...` comes with two downsides:
     sum(1, 2, NA, na_rm = TRUE)
     ```
 
-<!-- GVW: I think the line below is redundant given discussion above. -->
 
 `...` is a powerful tool, but be aware of the downsides.
 
@@ -949,18 +908,17 @@ Using `...` comes with two downsides:
 
 ## Exiting a function
 
-Most functions exit in one of two ways[^esoterica]: either returning a value, indicating successful completion, or throwing an error, indicating failure. This section describes return values (implicit vs. explicit; visible vs. invisible), briefly discusses errors, and introduces exit handlers, which allow you to run code when a function exits, regardless of how it exits.
+Most functions exit in one of two ways[^esoterica]: they either return a value, indicating success, or they throw an error, indicating failure. This section describes return values (implicit vs. explicit; visible vs. invisible), briefly discusses errors, and introduces exit handlers, which allow you to run code when a function exits.
 
-[^esoterica]: Functions can exit in other more esoteric ways like signalling a condition that is caught by an exiting handler, invoking a restart, or pressing "Q" in an interactive browser.
+[^esoterica]: Functions can exit in other more esoteric ways like signalling a condition that is caught by an exit handler, invoking a restart, or pressing "Q" in an interactive browser.
 
-### Implicit vs. explict returns
+### Implicit vs. explicit returns
 \index{functions!return value}
 \indexc{return()}
 
 There are two ways that a function can return a value:
 
-*   Implicitly, where the last evaluated expression becomes the return 
-    value:
+*   Implicitly, where the last evaluated expression is the return value:
 
     ```{r}
     j01 <- function(x) {
@@ -990,21 +948,21 @@ There are two ways that a function can return a value:
 \indexc{invisible()} 
 \index{functions!invisible results}
 
-Most functions return visibly: calling the function in an interactive context causes the result to be automatically printed.
+Most functions return visibly: calling the function in an interactive context prints the result.
 
 ```{r}
 j03 <- function() 1
 j03()
 ```
 
-However, it's also possible to return an `invisible()` value, which is not automatically printed.
+However, you can prevent automatic printing by applying `invisible()` to the last value:
 
 ```{r}
 j04 <- function() invisible(1)
 j04()
 ```
 
-You can verify that the value exists either by explicitly printing it or by wrapping in parentheses:
+To verify that this value does indeed exist, you can explicitly print it or wrap it in parentheses:
 
 ```{r}
 print(j04())
@@ -1012,7 +970,7 @@ print(j04())
 (j04())
 ```
 
-Alternatively, use `withVisible()` to return the value and a visibility flag:
+Alternatively, you can use `withVisible()` to return the value and a visibility flag:
 
 ```{r}
 str(withVisible(j04()))
@@ -1026,13 +984,13 @@ a <- 2
 (a <- 2)
 ```
 
-And this is what makes it possible to chain assignment:
+This is what makes it possible to chain assignments:
 
 ```{r}
 a <- b <- c <- d <- 2
 ```
 
-In general, any function called primarily for its side effects (like `<-`, `print()`, or `plot()`) should return an invisible value (typically the value of the first argument).
+In general, any function called primarily for a side effect (like `<-`, `print()`, or `plot()`) should return an invisible value (typically the value of the first argument).
 
 ### Errors
 
@@ -1046,21 +1004,16 @@ j05 <- function() {
 j05()
 ```
 
-<!-- GVW: I would write "Go" and "Rust" -->
-
-Errors indicate that something has gone wrong, and force the user to handle them. Some languages (like C, go, and rust) rely on special return values to indicate problems, but in R you should always throw an error. You'll learn more about errors, and how to handle them, in [Conditions].
+An error indicates that something has gone wrong, and forces the user to deal with the problem. Some languages (like C, Go, and Rust) rely on special return values to indicate problems, but in R you should always throw an error. You'll learn more about errors, and how to handle them, in [Conditions].
 
 ### Exit handlers {#on-exit}
 \indexc{on.exit()}
 \index{handler!exit}
 
-<!-- GVW: you call it "exit handler" in the section title but "exiting handler" below -->
 
-<!-- GVW: switching from singular to plural in the first sentence below: "a temporary change" -> "these changes" -->
+Sometimes a function needs to make temporary changes to the global state. But having to cleanup those changes can be painful (what happens if there's an error?). To ensure that your changes are undone and that the global state is restored when the function completes, set up an __exit handler__ . You do so by calling `on.exit()` with the code to be run. When the function exits, this code executes regardless of whether the function returns a value or throws an error.
 
-Sometimes a function needs to make a temporary change to global state and you want to ensure those changes are restored when the function completes. It's painful to make sure you cleanup before any explicit return, and what happens if there's an error? Instead, you can set up an __exiting handler__ that is called when the function terminates, regardless of whether it returns a value or throws an error.
-
-To setup an exiting handler, call `on.exit()` with the code to be run. It will execute when the function exits, regardless of what causes it to exit:
+To setup an exit handler:
 
 ```{r, error = TRUE}
 j06 <- function(x) {
@@ -1080,14 +1033,12 @@ j06(FALSE)
 ```
 
 ::: sidebar
-Always set `add = TRUE` when using `on.exit()`. If you don't, each call to `on.exit()` will overwrite the previous exiting handler. Even when only registering a single handler, it's good practice to  set `add = TRUE` so that you don't get an unpleasant surprise if you later add more exit handlers
+Always set `add = TRUE` when using `on.exit()`. If you don't, each call to `on.exit()` will overwrite the previous exit handler. Even when only registering a single handler, it's good practice to set `add = TRUE` so that you won't get any unpleasant surprises if you later add more exit handlers
 :::
 
-<!-- GVW: need full stop after "more exit handlers" above -->
 
-`on.exit()` is important because it allows you to place clean-up actions next to actions with their cleanup operations. 
+`on.exit()` is important because it allows you to place clean-up actions next to other actions. 
 
-<!-- GVW: previous sentence is confusing "clean-up actions next to actions" -->
 
 ```{r}
 cleanup <- function(dir, code) {
@@ -1099,7 +1050,7 @@ cleanup <- function(dir, code) {
 }
 ```
 
-When coupled with lazy evaluation, this leads to a very useful pattern for running a block of code in an altered environment:
+Coupled with lazy evaluation, this creates a very useful pattern for running a block of code in an altered environment:
 
 ```{r}
 with_dir <- function(dir, code) {
@@ -1115,7 +1066,7 @@ with_dir("~", getwd())
 
 See the [withr package](http://withr.r-lib.org) for a collection of functions of this nature.
 
-In R 3.4 and prior, `on.exit()` expressions are always run in the order in which they are created:
+In R 3.4 and earlier, `on.exit()` expressions are always run in order of creation:
 
 ```{r}
 f <- function() {
@@ -1142,11 +1093,11 @@ f()
 1.  What does `write.table()` return? What would be more useful?
 
 1.  How does the `chdir` parameter of `source()` compare to `in_dir()`? Why 
-    might you prefer one approach to the other?
+    might you prefer one to the other?
 
 1.  Write a function that opens a graphics device, runs the supplied code, and 
-    closes the graphics device (always, regardless of whether or not the plotting 
-    code worked).
+    closes the graphics device (always, regardless of whether or not the 
+    plotting code works).
 
 1.  We can use `on.exit()` to implement a simple version of `capture.output()`.
 
@@ -1166,8 +1117,8 @@ f()
 
     Compare `capture.output()` to `capture.output2()`. How do the functions 
     differ? What features have I removed to make the key ideas easier to see? 
-    How have I rewritten the key ideas to be easier to understand?
-
+    How have I rewritten the key ideas so they're easier to understand?
+    
 ## Function forms
 
 > "To understand computations in R, two slogans are helpful:
@@ -1213,7 +1164,6 @@ for(i in 1:10) print(i)
 `for`(i, 1:10, print(i))
 ```
 
-<!-- GVW: `for` is a function?? -->
 
 Knowing the function name of a non-prefix function allows you to override its behaviour. For example, if you're ever feeling particularly evil, run the following code while a friend is away from their computer. It will introduce a fun bug: 10% of the time, 1 will be added to any numeric calculation inside of parentheses.
 
@@ -1229,7 +1179,6 @@ replicate(50, (1 + 2))
 rm("(")
 ```
 
-<!-- GVW: `(` is a *function*?? -->
 
 Of course, overriding built-in functions like this is a bad idea, but, as you'll learn about in [metaprogramming](#meta), it's possible to apply it only to selected code blocks. This provides a clean and elegant approach to writing domain specific languages and translators to other languages.
 
@@ -1254,7 +1203,7 @@ We'll explore this idea in detail in [functionals].
 The prefix form is the most common form in R code, and indeed in the majority of programming languages. Prefix calls in R are a little special because you can specify arguments in three ways:
 
 * By position, like `help(mean)`.
-* Using partial matching, like `help(to = mean)`. <!-- GVW: took me a moment to realize this is the same as `topic = mean` -->
+* Using partial matching, like `help(to = mean)`.
 * By name, like `help(topic = mean)`.
 
 As illustrated by the following chunk, arguments are matched by exact name, then with unique prefixes, and finally by position.
@@ -1275,7 +1224,6 @@ str(k01(1, 3, b = 1))
 
 Generally, only use positional matching for the first one or two arguments; they will be the most commonly used, and most readers will know what they are. Avoid using positional matching for less commonly used arguments, and never use partial matching. See the tidyverse style guide, <http://style.tidyverse.org/syntax.html#argument-names>, for more advice.
 
-<!-- GVW: is there any way to turn off partial matching? -->
 
 ### Infix functions
 \index{functions!infix} 
@@ -1328,7 +1276,6 @@ Replacement functions act like they modify their arguments in place, and have th
 }
 ```
 
-<!-- GVW: "left side" rather than "LHS" -->
 
 Replacement functions are used by placing the function call on the LHS of `<-`: 
 
@@ -1352,7 +1299,6 @@ second(x) <- 6L
 
 If you want to supply additional arguments, they go in between `x` and `value`:
 
-<!-- GVW: "...and appear inside the parentheses on the left." -->
 
 ```{r}
 `modify<-` <- function(x, position, value) {
@@ -1423,7 +1369,6 @@ Note that all special forms are implemented as primitive functions (i.e. in C); 
 `for`
 ```
 
-<!-- GVW: question: does this mean I can change the behavior of `(` and the like for my own classes via S3? If so, maybe a forward ref? -->
 
 ## Invoking a function
 \indexc{do.call()}

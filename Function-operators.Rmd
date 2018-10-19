@@ -307,6 +307,7 @@ walk2(
 
 The pipe works well here because I've carefully chosen the function names to yield an (almost) readable sentence: take `download.file` then (add) a dot every 10 iterations, then delay by 0.1s. The more clearly you can express the intent of your code through function names, the more easily others (including future you!) can read and understand the code.
 
+
 ### Exercises
 
 1.  Compare and contrast the for loop and `walk2()` approaches to downloading

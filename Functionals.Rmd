@@ -41,11 +41,11 @@ Functionals reduce bugs in your code by better communicating intent. Functionals
 
 Using functionals is a pattern matching exercise. You look at the for loop, and find a functional that matches the basic form. If one doesn't exist, don't try and torture an existing functional to fit the form you need. Instead, just leave it as a for loop!
 
+
 It's not about eliminating for loops. It's about having someone else write them for you!
 
 ### Outline {-}
 
-<!--
 * [My first functional: lapply()](#lapply) introduces your first functional:
   `lapply()`.
 
@@ -74,7 +74,7 @@ It's not about eliminating for loops. It's about having someone else write them 
 * [A family of functions](#function-family) finishes off the chapter by 
   showing you how functionals can take a simple building block and use it to
   create a set of powerful and consistent tools.
--->
+
 
 ### Prerequisites {-}
 
@@ -292,6 +292,7 @@ boostrap_summary <- function(x, f) {
 
 simple_map(mtcars, boostrap_summary, f = mean)
 ```
+
 
 The error is a little bewildering until you remember that the call to `simple_map()` is equivalent to `simple_map(x = mtcars, f = mean, bootstrap_summary)` because named matching beats positional matching. 
 
@@ -630,6 +631,7 @@ knitr::include_graphics("diagrams/functionals/walk2.png")
 ```
 
 For example, imagine you have a list of data frames (which I've created here using split), and you'd like to save each one to a separate csv file. That's easy with `walk2()`:
+
 
 ```{r}
 temp <- tempfile()
