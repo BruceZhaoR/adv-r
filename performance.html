@@ -849,6 +849,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="24.10" data-path="rcpp.html"><a href="rcpp.html#acknowledgments"><i class="fa fa-check"></i><b>24.10</b> Acknowledgments</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown">
+Proudly published with bookdown</a></li>
+<li><a href="https://github.com/hadley/adv-r">Forked from Hadley</a></li>
+
 </ul>
 
       </nav>
@@ -903,9 +908,9 @@ interface</a>, you’ll learn a little about R’s C internals.</p></li>
 <a class="sourceLine" id="cb901-6" data-line-number="6">  x <span class="op">^</span><span class="st"> </span><span class="fl">0.5</span></a>
 <a class="sourceLine" id="cb901-7" data-line-number="7">)</a>
 <a class="sourceLine" id="cb901-8" data-line-number="8"><span class="co">#&gt; Unit: nanoseconds</span></a>
-<a class="sourceLine" id="cb901-9" data-line-number="9"><span class="co">#&gt;     expr   min    lq mean median    uq    max neval</span></a>
-<a class="sourceLine" id="cb901-10" data-line-number="10"><span class="co">#&gt;  sqrt(x)   873   948 1093  1,010 1,160  4,450   100</span></a>
-<a class="sourceLine" id="cb901-11" data-line-number="11"><span class="co">#&gt;    x^0.5 9,160 9,240 9756  9,320 9,640 39,500   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb901-9" data-line-number="9"><span class="co">#&gt;     expr   min    lq  mean median     uq    max neval</span></a>
+<a class="sourceLine" id="cb901-10" data-line-number="10"><span class="co">#&gt;  sqrt(x)   872 1,110  1483  1,270  1,690  5,800   100</span></a>
+<a class="sourceLine" id="cb901-11" data-line-number="11"><span class="co">#&gt;    x^0.5 9,230 9,400 11776  9,550 13,400 41,600   100</span></a></code></pre></div>
 <p>By default, <code>microbenchmark()</code> runs each expression 100 times (controlled by the <code>times</code> parameter). In the process, it also randomises the order of the expressions. It summarises the results with a minimum (<code>min</code>), lower quartile (<code>lq</code>), median, upper quartile (<code>uq</code>), and maximum (<code>max</code>). Focus on the median, and use the upper and lower quartiles (<code>lq</code> and <code>uq</code>) to get a feel for the variability. In this example, you can see that using the special purpose <code>sqrt()</code> function is faster than the general exponentiation operator.</p>
 <p>As with all microbenchmarks, pay careful attention to the units: here, each computation takes about 1,000 ns, 1,000 billionths of a second. To help calibrate the impact of a microbenchmark on run time, it’s useful to think about how many times a function needs to run before it takes a second. If a microbenchmark takes:</p>
 <ul>
@@ -982,11 +987,11 @@ above with the eps unit. How does this change your intuition for performance?</p
 <a class="sourceLine" id="cb906-6" data-line-number="6">)</a>
 <a class="sourceLine" id="cb906-7" data-line-number="7"><span class="co">#&gt; Unit: nanoseconds</span></a>
 <a class="sourceLine" id="cb906-8" data-line-number="8"><span class="co">#&gt;  expr    min     lq  mean median     uq       max neval</span></a>
-<a class="sourceLine" id="cb906-9" data-line-number="9"><span class="co">#&gt;   fun    261    302   465    342    376    11,400   100</span></a>
-<a class="sourceLine" id="cb906-10" data-line-number="10"><span class="co">#&gt;    S3  1,520  1,630  9553  1,830  1,950   748,000   100</span></a>
-<a class="sourceLine" id="cb906-11" data-line-number="11"><span class="co">#&gt;    S4 15,900 16,500 29952 17,000 17,400   829,000   100</span></a>
-<a class="sourceLine" id="cb906-12" data-line-number="12"><span class="co">#&gt;    RC  9,730 10,200 41115 10,600 11,100 3,050,000   100</span></a></code></pre></div>
-<p>The bare function takes about 300 ns. S3 method dispatch takes an additional 1,000 ns; S4 dispatch, 20,000 ns; and RC dispatch, 10,000 ns. S3 and S4 method dispatch are expensive because R must search for the right method every time the generic is called; it might have changed between this call and the last. R could do better by caching methods between calls, but caching is hard to do correctly and a notorious source of bugs.</p>
+<a class="sourceLine" id="cb906-9" data-line-number="9"><span class="co">#&gt;   fun    231    296  1195    362    668    30,000   100</span></a>
+<a class="sourceLine" id="cb906-10" data-line-number="10"><span class="co">#&gt;    S3  1,490  1,850 12589  2,580  3,640   939,000   100</span></a>
+<a class="sourceLine" id="cb906-11" data-line-number="11"><span class="co">#&gt;    S4 15,900 16,600 37312 18,800 27,800   936,000   100</span></a>
+<a class="sourceLine" id="cb906-12" data-line-number="12"><span class="co">#&gt;    RC  9,510 10,300 50310 12,300 18,000 3,490,000   100</span></a></code></pre></div>
+<p>The bare function takes about 400 ns. S3 method dispatch takes an additional 2,000 ns; S4 dispatch, 20,000 ns; and RC dispatch, 10,000 ns. S3 and S4 method dispatch are expensive because R must search for the right method every time the generic is called; it might have changed between this call and the last. R could do better by caching methods between calls, but caching is hard to do correctly and a notorious source of bugs.</p>
 </div>
 <div id="name-lookup-with-mutable-environments" class="section level3">
 <h3><span class="header-section-number">22.3.2</span> Name lookup with mutable environments</h3>
@@ -1126,9 +1131,9 @@ S4 method dispatch?</p></li>
 <a class="sourceLine" id="cb912-19" data-line-number="19">)</a>
 <a class="sourceLine" id="cb912-20" data-line-number="20"><span class="co">#&gt; Unit: microseconds</span></a>
 <a class="sourceLine" id="cb912-21" data-line-number="21"><span class="co">#&gt;             expr   min    lq mean median    uq   max neval</span></a>
-<a class="sourceLine" id="cb912-22" data-line-number="22"><span class="co">#&gt;       squish_ife 24.60 26.40 54.3  28.60 32.00 2,450   100</span></a>
-<a class="sourceLine" id="cb912-23" data-line-number="23"><span class="co">#&gt;         squish_p 17.20 18.00 40.1  18.60 19.20 1,600   100</span></a>
-<a class="sourceLine" id="cb912-24" data-line-number="24"><span class="co">#&gt;  squish_in_place  3.45  3.93 31.6   4.09  4.59 2,720   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb912-22" data-line-number="22"><span class="co">#&gt;       squish_ife 24.40 27.20 69.4   34.0 42.80 3,270   100</span></a>
+<a class="sourceLine" id="cb912-23" data-line-number="23"><span class="co">#&gt;         squish_p 17.10 18.10 50.4   20.2 28.60 1,960   100</span></a>
+<a class="sourceLine" id="cb912-24" data-line-number="24"><span class="co">#&gt;  squish_in_place  3.41  3.99 39.9    4.5  6.52 3,450   100</span></a></code></pre></div>
 <p>Using <code>pmin()</code> and <code>pmax()</code> is about 2x faster than <code>ifelse()</code>, and using subsetting directly is about 5x as fast again. We can often do even better by using C++. The following example compares the best R implementation to a relatively simple, if verbose, implementation in C++. Even if you’ve never used C++, you should still be able to follow the basic strategy: loop over every element in the vector and perform a different action depending on whether or not the value is less than <code>a</code> and/or greater than <code>b</code>.</p>
 <div class="sourceCode" id="cb913"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb913-1" data-line-number="1"><span class="pp">#include </span><span class="im">&lt;Rcpp.h&gt;</span></a>
 <a class="sourceLine" id="cb913-2" data-line-number="2"><span class="kw">using</span> <span class="kw">namespace</span> Rcpp;</a>
@@ -1158,9 +1163,9 @@ S4 method dispatch?</p></li>
 <a class="sourceLine" id="cb914-4" data-line-number="4">  <span class="dt">unit =</span> <span class="st">&quot;us&quot;</span></a>
 <a class="sourceLine" id="cb914-5" data-line-number="5">)</a>
 <a class="sourceLine" id="cb914-6" data-line-number="6"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb914-7" data-line-number="7"><span class="co">#&gt;             expr  min   lq  mean median   uq   max neval</span></a>
-<a class="sourceLine" id="cb914-8" data-line-number="8"><span class="co">#&gt;  squish_in_place 3.92 4.78  5.44   5.09 5.45    34   100</span></a>
-<a class="sourceLine" id="cb914-9" data-line-number="9"><span class="co">#&gt;       squish_cpp 3.40 3.74 17.78   3.97 4.20 1,360   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb914-7" data-line-number="7"><span class="co">#&gt;             expr  min   lq  mean median   uq     max neval</span></a>
+<a class="sourceLine" id="cb914-8" data-line-number="8"><span class="co">#&gt;  squish_in_place 3.69 4.25  5.49   4.53 6.23    40.6   100</span></a>
+<a class="sourceLine" id="cb914-9" data-line-number="9"><span class="co">#&gt;       squish_cpp 3.22 3.55 20.27   3.79 5.48 1,550.0   100</span></a></code></pre></div>
 <p>The C++ implementation is around 1x faster than the best pure R implementation.</p>
 </div>
 <div id="exercises-68" class="section level3">
@@ -1242,10 +1247,10 @@ performance improvements.</p></li>
 <a class="sourceLine" id="cb917-8" data-line-number="8">  <span class="dt">unit =</span> <span class="st">&quot;ms&quot;</span></a>
 <a class="sourceLine" id="cb917-9" data-line-number="9">)</a>
 <a class="sourceLine" id="cb917-10" data-line-number="10"><span class="co">#&gt; Unit: milliseconds</span></a>
-<a class="sourceLine" id="cb917-11" data-line-number="11"><span class="co">#&gt;          expr  min    lq  mean median    uq    max neval</span></a>
-<a class="sourceLine" id="cb917-12" data-line-number="12"><span class="co">#&gt;  cond_sum_cpp 5.00  5.17  5.22   5.22  5.27   6.47   100</span></a>
-<a class="sourceLine" id="cb917-13" data-line-number="13"><span class="co">#&gt;    cond_sum_r 9.74 10.40 12.77  10.90 11.50 141.00   100</span></a></code></pre></div>
-<p>On my computer, this approach is about 2x faster than the vectorised R equivalent, which is already pretty fast.</p>
+<a class="sourceLine" id="cb917-11" data-line-number="11"><span class="co">#&gt;          expr   min    lq  mean median    uq max neval</span></a>
+<a class="sourceLine" id="cb917-12" data-line-number="12"><span class="co">#&gt;  cond_sum_cpp  5.28  5.66  5.98    5.8  6.14  11   100</span></a>
+<a class="sourceLine" id="cb917-13" data-line-number="13"><span class="co">#&gt;    cond_sum_r 11.00 15.30 18.96   17.1 20.00 173   100</span></a></code></pre></div>
+<p>On my computer, this approach is about 3x faster than the vectorised R equivalent, which is already pretty fast.</p>
 <p>The goal of deferred evaluation is to perform this transformation automatically, so you can write concise R code and have it automatically translated into efficient machine code. Sophisticated translators can also figure out how to make the most of multiple cores. In the above example, if you have four cores, you could split <code>x</code>, <code>y</code>, and <code>z</code> into four pieces performing the conditional sum on each core, then adding together the four individual results. Deferred evaluation can also work with for loops, automatically discovering operations that can be vectorised.</p>
 <p>This chapter has discussed some of the fundamental reasons that R is slow. The following chapters will give you the tools to do something about it when it impacts your code.</p>
 
@@ -1270,7 +1275,17 @@ performance improvements.</p></li>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
-"sharing": false,
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": true,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
 "fontsettings": {
 "theme": "white",
 "family": "sans",
@@ -1280,10 +1295,12 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Performance.Rmd",
 "text": "Edit"
 },
-"download": ["_main.pdf", "_main.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.epub", "EPUB3"]],
 "toc": {
-"collapse": "section"
-}
+"collapse": "section",
+"scroll_highlight": true
+},
+"search": true
 });
 });
 </script>

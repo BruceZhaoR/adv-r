@@ -50,8 +50,8 @@ microbenchmark(
 )
 #> Unit: nanoseconds
 #>     expr   min    lq mean median    uq    max neval
-#>  sqrt(x)   782   822  910    852   903  3,550   100
-#>    x^0.5 8,530 8,580 8978  8,640 8,710 34,200   100
+#>  sqrt(x)   842   923 1043    963 1,050  4,580   100
+#>    x^0.5 9,140 9,250 9691  9,290 9,360 39,500   100
 ```
 
 
@@ -157,16 +157,16 @@ microbenchmark(
   RC = b$rc()
 )
 #> Unit: nanoseconds
-#>  expr    min     lq  mean median     uq     max neval
-#>   fun    211    242   282    272    291   1,360   100
-#>    S3  1,410  1,470  8399  1,610  1,750 670,000   100
-#>    S4 14,400 15,100 23854 15,400 15,900 776,000   100
-#>    RC  8,030  8,380 12172  8,710  9,140 331,000   100
+#>  expr    min     lq  mean median     uq       max neval
+#>   fun    202    232   400    281    301    11,900   100
+#>    S3  1,490  1,640  9420  1,800  1,940   738,000   100
+#>    S4 15,700 16,200 36920 16,600 17,200 1,190,000   100
+#>    RC  9,880 10,300 41662 10,700 11,100 3,090,000   100
 ```
 
 
 
-The bare function takes about 300 ns. S3 method dispatch takes an additional 1,000 ns; S4 dispatch, 20,000 ns; and RC dispatch, 8,000 ns. S3 and S4 method dispatch are expensive because R must search for the right method every time the generic is called; it might have changed between this call and the last. R could do better by caching methods between calls, but caching is hard to do correctly and a notorious source of bugs.
+The bare function takes about 300 ns. S3 method dispatch takes an additional 2,000 ns; S4 dispatch, 20,000 ns; and RC dispatch, 10,000 ns. S3 and S4 method dispatch are expensive because R must search for the right method every time the generic is called; it might have changed between this call and the last. R could do better by caching methods between calls, but caching is hard to do correctly and a notorious source of bugs.
 
 ### Name lookup with mutable environments
 
@@ -339,10 +339,10 @@ microbenchmark(
   unit = "us"
 )
 #> Unit: microseconds
-#>             expr  min    lq mean median    uq   max neval
-#>       squish_ife 23.2 24.40 50.6  25.60 27.60 2,410   100
-#>         squish_p 15.9 16.50 37.9  17.00 17.70 1,500   100
-#>  squish_in_place  3.2  3.61 29.7   3.82  4.11 2,570   100
+#>             expr   min    lq mean median    uq   max neval
+#>       squish_ife 24.00 25.60 55.5  27.10 32.40 2,520   100
+#>         squish_p 16.80 17.50 42.8  18.00 19.00 1,690   100
+#>  squish_in_place  3.38  3.76 32.1   4.03  4.34 2,760   100
 ```
 
 Using `pmin()` and `pmax()` is about 2x faster than `ifelse()`, and using subsetting directly is about 4x as fast again. We can often do even better by using C++. The following example compares the best R implementation to a relatively simple, if verbose, implementation in C++. Even if you've never used C++, you should still be able to follow the basic strategy: loop over every element in the vector and perform a different action depending on whether or not the value is less than `a` and/or greater than `b`. 
@@ -383,8 +383,8 @@ microbenchmark(
 )
 #> Unit: microseconds
 #>             expr  min   lq  mean median   uq     max neval
-#>  squish_in_place 3.46 3.77  4.07   3.86 4.02    18.4   100
-#>       squish_cpp 2.91 3.04 14.54   3.17 3.33 1,110.0   100
+#>  squish_in_place 3.53 4.16  5.09   4.40 4.64    40.5   100
+#>       squish_cpp 3.16 3.39 16.47   3.52 3.72 1,240.0   100
 ```
 
 The C++ implementation is around 1x faster than the best pure R implementation.
@@ -486,12 +486,12 @@ microbenchmark(
   unit = "ms"
 )
 #> Unit: milliseconds
-#>          expr   min    lq  mean median    uq   max neval
-#>  cond_sum_cpp  4.91  4.92  4.96   4.93  4.94  6.07   100
-#>    cond_sum_r 10.20 10.30 11.22  11.70 12.00 14.90   100
+#>          expr   min    lq  mean median   uq    max neval
+#>  cond_sum_cpp  5.26  5.27  5.33   5.28  5.3   6.48   100
+#>    cond_sum_r 10.90 12.80 16.46  14.80 16.0 213.00   100
 ```
 
-On my computer, this approach is about 2x faster than the vectorised R equivalent, which is already pretty fast.
+On my computer, this approach is about 3x faster than the vectorised R equivalent, which is already pretty fast.
 
 The goal of deferred evaluation is to perform this transformation automatically, so you can write concise R code and have it automatically translated into efficient machine code. Sophisticated translators can also figure out how to make the most of multiple cores. In the above example, if you have four cores, you could split `x`, `y`, and `z` into four pieces performing the conditional sum on each core, then adding together the four individual results. Deferred evaluation can also work with for loops, automatically discovering operations that can be vectorised.
 

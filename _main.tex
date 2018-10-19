@@ -25731,8 +25731,8 @@ root.
 \NormalTok{)}
 \CommentTok{#> Unit: nanoseconds}
 \CommentTok{#>     expr   min    lq mean median    uq    max neval}
-\CommentTok{#>  sqrt(x)   872   943 1037    983 1,040  4,510   100}
-\CommentTok{#>    x^0.5 9,200 9,310 9755  9,360 9,520 38,400   100}
+\CommentTok{#>  sqrt(x)   863   942 1064    993 1,080  4,840   100}
+\CommentTok{#>    x^0.5 9,190 9,280 9817  9,340 9,440 53,200   100}
 \end{Highlighting}
 \end{Shaded}
 
@@ -25916,15 +25916,15 @@ comparison. \index{methods!cost of dispatch}
 \NormalTok{)}
 \CommentTok{#> Unit: nanoseconds}
 \CommentTok{#>  expr    min     lq  mean median     uq       max neval}
-\CommentTok{#>   fun    251    286   434    322    342    11,100   100}
-\CommentTok{#>    S3  1,540  1,630  9278  1,820  1,960   720,000   100}
-\CommentTok{#>    S4 15,700 16,300 30194 16,800 17,400   796,000   100}
-\CommentTok{#>    RC  9,800 10,300 41552 10,600 11,300 2,970,000   100}
+\CommentTok{#>   fun    221    256   427    302    326    12,500   100}
+\CommentTok{#>    S3  1,460  1,590  9908  1,760  1,890   789,000   100}
+\CommentTok{#>    S4 15,800 16,400 37727 16,700 17,400 1,220,000   100}
+\CommentTok{#>    RC  9,690 10,200 41484 10,500 11,000 3,090,000   100}
 \end{Highlighting}
 \end{Shaded}
 
 The bare function takes about 300 ns. S3 method dispatch takes an
-additional 2,000 ns; S4 dispatch, 20,000 ns; and RC dispatch, 10,000 ns.
+additional 1,000 ns; S4 dispatch, 20,000 ns; and RC dispatch, 10,000 ns.
 S3 and S4 method dispatch are expensive because R must search for the
 right method every time the generic is called; it might have changed
 between this call and the last. R could do better by caching methods
@@ -26203,10 +26203,10 @@ subassignment. \indexc{ifelse()} \indexc{pmin()} \indexc{pmax()}
   \DataTypeTok{unit =} \StringTok{"us"}
 \NormalTok{)}
 \CommentTok{#> Unit: microseconds}
-\CommentTok{#>             expr  min    lq mean median    uq   max neval}
-\CommentTok{#>       squish_ife 22.8 26.40 54.6  29.50 32.10 2,460   100}
-\CommentTok{#>         squish_p 15.8 17.00 39.6  17.60 18.50 1,580   100}
-\CommentTok{#>  squish_in_place  3.4  3.88 31.4   4.26  4.57 2,670   100}
+\CommentTok{#>             expr   min    lq mean median    uq   max neval}
+\CommentTok{#>       squish_ife 24.40 27.20 56.8  29.90 34.40 2,530   100}
+\CommentTok{#>         squish_p 17.00 17.40 41.0  18.20 19.10 1,650   100}
+\CommentTok{#>  squish_in_place  3.41  3.95 32.3   4.22  4.69 2,800   100}
 \end{Highlighting}
 \end{Shaded}
 
@@ -26257,8 +26257,8 @@ value is less than \texttt{a} and/or greater than \texttt{b}.
 \NormalTok{)}
 \CommentTok{#> Unit: microseconds}
 \CommentTok{#>             expr  min   lq  mean median   uq     max neval}
-\CommentTok{#>  squish_in_place 3.51 4.03  4.58   4.26 4.53    32.3   100}
-\CommentTok{#>       squish_cpp 2.92 3.29 15.74   3.45 3.66 1,210.0   100}
+\CommentTok{#>  squish_in_place 3.85 4.18  4.73   4.39 4.64    34.2   100}
+\CommentTok{#>       squish_cpp 3.16 3.41 15.97   3.55 3.71 1,220.0   100}
 \end{Highlighting}
 \end{Shaded}
 
@@ -26413,13 +26413,13 @@ seen:
   \DataTypeTok{unit =} \StringTok{"ms"}
 \NormalTok{)}
 \CommentTok{#> Unit: milliseconds}
-\CommentTok{#>          expr   min    lq mean median    uq    max neval}
-\CommentTok{#>  cond_sum_cpp  4.92  5.08  5.3   5.21  5.33   8.73   100}
-\CommentTok{#>    cond_sum_r 10.00 10.50 13.1  11.10 11.50 154.00   100}
+\CommentTok{#>          expr   min    lq mean median   uq    max neval}
+\CommentTok{#>  cond_sum_cpp  5.26  5.28  5.3   5.29  5.3   6.59   100}
+\CommentTok{#>    cond_sum_r 11.40 13.70 18.4  14.60 17.0 337.00   100}
 \end{Highlighting}
 \end{Shaded}
 
-On my computer, this approach is about 2x faster than the vectorised R
+On my computer, this approach is about 3x faster than the vectorised R
 equivalent, which is already pretty fast.
 
 The goal of deferred evaluation is to perform this transformation
