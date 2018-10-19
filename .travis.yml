@@ -1,5 +1,5 @@
 language: R
-sudo: true
+sudo: required
 cache:
   packages: yes
   directories:
@@ -18,10 +18,21 @@ branches:
   only:
   - master
 
+#addons:
+#  apt:
+#    packages:
+#      - texlive-lang-greek
+
 before_install:
   - tlmgr update --self --all
   - tlmgr install collection-fontsrecommended
+  - tlmgr install amsfonts
+  - tlmgr install a4wide
+  - tlmgr install ae
+  - tlmgr install algorithms
+  - tlmgr install appendix
   - tlmgr install babel-greek
+  - tlmgr install booktabs
   - tlmgr install greek-fontenc
   - tlmgr install cbfonts
   - tlmgr install unicode-math
