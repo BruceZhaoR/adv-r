@@ -948,9 +948,9 @@ referenced by a name.</p></li>
 <p>You might have noticed the value <code>1:3</code> has a label: <code>0x74b</code>. While the vector doesn’t have a name, I’ll occasionally need to refer to objects independent of their bindings. To make that possible, I’ll label values with a unique identifier. These unique identifers have a special form that looks like the object’s memory “address”, i.e. the location in memory in which the object is stored. It doesn’t make sense to use the actual memory address because that changes every time the code is run.</p>
 <p>You can access the address of an object with <code>lobstr::obj_addr()</code>. This allows us to see that <code>x</code> and <code>y</code> both point to the same location in memory:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">obj_addr</span>(x)</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt; [1] &quot;0x6808738&quot;</span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt; [1] &quot;0x7c84bb8&quot;</span></a>
 <a class="sourceLine" id="cb8-3" data-line-number="3"><span class="kw">obj_addr</span>(y)</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; [1] &quot;0x6808738&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; [1] &quot;0x7c84bb8&quot;</span></a></code></pre></div>
 <p>These identifiers are long, and change every time you restart R.</p>
 <p>It takes some time to get your head around the distinction between names and values, but it’s really helpful for functional programming when you start to work with functions that have different names in different contexts.</p>
 <div id="non-syntactic" class="section level3">
@@ -1045,7 +1045,7 @@ not a syntactic name? Read <code>?make.names</code> for the full details.</p></l
 <a class="sourceLine" id="cb17-4" data-line-number="4"></a>
 <a class="sourceLine" id="cb17-5" data-line-number="5">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb17-6" data-line-number="6"><span class="kw">cat</span>(<span class="kw">tracemem</span>(x), <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
-<a class="sourceLine" id="cb17-7" data-line-number="7"><span class="co">#&gt; &lt;0x138dff8&gt;</span></a>
+<a class="sourceLine" id="cb17-7" data-line-number="7"><span class="co">#&gt; &lt;0x2801e28&gt;</span></a>
 <a class="sourceLine" id="cb17-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb17-9" data-line-number="9">z &lt;-<span class="st"> </span><span class="kw">f</span>(x)</a>
 <a class="sourceLine" id="cb17-10" data-line-number="10"><span class="co"># there&#39;s no copy here!</span></a>
@@ -1074,15 +1074,15 @@ not a syntactic name? Read <code>?make.names</code> for the full details.</p></l
 <p>You can use <code>lobstr::ref()</code> to see values that are shared across lists. <code>ref()</code> prints the memory address of each object, along with a local id so that you can easily cross-reference shared components.</p>
 <!-- GVW: install.packages("lobstr") produces "package 'lobstr' is not available (for R version 3.5.1).", but devtools::install_github("r-lib/lobstr") works. -->
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw">ref</span>(l1, l2)</a>
-<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="co">#&gt; █ [1:0x6eba438] &lt;list&gt; </span></a>
-<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="co">#&gt; ├─[2:0x397c9e0] &lt;dbl&gt; </span></a>
-<a class="sourceLine" id="cb21-4" data-line-number="4"><span class="co">#&gt; ├─[3:0x397c9a8] &lt;dbl&gt; </span></a>
-<a class="sourceLine" id="cb21-5" data-line-number="5"><span class="co">#&gt; └─[4:0x397c970] &lt;dbl&gt; </span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="co">#&gt; █ [1:0x525de98] &lt;list&gt; </span></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="co">#&gt; ├─[2:0x4deea20] &lt;dbl&gt; </span></a>
+<a class="sourceLine" id="cb21-4" data-line-number="4"><span class="co">#&gt; ├─[3:0x4dee9e8] &lt;dbl&gt; </span></a>
+<a class="sourceLine" id="cb21-5" data-line-number="5"><span class="co">#&gt; └─[4:0x4dee9b0] &lt;dbl&gt; </span></a>
 <a class="sourceLine" id="cb21-6" data-line-number="6"><span class="co">#&gt;  </span></a>
-<a class="sourceLine" id="cb21-7" data-line-number="7"><span class="co">#&gt; █ [5:0x717e568] &lt;list&gt; </span></a>
-<a class="sourceLine" id="cb21-8" data-line-number="8"><span class="co">#&gt; ├─[2:0x397c9e0] </span></a>
-<a class="sourceLine" id="cb21-9" data-line-number="9"><span class="co">#&gt; ├─[3:0x397c9a8] </span></a>
-<a class="sourceLine" id="cb21-10" data-line-number="10"><span class="co">#&gt; └─[6:0x70c0698] &lt;dbl&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb21-7" data-line-number="7"><span class="co">#&gt; █ [5:0x85febe8] &lt;list&gt; </span></a>
+<a class="sourceLine" id="cb21-8" data-line-number="8"><span class="co">#&gt; ├─[2:0x4deea20] </span></a>
+<a class="sourceLine" id="cb21-9" data-line-number="9"><span class="co">#&gt; ├─[3:0x4dee9e8] </span></a>
+<a class="sourceLine" id="cb21-10" data-line-number="10"><span class="co">#&gt; └─[6:0x8538b98] &lt;dbl&gt;</span></a></code></pre></div>
 </div>
 <div id="df-modify" class="section level3">
 <h3><span class="header-section-number">2.3.4</span> Data frames</h3>
@@ -1110,11 +1110,11 @@ not a syntactic name? Read <code>?make.names</code> for the full details.</p></l
 <!-- GVW: what I brought with me from other languages was that "character vector" referred to a single string (a vector of characters), but what I now understand is that "character vector" means "a vector of character strings".  Might be worth footnoting this for people who make the same mistake I did? -->
 <p>You can request that <code>ref()</code> show these references:</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw">ref</span>(x, <span class="dt">character =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="co">#&gt; █ [1:0xd5abb8] &lt;chr&gt; </span></a>
-<a class="sourceLine" id="cb26-3" data-line-number="3"><span class="co">#&gt; ├─[2:0x9fd768] &lt;string: &quot;a&quot;&gt; </span></a>
-<a class="sourceLine" id="cb26-4" data-line-number="4"><span class="co">#&gt; ├─[2:0x9fd768] </span></a>
-<a class="sourceLine" id="cb26-5" data-line-number="5"><span class="co">#&gt; ├─[3:0x40aec78] &lt;string: &quot;abc&quot;&gt; </span></a>
-<a class="sourceLine" id="cb26-6" data-line-number="6"><span class="co">#&gt; └─[4:0xeb3b08] &lt;string: &quot;d&quot;&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="co">#&gt; █ [1:0x2473298] &lt;chr&gt; </span></a>
+<a class="sourceLine" id="cb26-3" data-line-number="3"><span class="co">#&gt; ├─[2:0x1e71728] &lt;string: &quot;a&quot;&gt; </span></a>
+<a class="sourceLine" id="cb26-4" data-line-number="4"><span class="co">#&gt; ├─[2:0x1e71728] </span></a>
+<a class="sourceLine" id="cb26-5" data-line-number="5"><span class="co">#&gt; ├─[3:0x5527178] &lt;string: &quot;abc&quot;&gt; </span></a>
+<a class="sourceLine" id="cb26-6" data-line-number="6"><span class="co">#&gt; └─[4:0x2327ac8] &lt;string: &quot;d&quot;&gt;</span></a></code></pre></div>
 <p>This has a profound impact on the amount of memory a character vector takes, but is otherwise not generally important, so elsewhere in the book I’ll draw character vectors as if the strings live inside the vector.</p>
 </div>
 <div id="exercises-1" class="section level3">
@@ -1288,8 +1288,8 @@ mostly in the base package.</p></li>
 <a class="sourceLine" id="cb45-2" data-line-number="2">e<span class="op">$</span>self &lt;-<span class="st"> </span>e</a>
 <a class="sourceLine" id="cb45-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb45-4" data-line-number="4"><span class="kw">ref</span>(e)</a>
-<a class="sourceLine" id="cb45-5" data-line-number="5"><span class="co">#&gt; █ [1:0x11760d0] &lt;env&gt; </span></a>
-<a class="sourceLine" id="cb45-6" data-line-number="6"><span class="co">#&gt; └─self = [1:0x11760d0]</span></a></code></pre></div>
+<a class="sourceLine" id="cb45-5" data-line-number="5"><span class="co">#&gt; █ [1:0x25f9f70] &lt;env&gt; </span></a>
+<a class="sourceLine" id="cb45-6" data-line-number="6"><span class="co">#&gt; └─self = [1:0x25f9f70]</span></a></code></pre></div>
 <p><img src="diagrams/name-value/e-self.png" width="142" style="display: block; margin: auto;" /></p>
 <p>This is a unique property of environments!</p>
 <!-- GVW: having people explain why `x <- list(); x[[1]] <- x` *doesn't* produce a circular list might be a good exercise. -->
@@ -1324,10 +1324,10 @@ performance change as the number of columns increase?</p></li>
 <div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1"><span class="kw">gc</span>() </a>
 <a class="sourceLine" id="cb49-2" data-line-number="2"><span class="co">#&gt;           used (Mb) gc trigger (Mb) max used (Mb)</span></a>
 <a class="sourceLine" id="cb49-3" data-line-number="3"><span class="co">#&gt; Ncells  677053 36.2    1239794 66.3  1239794 66.3</span></a>
-<a class="sourceLine" id="cb49-4" data-line-number="4"><span class="co">#&gt; Vcells 3678842 28.1   11770331 89.9 11768616 89.8</span></a></code></pre></div>
+<a class="sourceLine" id="cb49-4" data-line-number="4"><span class="co">#&gt; Vcells 3678847 28.1   11770336 89.9 11768865 89.8</span></a></code></pre></div>
 <p><code>lobstr::mem_used()</code> is a wrapper around <code>gc()</code> that just prints the total number of bytes used:</p>
 <div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1"><span class="kw">mem_used</span>()</a>
-<a class="sourceLine" id="cb50-2" data-line-number="2"><span class="co">#&gt; 67,351,408 B</span></a></code></pre></div>
+<a class="sourceLine" id="cb50-2" data-line-number="2"><span class="co">#&gt; 67,351,416 B</span></a></code></pre></div>
 <p>This number won’t agree with the amount of memory reported by your operating system for three reasons:</p>
 <ol style="list-style-type: decimal">
 <li><p>It only includes objects created by R, not the R interpreter itself.</p></li>

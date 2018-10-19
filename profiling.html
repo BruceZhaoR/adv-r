@@ -1111,10 +1111,10 @@ the critical code; but only after that code has been identified.”</p>
 <a class="sourceLine" id="cb930-2" data-line-number="2">  <span class="kw">mean1</span>(x),</a>
 <a class="sourceLine" id="cb930-3" data-line-number="3">  <span class="kw">mean2</span>(x)</a>
 <a class="sourceLine" id="cb930-4" data-line-number="4">)</a>
-<a class="sourceLine" id="cb930-5" data-line-number="5"><span class="co">#&gt; Unit: nanoseconds</span></a>
-<a class="sourceLine" id="cb930-6" data-line-number="6"><span class="co">#&gt;      expr   min    lq  mean median    uq       max neval</span></a>
-<a class="sourceLine" id="cb930-7" data-line-number="7"><span class="co">#&gt;  mean1(x) 3,140 3,240 15000  3,350 3,570 1,130,000   100</span></a>
-<a class="sourceLine" id="cb930-8" data-line-number="8"><span class="co">#&gt;  mean2(x)   691   742 26663    821   883 2,580,000   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb930-5" data-line-number="5"><span class="co">#&gt; Unit: microseconds</span></a>
+<a class="sourceLine" id="cb930-6" data-line-number="6"><span class="co">#&gt;      expr  min   lq  mean median   uq    max neval</span></a>
+<a class="sourceLine" id="cb930-7" data-line-number="7"><span class="co">#&gt;  mean1(x) 4.22 4.41  57.9   4.98 5.29  5,300   100</span></a>
+<a class="sourceLine" id="cb930-8" data-line-number="8"><span class="co">#&gt;  mean2(x) 1.06 1.11 609.4   1.21 1.44 60,800   100</span></a></code></pre></div>
 <p>(You might be surprised by the results: <code>mean(x)</code> is considerably slower than <code>sum(x) / length(x)</code>. This is because, among other reasons, <code>mean(x)</code> makes two passes over the vector to be more numerically accurate.)</p>
 <p>Before you start experimenting, you should have a target speed that defines when the bottleneck is no longer a problem. Setting such a goal is important because you don’t want to spend valuable time over-optimising your code.</p>
 <p>If you’d like to see this strategy in action, I’ve used it a few times on stackoverflow:</p>
@@ -1194,8 +1194,8 @@ it to a variable, and then calling that function.</p></li>
 <a class="sourceLine" id="cb931-6" data-line-number="6">)</a>
 <a class="sourceLine" id="cb931-7" data-line-number="7"><span class="co">#&gt; Unit: microseconds</span></a>
 <a class="sourceLine" id="cb931-8" data-line-number="8"><span class="co">#&gt;             expr  min   lq mean median   uq   max neval</span></a>
-<a class="sourceLine" id="cb931-9" data-line-number="9"><span class="co">#&gt;          mean(x) 2.83 2.92 3.87   3.08 3.45 53.40   100</span></a>
-<a class="sourceLine" id="cb931-10" data-line-number="10"><span class="co">#&gt;  mean.default(x) 1.29 1.36 1.59   1.43 1.62  5.87   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb931-9" data-line-number="9"><span class="co">#&gt;          mean(x) 3.88 4.05 5.16   4.29 4.68 76.90   100</span></a>
+<a class="sourceLine" id="cb931-10" data-line-number="10"><span class="co">#&gt;  mean.default(x) 1.83 1.92 2.17   2.05 2.26  6.31   100</span></a></code></pre></div>
 <p>This optimisation is a little risky. While <code>mean.default()</code> is almost twice as fast, it’ll fail in surprising ways if <code>x</code> is not a numeric vector. You should only use it if you know for sure what <code>x</code> is.</p>
 <p>Knowing that you’re dealing with a specific type of input can be another way to write faster code. For example, <code>as.data.frame()</code> is quite slow because it coerces each element into a data frame and then <code>rbind()</code>s them together. If you have a named list with vectors of equal length, you can directly transform it into a data frame. In this case, if you’re able to make strong assumptions about your input, you can write a method that’s about 20x faster than the default.</p>
 <div class="sourceCode" id="cb932"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb932-1" data-line-number="1">quickdf &lt;-<span class="st"> </span><span class="cf">function</span>(l) {</a>
@@ -1212,9 +1212,9 @@ it to a variable, and then calling that function.</p></li>
 <a class="sourceLine" id="cb932-12" data-line-number="12">  <span class="dt">as.data.frame =</span> <span class="kw">as.data.frame</span>(l)</a>
 <a class="sourceLine" id="cb932-13" data-line-number="13">)</a>
 <a class="sourceLine" id="cb932-14" data-line-number="14"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb932-15" data-line-number="15"><span class="co">#&gt;           expr      min      lq   mean median      uq   max neval</span></a>
-<a class="sourceLine" id="cb932-16" data-line-number="16"><span class="co">#&gt;       quick_df     8.18    11.7   87.2     19    24.8 3,540   100</span></a>
-<a class="sourceLine" id="cb932-17" data-line-number="17"><span class="co">#&gt;  as.data.frame 1,550.00 1,610.0 1691.9  1,640 1,720.0 4,770   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb932-15" data-line-number="15"><span class="co">#&gt;           expr   min      lq mean  median      uq   max neval</span></a>
+<a class="sourceLine" id="cb932-16" data-line-number="16"><span class="co">#&gt;       quick_df    11    13.5  110    24.1    30.5 4,350   100</span></a>
+<a class="sourceLine" id="cb932-17" data-line-number="17"><span class="co">#&gt;  as.data.frame 1,530 1,670.0 1782 1,730.0 1,790.0 5,600   100</span></a></code></pre></div>
 <p>Again, note the trade-off. This method is fast because it’s dangerous. If you give it bad inputs, you’ll get a corrupt data frame:</p>
 <div class="sourceCode" id="cb933"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb933-1" data-line-number="1"><span class="kw">quickdf</span>(<span class="kw">list</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>))</a>
 <a class="sourceLine" id="cb933-2" data-line-number="2"><span class="co">#&gt; Warning in format.data.frame(x, digits = digits, na.encode = FALSE):</span></a>
@@ -1302,11 +1302,11 @@ it to a variable, and then calling that function.</p></li>
 <a class="sourceLine" id="cb938-6" data-line-number="6">  <span class="kw">diff4</span>(x)</a>
 <a class="sourceLine" id="cb938-7" data-line-number="7">)</a>
 <a class="sourceLine" id="cb938-8" data-line-number="8"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb938-9" data-line-number="9"><span class="co">#&gt;      expr  min   lq   mean median   uq    max neval</span></a>
-<a class="sourceLine" id="cb938-10" data-line-number="10"><span class="co">#&gt;  diff1(x) 4.06 4.74 240.33   5.25 6.44 23,400   100</span></a>
-<a class="sourceLine" id="cb938-11" data-line-number="11"><span class="co">#&gt;  diff2(x) 3.21 4.01   5.38   4.38 5.64     43   100</span></a>
-<a class="sourceLine" id="cb938-12" data-line-number="12"><span class="co">#&gt;  diff3(x) 2.92 3.52 102.86   3.95 4.76  9,860   100</span></a>
-<a class="sourceLine" id="cb938-13" data-line-number="13"><span class="co">#&gt;  diff4(x) 2.17 2.87  44.58   3.39 4.00  4,110   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb938-9" data-line-number="9"><span class="co">#&gt;      expr  min   lq   mean median   uq      max neval</span></a>
+<a class="sourceLine" id="cb938-10" data-line-number="10"><span class="co">#&gt;  diff1(x) 5.10 6.03 256.72   6.40 7.12 25,000.0   100</span></a>
+<a class="sourceLine" id="cb938-11" data-line-number="11"><span class="co">#&gt;  diff2(x) 4.21 5.00   5.99   5.39 5.86     50.5   100</span></a>
+<a class="sourceLine" id="cb938-12" data-line-number="12"><span class="co">#&gt;  diff3(x) 3.60 4.23  98.83   4.72 5.24  9,400.0   100</span></a>
+<a class="sourceLine" id="cb938-13" data-line-number="13"><span class="co">#&gt;  diff4(x) 2.56 3.16  45.07   3.50 4.13  4,140.0   100</span></a></code></pre></div>
 <p>You’ll be able to make <code>diff()</code> even faster for this special case once you’ve read <a href="rcpp.html#rcpp">Rcpp</a>.</p>
 <p>A final example of doing less work is to use simpler data structures. For example, when working with rows from a data frame, it’s often faster to work with row indices than data frames. For instance, if you wanted to compute a bootstrap estimate of the correlation between two columns in a data frame, there are two basic approaches: you can either work with the whole data frame or with the individual vectors. The following example shows that working with vectors is about twice as fast. </p>
 <div class="sourceCode" id="cb939"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb939-1" data-line-number="1">sample_rows &lt;-<span class="st"> </span><span class="cf">function</span>(df, i) <span class="kw">sample.int</span>(<span class="kw">nrow</span>(df), i, </a>
@@ -1330,9 +1330,9 @@ it to a variable, and then calling that function.</p></li>
 <a class="sourceLine" id="cb939-19" data-line-number="19">  <span class="kw">boot_cor2</span>(df, <span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb939-20" data-line-number="20">)</a>
 <a class="sourceLine" id="cb939-21" data-line-number="21"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb939-22" data-line-number="22"><span class="co">#&gt;               expr   min    lq mean median  uq   max neval</span></a>
-<a class="sourceLine" id="cb939-23" data-line-number="23"><span class="co">#&gt;  boot_cor1(df, 10) 135.0 141.0  188  150.0 159 3,070   100</span></a>
-<a class="sourceLine" id="cb939-24" data-line-number="24"><span class="co">#&gt;  boot_cor2(df, 10)  90.8  93.7  150   95.9 103 3,250   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb939-22" data-line-number="22"><span class="co">#&gt;               expr   min  lq mean median  uq    max neval</span></a>
+<a class="sourceLine" id="cb939-23" data-line-number="23"><span class="co">#&gt;  boot_cor1(df, 10) 151.0 164  381    173 188 14,000   100</span></a>
+<a class="sourceLine" id="cb939-24" data-line-number="24"><span class="co">#&gt;  boot_cor2(df, 10)  97.4 107  499    113 120 34,200   100</span></a></code></pre></div>
 <div id="exercises-71" class="section level3">
 <h3><span class="header-section-number">23.7.1</span> Exercises</h3>
 <ol style="list-style-type: decimal">
@@ -1355,10 +1355,10 @@ Why is it faster for this input?</p>
 <a class="sourceLine" id="cb940-13" data-line-number="13">)</a>
 <a class="sourceLine" id="cb940-14" data-line-number="14"><span class="kw">system.time</span>(<span class="kw">rowSums</span>(df))</a>
 <a class="sourceLine" id="cb940-15" data-line-number="15"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb940-16" data-line-number="16"><span class="co">#&gt;   0.064   0.012   0.077</span></a>
+<a class="sourceLine" id="cb940-16" data-line-number="16"><span class="co">#&gt;   0.096   0.076   0.173</span></a>
 <a class="sourceLine" id="cb940-17" data-line-number="17"><span class="kw">system.time</span>(<span class="kw">rowSums2</span>(df))</a>
 <a class="sourceLine" id="cb940-18" data-line-number="18"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb940-19" data-line-number="19"><span class="co">#&gt;   0.036   0.000   0.036</span></a></code></pre></div></li>
+<a class="sourceLine" id="cb940-19" data-line-number="19"><span class="co">#&gt;   0.040   0.000   0.037</span></a></code></pre></div></li>
 <li><p>What’s the difference between <code>rowSums()</code> and <code>.rowSums()</code>?</p></li>
 <li><p>Make a faster version of <code>chisq.test()</code> that only computes the chi-square
 test statistic when the input is two numeric vectors with no missing
@@ -1427,9 +1427,9 @@ how to use <code>cut()</code> and <code>findInterval()</code>.</p></li>
 <a class="sourceLine" id="cb943-11" data-line-number="11">)</a>
 <a class="sourceLine" id="cb943-12" data-line-number="12"><span class="co">#&gt; Unit: nanoseconds</span></a>
 <a class="sourceLine" id="cb943-13" data-line-number="13"><span class="co">#&gt;          expr   min    lq mean median    uq    max neval</span></a>
-<a class="sourceLine" id="cb943-14" data-line-number="14"><span class="co">#&gt;    lookup[x1]   552   671  872    874 1,000  1,830   100</span></a>
-<a class="sourceLine" id="cb943-15" data-line-number="15"><span class="co">#&gt;   lookup[x10] 1,390 1,500 1995  1,740 2,010 22,300   100</span></a>
-<a class="sourceLine" id="cb943-16" data-line-number="16"><span class="co">#&gt;  lookup[x100] 5,410 6,440 7186  6,970 7,440 18,400   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb943-14" data-line-number="14"><span class="co">#&gt;    lookup[x1]   722   768  942    868 1,050  2,200   100</span></a>
+<a class="sourceLine" id="cb943-15" data-line-number="15"><span class="co">#&gt;   lookup[x10] 1,570 1,630 2040  1,730 1,910 25,800   100</span></a>
+<a class="sourceLine" id="cb943-16" data-line-number="16"><span class="co">#&gt;  lookup[x100] 5,180 6,120 6903  6,700 7,280 18,800   100</span></a></code></pre></div>
 <p>Vectorisation won’t solve every problem, and rather than torturing an existing algorithm into one that uses a vectorised approach, you’re often better off writing your own vectorised function in C++. You’ll learn how to do so in <a href="rcpp.html#rcpp">Rcpp</a>.</p>
 <div id="exercises-72" class="section level3">
 <h3><span class="header-section-number">23.8.1</span> Exercises</h3>
@@ -1469,10 +1469,10 @@ it than the naive <code>sum(x * w)</code>?</p></li>
 <a class="sourceLine" id="cb944-20" data-line-number="20">)</a>
 <a class="sourceLine" id="cb944-21" data-line-number="21"><span class="co">#&gt; Unit: microseconds</span></a>
 <a class="sourceLine" id="cb944-22" data-line-number="22"><span class="co">#&gt;     expr    min     lq   mean median     uq     max neval</span></a>
-<a class="sourceLine" id="cb944-23" data-line-number="23"><span class="co">#&gt;   loop10  20.00  22.90  24.30  24.10  25.00    33.9   100</span></a>
-<a class="sourceLine" id="cb944-24" data-line-number="24"><span class="co">#&gt;  loop100 769.00 781.00 821.64 786.00 800.00 3,950.0   100</span></a>
-<a class="sourceLine" id="cb944-25" data-line-number="25"><span class="co">#&gt;    vec10   5.32   5.75   6.65   6.07   6.43    46.5   100</span></a>
-<a class="sourceLine" id="cb944-26" data-line-number="26"><span class="co">#&gt;   vec100  42.70  44.00  45.58  44.60  46.20    58.2   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb944-23" data-line-number="23"><span class="co">#&gt;   loop10  24.50  25.60  26.96  26.50  27.80    36.9   100</span></a>
+<a class="sourceLine" id="cb944-24" data-line-number="24"><span class="co">#&gt;  loop100 770.00 784.00 839.50 795.00 805.00 5,160.0   100</span></a>
+<a class="sourceLine" id="cb944-25" data-line-number="25"><span class="co">#&gt;    vec10   6.28   6.59   8.02   6.91   7.66    91.0   100</span></a>
+<a class="sourceLine" id="cb944-26" data-line-number="26"><span class="co">#&gt;   vec100  47.60  48.90  50.66  49.80  51.50    66.4   100</span></a></code></pre></div>
 <p>Modifying an object in a loop, e.g., <code>x[i] &lt;- y</code>, can also create a copy, depending on the class of <code>x</code>. <a href="#modification">Modification in place</a> discusses this issue in more depth and gives you some tools to determine when you’re making copies.</p>
 </div>
 <div id="byte-code" class="section level2">
@@ -1496,9 +1496,9 @@ it than the naive <code>sum(x * w)</code>?</p></li>
 <a class="sourceLine" id="cb945-16" data-line-number="16">)</a>
 <a class="sourceLine" id="cb945-17" data-line-number="17"><span class="co">#&gt; Unit: microseconds</span></a>
 <a class="sourceLine" id="cb945-18" data-line-number="18"><span class="co">#&gt;                   expr  min   lq  mean median   uq      max neval</span></a>
-<a class="sourceLine" id="cb945-19" data-line-number="19"><span class="co">#&gt;    lapply2(x, is.null) 1.76 1.81 48.49   1.89 2.08 4,630.00   100</span></a>
-<a class="sourceLine" id="cb945-20" data-line-number="20"><span class="co">#&gt;  lapply2_c(x, is.null) 1.76 1.82  2.22   1.92 2.15    15.80   100</span></a>
-<a class="sourceLine" id="cb945-21" data-line-number="21"><span class="co">#&gt;     lapply(x, is.null) 2.27 2.42  2.84   2.56 2.89     9.28   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb945-19" data-line-number="19"><span class="co">#&gt;    lapply2(x, is.null) 2.52 2.61 57.19   2.69 3.00 5,440.00   100</span></a>
+<a class="sourceLine" id="cb945-20" data-line-number="20"><span class="co">#&gt;  lapply2_c(x, is.null) 2.52 2.57  2.91   2.79 3.08     8.18   100</span></a>
+<a class="sourceLine" id="cb945-21" data-line-number="21"><span class="co">#&gt;     lapply(x, is.null) 3.22 3.33  3.80   3.57 4.00    12.70   100</span></a></code></pre></div>
 <p>Byte code compilation really helps here, but in most cases you’re more likely to get a 5-10% improvement. All base R functions are byte code compiled by default.</p>
 </div>
 <div id="t-test" class="section level2">
@@ -1512,19 +1512,19 @@ it than the naive <code>sum(x * w)</code>?</p></li>
 <p>For data in this form, there are two ways to use <code>t.test()</code>. We can either use the formula interface or provide two vectors, one for each group. Timing reveals that the formula interface is considerably slower.</p>
 <div class="sourceCode" id="cb947"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb947-1" data-line-number="1"><span class="kw">system.time</span>(<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>m) <span class="kw">t.test</span>(X[i, ] <span class="op">~</span><span class="st"> </span>grp)<span class="op">$</span>statistic)</a>
 <a class="sourceLine" id="cb947-2" data-line-number="2"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb947-3" data-line-number="3"><span class="co">#&gt;       1       0       1</span></a>
+<a class="sourceLine" id="cb947-3" data-line-number="3"><span class="co">#&gt;    1.02    0.00    1.02</span></a>
 <a class="sourceLine" id="cb947-4" data-line-number="4"><span class="kw">system.time</span>(</a>
 <a class="sourceLine" id="cb947-5" data-line-number="5">  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>m) <span class="kw">t.test</span>(X[i, grp <span class="op">==</span><span class="st"> </span><span class="dv">1</span>], X[i, grp <span class="op">==</span><span class="st"> </span><span class="dv">2</span>])<span class="op">$</span>statistic</a>
 <a class="sourceLine" id="cb947-6" data-line-number="6">)</a>
 <a class="sourceLine" id="cb947-7" data-line-number="7"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb947-8" data-line-number="8"><span class="co">#&gt;   0.272   0.000   0.270</span></a></code></pre></div>
+<a class="sourceLine" id="cb947-8" data-line-number="8"><span class="co">#&gt;   0.304   0.000   0.302</span></a></code></pre></div>
 <p>Of course, a for loop computes, but doesn’t save the values. We’ll use <code>apply()</code> to do that. This adds a little overhead:</p>
 <div class="sourceCode" id="cb948"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb948-1" data-line-number="1">compT &lt;-<span class="st"> </span><span class="cf">function</span>(x, grp){</a>
 <a class="sourceLine" id="cb948-2" data-line-number="2">  <span class="kw">t.test</span>(x[grp <span class="op">==</span><span class="st"> </span><span class="dv">1</span>], x[grp <span class="op">==</span><span class="st"> </span><span class="dv">2</span>])<span class="op">$</span>statistic</a>
 <a class="sourceLine" id="cb948-3" data-line-number="3">}</a>
 <a class="sourceLine" id="cb948-4" data-line-number="4"><span class="kw">system.time</span>(t1 &lt;-<span class="st"> </span><span class="kw">apply</span>(X, <span class="dv">1</span>, compT, <span class="dt">grp =</span> grp))</a>
 <a class="sourceLine" id="cb948-5" data-line-number="5"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb948-6" data-line-number="6"><span class="co">#&gt;   0.280   0.000   0.282</span></a></code></pre></div>
+<a class="sourceLine" id="cb948-6" data-line-number="6"><span class="co">#&gt;   0.324   0.000   0.324</span></a></code></pre></div>
 <p>How can we make this faster? First, we could try doing less work. If you look at the source code of <code>stats:::t.test.default()</code>, you’ll see that it does a lot more than just compute the t-statistic. It also computes the p-value and formats the output for printing. We can try to make our code faster by stripping out those pieces.</p>
 <div class="sourceCode" id="cb949"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb949-1" data-line-number="1">my_t &lt;-<span class="st"> </span><span class="cf">function</span>(x, grp) {</a>
 <a class="sourceLine" id="cb949-2" data-line-number="2">  t_stat &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
@@ -1543,7 +1543,7 @@ it than the naive <code>sum(x * w)</code>?</p></li>
 <a class="sourceLine" id="cb949-15" data-line-number="15">}</a>
 <a class="sourceLine" id="cb949-16" data-line-number="16"><span class="kw">system.time</span>(t2 &lt;-<span class="st"> </span><span class="kw">apply</span>(X, <span class="dv">1</span>, my_t, <span class="dt">grp =</span> grp))</a>
 <a class="sourceLine" id="cb949-17" data-line-number="17"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb949-18" data-line-number="18"><span class="co">#&gt;   0.032   0.000   0.032</span></a>
+<a class="sourceLine" id="cb949-18" data-line-number="18"><span class="co">#&gt;   0.036   0.000   0.036</span></a>
 <a class="sourceLine" id="cb949-19" data-line-number="19"><span class="kw">stopifnot</span>(<span class="kw">all.equal</span>(t1, t2))</a></code></pre></div>
 <p>This gives us about a 6x speed improvement.</p>
 <p>Now that we have a fairly simple function, we can make it faster still by vectorising it. Instead of looping over the array outside the function, we will modify <code>t_stat()</code> to work with a matrix of values. Thus, <code>mean()</code> becomes <code>rowMeans()</code>, <code>length()</code> becomes <code>ncol()</code>, and <code>sum()</code> becomes <code>rowSums()</code>. The rest of the code stays the same.</p>
@@ -1564,7 +1564,7 @@ it than the naive <code>sum(x * w)</code>?</p></li>
 <a class="sourceLine" id="cb950-15" data-line-number="15">}</a>
 <a class="sourceLine" id="cb950-16" data-line-number="16"><span class="kw">system.time</span>(t3 &lt;-<span class="st"> </span><span class="kw">rowtstat</span>(X, grp))</a>
 <a class="sourceLine" id="cb950-17" data-line-number="17"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb950-18" data-line-number="18"><span class="co">#&gt;   0.016   0.000   0.014</span></a>
+<a class="sourceLine" id="cb950-18" data-line-number="18"><span class="co">#&gt;   0.016   0.000   0.017</span></a>
 <a class="sourceLine" id="cb950-19" data-line-number="19"><span class="kw">stopifnot</span>(<span class="kw">all.equal</span>(t1, t3))</a></code></pre></div>
 <p>That’s much faster! It’s at least 40x faster than our previous effort, and around 1000x faster than where we started.</p>
 <p>Finally, we could try byte code compilation. Here we’ll need to use <code>microbenchmark()</code> instead of <code>system.time()</code> in order to get enough accuracy to see a difference:</p>
@@ -1576,9 +1576,9 @@ it than the naive <code>sum(x * w)</code>?</p></li>
 <a class="sourceLine" id="cb951-6" data-line-number="6">  <span class="dt">unit =</span> <span class="st">&quot;ms&quot;</span></a>
 <a class="sourceLine" id="cb951-7" data-line-number="7">)</a>
 <a class="sourceLine" id="cb951-8" data-line-number="8"><span class="co">#&gt; Unit: milliseconds</span></a>
-<a class="sourceLine" id="cb951-9" data-line-number="9"><span class="co">#&gt;                 expr   min    lq  mean median    uq   max neval</span></a>
-<a class="sourceLine" id="cb951-10" data-line-number="10"><span class="co">#&gt;     rowtstat(X, grp) 0.570 0.581 0.727  0.849 0.860 0.903   100</span></a>
-<a class="sourceLine" id="cb951-11" data-line-number="11"><span class="co">#&gt;  rowtstat_bc(X, grp) 0.566 0.580 0.723  0.590 0.861 3.840   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb951-9" data-line-number="9"><span class="co">#&gt;                 expr   min    lq  mean median   uq  max neval</span></a>
+<a class="sourceLine" id="cb951-10" data-line-number="10"><span class="co">#&gt;     rowtstat(X, grp) 0.653 0.760 0.924  0.949 1.06 1.32   100</span></a>
+<a class="sourceLine" id="cb951-11" data-line-number="11"><span class="co">#&gt;  rowtstat_bc(X, grp) 0.653 0.742 0.917  0.870 1.03 5.04   100</span></a></code></pre></div>
 <p>In this example, byte code compilation doesn’t help at all.</p>
 </div>
 <div id="parallelise" class="section level2">

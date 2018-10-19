@@ -1170,7 +1170,7 @@ to remind yourself what environment <code>new.env()</code> will inherit from.)</
 <a class="sourceLine" id="cb811-2" data-line-number="2">x</a>
 <a class="sourceLine" id="cb811-3" data-line-number="3"><span class="co">#&gt; &lt;quosure&gt;</span></a>
 <a class="sourceLine" id="cb811-4" data-line-number="4"><span class="co">#&gt;   expr: ^x + y</span></a>
-<a class="sourceLine" id="cb811-5" data-line-number="5"><span class="co">#&gt;   env:  0x5acb2e8</span></a></code></pre></div>
+<a class="sourceLine" id="cb811-5" data-line-number="5"><span class="co">#&gt;   env:  0x59dce30</span></a></code></pre></div>
 <p>If you need to turn a quosure into text for output to the console you can use <code>quo_name()</code>, <code>quo_label()</code>, or <code>quo_text()</code>. <code>quo_name()</code> and <code>quo_label()</code> are guaranteed to be short; <code>quo_text()</code> may span multiple lines.</p>
 <div class="sourceCode" id="cb812"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb812-1" data-line-number="1">y &lt;-<span class="st"> </span><span class="kw">quo</span>(<span class="kw">long_function_name</span>(</a>
 <a class="sourceLine" id="cb812-2" data-line-number="2">  <span class="dt">argument_1 =</span> long_argument_value,</a>
@@ -1193,7 +1193,7 @@ to remind yourself what environment <code>new.env()</code> will inherit from.)</
 <a class="sourceLine" id="cb813-3" data-line-number="3"><span class="co">#&gt; [1] 11</span></a></code></pre></div>
 <p>And you can extract its components with the <code>quo_get_</code> helpers:</p>
 <div class="sourceCode" id="cb814"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb814-1" data-line-number="1"><span class="kw">quo_get_env</span>(x)</a>
-<a class="sourceLine" id="cb814-2" data-line-number="2"><span class="co">#&gt; &lt;environment: 0x600d050&gt;</span></a>
+<a class="sourceLine" id="cb814-2" data-line-number="2"><span class="co">#&gt; &lt;environment: 0x5f1f7f8&gt;</span></a>
 <a class="sourceLine" id="cb814-3" data-line-number="3"><span class="kw">quo_get_expr</span>(x)</a>
 <a class="sourceLine" id="cb814-4" data-line-number="4"><span class="co">#&gt; x + y</span></a></code></pre></div>
 <p>For this simple case, <code>eval_tidy()</code> is basically a wrapper around <code>eval_bare()</code>. In the next section, you’ll learn about the <code>data</code> argument which makes <code>eval_tidy()</code> particularly powerful.</p>
@@ -1260,19 +1260,19 @@ unquoting. For example, instead of this quosure:</p>
 <a class="sourceLine" id="cb820-2" data-line-number="2">q1</a>
 <a class="sourceLine" id="cb820-3" data-line-number="3"><span class="co">#&gt; &lt;quosure&gt;</span></a>
 <a class="sourceLine" id="cb820-4" data-line-number="4"><span class="co">#&gt;   expr: ^x</span></a>
-<a class="sourceLine" id="cb820-5" data-line-number="5"><span class="co">#&gt;   env:  0x42a8f90</span></a>
+<a class="sourceLine" id="cb820-5" data-line-number="5"><span class="co">#&gt;   env:  0x4228018</span></a>
 <a class="sourceLine" id="cb820-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb820-7" data-line-number="7">q2 &lt;-<span class="st"> </span><span class="kw">new_quosure</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span><span class="op">!!</span>q1), <span class="kw">env</span>(<span class="dt">x =</span> <span class="dv">10</span>))</a>
 <a class="sourceLine" id="cb820-8" data-line-number="8">q2</a>
 <a class="sourceLine" id="cb820-9" data-line-number="9"><span class="co">#&gt; &lt;quosure&gt;</span></a>
 <a class="sourceLine" id="cb820-10" data-line-number="10"><span class="co">#&gt;   expr: ^x + (^x)</span></a>
-<a class="sourceLine" id="cb820-11" data-line-number="11"><span class="co">#&gt;   env:  0x350f8a0</span></a>
+<a class="sourceLine" id="cb820-11" data-line-number="11"><span class="co">#&gt;   env:  0x3427b08</span></a>
 <a class="sourceLine" id="cb820-12" data-line-number="12"></a>
 <a class="sourceLine" id="cb820-13" data-line-number="13">q3 &lt;-<span class="st"> </span><span class="kw">new_quosure</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span><span class="op">!!</span>q2), <span class="kw">env</span>(<span class="dt">x =</span> <span class="dv">100</span>))</a>
 <a class="sourceLine" id="cb820-14" data-line-number="14">q3</a>
 <a class="sourceLine" id="cb820-15" data-line-number="15"><span class="co">#&gt; &lt;quosure&gt;</span></a>
 <a class="sourceLine" id="cb820-16" data-line-number="16"><span class="co">#&gt;   expr: ^x + (^x + (^x))</span></a>
-<a class="sourceLine" id="cb820-17" data-line-number="17"><span class="co">#&gt;   env:  0x56d5e98</span></a></code></pre></div></li>
+<a class="sourceLine" id="cb820-17" data-line-number="17"><span class="co">#&gt;   env:  0x55e8268</span></a></code></pre></div></li>
 <li><p>Write a function <code>enenv()</code> that captures the environment associated
 with an argument.</p></li>
 </ol>
@@ -1520,11 +1520,11 @@ a safe version of <code>threshold_x()</code>.</p></li>
 <a class="sourceLine" id="cb839-10" data-line-number="10">  <span class="kw">eval_tidy</span>(q1, mtcars)</a>
 <a class="sourceLine" id="cb839-11" data-line-number="11">)</a>
 <a class="sourceLine" id="cb839-12" data-line-number="12"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb839-13" data-line-number="13"><span class="co">#&gt;                   expr  min   lq mean median   uq   max neval</span></a>
-<a class="sourceLine" id="cb839-14" data-line-number="14"><span class="co">#&gt;               runif(n) 36.3 37.2 40.1   37.9 39.1  86.7   100</span></a>
-<a class="sourceLine" id="cb839-15" data-line-number="15"><span class="co">#&gt;      eval_bare(x1, e1) 36.8 38.4 41.0   39.2 40.4  89.7   100</span></a>
-<a class="sourceLine" id="cb839-16" data-line-number="16"><span class="co">#&gt;          eval_tidy(q1) 39.0 40.3 42.0   41.2 42.1  54.1   100</span></a>
-<a class="sourceLine" id="cb839-17" data-line-number="17"><span class="co">#&gt;  eval_tidy(q1, mtcars) 42.0 43.7 50.7   44.6 46.5 495.8   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb839-13" data-line-number="13"><span class="co">#&gt;                   expr  min   lq mean median   uq    max neval</span></a>
+<a class="sourceLine" id="cb839-14" data-line-number="14"><span class="co">#&gt;               runif(n) 22.5 24.2 37.9   40.9 49.1   65.6   100</span></a>
+<a class="sourceLine" id="cb839-15" data-line-number="15"><span class="co">#&gt;      eval_bare(x1, e1) 23.2 25.3 47.1   46.9 51.0  694.3   100</span></a>
+<a class="sourceLine" id="cb839-16" data-line-number="16"><span class="co">#&gt;          eval_tidy(q1) 25.2 27.5 41.8   30.1 55.6   77.5   100</span></a>
+<a class="sourceLine" id="cb839-17" data-line-number="17"><span class="co">#&gt;  eval_tidy(q1, mtcars) 28.1 31.9 58.3   36.8 60.9 1219.8   100</span></a></code></pre></div>
 <p>However, most of the overhead is due to setting up the data mask so if you need to evaluate code repeatedly, it’s a good idea to define the data mask once then reuse it. This considerably reduces the overhead, with a small change in behaviour: if the code being evaluated creates objects in the “current” environment, those objects will persist across calls.</p>
 <div class="sourceCode" id="cb840"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb840-1" data-line-number="1">d_mtcars &lt;-<span class="st"> </span><span class="kw">as_data_mask</span>(mtcars)</a>
 <a class="sourceLine" id="cb840-2" data-line-number="2"></a>
@@ -1534,10 +1534,10 @@ a safe version of <code>threshold_x()</code>.</p></li>
 <a class="sourceLine" id="cb840-6" data-line-number="6">  <span class="kw">eval_tidy</span>(q1, d_mtcars)</a>
 <a class="sourceLine" id="cb840-7" data-line-number="7">)</a>
 <a class="sourceLine" id="cb840-8" data-line-number="8"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb840-9" data-line-number="9"><span class="co">#&gt;                     expr   min    lq  mean median    uq  max neval</span></a>
-<a class="sourceLine" id="cb840-10" data-line-number="10"><span class="co">#&gt;     as_data_mask(mtcars)  3.77  5.45  6.68   5.95  6.58 53.5   100</span></a>
-<a class="sourceLine" id="cb840-11" data-line-number="11"><span class="co">#&gt;    eval_tidy(q1, mtcars) 42.02 43.86 45.97  44.90 46.14 70.2   100</span></a>
-<a class="sourceLine" id="cb840-12" data-line-number="12"><span class="co">#&gt;  eval_tidy(q1, d_mtcars) 38.09 39.71 41.20  40.19 41.36 62.6   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb840-9" data-line-number="9"><span class="co">#&gt;                     expr   min    lq  mean median   uq  max neval</span></a>
+<a class="sourceLine" id="cb840-10" data-line-number="10"><span class="co">#&gt;     as_data_mask(mtcars)  4.71  5.38  8.48   6.47 10.3 76.8   100</span></a>
+<a class="sourceLine" id="cb840-11" data-line-number="11"><span class="co">#&gt;    eval_tidy(q1, mtcars) 27.93 29.24 42.59  30.50 57.9 86.2   100</span></a>
+<a class="sourceLine" id="cb840-12" data-line-number="12"><span class="co">#&gt;  eval_tidy(q1, d_mtcars) 24.57 25.35 37.97  26.23 51.9 93.5   100</span></a></code></pre></div>
 </div>
 <div id="exercises-62" class="section level3">
 <h3><span class="header-section-number">19.4.7</span> Exercises</h3>

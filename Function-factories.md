@@ -104,14 +104,14 @@ square
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <environment: 0x1177b70>
+#> <environment: 0x9eeea0>
 
 cube
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <bytecode: 0x1f1cad8>
-#> <environment: 0x1cf9d00>
+#> <bytecode: 0x1ba90e8>
+#> <environment: 0xe57da0>
 ```
 
 Printing manufactured functions is not revealing because the bodies are identical; it's the contents of the enclosing environment that's important. We can get a little more insight by using `rlang::env_print()`. That shows us that we have two different environments (each of which was originally an execution environment of `power1()`). The environments have the same parent, which is the enclosing environment of `power1()`, the global environment.
@@ -119,13 +119,13 @@ Printing manufactured functions is not revealing because the bodies are identica
 
 ```r
 env_print(square)
-#> <environment: 0x1177b70>
+#> <environment: 0x9eeea0>
 #> parent: <environment: global>
 #> bindings:
 #>  * exp: <dbl>
 
 env_print(cube)
-#> <environment: 0x1cf9d00>
+#> <environment: 0xe57da0>
 #> parent: <environment: global>
 #> bindings:
 #>  * exp: <dbl>
@@ -484,12 +484,12 @@ plot_dev <- function(ext, dpi = 96) {
 
 plot_dev("pdf")
 #> function(filename, ...) grDevices::pdf(file = filename, ...)
-#> <bytecode: 0x17f0578>
-#> <environment: 0x58c39a8>
+#> <bytecode: 0x3713f30>
+#> <environment: 0x54533c8>
 plot_dev("png")
 #> function(...) grDevices::png(..., res = dpi, units = "in")
-#> <bytecode: 0x348eb30>
-#> <environment: 0xedc690>
+#> <bytecode: 0x3335fb0>
+#> <environment: 0x13c72d0>
 ```
 
 ### Exercises
@@ -787,8 +787,8 @@ funs$root
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <bytecode: 0x1f1cad8>
-#> <environment: 0x14f3420>
+#> <bytecode: 0x1ba90e8>
+#> <environment: 0x18ed040>
 ```
 
 This idea extends in a straightforward way if your function factory takes two (replace `map()` with `map2()`) or more (replace with `pmap()`) arguments.
@@ -872,7 +872,7 @@ funs$root
 #> {
 #>     x^0.5
 #> }
-#> <environment: 0x139f900>
+#> <environment: 0x33155f8>
 ```
 
 As well as `0.5` appearing directly in the body, note that the environment of the function is the global environment, not an execution environment of `power3()`.

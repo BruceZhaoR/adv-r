@@ -1431,7 +1431,7 @@ We do this in order to specially handle unknown symbols and functions.</p></li>
 <a class="sourceLine" id="cb894-13" data-line-number="13"><span class="co">#&gt;     contents &lt;- paste(..., collapse = &quot;, &quot;)</span></a>
 <a class="sourceLine" id="cb894-14" data-line-number="14"><span class="co">#&gt;     paste0(&quot;\\mathrm{foo}(&quot;, contents, &quot;)&quot;)</span></a>
 <a class="sourceLine" id="cb894-15" data-line-number="15"><span class="co">#&gt; }</span></a>
-<a class="sourceLine" id="cb894-16" data-line-number="16"><span class="co">#&gt; &lt;environment: 0x1bc8cc0&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb894-16" data-line-number="16"><span class="co">#&gt; &lt;environment: 0x2fa3fd8&gt;</span></a></code></pre></div>
 <p>And again we update <code>latex_env()</code>:</p>
 <div class="sourceCode" id="cb895"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb895-1" data-line-number="1">latex_env &lt;-<span class="st"> </span><span class="cf">function</span>(expr) {</a>
 <a class="sourceLine" id="cb895-2" data-line-number="2">  calls &lt;-<span class="st"> </span><span class="kw">all_calls</span>(expr)</a>

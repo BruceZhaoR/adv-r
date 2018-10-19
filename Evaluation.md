@@ -444,7 +444,7 @@ x <- new_quosure(expr(x + y), env(x = 1, y = 10))
 x
 #> <quosure>
 #> expr: ^x + y
-#> env:  0x5015de0
+#> env:  0x5b87df0
 ```
 
 
@@ -482,7 +482,7 @@ And you can extract its components with the `quo_get_` helpers:
 
 ```r
 quo_get_env(x)
-#> <environment: 0x53f65d0>
+#> <environment: 0x5f78f30>
 quo_get_expr(x)
 #> x + y
 ```
@@ -579,19 +579,19 @@ Almost all quoting functions should capture quosures rather than expressions, an
     q1
     #> <quosure>
     #> expr: ^x
-    #> env:  0x35c86d8
+    #> env:  0x414b6c8
     
     q2 <- new_quosure(expr(x + !!q1), env(x = 10))
     q2
     #> <quosure>
     #> expr: ^x + (^x)
-    #> env:  0x27d12f8
+    #> env:  0x33565f8
     
     q3 <- new_quosure(expr(x + !!q2), env(x = 100))
     q3
     #> <quosure>
     #> expr: ^x + (^x + (^x))
-    #> env:  0x4c4bbc8
+    #> env:  0x57bdf20
     ```
 
 1.  Write a function `enenv()` that captures the environment associated
@@ -939,10 +939,10 @@ microbenchmark::microbenchmark(
 )
 #> Unit: microseconds
 #>                   expr  min   lq mean median   uq   max neval
-#>               runif(n) 37.2 38.0 39.7   38.6 39.3  82.6   100
-#>      eval_bare(x1, e1) 37.9 39.0 40.7   39.2 39.6  69.7   100
-#>          eval_tidy(q1) 39.7 40.6 42.5   41.0 42.4  76.7   100
-#>  eval_tidy(q1, mtcars) 42.0 43.4 49.9   44.1 45.3 505.1   100
+#>               runif(n) 20.0 20.3 21.2   20.9 22.0  25.1   100
+#>      eval_bare(x1, e1) 20.6 21.4 22.2   21.7 22.9  46.1   100
+#>          eval_tidy(q1) 22.5 23.2 23.8   23.5 24.5  25.7   100
+#>  eval_tidy(q1, mtcars) 25.0 25.8 30.7   26.2 27.4 426.5   100
 ```
 
 However, most of the overhead is due to setting up the data mask so if you need to evaluate code repeatedly, it's a good idea to define the data mask once then reuse it. This considerably reduces the overhead, with a small change in behaviour: if the code being evaluated creates objects in the "current" environment, those objects will persist across calls.
@@ -958,9 +958,9 @@ microbenchmark::microbenchmark(
 )
 #> Unit: microseconds
 #>                     expr   min    lq  mean median    uq  max neval
-#>     as_data_mask(mtcars)  3.68  4.19  5.26    4.5  5.26 54.3   100
-#>    eval_tidy(q1, mtcars) 42.04 43.44 45.33   44.1 45.33 73.8   100
-#>  eval_tidy(q1, d_mtcars) 39.20 40.20 42.32   40.7 42.16 66.5   100
+#>     as_data_mask(mtcars)  4.17  4.43  4.95   4.57  4.75 33.3   100
+#>    eval_tidy(q1, mtcars) 25.19 25.76 26.31  26.07 26.35 42.4   100
+#>  eval_tidy(q1, d_mtcars) 22.08 22.31 23.02  22.80 23.08 46.7   100
 ```
 
 ### Exercises

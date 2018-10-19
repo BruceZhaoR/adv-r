@@ -893,7 +893,7 @@ Because of lazy evaluation, you don't need to worry about unnecessary computatio
     force
     #> function (x) 
     #> x
-    #> <bytecode: 0x249fcc8>
+    #> <bytecode: 0xce3c88>
     #> <environment: namespace:base>
     ```
     
@@ -942,7 +942,7 @@ Because of lazy evaluation, you don't need to worry about unnecessary computatio
       print(x)
     }
     show_time()
-    #> [1] "2018-10-19 03:48:11 UTC"
+    #> [1] "2018-10-19 05:33:06 UTC"
     ```
 
 1.  How many arguments are required when calling `library()`?

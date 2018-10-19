@@ -929,7 +929,7 @@ negate1 <- function(f) {
 }
 negate1(is.null)
 #> function(...) !f(...)
-#> <environment: 0x4e4b508>
+#> <environment: 0x3715dd0>
 
 negate2 <- function(f) {
   f <- enexpr(f)

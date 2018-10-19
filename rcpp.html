@@ -936,7 +936,7 @@ more resources to help you learn Rcpp and C++.</p></li>
 <a class="sourceLine" id="cb956-6" data-line-number="6"><span class="co"># add works like a regular R function</span></a>
 <a class="sourceLine" id="cb956-7" data-line-number="7">add</a>
 <a class="sourceLine" id="cb956-8" data-line-number="8"><span class="co">#&gt; function (x, y, z) </span></a>
-<a class="sourceLine" id="cb956-9" data-line-number="9"><span class="co">#&gt; .Call(&lt;pointer: 0x7f228e6772d0&gt;, x, y, z)</span></a>
+<a class="sourceLine" id="cb956-9" data-line-number="9"><span class="co">#&gt; .Call(&lt;pointer: 0x7f38edf562d0&gt;, x, y, z)</span></a>
 <a class="sourceLine" id="cb956-10" data-line-number="10"><span class="kw">add</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb956-11" data-line-number="11"><span class="co">#&gt; [1] 6</span></a></code></pre></div>
 <p>When you run this code, Rcpp will compile the C++ code and construct an R function that connects to the compiled C++ function. We’re going to use this simple interface to learn how to write C++. C++ is a large language, and there’s no way to cover it all in just one chapter. Instead, you’ll get the basics so that you can start writing useful functions to address bottlenecks in your R code.</p>
@@ -1052,10 +1052,10 @@ source of bugs when converting R functions to C++.</p></li>
 <a class="sourceLine" id="cb963-5" data-line-number="5">  <span class="kw">sumR</span>(x)</a>
 <a class="sourceLine" id="cb963-6" data-line-number="6">)</a>
 <a class="sourceLine" id="cb963-7" data-line-number="7"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb963-8" data-line-number="8"><span class="co">#&gt;     expr   min    lq  mean median    uq      max neval</span></a>
-<a class="sourceLine" id="cb963-9" data-line-number="9"><span class="co">#&gt;   sum(x)  1.31  1.36  1.53   1.41  1.59     4.74   100</span></a>
-<a class="sourceLine" id="cb963-10" data-line-number="10"><span class="co">#&gt;  sumC(x)  2.69  3.02 13.61   3.24  3.62   989.00   100</span></a>
-<a class="sourceLine" id="cb963-11" data-line-number="11"><span class="co">#&gt;  sumR(x) 44.60 44.80 89.58  45.10 45.60 4,400.00   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb963-8" data-line-number="8"><span class="co">#&gt;     expr   min    lq   mean median    uq       max neval</span></a>
+<a class="sourceLine" id="cb963-9" data-line-number="9"><span class="co">#&gt;   sum(x)  2.15  2.24   2.76   2.28  2.67      8.41   100</span></a>
+<a class="sourceLine" id="cb963-10" data-line-number="10"><span class="co">#&gt;  sumC(x)  3.34  4.08  40.73   5.01  6.52  1,350.00   100</span></a>
+<a class="sourceLine" id="cb963-11" data-line-number="11"><span class="co">#&gt;  sumR(x) 57.30 58.10 626.25  59.00 61.80 56,700.00   100</span></a></code></pre></div>
 </div>
 <div id="vector-input-vector-output" class="section level3">
 <h3><span class="header-section-number">24.2.4</span> Vector input, vector output</h3>
@@ -1480,13 +1480,13 @@ these functions have slightly more complicated behaviour.</p></li>
 <a class="sourceLine" id="cb995-8" data-line-number="8">  <span class="kw">any_naR</span>(x2), <span class="kw">any_naC</span>(x2)</a>
 <a class="sourceLine" id="cb995-9" data-line-number="9">)</a>
 <a class="sourceLine" id="cb995-10" data-line-number="10"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb995-11" data-line-number="11"><span class="co">#&gt;         expr    min     lq   mean median     uq      max neval</span></a>
-<a class="sourceLine" id="cb995-12" data-line-number="12"><span class="co">#&gt;  any_naR(x0) 398.00 550.00 642.19 556.00 566.00 5,070.00   100</span></a>
-<a class="sourceLine" id="cb995-13" data-line-number="13"><span class="co">#&gt;  any_naC(x0) 433.00 435.00 445.25 445.00 448.00   509.00   100</span></a>
-<a class="sourceLine" id="cb995-14" data-line-number="14"><span class="co">#&gt;  any_naR(x1) 410.00 547.00 546.52 555.00 561.00   596.00   100</span></a>
-<a class="sourceLine" id="cb995-15" data-line-number="15"><span class="co">#&gt;  any_naC(x1) 432.00 435.00 463.64 438.00 448.00 1,590.00   100</span></a>
-<a class="sourceLine" id="cb995-16" data-line-number="16"><span class="co">#&gt;  any_naR(x2) 305.00 435.00 447.13 443.00 454.00 1,780.00   100</span></a>
-<a class="sourceLine" id="cb995-17" data-line-number="17"><span class="co">#&gt;  any_naC(x2)   1.87   2.95   3.66   3.46   4.18     8.57   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb995-11" data-line-number="11"><span class="co">#&gt;         expr    min     lq   mean median     uq   max neval</span></a>
+<a class="sourceLine" id="cb995-12" data-line-number="12"><span class="co">#&gt;  any_naR(x0) 439.00 589.00 730.69 606.00 627.00 7,000   100</span></a>
+<a class="sourceLine" id="cb995-13" data-line-number="13"><span class="co">#&gt;  any_naC(x0) 505.00 506.00 511.90 509.00 512.00   554   100</span></a>
+<a class="sourceLine" id="cb995-14" data-line-number="14"><span class="co">#&gt;  any_naR(x1) 442.00 589.00 606.48 605.00 626.00   766   100</span></a>
+<a class="sourceLine" id="cb995-15" data-line-number="15"><span class="co">#&gt;  any_naC(x1) 505.00 506.00 522.70 507.00 514.00 1,770   100</span></a>
+<a class="sourceLine" id="cb995-16" data-line-number="16"><span class="co">#&gt;  any_naR(x2) 438.00 481.00 523.25 500.00 522.00 1,940   100</span></a>
+<a class="sourceLine" id="cb995-17" data-line-number="17"><span class="co">#&gt;  any_naC(x2)   2.26   3.76   5.09   4.42   5.39    14   100</span></a></code></pre></div>
 </div>
 <div id="vector-views" class="section level3">
 <h3><span class="header-section-number">24.5.3</span> Vector views</h3>
@@ -1754,8 +1754,8 @@ into a scalar</p></li>
 <a class="sourceLine" id="cb1004-4" data-line-number="4">)</a>
 <a class="sourceLine" id="cb1004-5" data-line-number="5"><span class="co">#&gt; Unit: microseconds</span></a>
 <a class="sourceLine" id="cb1004-6" data-line-number="6"><span class="co">#&gt;                expr   min    lq mean median    uq    max neval</span></a>
-<a class="sourceLine" id="cb1004-7" data-line-number="7"><span class="co">#&gt;    gibbs_r(100, 10) 5,330 5,410 6201  5,450 5,580 17,100   100</span></a>
-<a class="sourceLine" id="cb1004-8" data-line-number="8"><span class="co">#&gt;  gibbs_cpp(100, 10)   265   293  319    300   315  1,610   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb1004-7" data-line-number="7"><span class="co">#&gt;    gibbs_r(100, 10) 6,410 6,510 7753  6,600 6,870 54,100   100</span></a>
+<a class="sourceLine" id="cb1004-8" data-line-number="8"><span class="co">#&gt;  gibbs_cpp(100, 10)   309   332  665    347   359 31,200   100</span></a></code></pre></div>
 </div>
 <div id="r-vectorisation-vs.c-vectorisation" class="section level3">
 <h3><span class="header-section-number">24.7.2</span> R vectorisation vs. C++ vectorisation</h3>
@@ -1828,10 +1828,10 @@ into a scalar</p></li>
 <a class="sourceLine" id="cb1010-4" data-line-number="4">  <span class="dt">vacc3 =</span> <span class="kw">vacc3</span>(age, female, ily)</a>
 <a class="sourceLine" id="cb1010-5" data-line-number="5">)</a>
 <a class="sourceLine" id="cb1010-6" data-line-number="6"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb1010-7" data-line-number="7"><span class="co">#&gt;   expr   min      lq   mean  median    uq   max neval</span></a>
-<a class="sourceLine" id="cb1010-8" data-line-number="8"><span class="co">#&gt;  vacc1 1,730 1,840.0 2061.7 1,900.0 1,980 4,900   100</span></a>
-<a class="sourceLine" id="cb1010-9" data-line-number="9"><span class="co">#&gt;  vacc2   126   138.0  230.0   148.0   165 7,600   100</span></a>
-<a class="sourceLine" id="cb1010-10" data-line-number="10"><span class="co">#&gt;  vacc3    31    33.3   50.2    35.4    40 1,400   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb1010-7" data-line-number="7"><span class="co">#&gt;   expr     min      lq   mean  median      uq   max neval</span></a>
+<a class="sourceLine" id="cb1010-8" data-line-number="8"><span class="co">#&gt;  vacc1 2,460.0 2,490.0 2644.7 2,510.0 2,560.0 5,140   100</span></a>
+<a class="sourceLine" id="cb1010-9" data-line-number="9"><span class="co">#&gt;  vacc2   109.0   117.0  218.3   133.0   168.0 7,300   100</span></a>
+<a class="sourceLine" id="cb1010-10" data-line-number="10"><span class="co">#&gt;  vacc3    31.1    32.8   51.2    38.3    43.6 1,320   100</span></a></code></pre></div>
 <p>Not surprisingly, our original approach with loops is very slow. Vectorising in R gives a huge speedup, and we can eke out even more performance (~10x) with the C++ loop. I was a little surprised that the C++ was so much faster, but it is because the R version has to create 11 vectors to store intermediate results, where the C++ code only needs to create 1.</p>
 </div>
 </div>

@@ -431,12 +431,12 @@ str(cnd)
 #>   .. ..$ : language base::force(expr)
 #>   ..$ parents: int [1:6] 0 1 2 3 4 1
 #>   ..$ envs   :List of 6
-#>   .. ..$ : chr "0x2a67200"
-#>   .. ..$ : chr "0x2a673f8"
-#>   .. ..$ : chr "0x2a67a88"
-#>   .. ..$ : chr "0x2a67e08"
-#>   .. ..$ : chr "0x2a643c8"
-#>   .. ..$ : chr "0x2a64710"
+#>   .. ..$ : chr "0x37ef410"
+#>   .. ..$ : chr "0x37ef608"
+#>   .. ..$ : chr "0x37efc98"
+#>   .. ..$ : chr "0x37ece28"
+#>   .. ..$ : chr "0x37ed608"
+#>   .. ..$ : chr "0x37edcd0"
 #>   ..- attr(*, "class")= chr "rlang_trace"
 #>  $ parent : NULL
 #>  - attr(*, "class")= chr [1:3] "rlang_error" "error" "condition"
@@ -1057,12 +1057,12 @@ str(safety(abort("Error!")))
 #>   .. .. ..$ : language base:::doTryCatch(return(expr), name, parentenv, h..
 #>   .. ..$ parents: int [1:6] 0 0 2 3 4 5
 #>   .. ..$ envs   :List of 6
-#>   .. .. ..$ : chr "0x4a48f90"
-#>   .. .. ..$ : chr "0x4a48e08"
-#>   .. .. ..$ : chr "0x4bb3610"
-#>   .. .. ..$ : chr "0x4bb6d40"
-#>   .. .. ..$ : chr "0x4bb69f8"
-#>   .. .. ..$ : chr "0x4bb66b0"
+#>   .. .. ..$ : chr "0x56ffc60"
+#>   .. .. ..$ : chr "0x56ffad8"
+#>   .. .. ..$ : chr "0x58a1308"
+#>   .. .. ..$ : chr "0x58a0c08"
+#>   .. .. ..$ : chr "0x58a0888"
+#>   .. .. ..$ : chr "0x58a0540"
 #>   .. ..- attr(*, "class")= chr "rlang_trace"
 #>   ..$ parent : NULL
 #>   ..- attr(*, "class")= chr [1:3] "rlang_error" "error" "condition"

@@ -977,7 +977,7 @@ group generics, and double dispatch.</p></li>
 <a class="sourceLine" id="cb512-5" data-line-number="5"><span class="kw">s3_get_method</span>(weighted.mean.Date)</a>
 <a class="sourceLine" id="cb512-6" data-line-number="6"><span class="co">#&gt; function (x, w, ...) </span></a>
 <a class="sourceLine" id="cb512-7" data-line-number="7"><span class="co">#&gt; structure(weighted.mean(unclass(x), w, ...), class = &quot;Date&quot;)</span></a>
-<a class="sourceLine" id="cb512-8" data-line-number="8"><span class="co">#&gt; &lt;bytecode: 0x714cb10&gt;</span></a>
+<a class="sourceLine" id="cb512-8" data-line-number="8"><span class="co">#&gt; &lt;bytecode: 0x6c9b430&gt;</span></a>
 <a class="sourceLine" id="cb512-9" data-line-number="9"><span class="co">#&gt; &lt;environment: namespace:stats&gt;</span></a></code></pre></div>
 <div id="exercises-36" class="section level3">
 <h3><span class="header-section-number">13.2.1</span> Exercises</h3>
@@ -1238,7 +1238,7 @@ constructor? Does it need a validator? What would a helper look like?</p></li>
 <div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb526-1" data-line-number="1">mean</a>
 <a class="sourceLine" id="cb526-2" data-line-number="2"><span class="co">#&gt; function (x, ...) </span></a>
 <a class="sourceLine" id="cb526-3" data-line-number="3"><span class="co">#&gt; UseMethod(&quot;mean&quot;)</span></a>
-<a class="sourceLine" id="cb526-4" data-line-number="4"><span class="co">#&gt; &lt;bytecode: 0x2217140&gt;</span></a>
+<a class="sourceLine" id="cb526-4" data-line-number="4"><span class="co">#&gt; &lt;bytecode: 0x1d6fcc8&gt;</span></a>
 <a class="sourceLine" id="cb526-5" data-line-number="5"><span class="co">#&gt; &lt;environment: namespace:base&gt;</span></a></code></pre></div>
 <p>Creating your own generic is similarly simple:</p>
 <div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb527-1" data-line-number="1">my_new_generic &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>

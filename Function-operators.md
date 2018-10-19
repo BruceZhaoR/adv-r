@@ -248,12 +248,12 @@ fast_function <- memoise::memoise(slow_function)
 system.time(print(fast_function(1)))
 #> [1] 6.01
 #>    user  system elapsed 
-#>   0.004   0.000   1.002
+#>       0       0       1
 
 system.time(print(fast_function(1)))
 #> [1] 6.01
 #>    user  system elapsed 
-#>   0.012   0.000   0.015
+#>   0.016   0.000   0.015
 ```
 
 A relatively realistic use of memoisation is computing the Fibonacci series. The Fibonacci series is defined recursively: the first two values are defined by convention, $f(0) = 0$, $f(n) = 1$, and then $f(n) = f(n - 1) + f(n - 2)$ (for any positive integer). A naive version is slow because, for example, `fib(10)` computes `fib(9)` and `fib(8)`, and `fib(9)` computes `fib(8)` and `fib(7)`, and so on. 
@@ -266,10 +266,10 @@ fib <- function(n) {
 }
 system.time(fib(23))
 #>    user  system elapsed 
-#>    0.04    0.00    0.04
+#>   0.044   0.000   0.045
 system.time(fib(24))
 #>    user  system elapsed 
-#>   0.060   0.004   0.064
+#>   0.068   0.008   0.077
 ```
 
 Memoising `fib()` makes the implementation much faster because each value is computed only once:
@@ -291,7 +291,7 @@ And future calls can rely on previous computations:
 ```r
 system.time(fib2(24))
 #>    user  system elapsed 
-#>       0       0       0
+#>   0.000   0.004   0.001
 ```
 
 This is an example of __dynamic programming__, where a complex problem can be broken down into many overlapping subproblems, and remembering the results of a subproblem considerably improves performance. 
