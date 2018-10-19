@@ -16,9 +16,7 @@ bookdown::gitbook:
       - ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.pdf", "PDF"]
       - ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.epub", "EPUB3"]
     search: yes
-    sharing:
-      weibo: yes
-      twitter: yes
+    sharing: no
   css: adv-r.css
 
 bookdown::epub_book:
