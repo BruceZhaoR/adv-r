@@ -435,18 +435,15 @@ Let's make a simple list and draw it as a train:
 ```r
 x <- list(1:3, "a", 4:6)
 ```
-
-\begin{center}\includegraphics[width=4.62in]{diagrams/subsetting/train} \end{center}
+<img src="diagrams/subsetting/train.png" width="444" style="display: block; margin: auto;" />
 
 When extracting a single element, you have two options: you can create a smaller train, or  you can extract the contents of a carriage. This is the difference between `[` and `[[`:
 
-
-\begin{center}\includegraphics[width=4.62in]{diagrams/subsetting/train-single} \end{center}
+<img src="diagrams/subsetting/train-single.png" width="444" style="display: block; margin: auto;" />
 
 When extracting multiple elements (or zero!), you have to make a smaller train:
 
-
-\begin{center}\includegraphics[width=4.62in]{diagrams/subsetting/train-multiple} \end{center}
+<img src="diagrams/subsetting/train-multiple.png" width="444" style="display: block; margin: auto;" />
 
 Because it can return only a single item, you must use `[[` with either a single positive integer or a string. If you use a vector with `[[`, it will subset recursively:
 

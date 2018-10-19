@@ -35,9 +35,9 @@ library(purrr)
 #> Attaching package: 'purrr'
 #> The following objects are masked from 'package:rlang':
 #> 
-#>     %@%, %||%, as_function, flatten, flatten_chr,
-#>     flatten_dbl, flatten_int, flatten_lgl, invoke,
-#>     list_along, modify, prepend, rep_along, splice
+#>     %@%, %||%, as_function, flatten, flatten_chr, flatten_dbl,
+#>     flatten_int, flatten_lgl, invoke, list_along, modify, prepend,
+#>     rep_along, splice
 ```
 
 ## HTML {#html}
@@ -367,8 +367,8 @@ with_html(
   )
 )
 #> <HTML> <body><h1 id='first'>A heading</h1><p>Some text
-#> &amp;<b>some bold text.</b></p><img src='myimg.png'
-#> width='100' height='100' /></body>
+#> &amp;<b>some bold text.</b></p><img src='myimg.png' width='100'
+#> height='100' /></body>
 ```
 
 If you want to access the R function overridden by an HTML tag with the same name inside `with_html()`, you can use the full `package::function` specification.
@@ -734,7 +734,7 @@ unknown_op("foo")
 #>     contents <- paste(..., collapse = ", ")
 #>     paste0("\\mathrm{foo}(", contents, ")")
 #> }
-#> <environment: 0x21aca28>
+#> <environment: 0x23e45b8>
 ```
 
 And again we update `latex_env()`:

@@ -104,8 +104,7 @@ f01 <- function(x) {
 }
 ```
 
-
-\begin{center}\includegraphics[width=1.62in]{diagrams/functions/first-class} \end{center}
+<img src="diagrams/functions/first-class.png" width="156" style="display: block; margin: auto;" />
 
 \index{functions!anonymous} 
 \index{anoynmous functions}
@@ -161,8 +160,7 @@ the values associated with the names.
 
 I'll draw functions as in the following diagram. The black dot on the left is the environment. The two blocks to the right are the function arguments. I won't draw the body, because it's usually large, and doesn't help you understand the "shape" of the function.
 
-
-\begin{center}\includegraphics[width=1.23in]{diagrams/functions/components} \end{center}
+<img src="diagrams/functions/components.png" width="118" style="display: block; margin: auto;" />
 
 While the formals and body are specified explicitly when you create a function, the environment is specified implicitly, based on _where_ you defined the function. The function environment always exists, but it is only printed when the function isn't defined in the global environment.
 
@@ -895,7 +893,7 @@ Because of lazy evaluation, you don't need to worry about unnecessary computatio
     force
     #> function (x) 
     #> x
-    #> <bytecode: 0x1d8ccc8>
+    #> <bytecode: 0x249fcc8>
     #> <environment: namespace:base>
     ```
     
@@ -944,7 +942,7 @@ Because of lazy evaluation, you don't need to worry about unnecessary computatio
       print(x)
     }
     show_time()
-    #> [1] "2018-10-18 13:13:33 UTC"
+    #> [1] "2018-10-19 03:48:11 UTC"
     ```
 
 1.  How many arguments are required when calling `library()`?
@@ -1083,9 +1081,7 @@ Using `...` comes with two downsides:
     plot(1:10, col = "red", pch = 20, xlab = "x", col.lab = "blue")
     ```
     
-    
-    
-    \begin{center}\includegraphics[width=0.7\linewidth]{Functions_files/figure-latex/unnamed-chunk-63-1} \end{center}
+    <img src="Functions_files/figure-epub3/unnamed-chunk-63-1.png" width="70%" style="display: block; margin: auto;" />
     
 1.  Why does `plot(1:10, col = "red")` only colour the points, not the axes 
     or labels? Read the source code of `plot.default()` to find out.
@@ -1411,8 +1407,8 @@ Knowing the function name of a non-prefix function allows you to override its be
   }
 }
 replicate(50, (1 + 2))
-#>  [1] 3 3 3 3 3 3 3 3 3 3 4 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3
-#> [33] 3 3 3 3 4 3 4 3 3 3 3 4 3 3 3 3 3 3
+#>  [1] 3 3 3 3 3 3 3 3 3 3 4 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3
+#> [36] 3 4 3 4 3 3 3 3 4 3 3 3 3 3 3
 rm("(")
 ```
 

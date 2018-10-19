@@ -104,14 +104,14 @@ square
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <environment: 0x1c0bb80>
+#> <environment: 0x1177b70>
 
 cube
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <bytecode: 0x2882038>
-#> <environment: 0x1bc2c50>
+#> <bytecode: 0x1f1cad8>
+#> <environment: 0x1cf9d00>
 ```
 
 Printing manufactured functions is not revealing because the bodies are identical; it's the contents of the enclosing environment that's important. We can get a little more insight by using `rlang::env_print()`. That shows us that we have two different environments (each of which was originally an execution environment of `power1()`). The environments have the same parent, which is the enclosing environment of `power1()`, the global environment.
@@ -119,16 +119,16 @@ Printing manufactured functions is not revealing because the bodies are identica
 
 ```r
 env_print(square)
-#> <environment: 0x1c0bb80>
-#>   parent: <environment: global>
-#>   bindings:
-#>    * exp: <dbl>
+#> <environment: 0x1177b70>
+#> parent: <environment: global>
+#> bindings:
+#>  * exp: <dbl>
 
 env_print(cube)
-#> <environment: 0x1bc2c50>
-#>   parent: <environment: global>
-#>   bindings:
-#>    * exp: <dbl>
+#> <environment: 0x1cf9d00>
+#> parent: <environment: global>
+#> bindings:
+#>  * exp: <dbl>
 ```
 
 `env_print()` shows us that both environments have a binding to `exp`, but we want to see its value[^env_print]. That's easily done with `env_get()`:
@@ -153,8 +153,7 @@ This is what makes manufactured functions behave differently from one another: n
 
 We can also show these relationships in a diagram:
 
-
-\begin{center}\includegraphics[width=3.69in]{diagrams/function-factories/power-full} \end{center}
+<img src="diagrams/function-factories/power-full.png" width="354" style="display: block; margin: auto;" />
 
 There's a lot going on this diagram and some of the details aren't that important. We can simplify considerably by using two conventions:
 
@@ -163,8 +162,7 @@ There's a lot going on this diagram and some of the details aren't that importan
 * Any environment without an explicit parent inherits from the global 
   environment.
 
-
-\begin{center}\includegraphics[width=3.44in]{diagrams/function-factories/power-simple} \end{center}
+<img src="diagrams/function-factories/power-simple.png" width="330" style="display: block; margin: auto;" />
 
 This view, which focuses on the environments, doesn't show any direct link between `cube()` and `square()`. That's because the link is the through the body of the function, which is identical for both, but is not shown in this diagram.
 
@@ -176,8 +174,7 @@ square(10)
 #> [1] 100
 ```
 
-
-\begin{center}\includegraphics[width=3.44in]{diagrams/function-factories/power-exec} \end{center}
+<img src="diagrams/function-factories/power-exec.png" width="330" style="display: block; margin: auto;" />
 
 
 ### Stateful functions {#stateful-funs}
@@ -212,8 +209,7 @@ counter_one <- new_counter()
 counter_two <- new_counter()
 ```
 
-
-\begin{center}\includegraphics[width=3.69in]{diagrams/function-factories/counter-1} \end{center}
+<img src="diagrams/function-factories/counter-1.png" width="354" style="display: block; margin: auto;" />
 
 When the manufactured function is run `i <<- i + 1` will modify `i` in its enclosing environment. Because manufactured functions have independent enclosing environments, they have independent counts:
 
@@ -227,8 +223,7 @@ counter_two()
 #> [1] 1
 ```
 
-
-\begin{center}\includegraphics[width=3.69in]{diagrams/function-factories/counter-2} \end{center}
+<img src="diagrams/function-factories/counter-2.png" width="354" style="display: block; margin: auto;" />
 
 Stateful functions are best used in moderation. As soon as your function starts managing the state of multiple variables, it's better to switch to R6, the topic of Chapter \@ref(r6).
 
@@ -378,8 +373,7 @@ core + scale_y_continuous(label = number_format(scale = 1e-3, suffix = " K"))
 core + scale_y_continuous(label = scientific_format())
 ```
 
-
-\includegraphics[width=0.25\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-22-1} \includegraphics[width=0.25\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-22-2} \includegraphics[width=0.25\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-22-3} \includegraphics[width=0.25\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-22-4} 
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-22-1.png" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-2.png" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-3.png" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-4.png" width="25%" />
 
 ### Histogram bins
 
@@ -401,9 +395,7 @@ ggplot(df, aes(x)) +
   labs(x = NULL)
 ```
 
-
-
-\begin{center}\includegraphics[width=0.9\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-23-1} \end{center}
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-23-1.png" width="90%" style="display: block; margin: auto;" />
 
 Here each facet has the same number of observations, but the variability is very different. It would be nice if we could request that the binwidths vary so we get approximately the same number of observations in each bin. One way to do that is with a function factory that inputs the desired number of bins (`n`), and outputs a function that takes a numeric vector and returns a binwidth:
 
@@ -423,9 +415,7 @@ ggplot(df, aes(x)) +
   labs(x = NULL)
 ```
 
-
-
-\begin{center}\includegraphics[width=0.9\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-24-1} \end{center}
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" />
 
 We could use this same pattern to wrap around the base R functions that automatically find the "optimal"[^optimal] binwidth, `nclass.Sturges()`, `nclass.scott()`, and `nclass.FD()`:
 
@@ -450,9 +440,7 @@ ggplot(df, aes(x)) +
   labs(x = NULL)
 ```
 
-
-
-\begin{center}\includegraphics[width=0.9\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-25-1} \end{center}
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-25-1.png" width="90%" style="display: block; margin: auto;" />
 
 [^optimal]: ggplot2 doesn't expose these functions directly because I don't think the defintion of optimality needed to make the problem mathematically tractable is a good match to the actual needs of data exploration.
 
@@ -496,12 +484,12 @@ plot_dev <- function(ext, dpi = 96) {
 
 plot_dev("pdf")
 #> function(filename, ...) grDevices::pdf(file = filename, ...)
-#> <bytecode: 0xc0bf68>
-#> <environment: 0x51c71b0>
+#> <bytecode: 0x17f0578>
+#> <environment: 0x58c39a8>
 plot_dev("png")
 #> function(...) grDevices::png(..., res = dpi, units = "in")
-#> <bytecode: 0x338a090>
-#> <environment: 0xca8968>
+#> <bytecode: 0x348eb30>
+#> <environment: 0xedc690>
 ```
 
 ### Exercises
@@ -563,8 +551,7 @@ ggplot(data.frame(x = c(0.01, 1)), aes(x)) +
   scale_colour_viridis_c(limits = c(0, 1.5))
 ```
 
-
-\includegraphics[width=0.5\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-28-1} \includegraphics[width=0.5\linewidth]{Function-factories_files/figure-latex/unnamed-chunk-28-2} 
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-28-1.png" width="50%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-28-2.png" width="50%" />
 
 In general, this allows you to use a Box-Cox transformation with any function that accepts a unary transformation function: you don't have to worry about that function providing `...` to pass along additional arguments. I also think that the partitioning of `lambda` and `x` into two different function arguments is natural since `lambda` plays quite a different role than `x`. 
 
@@ -800,8 +787,8 @@ funs$root
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <bytecode: 0x2882038>
-#> <environment: 0x3e9d080>
+#> <bytecode: 0x1f1cad8>
+#> <environment: 0x14f3420>
 ```
 
 This idea extends in a straightforward way if your function factory takes two (replace `map()` with `map2()`) or more (replace with `pmap()`) arguments.
@@ -885,7 +872,7 @@ funs$root
 #> {
 #>     x^0.5
 #> }
-#> <environment: 0x1f29190>
+#> <environment: 0x139f900>
 ```
 
 As well as `0.5` appearing directly in the body, note that the environment of the function is the global environment, not an execution environment of `power3()`.

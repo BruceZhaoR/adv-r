@@ -50,8 +50,7 @@ devtools::install_github("r-lib/lobstr")
 
 Quoted expressions are also called abstract syntax trees (ASTs) because the structure of code is hierarchical and can be naturally represented as a tree. To make that more obvious we're going to introduce some graphical conventions, illustrated with the very simple call `f(x, "y", 1)`. \index{abstract syntax tree}
 
-
-\begin{center}\includegraphics[width=2.36in]{diagrams/expressions/simple} \end{center}
+<img src="diagrams/expressions/simple.png" width="227" style="display: block; margin: auto;" />
   
 *   Function __calls__ define the hierarchy of the tree. Calls are shown
     with an orange square. The first child (`f`) is the function that gets 
@@ -116,8 +115,7 @@ y <- x * 10
 
 And they have this AST:
 
-
-\begin{center}\includegraphics[width=2.36in]{diagrams/expressions/prefix} \end{center}
+<img src="diagrams/expressions/prefix.png" width="227" style="display: block; margin: auto;" />
 
 
 ```r
@@ -248,8 +246,7 @@ Infix functions introduce ambiguity in a way that prefix functions do not. The p
 
 [^ambig]: These two sources of ambiguity do not exist without infix operators, which can be considered an advantage of purely prefix and postfix languages. It's interesting to compare a simple arithmetic operation in Lisp (prefix) and Forth (postfix). In Lisp you'd write `(+ (+ 1 2) 3))`; this avoids ambiguity by requiring parentheses everywhere. In Forth, you'd write `1 2 + 3 +`; this doesn't require any parentheses, but does require more thought when reading.
 
-
-\begin{center}\includegraphics[width=4.33in]{diagrams/expressions/ambig-order} \end{center}
+<img src="diagrams/expressions/ambig-order.png" width="416" style="display: block; margin: auto;" />
 
 Programming languages use conventions called __operator precedence__ to resolve this ambiguity. We can use `ast()` to see what R does: 
 
@@ -613,10 +610,10 @@ microbenchmark::microbenchmark(
 )
 #> Unit: nanoseconds
 #>       expr  min   lq mean median   uq   max neval
-#>    l1[[1]]  149  160  290    166  222 10486   100
-#>  l1[[100]]  146  165  204    169  233   582   100
-#>    l2[[1]] 1486 1662 1898   1780 1918  9889   100
-#>  l2[[100]] 1597 1822 2024   1918 2048  8759   100
+#>    l1[[1]]  142  154  285    164  182 10134   100
+#>  l1[[100]]  144  156  191    167  195   555   100
+#>    l2[[1]] 1375 1651 1910   1748 1930  8161   100
+#>  l2[[100]] 1599 1784 2034   1959 2113  8320   100
 ```
 
 ### Expression objects

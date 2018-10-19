@@ -200,13 +200,13 @@ f <- function() g()
 g <- function() h()
 h <- function() eval(expr(lobstr::cst()), caller_env(2))
 f()
-#> x
-#> \-global::f()
-#>   +-global::g()
-#>   | \-global::h()
-#>   |   \-base::eval(expr(lobstr::cst()), caller_env(2))
-#>   |     \-base::eval(expr(lobstr::cst()), caller_env(2))
-#>   \-lobstr::cst()
+#> █
+#> └─global::f()
+#>   ├─global::g()
+#>   │ └─global::h()
+#>   │   └─base::eval(expr(lobstr::cst()), caller_env(2))
+#>   │     └─base::eval(expr(lobstr::cst()), caller_env(2))
+#>   └─lobstr::cst()
 ```
 
 ### Base R
@@ -398,20 +398,20 @@ Each of the `expr()` functions that you learned about in the previous chapter ha
     ```r
     quo(x + y + z)
     #> <quosure>
-    #>   expr: ^x + y + z
-    #>   env:  global
+    #> expr: ^x + y + z
+    #> env:  global
     quos(x + 1, y + 2)
     #> <listof<quosures>>
     #> 
     #> [[1]]
     #> <quosure>
-    #>   expr: ^x + 1
-    #>   env:  global
+    #> expr: ^x + 1
+    #> env:  global
     #> 
     #> [[2]]
     #> <quosure>
-    #>   expr: ^y + 2
-    #>   env:  global
+    #> expr: ^y + 2
+    #> env:  global
     ```
   
 *   Use `enquo()` and `enquos()` to capture user-supplied expressions.
@@ -421,8 +421,8 @@ Each of the `expr()` functions that you learned about in the previous chapter ha
     foo <- function(x) enquo(x)
     foo(a + b)
     #> <quosure>
-    #>   expr: ^a + b
-    #>   env:  global
+    #> expr: ^a + b
+    #> env:  global
     ```
 
 Note how quosures are printed: each quosure starts with `^`. This is a signal that you're looking at something special, and is useful if you unquote a quosure inside another quosure. In the console, each quosure gets a different colour to help remind you that it has a different environment attached to it.
@@ -432,8 +432,8 @@ Note how quosures are printed: each quosure starts with `^`. This is a signal th
 q2 <- quo(x + !!x)
 q2
 #> <quosure>
-#>   expr: ^x + 0
-#>   env:  global
+#> expr: ^x + 0
+#> env:  global
 ```
 
 Finally, you can use `new_quosure()` to create a quosure from its components: an expression and an environment.
@@ -443,8 +443,8 @@ Finally, you can use `new_quosure()` to create a quosure from its components: an
 x <- new_quosure(expr(x + y), env(x = 1, y = 10))
 x
 #> <quosure>
-#>   expr: ^x + y
-#>   env:  0x52d7c78
+#> expr: ^x + y
+#> env:  0x5015de0
 ```
 
 
@@ -482,7 +482,7 @@ And you can extract its components with the `quo_get_` helpers:
 
 ```r
 quo_get_env(x)
-#> <environment: 0x5ae04c0>
+#> <environment: 0x53f65d0>
 quo_get_expr(x)
 #> x + y
 ```
@@ -555,8 +555,8 @@ Almost all quoting functions should capture quosures rather than expressions, an
     base <- 2
     quo(log(x, base = base))
     #> <quosure>
-    #>   expr: ^log(x, base = base)
-    #>   env:  global
+    #> expr: ^log(x, base = base)
+    #> env:  global
     ```
     
     You could create this self-contained expression:
@@ -578,20 +578,20 @@ Almost all quoting functions should capture quosures rather than expressions, an
     q1 <- new_quosure(expr(x), env(x = 1))
     q1
     #> <quosure>
-    #>   expr: ^x
-    #>   env:  0x21b2918
+    #> expr: ^x
+    #> env:  0x35c86d8
     
     q2 <- new_quosure(expr(x + !!q1), env(x = 10))
     q2
     #> <quosure>
-    #>   expr: ^x + (^x)
-    #>   env:  0x27976b0
+    #> expr: ^x + (^x)
+    #> env:  0x27d12f8
     
     q3 <- new_quosure(expr(x + !!q2), env(x = 100))
     q3
     #> <quosure>
-    #>   expr: ^x + (^x + (^x))
-    #>   env:  0x4f32c60
+    #> expr: ^x + (^x + (^x))
+    #> env:  0x4c4bbc8
     ```
 
 1.  Write a function `enenv()` that captures the environment associated
@@ -939,10 +939,10 @@ microbenchmark::microbenchmark(
 )
 #> Unit: microseconds
 #>                   expr  min   lq mean median   uq   max neval
-#>               runif(n) 36.1 37.3 38.9   37.8 38.7  74.0   100
-#>      eval_bare(x1, e1) 36.9 38.4 40.6   39.1 39.9  79.3   100
-#>          eval_tidy(q1) 39.0 40.4 42.6   41.2 42.3  81.2   100
-#>  eval_tidy(q1, mtcars) 42.2 43.9 51.1   44.6 45.7 538.0   100
+#>               runif(n) 37.2 38.0 39.7   38.6 39.3  82.6   100
+#>      eval_bare(x1, e1) 37.9 39.0 40.7   39.2 39.6  69.7   100
+#>          eval_tidy(q1) 39.7 40.6 42.5   41.0 42.4  76.7   100
+#>  eval_tidy(q1, mtcars) 42.0 43.4 49.9   44.1 45.3 505.1   100
 ```
 
 However, most of the overhead is due to setting up the data mask so if you need to evaluate code repeatedly, it's a good idea to define the data mask once then reuse it. This considerably reduces the overhead, with a small change in behaviour: if the code being evaluated creates objects in the "current" environment, those objects will persist across calls.
@@ -957,10 +957,10 @@ microbenchmark::microbenchmark(
   eval_tidy(q1, d_mtcars)
 )
 #> Unit: microseconds
-#>                     expr   min   lq  mean median    uq  max neval
-#>     as_data_mask(mtcars)  4.38  5.3  6.72   5.93  6.56 50.4   100
-#>    eval_tidy(q1, mtcars) 42.67 43.9 46.44  44.96 46.18 71.2   100
-#>  eval_tidy(q1, d_mtcars) 38.29 39.8 41.77  40.62 41.34 73.6   100
+#>                     expr   min    lq  mean median    uq  max neval
+#>     as_data_mask(mtcars)  3.68  4.19  5.26    4.5  5.26 54.3   100
+#>    eval_tidy(q1, mtcars) 42.04 43.44 45.33   44.1 45.33 73.8   100
+#>  eval_tidy(q1, d_mtcars) 39.20 40.20 42.32   40.7 42.16 66.5   100
 ```
 
 ### Exercises
