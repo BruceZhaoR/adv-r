@@ -19,7 +19,11 @@ branches:
   - master
 
 before_install:
-  - tlmgr update --self
+  - tlmgr update --self --all
+  - tlmgr install collection-fontsrecommended
+  - tlmgr install babel-greek
+  - tlmgr install greek-fontenc
+  - tlmgr install cbfonts
   - tlmgr install unicode-math
   - tlmgr install filehook
   - tlmgr install lm-math
