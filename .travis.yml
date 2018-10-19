@@ -1,5 +1,5 @@
 language: R
-sudo: required
+sudo: false
 cache:
   packages: yes
   directories:
@@ -34,7 +34,7 @@ before_install:
   - tlmgr install babel-greek
   - tlmgr install booktabs
   - tlmgr install greek-fontenc
-  - tlmgr install cbfonts
+#  - tlmgr install cbfonts
   - tlmgr install unicode-math
   - tlmgr install filehook
   - tlmgr install lm-math
