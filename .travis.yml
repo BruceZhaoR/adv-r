@@ -25,7 +25,7 @@ branches:
 
 before_install:
   - tlmgr update --self --all
-  - tlmgr install collection-fontsrecommended
+#  - tlmgr install collection-fontsrecommended
   - tlmgr install amsfonts
   - tlmgr install a4wide
   - tlmgr install ae
@@ -34,7 +34,6 @@ before_install:
   - tlmgr install babel-greek
   - tlmgr install booktabs
   - tlmgr install greek-fontenc
-#  - tlmgr install cbfonts
   - tlmgr install unicode-math
   - tlmgr install filehook
   - tlmgr install lm-math

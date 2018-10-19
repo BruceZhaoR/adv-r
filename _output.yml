@@ -4,11 +4,21 @@ bookdown::gitbook:
       collapse: section
       before: |
         <li><strong><a href="./">Advanced R</a></strong></li>
+      after: |
+        <li><a href="https://github.com/rstudio/bookdown">
+        Proudly published with bookdown</a></li>
+        <li><a href="https://github.com/hadley/adv-r">Forked from Hadley</a></li>
+      scroll_highlight: yes
     edit:
       link: https://github.com/hadley/adv-r/edit/master/%s
       text: "Edit"
-    download: ["pdf","epub"]
-    sharing: no
+    download:
+      - ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.pdf", "PDF"]
+      - ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.epub", "EPUB3"]
+    search: yes
+    sharing:
+      weibo: yes
+      twitter: yes
   css: adv-r.css
 
 bookdown::epub_book:

@@ -1,6 +1,6 @@
 **forked from hadley/adv-r** [![Build Status](https://travis-ci.org/BruceZhaoR/adv-r.svg?branch=master)](https://travis-ci.org/BruceZhaoR/adv-r)
 
-You can download **pdf** and **epub** via <https://brucezhaor.github.io/adv-r/index.html>, which you can read in iBooks.
+You can download [pdf](https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.pdf) and [epub](https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.epub), which you can read in iBooks.Or you can read online via :<https://brucezhaor.github.io/adv-r/index.html>
 
 # Advanced R programming
 
