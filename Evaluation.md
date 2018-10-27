@@ -32,7 +32,7 @@ Environments play a very important role in evaluation, so make sure you're famil
 library(rlang)
 ```
 
-## Evaluation basics
+## Evaluation basics {#eval}
 
 In the previous chapter, we briefly mentioned `eval()`. Here, however, we're going to start with `rlang::eval_bare()` which is the purest evocation of the idea of evaluation. The first argument, `expr`, is an expression to evaluate. This will usually be either a symbol or expression:
 

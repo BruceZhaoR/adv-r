@@ -13,18 +13,16 @@ y <- x * 10
 #>   object 'x' not found
 ```
 
-It would be nice if we could capture the intent of the code, without executing the code. In other words, how can we separate our description of the action from performing it? One way is to use `rlang::expr()`: \indexc{expr()}
+It would be nice if we could capture the intent of the code, without executing the code. In other words, how can we separate our description of the action from performing it? One way is to use `rlang::expr()`: 
 
 
 ```r
-z <- expr(y <- x * 10)
+z <- rlang::expr(y <- x * 10)
 z
 #> y <- x * 10
 ```
 
-`expr()` returns a quoted __expression__: the R code that captures our intent.
-
-In this chapter, you'll learn about the structure of those expressions, which will also help you understand how R executes code. Later, we'll learn about `eval()` which allows you to take such an expression and perform, or __evaluate__, it:
+`expr()` returns a quoted __expression__: the R code that captures our intent. We'll com back to discussion `expr()` in depth in Section \@ref(quotation). In this chapter, you'll learn about the underlying data structure, which will also help you understand how R executes code. Later, in Section \@ref(eval), you'll learn about `eval()` which allows you to take such an expression and perform, or __evaluate__, it:
 
 
 ```r
@@ -38,17 +36,20 @@ y
 
 ### Prerequisites {-} 
 
-Make sure you've installed rlang and lobstr from GitHub:
+You'll need the rlang package to capture and compute on expressions, and the lobstr package to visualise them.
 
 
 ```r
-devtools::install_github("r-lib/rlang")
-devtools::install_github("r-lib/lobstr")
+library(rlang)
+
+# devtools::install_github("r-lib/lobstr")
+library(lobstr)
 ```
 
 ## Abstract syntax trees
+\index{abstract syntax tree}
 
-Quoted expressions are also called abstract syntax trees (ASTs) because the structure of code is hierarchical and can be naturally represented as a tree. To make that more obvious we're going to introduce some graphical conventions, illustrated with the very simple call `f(x, "y", 1)`. \index{abstract syntax tree}
+Quoted expressions are also called __abstract syntax trees__ (ASTs) because the structure of code is hierarchical and can be naturally represented as a tree. To make that more obvious we're going to introduce some graphical conventions, illustrated with the very simple call `f(x, "y", 1)`. 
 
 <img src="diagrams/expressions/simple.png" width="227" style="display: block; margin: auto;" />
   
@@ -57,9 +58,10 @@ Quoted expressions are also called abstract syntax trees (ASTs) because the stru
     called; the second and subsequent children (`x`, `"y"`, and `1`) are the 
     arguments. 
   
-    __NB__: Unlike many tree diagrams the order of the children is important: 
+    __NB__: Unlike many trees the order of the children is important: 
     `f(x, 1)` is not the same as `f(1, x)`.
-    
+
+
 *   The leaves of the tree are either __symbols__, like `f` and `x`, or 
     __constants__ like `1` or `"y"`. Symbols have a purple border and rounded 
     corners. Constants, which are atomic vectors of length one, have black 
@@ -77,9 +79,9 @@ lobstr::ast(f(x, "y", 1))
 #> └─1
 ```
 
-Calls get an orange square, symbols are bold and purple, and strings are surrounded by quote marks. (The formatting is not currently shown in the book, but you can see it if you run the code yourself.)
+Calls get an orange square, symbols are bold and purple, and strings are surrounded by quote marks. (The colours are not shown in the book, but you'll see it if you run the code yourself.)
 
-`ast()` supports "unquoting" with `!!` (pronounced bang-bang). We'll talk about unquoting in detail in the next chapter; for now note that it's useful if you've already used `expr()` to capture the expression.
+`ast()` supports "unquoting" with `!!` (pronounced bang-bang). We'll talk about unquoting in detail in the next chapter; for now note that you'll need it if you want to see the structure of an expression that you've already captured with `expr()`.
 
 
 ```r
@@ -105,7 +107,7 @@ Every call in R can be written in tree form, even if it doesn't look like it at 
 
 [^postfix]: Some programming languages use __postfix__ calls where the name of the function comes last. If you ever used an old HP calculator, you might have fallen in love with reverse Polish notation, postfix notation for algebra. There is also a family of "stack"-based programming languages descending from Forth which takes this idea as far as it might possibly go.
 
-In R, any infix call can be converted to a prefix call if you escape the function name with backticks. That means that these two lines of code are equivalent:
+As discussed in Section \@ref(prefix-form), any call can be converted to prefix form. That means that these two lines of code are equivalent:
 
 
 ```r
@@ -127,7 +129,7 @@ lobstr::ast(y <- x * 10)
 #>   └─10
 ```
 
-You might remember that code like `names(x) <- y` ends up calling the `names<-` function. That is not reflected in the parse tree because the translation needs to happen later, due to the complexities of nested assignments like `names(x)[2] <- "z"`.
+You might remember that code like `names(x) <- y` ends up calling the `names<-` function. That is not reflected in the parse tree because the translation needs to happen at run-time, not parse-time, due to the complexities of nested assignments like `names(x)[2] <- "z"`.
 
 
 ```r
@@ -138,9 +140,7 @@ lobstr::ast(names(x) <- y)
 #> └─y
 ```
 
-### Special forms
-
-R has a small number of other syntactical constructs that don't look like either prefix or infix function calls. These are called __special forms__ and include `function`, the control flow operators (`if`, `for`, `while`, `repeat`), and parentheses (`{`, `(`, `[[`, and `[`). These can also be written in prefix form, and hence appear in the same way in the AST:
+It's informative to look at the ASTs for other special forms
 
 
 ```r
@@ -166,7 +166,7 @@ lobstr::ast(function(x, y) {
 #> └─<inline srcref>
 ```
 
-Note that functions include a node `<inline srcref>`, this contains the source reference for the function, as mentioned in [function components](#function-components).
+Note that functions include a node `<inline srcref>`, this contains the source code of the function, as described in Section \@ref(function-components).
 
 ### Function factories
 
@@ -180,7 +180,7 @@ lobstr::ast(f(a, 1))
 #> └─1
 ```
 
-But if you are using a function factory (as described in [function factories]), a function that returns another function, the first component might be another call:
+But if you are using a function factory (Chapter \@ref(function-factories)), a function that returns another function, the first component might be another call:
 
 
 ```r
@@ -222,7 +222,7 @@ lobstr::ast(mean(x = mtcars$cyl, na.rm = TRUE))
 
 ### Exercises
 
-1.  Use `ast()` and experimentation to figure out the three arguments to `if()`. 
+1.  Use `ast()` and experimentation to figure out the three arguments to `if`. 
     What would you call them? Which arguments are required and which are 
     optional? 
 
@@ -234,7 +234,7 @@ lobstr::ast(mean(x = mtcars$cyl, na.rm = TRUE))
 1.  Two arithmetic operators can be used in both prefix and infix style.
     What are they?
 
-## R's grammar
+## R's grammar {#grammar}
 
 The process by which a computer language takes a sequence of tokens (like `x`, `+`, `y`) and constructs a tree is called __parsing__, and it is governed by a set of rules known as a __grammar__. In this section, we'll use `lobstr::ast()` to explore some of the details of R's grammar. 
 
@@ -320,7 +320,7 @@ lobstr::ast(x <- y <- z)
 
 ### Whitespace
 
-R, in general, is not sensitive to white space. Most white space is not significant and is not recorded in the AST: `x+y` yields exactly the same AST as `x +        y`. This means that you're generally free to add whitespace to enhance the readability of your code. There's one major exception:
+R, in general, is not sensitive to white space. Most white space is not significant and is not recorded in the AST (this is one reason that it's _abstract_). For example, `x+y` yields exactly the same AST as `x +        y`, and means that you're generally free to add whitespace to enhance the readability of your code. There's one major exception:
 
 
 ```r
@@ -353,27 +353,39 @@ lobstr::ast(y < -x)
 
 1.  What does `!1 + !1` return? Why?
 
-1.  Why does `x1 <- x2 <- x3 <- 0` work? There are two reasons.
+1.  Why does `x1 <- x2 <- x3 <- 0` work? Describe the two reasons.
 
-1.  Compare the ASTs `x + y %+% z` and `x ^ y %+% z`. What does that tell you 
+1.  Compare the ASTs of `x + y %+% z` and `x ^ y %+% z`. What have you learned
     about the precedence of custom infix functions?
 
 ## Data structures
 
-Now that you have a good feel for ASTs and how R's grammar helps to define them, it's time to learn about the underlying implementation. In this section you'll learn about the data structures that appear in the AST:
+Now that you have a good feel for ASTs and how R's grammar helps to define them, it's time to learn about the underlying implementation. In this section you'll learn more about the data structures that appear in the AST:
 
 * Constants and symbols form the leaves of the tree.
 * Calls form the branches of the tree.
 * Pairlists are a largely historical data structure that are now only used for 
   function arguments.
 
-### Naming conventions
+### Definitions
 
-Before we continue, a word of caution about the naming conventions used in this book. Because base R evolved organically, it does not have a set of names that are used consistently throughout all functions. Instead, we've adopted our own set of conventions, and used them consistently throughout the book and in rlang. You will need to remember some translations when reading base R documentation. 
+Before we continue, a word of caution about definitions. this book. Because base R evolved organically, it does not have a set of definitions that are used consistently throughout the documetnation. The biggest source of confusion is the use of the term "expression" to mean two different things:
 
-The biggest difference is the use of the term "expression". We use expression to refer to the set containing constants, symbols, calls, and pairlists. In base R, "expression" is a special type that is basically equivalent to a list of what we call expressions. To avoid confusion we'll call these __expression objects__, and we'll discuss them in [expression objects]. Base R does not have an equivalent term for our "expression". The closest is "language object", which includes symbols and calls, but not constants or pairlists. 
+* The set of base types created by parsing code, i.e. constants, symbols, calls, 
+  and pairlists.
 
-But note that `typeof()` and `str()` use "language" not for language objects, but instead to mean calls. Base R uses symbol and name interchangeably; we prefer symbol because "name" has other common meanings (e.g. the name of a variable).
+* The objects created by `expression()` (and `parse()`).
+
+In this book, I adopt the convention of the _R language definition_ [@r-lang] and call the first category __expressions__, and the second category __expression objects__. In function documentation, expression can mean either. You'll need to figure out which it is by carefully inspecting the context.
+
+There are two other common sources of confusion in base R documentation:
+
+* `typeof()` and `str()` print "language" for calls, but `is.language()` returns
+  `TRUE` for calls, symbols, and expression objects.
+
+* Symbol and name are used interchangeably (i.e. `is.name()` is identical to
+  `is.symbol()`). I prefer symbol because "name" has other common meanings 
+  (e.g. the name of a variable).
 
 ### Constants
 \index{constants}
@@ -382,20 +394,22 @@ Constants occurred in the leaves of the AST. They are the simplest data structur
 
 
 ```r
-identical(expr("x"), "x")
-#> [1] TRUE
 identical(expr(TRUE), TRUE)
 #> [1] TRUE
 identical(expr(1), 1)
 #> [1] TRUE
-identical(expr(2), 2)
+identical(expr(2L), 2L)
+#> [1] TRUE
+identical(expr("x"), "x")
 #> [1] TRUE
 ```
+
+See Section \ref(scalars) for the conventions for defining these constants.
 
 ### Symbols
 \index{symbols}
 
-Symbols represent variable names. They are basically a single string stored in a special way. You can convert back and forth between symbols and the strings that represent them with `sym()` and `as_string()`:
+Symbols represent variable names. They are basically a string stored in a special way. You can convert back and forth between symbols and the strings that represent them with `rlang::sym()` and `rlang::as_string()`:
 
 
 ```r
@@ -419,12 +433,12 @@ syms(c("a", "bcd"))
 #> bcd
 ```
 
-
 The big difference between strings and symbols is what happens when you evaluate them: evaluating a string returns the string; evaluating a symbol returns the value associated with the symbol in the current environment.
 
-\index{symbol|empty} \index{missing argument}
+\index{symbol|empty} 
+\index{missing argument}
 
-There's one special symbol that needs a little extra discussion: the empty symbol which is used to represent missing arguments (not missing values!). You can make it with  `missing_arg()` (or `expr()`):
+There's one special symbol that needs a little extra discussion: the empty symbol, which is used to represent missing arguments (not missing values!). You can make it with  `missing_arg()` (or `expr()`):
 
 
 ```r
@@ -573,7 +587,7 @@ call2(expr(mean), x = expr(x), na.rm = TRUE)
 ### Pairlists
 \index{pairlists}
  
-There is one data structure we need to discuss for completeness: the pairlist. Pairlists are a remnant of R's past and have been replaced by lists almost everywhere. The only place you are likely to see pairlists in R is when working with function arguments:
+There is one data structure we need to discuss for completeness: the pairlist. Pairlists are a remnant of R's past and have been replaced by lists almost everywhere. The only place you are likely to see pairlists in R[^pairlists-c] is when working with function arguments:
 
 
 ```r
@@ -582,7 +596,7 @@ typeof(formals(f))
 #> [1] "pairlist"
 ```
 
-(If you're working in C, you'll encounter pairlists more often. For example, calls are also implemented using pairlists.)
+[^pairlists-c]: If you're working in C, you'll encounter pairlists more often. For example, calls are also implemented using pairlists.
  
 Fortunately, whenever you encounter a pairlist, you can treat it just like a regular list:
 
@@ -595,26 +609,7 @@ pl$x
 #> [1] 1
 ```
 
-However, behind the scenes pairlists are implemented using a different data structure, a linked list instead of a vector. That means that subsetting is slower with pairlists, and gets slower the further along the pairlist you index. This has limited practical impact, but it's a useful fact to know.
-
-
-```r
-l1 <- as.list(1:100)
-l2 <- as.pairlist(l1)
-
-microbenchmark::microbenchmark(
-  l1[[1]],
-  l1[[100]],
-  l2[[1]],
-  l2[[100]]
-)
-#> Unit: nanoseconds
-#>       expr  min   lq mean median   uq  max neval
-#>    l1[[1]]  161  172  242    181  211 4920   100
-#>  l1[[100]]  161  172  200    201  211  622   100
-#>    l2[[1]] 1243 1303 1356   1328 1363 1794   100
-#>  l2[[100]] 1354 1413 1500   1434 1488 4169   100
-```
+However, behind the scenes pairlists are implemented using a different data structure, a linked list instead of a vector. That means that subsetting is slower with pairlists, and gets slower the further along the pairlist you index because it's $O(n)$ rather than $O(1)$. This has little impact in practice.
 
 ### Expression objects
 \index{expression object} \indexc{expression()} \indexc{parse()} 
@@ -660,6 +655,19 @@ Conceptually, an expression object is just a list of expressions. The only diffe
     length greater than one? 
 
 1.  How is `rlang::maybe_missing()` implemented? Why does it work?
+
+1.  Describe the differences between the following calls?
+
+    
+    ```r
+    x <- 1:10
+    
+    call2(median, x, na.rm = TRUE)
+    call2(expr(median), x, na.rm = TRUE)
+    call2(median, expr(x), na.rm = TRUE)
+    call2(expr(median), expr(x), na.rm = TRUE)
+    ```
+
 
 1.  `rlang::call_standardise()` doesn't work so well for the following calls.
     Why? What makes `mean()` special?
@@ -719,8 +727,9 @@ rlang::parse_exprs(x3)
 #> a + 1
 ```
 
-(If you find yourself working with strings containing code very frequently, you should reconsider your process. Read the next chapter and consider if you can instead more safely generate expressions using quasiquotation.)
+If you find yourself working with strings containing code very frequently, you should reconsider your process. Read the Chapter \@ref(quasiquotation) and consider if you can instead more safely generate expressions using quasiquotation.
 
+::: base
 The base equivalent to `parse_exprs()` is `parse()`. It is a little harder to use because it's specialised for parsing R code stored in files. That means you need supply your string to the `text` argument, and you get back an expression object:
 
 
@@ -728,6 +737,7 @@ The base equivalent to `parse_exprs()` is `parse()`. It is a little harder to us
 parse(text = x1)[[1]]
 #> y <- x + 10
 ```
+:::
 
 The opposite of parsing is __deparsing__: you have an AST and you want a string that would generate it when parsed:
 
@@ -1016,9 +1026,6 @@ find_assign_rec <- function(x) {
 }
 
 find_assign(a <- 1)
-#> Warning: `is_lang()` is soft-deprecated as of rlang 0.2.0.
-#> Please use `is_call()` instead
-#> This warning is displayed once per session.
 #> [1] "a"
 find_assign({
   a <- 1
