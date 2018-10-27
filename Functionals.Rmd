@@ -75,7 +75,6 @@ It's not about eliminating for loops. It's about having someone else write them 
   showing you how functionals can take a simple building block and use it to
   create a set of powerful and consistent tools.
 
-
 ### Prerequisites {-}
 
 This chapter will focus on functionals provided by the purrr package. These functions have a consistent interface that makes it easier to understand the key ideas than their base equivalents, which have grown organically over many years. I'll compare and contrast base R functions as we go, and then wrap up the chapter with a discussion of base functionals that don't have purrr equivalents.
@@ -630,8 +629,7 @@ One of the most useful `walk()` variants is `walk2()` because a very common side
 knitr::include_graphics("diagrams/functionals/walk2.png")
 ```
 
-For example, imagine you have a list of data frames (which I've created here using split), and you'd like to save each one to a separate csv file. That's easy with `walk2()`:
-
+For example, imagine you have a list of data frames (which I've created here using split), and you'd like to save each one to a separate CSV file. That's easy with `walk2()`:
 
 ```{r}
 temp <- tempfile()

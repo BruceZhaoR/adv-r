@@ -1130,26 +1130,26 @@ f()
 
 While everything that happens in R is a result of a function call, not all calls look the same. Function calls come in four varieties:
 
-* In __prefix__ form, the function name comes before its arguments, like 
+* __prefix__: the function name comes before its arguments, like
   `foofy(a, b, c)`. These constitute of the majority of function calls in R.
 
-* In __infix__ form, the function name comes inbetween its arguments, like 
-  `x + y`. Infix forms are used for many mathematical operators, as well as 
+* __infix__: the function name comes in between its arguments, like
+  `x + y`. Infix forms are used for many mathematical operators, and for
   user-defined functions that begin and end with `%`.
-  
-* A __replacement__ function assigns into what looks like a prefix function, 
-  like `names(df) <- c("a", "b", "c")`.
-  
-* __Special forms__ like `[[`, `if`, and `for`, don't have a consistent 
-  structure and provide some of the most important syntax in R.
 
-While four forms exist, you only need to use one, because any call can be written in prefix form. I'll demonstrate this property, and then you'll learn about each of the forms in turn.
+* __replacement__: functions that replace values by assignment, like
+  `names(df) <- c("a", "b", "c")`. They actually look like prefix functions.
 
-### Rewriting to prefix form
+* __special__: functions like `[[`, `if`, and `for`. While they don't have a
+  consistent structure, they play important roles in R's syntax.
+
+While there are four forms, you actually only need one because any call can be written in prefix form. I'll demonstrate this property, and then you'll learn about each of the forms in turn.
+
+### Rewriting to prefix form {#prefix-form}
 \indexc{`} 
 \index{backticks|see{\texttt{`}}}
 
-An interesting property of R is every infix, replacement, or special form can be rewritten in prefix form. Rewriting in prefix form is useful because it helps you better understand the structure of the language, and it gives you the real name of every function. Knowing the real name of non-prefix functions is useful because it allows you to modify them for fun and profit.
+An interesting property of R is that every infix, replacement, or special form can be rewritten in prefix form. Doing so is useful because it helps you better understand the structure of the language, it gives you the real name of every function, and it allows you to modify those functions for fun and profit.
 
 The following example shows three pairs of equivalent calls, rewriting an infix form, replacement form, and a special form into prefix form.
 
@@ -1189,7 +1189,7 @@ add <- function(x, y) x + y
 sapply(1:10, add, 3)
 ```
 
-But we can also get the same effect more simply by relying on the existing `+` function:
+But we can also get the same result simply by relying on the existing `+` function:
 
 ```{r}
 sapply(1:5, `+`, 3)
@@ -1203,7 +1203,7 @@ We'll explore this idea in detail in [functionals].
 The prefix form is the most common form in R code, and indeed in the majority of programming languages. Prefix calls in R are a little special because you can specify arguments in three ways:
 
 * By position, like `help(mean)`.
-* Using partial matching, like `help(to = mean)`.
+* Using partial matching, like `help(to = mean)`. <!-- GVW: took me a moment to realize this is the same as `topic = mean` -->
 * By name, like `help(topic = mean)`.
 
 As illustrated by the following chunk, arguments are matched by exact name, then with unique prefixes, and finally by position.
