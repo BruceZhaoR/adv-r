@@ -1011,13 +1011,13 @@ pronouns.</p></li>
 <a class="sourceLine" id="cb810-2" data-line-number="2">g &lt;-<span class="st"> </span><span class="cf">function</span>() <span class="kw">h</span>()</a>
 <a class="sourceLine" id="cb810-3" data-line-number="3">h &lt;-<span class="st"> </span><span class="cf">function</span>() <span class="kw">eval</span>(<span class="kw">expr</span>(lobstr<span class="op">::</span><span class="kw">cst</span>()), <span class="kw">caller_env</span>(<span class="dv">2</span>))</a>
 <a class="sourceLine" id="cb810-4" data-line-number="4"><span class="kw">f</span>()</a>
-<a class="sourceLine" id="cb810-5" data-line-number="5"><span class="co">#&gt; █</span></a>
-<a class="sourceLine" id="cb810-6" data-line-number="6"><span class="co">#&gt; └─global::f()</span></a>
-<a class="sourceLine" id="cb810-7" data-line-number="7"><span class="co">#&gt;   ├─global::g()</span></a>
-<a class="sourceLine" id="cb810-8" data-line-number="8"><span class="co">#&gt;   │ └─global::h()</span></a>
-<a class="sourceLine" id="cb810-9" data-line-number="9"><span class="co">#&gt;   │   └─base::eval(expr(lobstr::cst()), caller_env(2))</span></a>
-<a class="sourceLine" id="cb810-10" data-line-number="10"><span class="co">#&gt;   │     └─base::eval(expr(lobstr::cst()), caller_env(2))</span></a>
-<a class="sourceLine" id="cb810-11" data-line-number="11"><span class="co">#&gt;   └─lobstr::cst()</span></a></code></pre></div>
+<a class="sourceLine" id="cb810-5" data-line-number="5"><span class="co">#&gt; x</span></a>
+<a class="sourceLine" id="cb810-6" data-line-number="6"><span class="co">#&gt; \-global::f()</span></a>
+<a class="sourceLine" id="cb810-7" data-line-number="7"><span class="co">#&gt;   +-global::g()</span></a>
+<a class="sourceLine" id="cb810-8" data-line-number="8"><span class="co">#&gt;   | \-global::h()</span></a>
+<a class="sourceLine" id="cb810-9" data-line-number="9"><span class="co">#&gt;   |   \-base::eval(expr(lobstr::cst()), caller_env(2))</span></a>
+<a class="sourceLine" id="cb810-10" data-line-number="10"><span class="co">#&gt;   |     \-base::eval(expr(lobstr::cst()), caller_env(2))</span></a>
+<a class="sourceLine" id="cb810-11" data-line-number="11"><span class="co">#&gt;   \-lobstr::cst()</span></a></code></pre></div>
 </div>
 <div id="base-r" class="section level3">
 <h3><span class="header-section-number">19.2.5</span> Base R</h3>
@@ -1147,39 +1147,39 @@ to remind yourself what environment <code>new.env()</code> will inherit from.)</
 <li><p>Use <code>quo()</code> and <code>quos()</code> to capture your expressions.</p>
 <div class="sourceCode" id="cb822"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb822-1" data-line-number="1"><span class="kw">quo</span>(x <span class="op">+</span><span class="st"> </span>y <span class="op">+</span><span class="st"> </span>z)</a>
 <a class="sourceLine" id="cb822-2" data-line-number="2"><span class="co">#&gt; &lt;quosure&gt;</span></a>
-<a class="sourceLine" id="cb822-3" data-line-number="3"><span class="co">#&gt;   expr: ^x + y + z</span></a>
-<a class="sourceLine" id="cb822-4" data-line-number="4"><span class="co">#&gt;   env:  global</span></a>
+<a class="sourceLine" id="cb822-3" data-line-number="3"><span class="co">#&gt; expr: ^x + y + z</span></a>
+<a class="sourceLine" id="cb822-4" data-line-number="4"><span class="co">#&gt; env:  global</span></a>
 <a class="sourceLine" id="cb822-5" data-line-number="5"><span class="kw">quos</span>(x <span class="op">+</span><span class="st"> </span><span class="dv">1</span>, y <span class="op">+</span><span class="st"> </span><span class="dv">2</span>)</a>
 <a class="sourceLine" id="cb822-6" data-line-number="6"><span class="co">#&gt; &lt;listof&lt;quosures&gt;&gt;</span></a>
 <a class="sourceLine" id="cb822-7" data-line-number="7"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb822-8" data-line-number="8"><span class="co">#&gt; [[1]]</span></a>
 <a class="sourceLine" id="cb822-9" data-line-number="9"><span class="co">#&gt; &lt;quosure&gt;</span></a>
-<a class="sourceLine" id="cb822-10" data-line-number="10"><span class="co">#&gt;   expr: ^x + 1</span></a>
-<a class="sourceLine" id="cb822-11" data-line-number="11"><span class="co">#&gt;   env:  global</span></a>
+<a class="sourceLine" id="cb822-10" data-line-number="10"><span class="co">#&gt; expr: ^x + 1</span></a>
+<a class="sourceLine" id="cb822-11" data-line-number="11"><span class="co">#&gt; env:  global</span></a>
 <a class="sourceLine" id="cb822-12" data-line-number="12"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb822-13" data-line-number="13"><span class="co">#&gt; [[2]]</span></a>
 <a class="sourceLine" id="cb822-14" data-line-number="14"><span class="co">#&gt; &lt;quosure&gt;</span></a>
-<a class="sourceLine" id="cb822-15" data-line-number="15"><span class="co">#&gt;   expr: ^y + 2</span></a>
-<a class="sourceLine" id="cb822-16" data-line-number="16"><span class="co">#&gt;   env:  global</span></a></code></pre></div></li>
+<a class="sourceLine" id="cb822-15" data-line-number="15"><span class="co">#&gt; expr: ^y + 2</span></a>
+<a class="sourceLine" id="cb822-16" data-line-number="16"><span class="co">#&gt; env:  global</span></a></code></pre></div></li>
 <li><p>Use <code>enquo()</code> and <code>enquos()</code> to capture user-supplied expressions.</p>
 <div class="sourceCode" id="cb823"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb823-1" data-line-number="1">foo &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">enquo</span>(x)</a>
 <a class="sourceLine" id="cb823-2" data-line-number="2"><span class="kw">foo</span>(a <span class="op">+</span><span class="st"> </span>b)</a>
 <a class="sourceLine" id="cb823-3" data-line-number="3"><span class="co">#&gt; &lt;quosure&gt;</span></a>
-<a class="sourceLine" id="cb823-4" data-line-number="4"><span class="co">#&gt;   expr: ^a + b</span></a>
-<a class="sourceLine" id="cb823-5" data-line-number="5"><span class="co">#&gt;   env:  global</span></a></code></pre></div></li>
+<a class="sourceLine" id="cb823-4" data-line-number="4"><span class="co">#&gt; expr: ^a + b</span></a>
+<a class="sourceLine" id="cb823-5" data-line-number="5"><span class="co">#&gt; env:  global</span></a></code></pre></div></li>
 </ul>
 <p>Note how quosures are printed: each quosure starts with <code>^</code>. This is a signal that you’re looking at something special, and is useful if you unquote a quosure inside another quosure. In the console, each quosure gets a different colour to help remind you that it has a different environment attached to it.</p>
 <div class="sourceCode" id="cb824"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb824-1" data-line-number="1">q2 &lt;-<span class="st"> </span><span class="kw">quo</span>(x <span class="op">+</span><span class="st"> </span><span class="op">!!</span>x)</a>
 <a class="sourceLine" id="cb824-2" data-line-number="2">q2</a>
 <a class="sourceLine" id="cb824-3" data-line-number="3"><span class="co">#&gt; &lt;quosure&gt;</span></a>
-<a class="sourceLine" id="cb824-4" data-line-number="4"><span class="co">#&gt;   expr: ^x + 0</span></a>
-<a class="sourceLine" id="cb824-5" data-line-number="5"><span class="co">#&gt;   env:  global</span></a></code></pre></div>
+<a class="sourceLine" id="cb824-4" data-line-number="4"><span class="co">#&gt; expr: ^x + 0</span></a>
+<a class="sourceLine" id="cb824-5" data-line-number="5"><span class="co">#&gt; env:  global</span></a></code></pre></div>
 <p>Finally, you can use <code>new_quosure()</code> to create a quosure from its components: an expression and an environment.</p>
 <div class="sourceCode" id="cb825"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb825-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">new_quosure</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y), <span class="kw">env</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">10</span>))</a>
 <a class="sourceLine" id="cb825-2" data-line-number="2">x</a>
 <a class="sourceLine" id="cb825-3" data-line-number="3"><span class="co">#&gt; &lt;quosure&gt;</span></a>
-<a class="sourceLine" id="cb825-4" data-line-number="4"><span class="co">#&gt;   expr: ^x + y</span></a>
-<a class="sourceLine" id="cb825-5" data-line-number="5"><span class="co">#&gt;   env:  0x59dce30</span></a></code></pre></div>
+<a class="sourceLine" id="cb825-4" data-line-number="4"><span class="co">#&gt; expr: ^x + y</span></a>
+<a class="sourceLine" id="cb825-5" data-line-number="5"><span class="co">#&gt; env:  000000001864B7E8</span></a></code></pre></div>
 <p>If you need to turn a quosure into text for output to the console you can use <code>quo_name()</code>, <code>quo_label()</code>, or <code>quo_text()</code>. <code>quo_name()</code> and <code>quo_label()</code> are guaranteed to be short; <code>quo_text()</code> may span multiple lines.</p>
 <div class="sourceCode" id="cb826"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb826-1" data-line-number="1">y &lt;-<span class="st"> </span><span class="kw">quo</span>(<span class="kw">long_function_name</span>(</a>
 <a class="sourceLine" id="cb826-2" data-line-number="2">  <span class="dt">argument_1 =</span> long_argument_value,</a>
@@ -1202,7 +1202,7 @@ to remind yourself what environment <code>new.env()</code> will inherit from.)</
 <a class="sourceLine" id="cb827-3" data-line-number="3"><span class="co">#&gt; [1] 11</span></a></code></pre></div>
 <p>And you can extract its components with the <code>quo_get_</code> helpers:</p>
 <div class="sourceCode" id="cb828"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb828-1" data-line-number="1"><span class="kw">quo_get_env</span>(x)</a>
-<a class="sourceLine" id="cb828-2" data-line-number="2"><span class="co">#&gt; &lt;environment: 0x5f1f7f8&gt;</span></a>
+<a class="sourceLine" id="cb828-2" data-line-number="2"><span class="co">#&gt; &lt;environment: 0x000000001c55d5f0&gt;</span></a>
 <a class="sourceLine" id="cb828-3" data-line-number="3"><span class="kw">quo_get_expr</span>(x)</a>
 <a class="sourceLine" id="cb828-4" data-line-number="4"><span class="co">#&gt; x + y</span></a></code></pre></div>
 <p>For this simple case, <code>eval_tidy()</code> is basically a wrapper around <code>eval_bare()</code>. In the next section, you’ll learn about the <code>data</code> argument which makes <code>eval_tidy()</code> particularly powerful.</p>
@@ -1253,8 +1253,8 @@ unquoting. For example, instead of this quosure:</p>
 <div class="sourceCode" id="cb832"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb832-1" data-line-number="1">base &lt;-<span class="st"> </span><span class="dv">2</span></a>
 <a class="sourceLine" id="cb832-2" data-line-number="2"><span class="kw">quo</span>(<span class="kw">log</span>(x, <span class="dt">base =</span> base))</a>
 <a class="sourceLine" id="cb832-3" data-line-number="3"><span class="co">#&gt; &lt;quosure&gt;</span></a>
-<a class="sourceLine" id="cb832-4" data-line-number="4"><span class="co">#&gt;   expr: ^log(x, base = base)</span></a>
-<a class="sourceLine" id="cb832-5" data-line-number="5"><span class="co">#&gt;   env:  global</span></a></code></pre></div>
+<a class="sourceLine" id="cb832-4" data-line-number="4"><span class="co">#&gt; expr: ^log(x, base = base)</span></a>
+<a class="sourceLine" id="cb832-5" data-line-number="5"><span class="co">#&gt; env:  global</span></a></code></pre></div>
 <p>You could create this self-contained expression:</p>
 <div class="sourceCode" id="cb833"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb833-1" data-line-number="1"><span class="kw">expr</span>(<span class="kw">log</span>(x, <span class="dt">base =</span> <span class="op">!!</span>base))</a>
 <a class="sourceLine" id="cb833-2" data-line-number="2"><span class="co">#&gt; log(x, base = 2)</span></a></code></pre></div>
@@ -1268,20 +1268,20 @@ unquoting. For example, instead of this quosure:</p>
 <div class="sourceCode" id="cb834"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb834-1" data-line-number="1">q1 &lt;-<span class="st"> </span><span class="kw">new_quosure</span>(<span class="kw">expr</span>(x), <span class="kw">env</span>(<span class="dt">x =</span> <span class="dv">1</span>))</a>
 <a class="sourceLine" id="cb834-2" data-line-number="2">q1</a>
 <a class="sourceLine" id="cb834-3" data-line-number="3"><span class="co">#&gt; &lt;quosure&gt;</span></a>
-<a class="sourceLine" id="cb834-4" data-line-number="4"><span class="co">#&gt;   expr: ^x</span></a>
-<a class="sourceLine" id="cb834-5" data-line-number="5"><span class="co">#&gt;   env:  0x4228018</span></a>
+<a class="sourceLine" id="cb834-4" data-line-number="4"><span class="co">#&gt; expr: ^x</span></a>
+<a class="sourceLine" id="cb834-5" data-line-number="5"><span class="co">#&gt; env:  00000000175B4B68</span></a>
 <a class="sourceLine" id="cb834-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb834-7" data-line-number="7">q2 &lt;-<span class="st"> </span><span class="kw">new_quosure</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span><span class="op">!!</span>q1), <span class="kw">env</span>(<span class="dt">x =</span> <span class="dv">10</span>))</a>
 <a class="sourceLine" id="cb834-8" data-line-number="8">q2</a>
 <a class="sourceLine" id="cb834-9" data-line-number="9"><span class="co">#&gt; &lt;quosure&gt;</span></a>
-<a class="sourceLine" id="cb834-10" data-line-number="10"><span class="co">#&gt;   expr: ^x + (^x)</span></a>
-<a class="sourceLine" id="cb834-11" data-line-number="11"><span class="co">#&gt;   env:  0x3427b08</span></a>
+<a class="sourceLine" id="cb834-10" data-line-number="10"><span class="co">#&gt; expr: ^x + (^x)</span></a>
+<a class="sourceLine" id="cb834-11" data-line-number="11"><span class="co">#&gt; env:  000000001797AD10</span></a>
 <a class="sourceLine" id="cb834-12" data-line-number="12"></a>
 <a class="sourceLine" id="cb834-13" data-line-number="13">q3 &lt;-<span class="st"> </span><span class="kw">new_quosure</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span><span class="op">!!</span>q2), <span class="kw">env</span>(<span class="dt">x =</span> <span class="dv">100</span>))</a>
 <a class="sourceLine" id="cb834-14" data-line-number="14">q3</a>
 <a class="sourceLine" id="cb834-15" data-line-number="15"><span class="co">#&gt; &lt;quosure&gt;</span></a>
-<a class="sourceLine" id="cb834-16" data-line-number="16"><span class="co">#&gt;   expr: ^x + (^x + (^x))</span></a>
-<a class="sourceLine" id="cb834-17" data-line-number="17"><span class="co">#&gt;   env:  0x55e8268</span></a></code></pre></div></li>
+<a class="sourceLine" id="cb834-16" data-line-number="16"><span class="co">#&gt; expr: ^x + (^x + (^x))</span></a>
+<a class="sourceLine" id="cb834-17" data-line-number="17"><span class="co">#&gt; env:  000000001BFEC148</span></a></code></pre></div></li>
 <li><p>Write a function <code>enenv()</code> that captures the environment associated
 with an argument.</p></li>
 </ol>
@@ -1529,11 +1529,11 @@ a safe version of <code>threshold_x()</code>.</p></li>
 <a class="sourceLine" id="cb853-10" data-line-number="10">  <span class="kw">eval_tidy</span>(q1, mtcars)</a>
 <a class="sourceLine" id="cb853-11" data-line-number="11">)</a>
 <a class="sourceLine" id="cb853-12" data-line-number="12"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb853-13" data-line-number="13"><span class="co">#&gt;                   expr  min   lq mean median   uq    max neval</span></a>
-<a class="sourceLine" id="cb853-14" data-line-number="14"><span class="co">#&gt;               runif(n) 22.5 24.2 37.9   40.9 49.1   65.6   100</span></a>
-<a class="sourceLine" id="cb853-15" data-line-number="15"><span class="co">#&gt;      eval_bare(x1, e1) 23.2 25.3 47.1   46.9 51.0  694.3   100</span></a>
-<a class="sourceLine" id="cb853-16" data-line-number="16"><span class="co">#&gt;          eval_tidy(q1) 25.2 27.5 41.8   30.1 55.6   77.5   100</span></a>
-<a class="sourceLine" id="cb853-17" data-line-number="17"><span class="co">#&gt;  eval_tidy(q1, mtcars) 28.1 31.9 58.3   36.8 60.9 1219.8   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb853-13" data-line-number="13"><span class="co">#&gt;                   expr  min   lq mean median   uq max neval cld</span></a>
+<a class="sourceLine" id="cb853-14" data-line-number="14"><span class="co">#&gt;               runif(n) 37.1 38.8 58.6   56.5 63.6 220   100  a </span></a>
+<a class="sourceLine" id="cb853-15" data-line-number="15"><span class="co">#&gt;      eval_bare(x1, e1) 38.0 47.6 64.3   62.9 74.0 198   100  ab</span></a>
+<a class="sourceLine" id="cb853-16" data-line-number="16"><span class="co">#&gt;          eval_tidy(q1) 40.1 42.2 66.7   65.9 78.3 196   100  ab</span></a>
+<a class="sourceLine" id="cb853-17" data-line-number="17"><span class="co">#&gt;  eval_tidy(q1, mtcars) 42.7 45.9 78.7   74.0 88.1 785   100   b</span></a></code></pre></div>
 <p>However, most of the overhead is due to setting up the data mask so if you need to evaluate code repeatedly, it’s a good idea to define the data mask once then reuse it. This considerably reduces the overhead, with a small change in behaviour: if the code being evaluated creates objects in the “current” environment, those objects will persist across calls.</p>
 <div class="sourceCode" id="cb854"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb854-1" data-line-number="1">d_mtcars &lt;-<span class="st"> </span><span class="kw">as_data_mask</span>(mtcars)</a>
 <a class="sourceLine" id="cb854-2" data-line-number="2"></a>
@@ -1543,10 +1543,10 @@ a safe version of <code>threshold_x()</code>.</p></li>
 <a class="sourceLine" id="cb854-6" data-line-number="6">  <span class="kw">eval_tidy</span>(q1, d_mtcars)</a>
 <a class="sourceLine" id="cb854-7" data-line-number="7">)</a>
 <a class="sourceLine" id="cb854-8" data-line-number="8"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb854-9" data-line-number="9"><span class="co">#&gt;                     expr   min    lq  mean median   uq  max neval</span></a>
-<a class="sourceLine" id="cb854-10" data-line-number="10"><span class="co">#&gt;     as_data_mask(mtcars)  4.71  5.38  8.48   6.47 10.3 76.8   100</span></a>
-<a class="sourceLine" id="cb854-11" data-line-number="11"><span class="co">#&gt;    eval_tidy(q1, mtcars) 27.93 29.24 42.59  30.50 57.9 86.2   100</span></a>
-<a class="sourceLine" id="cb854-12" data-line-number="12"><span class="co">#&gt;  eval_tidy(q1, d_mtcars) 24.57 25.35 37.97  26.23 51.9 93.5   100</span></a></code></pre></div>
+<a class="sourceLine" id="cb854-9" data-line-number="9"><span class="co">#&gt;                     expr   min    lq mean median   uq max neval cld</span></a>
+<a class="sourceLine" id="cb854-10" data-line-number="10"><span class="co">#&gt;     as_data_mask(mtcars)  5.55  8.96 15.4   10.2 11.9 324   100 a  </span></a>
+<a class="sourceLine" id="cb854-11" data-line-number="11"><span class="co">#&gt;    eval_tidy(q1, mtcars) 59.73 70.40 82.3   75.1 78.1 327   100   c</span></a>
+<a class="sourceLine" id="cb854-12" data-line-number="12"><span class="co">#&gt;  eval_tidy(q1, d_mtcars) 52.48 63.15 70.5   66.6 70.4 256   100  b</span></a></code></pre></div>
 </div>
 <div id="exercises-62" class="section level3">
 <h3><span class="header-section-number">19.4.7</span> Exercises</h3>
@@ -1752,10 +1752,10 @@ functions this means that the captured call is suboptimal:</p>
 <a class="sourceLine" id="cb871-6" data-line-number="6">  <span class="kw">eval_bare</span>(lm_call, <span class="kw">caller_env</span>())</a>
 <a class="sourceLine" id="cb871-7" data-line-number="7">}</a>
 <a class="sourceLine" id="cb871-8" data-line-number="8"><span class="kw">boot_lm1</span>(y <span class="op">~</span><span class="st"> </span>x, <span class="dt">data =</span> df)<span class="op">$</span>call</a>
-<a class="sourceLine" id="cb871-9" data-line-number="9"><span class="co">#&gt; lm(formula = y ~ x, data = list(x = c(3L, 6L, 7L, 9L, 9L, 9L, </span></a>
-<a class="sourceLine" id="cb871-10" data-line-number="10"><span class="co">#&gt; 4L, 1L, 7L, 3L), y = c(14.6648781752736, 22.1126241808277, 25.9200218389642, </span></a>
-<a class="sourceLine" id="cb871-11" data-line-number="11"><span class="co">#&gt; 33.1201105917209, 33.1201105917209, 33.1201105917209, 17.4530448354519, </span></a>
-<a class="sourceLine" id="cb871-12" data-line-number="12"><span class="co">#&gt; 7.91010669552239, 25.9200218389642, 14.6648781752736)))</span></a></code></pre></div></li>
+<a class="sourceLine" id="cb871-9" data-line-number="9"><span class="co">#&gt; lm(formula = y ~ x, data = list(x = c(3L, 9L, 7L, 4L, 1L, 2L, </span></a>
+<a class="sourceLine" id="cb871-10" data-line-number="10"><span class="co">#&gt; 2L, 4L, 5L, 5L), y = c(14.1527498283867, 31.3577210908734, 25.590418059691, </span></a>
+<a class="sourceLine" id="cb871-11" data-line-number="11"><span class="co">#&gt; 16.2118102327009, 8.48257501673016, 11.0606709535963, 11.0606709535963, </span></a>
+<a class="sourceLine" id="cb871-12" data-line-number="12"><span class="co">#&gt; 16.2118102327009, 19.9122584164126, 19.9122584164126)))</span></a></code></pre></div></li>
 <li><p>Alternatively you can create a new environment that inherits from the
 caller, and you can bind variables that you’ve created inside the
 function to that environment.</p>
@@ -1774,7 +1774,7 @@ function to that environment.</p>
 <a class="sourceLine" id="cb872-13" data-line-number="13"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb872-14" data-line-number="14"><span class="co">#&gt; Coefficients:</span></a>
 <a class="sourceLine" id="cb872-15" data-line-number="15"><span class="co">#&gt; (Intercept)            x  </span></a>
-<a class="sourceLine" id="cb872-16" data-line-number="16"><span class="co">#&gt;        5.12         2.88</span></a></code></pre></div></li>
+<a class="sourceLine" id="cb872-16" data-line-number="16"><span class="co">#&gt;        5.71         2.83</span></a></code></pre></div></li>
 </ol>
 </div>
 <div id="making-formulas" class="section level3">
@@ -1870,7 +1870,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Evaluation.Rmd",
 "text": "Edit"
 },
-"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.epub", "EPUB3"]],
+"download": ["adv-r.pdf", "adv-r.epub"],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

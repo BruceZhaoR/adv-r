@@ -1260,8 +1260,8 @@ first argument is quoted.</p>
 <a class="sourceLine" id="cb758-2" data-line-number="2">x1</a>
 <a class="sourceLine" id="cb758-3" data-line-number="3"><span class="co">#&gt; class(list(x = 10))</span></a>
 <a class="sourceLine" id="cb758-4" data-line-number="4">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>x1)</a>
-<a class="sourceLine" id="cb758-5" data-line-number="5"><span class="co">#&gt; █─class </span></a>
-<a class="sourceLine" id="cb758-6" data-line-number="6"><span class="co">#&gt; └─&lt;inline data.frame&gt;</span></a>
+<a class="sourceLine" id="cb758-5" data-line-number="5"><span class="co">#&gt; o-class </span></a>
+<a class="sourceLine" id="cb758-6" data-line-number="6"><span class="co">#&gt; \-&lt;inline data.frame&gt;</span></a>
 <a class="sourceLine" id="cb758-7" data-line-number="7"><span class="kw">eval</span>(x1)</a>
 <a class="sourceLine" id="cb758-8" data-line-number="8"><span class="co">#&gt; [1] &quot;data.frame&quot;</span></a></code></pre></div>
 <p>In other cases, R will print parentheses that do not exist in the AST:</p>
@@ -1270,18 +1270,18 @@ first argument is quoted.</p>
 <a class="sourceLine" id="cb759-3" data-line-number="3">x2</a>
 <a class="sourceLine" id="cb759-4" data-line-number="4"><span class="co">#&gt; 1 + (2 + 3)</span></a>
 <a class="sourceLine" id="cb759-5" data-line-number="5">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>x2)</a>
-<a class="sourceLine" id="cb759-6" data-line-number="6"><span class="co">#&gt; █─`+` </span></a>
-<a class="sourceLine" id="cb759-7" data-line-number="7"><span class="co">#&gt; ├─1 </span></a>
-<a class="sourceLine" id="cb759-8" data-line-number="8"><span class="co">#&gt; └─█─`+` </span></a>
-<a class="sourceLine" id="cb759-9" data-line-number="9"><span class="co">#&gt;   ├─2 </span></a>
-<a class="sourceLine" id="cb759-10" data-line-number="10"><span class="co">#&gt;   └─3</span></a></code></pre></div>
+<a class="sourceLine" id="cb759-6" data-line-number="6"><span class="co">#&gt; o-`+` </span></a>
+<a class="sourceLine" id="cb759-7" data-line-number="7"><span class="co">#&gt; +-1 </span></a>
+<a class="sourceLine" id="cb759-8" data-line-number="8"><span class="co">#&gt; \-o-`+` </span></a>
+<a class="sourceLine" id="cb759-9" data-line-number="9"><span class="co">#&gt;   +-2 </span></a>
+<a class="sourceLine" id="cb759-10" data-line-number="10"><span class="co">#&gt;   \-3</span></a></code></pre></div>
 <p>And finally, R will display integer sequences as if they were generated with <code>:</code>.</p>
 <div class="sourceCode" id="cb760"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb760-1" data-line-number="1">x3 &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">f</span>(<span class="op">!!</span><span class="kw">c</span>(1L, 2L, 3L, 4L, 5L)))</a>
 <a class="sourceLine" id="cb760-2" data-line-number="2">x3</a>
 <a class="sourceLine" id="cb760-3" data-line-number="3"><span class="co">#&gt; f(1:5)</span></a>
 <a class="sourceLine" id="cb760-4" data-line-number="4">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>x3)</a>
-<a class="sourceLine" id="cb760-5" data-line-number="5"><span class="co">#&gt; █─f </span></a>
-<a class="sourceLine" id="cb760-6" data-line-number="6"><span class="co">#&gt; └─&lt;inline integer&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb760-5" data-line-number="5"><span class="co">#&gt; o-f </span></a>
+<a class="sourceLine" id="cb760-6" data-line-number="6"><span class="co">#&gt; \-&lt;inline integer&gt;</span></a></code></pre></div>
 <p>In general, if you’re ever confused about what is actually in an AST, display the object with <code>lobstr::ast()</code>!</p>
 </div>
 <div id="missing-arguments-1" class="section level3">
@@ -1418,13 +1418,19 @@ the techniques.</p></li>
 <a class="sourceLine" id="cb774-10" data-line-number="10"></a>
 <a class="sourceLine" id="cb774-11" data-line-number="11">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x1 =</span> <span class="dv">1</span>, <span class="dt">x2 =</span> <span class="dv">3</span>, <span class="dt">y =</span> <span class="st">&quot;a&quot;</span>, <span class="dt">z =</span> <span class="st">&quot;b&quot;</span>)</a>
 <a class="sourceLine" id="cb774-12" data-line-number="12"><span class="kw">partition_cols</span>(df, <span class="kw">starts_with</span>(<span class="st">&quot;x&quot;</span>))</a>
-<a class="sourceLine" id="cb774-13" data-line-number="13"><span class="co">#&gt; $incl</span></a>
-<a class="sourceLine" id="cb774-14" data-line-number="14"><span class="co">#&gt;   x1 x2</span></a>
-<a class="sourceLine" id="cb774-15" data-line-number="15"><span class="co">#&gt; 1  1  3</span></a>
-<a class="sourceLine" id="cb774-16" data-line-number="16"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb774-17" data-line-number="17"><span class="co">#&gt; $excl</span></a>
-<a class="sourceLine" id="cb774-18" data-line-number="18"><span class="co">#&gt;   y z</span></a>
-<a class="sourceLine" id="cb774-19" data-line-number="19"><span class="co">#&gt; 1 a b</span></a></code></pre></div>
+<a class="sourceLine" id="cb774-13" data-line-number="13"><span class="co">#&gt; Warning: `lang()` is soft-deprecated as of rlang 0.2.0.</span></a>
+<a class="sourceLine" id="cb774-14" data-line-number="14"><span class="co">#&gt; Please use `call2()` instead</span></a>
+<a class="sourceLine" id="cb774-15" data-line-number="15"><span class="co">#&gt; This warning is displayed once per session.</span></a>
+<a class="sourceLine" id="cb774-16" data-line-number="16"><span class="co">#&gt; Warning: `new_overscope()` is soft-deprecated as of rlang 0.2.0.</span></a>
+<a class="sourceLine" id="cb774-17" data-line-number="17"><span class="co">#&gt; Please use `new_data_mask()` instead</span></a>
+<a class="sourceLine" id="cb774-18" data-line-number="18"><span class="co">#&gt; This warning is displayed once per session.</span></a>
+<a class="sourceLine" id="cb774-19" data-line-number="19"><span class="co">#&gt; $incl</span></a>
+<a class="sourceLine" id="cb774-20" data-line-number="20"><span class="co">#&gt;   x1 x2</span></a>
+<a class="sourceLine" id="cb774-21" data-line-number="21"><span class="co">#&gt; 1  1  3</span></a>
+<a class="sourceLine" id="cb774-22" data-line-number="22"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb774-23" data-line-number="23"><span class="co">#&gt; $excl</span></a>
+<a class="sourceLine" id="cb774-24" data-line-number="24"><span class="co">#&gt;   y z</span></a>
+<a class="sourceLine" id="cb774-25" data-line-number="25"><span class="co">#&gt; 1 a b</span></a></code></pre></div>
 <p>Note the name of the first argument: <code>.data</code>. This is a standard convention through the tidyverse because you don’t need to explicitly name this argument (because it’s always used), and it avoids potential clashes with argument names in <code>...</code>.</p>
 </div>
 <div id="slicing-an-array" class="section level3">
@@ -1488,7 +1494,7 @@ the techniques.</p></li>
 <a class="sourceLine" id="cb780-4" data-line-number="4">}</a>
 <a class="sourceLine" id="cb780-5" data-line-number="5"><span class="kw">negate1</span>(is.null)</a>
 <a class="sourceLine" id="cb780-6" data-line-number="6"><span class="co">#&gt; function(...) !f(...)</span></a>
-<a class="sourceLine" id="cb780-7" data-line-number="7"><span class="co">#&gt; &lt;environment: 0x7a55830&gt;</span></a>
+<a class="sourceLine" id="cb780-7" data-line-number="7"><span class="co">#&gt; &lt;environment: 0x000000001d73cda8&gt;</span></a>
 <a class="sourceLine" id="cb780-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb780-9" data-line-number="9">negate2 &lt;-<span class="st"> </span><span class="cf">function</span>(f) {</a>
 <a class="sourceLine" id="cb780-10" data-line-number="10">  f &lt;-<span class="st"> </span><span class="kw">enexpr</span>(f)</a>
@@ -1753,7 +1759,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Quotation.Rmd",
 "text": "Edit"
 },
-"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.epub", "EPUB3"]],
+"download": ["adv-r.pdf", "adv-r.epub"],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

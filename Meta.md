@@ -133,13 +133,13 @@ A very convenient tool for understanding the tree-like structure is `lobstr::ast
 
 ```r
 lobstr::ast(f(1, g(b, h(5, 6))))
-#> █─f 
-#> ├─1 
-#> └─█─g 
-#>   ├─b 
-#>   └─█─h 
-#>     ├─5 
-#>     └─6
+#> o-f 
+#> +-1 
+#> \-o-g 
+#>   +-b 
+#>   \-o-h 
+#>     +-5 
+#>     \-6
 ```
 
 Because all function forms in can be written in prefix form (Section \@ref(prefix-form)), every R expression can be written in this way:
@@ -147,11 +147,11 @@ Because all function forms in can be written in prefix form (Section \@ref(prefi
 
 ```r
 lobstr::ast(1 + 2 * 3)
-#> █─`+` 
-#> ├─1 
-#> └─█─`*` 
-#>   ├─2 
-#>   └─3
+#> o-`+` 
+#> +-1 
+#> \-o-`*` 
+#>   +-2 
+#>   \-3
 ```
 
 Displaying the code tree in this way provides useful tools for exploring R's grammar, the topic of Section \ref(grammar).
@@ -264,6 +264,14 @@ More extensive use of metaprogramming leads to DSLs like ggplot2 and dplyr. DSLs
 
 ```r
 library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 
 con <- DBI::dbConnect(RSQLite::SQLite(), filename = ":memory:")
 mtcars_db <- copy_to(con, mtcars)
@@ -273,6 +281,9 @@ mtcars_db %>%
   select(mpg:hp) %>%
   head(10) %>%
   show_query()
+#> Warning: `lang()` is soft-deprecated as of rlang 0.2.0.
+#> Please use `call2()` instead
+#> This warning is displayed once per session.
 #> Warning: `new_overscope()` is soft-deprecated as of rlang 0.2.0.
 #> Please use `new_data_mask()` instead
 #> This warning is displayed once per session.

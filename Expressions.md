@@ -51,7 +51,8 @@ library(lobstr)
 
 Quoted expressions are also called __abstract syntax trees__ (ASTs) because the structure of code is hierarchical and can be naturally represented as a tree. To make that more obvious we're going to introduce some graphical conventions, illustrated with the very simple call `f(x, "y", 1)`. 
 
-<img src="diagrams/expressions/simple.png" width="227" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=2.36in]{diagrams/expressions/simple} \end{center}
   
 *   Function __calls__ define the hierarchy of the tree. Calls are shown
     with an orange square. The first child (`f`) is the function that gets 
@@ -73,10 +74,10 @@ Drawing these diagrams by hand takes me some time, and obviously you can't rely 
 
 ```r
 lobstr::ast(f(x, "y", 1))
-#> █─f 
-#> ├─x 
-#> ├─"y" 
-#> └─1
+#> o-f 
+#> +-x 
+#> +-"y" 
+#> \-1
 ```
 
 Calls get an orange square, symbols are bold and purple, and strings are surrounded by quote marks. (The colours are not shown in the book, but you'll see it if you run the code yourself.)
@@ -93,10 +94,10 @@ lobstr::ast(x)
 
 # what we want
 lobstr::ast(!!x)
-#> █─f 
-#> ├─x 
-#> ├─"y" 
-#> └─1
+#> o-f 
+#> +-x 
+#> +-"y" 
+#> \-1
 ```
 
 For more complex code, you can also use RStudio's tree viewer to explore the AST interactively, e.g. `View(expr(y <- x * 10))`.
@@ -117,16 +118,17 @@ y <- x * 10
 
 And they have this AST:
 
-<img src="diagrams/expressions/prefix.png" width="227" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=2.36in]{diagrams/expressions/prefix} \end{center}
 
 
 ```r
 lobstr::ast(y <- x * 10)
-#> █─`<-` 
-#> ├─y 
-#> └─█─`*` 
-#>   ├─x 
-#>   └─10
+#> o-`<-` 
+#> +-y 
+#> \-o-`*` 
+#>   +-x 
+#>   \-10
 ```
 
 You might remember that code like `names(x) <- y` ends up calling the `names<-` function. That is not reflected in the parse tree because the translation needs to happen at run-time, not parse-time, due to the complexities of nested assignments like `names(x)[2] <- "z"`.
@@ -134,10 +136,10 @@ You might remember that code like `names(x) <- y` ends up calling the `names<-` 
 
 ```r
 lobstr::ast(names(x) <- y)
-#> █─`<-` 
-#> ├─█─names 
-#> │ └─x 
-#> └─y
+#> o-`<-` 
+#> +-o-names 
+#> | \-x 
+#> \-y
 ```
 
 It's informative to look at the ASTs for other special forms
@@ -151,19 +153,19 @@ lobstr::ast(function(x, y) {
     y
   }
 })
-#> █─`function` 
-#> ├─█─x = `` 
-#> │ └─y = `` 
-#> ├─█─`{` 
-#> │ └─█─`if` 
-#> │   ├─█─`>` 
-#> │   │ ├─x 
-#> │   │ └─y 
-#> │   ├─█─`{` 
-#> │   │ └─x 
-#> │   └─█─`{` 
-#> │     └─y 
-#> └─<inline srcref>
+#> o-`function` 
+#> +-o-x = `` 
+#> | \-y = `` 
+#> +-o-`{` 
+#> | \-o-`if` 
+#> |   +-o-`>` 
+#> |   | +-x 
+#> |   | \-y 
+#> |   +-o-`{` 
+#> |   | \-x 
+#> |   \-o-`{` 
+#> |     \-y 
+#> \-<inline srcref>
 ```
 
 Note that functions include a node `<inline srcref>`, this contains the source code of the function, as described in Section \@ref(function-components).
@@ -175,9 +177,9 @@ Another small detail we need to consider are calls like `f()()`. The first compo
 
 ```r
 lobstr::ast(f(a, 1))
-#> █─f 
-#> ├─a 
-#> └─1
+#> o-f 
+#> +-a 
+#> \-1
 ```
 
 But if you are using a function factory (Chapter \@ref(function-factories)), a function that returns another function, the first component might be another call:
@@ -185,9 +187,9 @@ But if you are using a function factory (Chapter \@ref(function-factories)), a f
 
 ```r
 lobstr::ast(f()(a, 1))
-#> █─█─f 
-#> ├─a 
-#> └─1
+#> o-o-f 
+#> +-a 
+#> \-1
 ```
 
 And of course that function might also take arguments:
@@ -195,11 +197,11 @@ And of course that function might also take arguments:
 
 ```r
 lobstr::ast(f(b, 2)(a, 1))
-#> █─█─f 
-#> │ ├─b 
-#> │ └─2 
-#> ├─a 
-#> └─1
+#> o-o-f 
+#> | +-b 
+#> | \-2 
+#> +-a 
+#> \-1
 ```
 
 These forms are relatively rare, but it's good to be able to recognise them when they crop up. 
@@ -211,11 +213,11 @@ So far the examples have only used unnamed arguments. Named arguments don't chan
 
 ```r
 lobstr::ast(mean(x = mtcars$cyl, na.rm = TRUE))
-#> █─mean 
-#> ├─x = █─`$` 
-#> │     ├─mtcars 
-#> │     └─cyl 
-#> └─na.rm = TRUE
+#> o-mean 
+#> +-x = o-`$` 
+#> |     +-mtcars 
+#> |     \-cyl 
+#> \-na.rm = TRUE
 ```
 
 (Note the appearance of another infix function: `$`)
@@ -246,18 +248,19 @@ Infix functions introduce ambiguity in a way that prefix functions do not. The p
 
 [^ambig]: These two sources of ambiguity do not exist without infix operators, which can be considered an advantage of purely prefix and postfix languages. It's interesting to compare a simple arithmetic operation in Lisp (prefix) and Forth (postfix). In Lisp you'd write `(+ (+ 1 2) 3))`; this avoids ambiguity by requiring parentheses everywhere. In Forth, you'd write `1 2 + 3 +`; this doesn't require any parentheses, but does require more thought when reading.
 
-<img src="diagrams/expressions/ambig-order.png" width="416" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=4.33in]{diagrams/expressions/ambig-order} \end{center}
 
 Programming languages use conventions called __operator precedence__ to resolve this ambiguity. We can use `ast()` to see what R does: 
 
 
 ```r
 lobstr::ast(1 + 2 * 3)
-#> █─`+` 
-#> ├─1 
-#> └─█─`*` 
-#>   ├─2 
-#>   └─3
+#> o-`+` 
+#> +-1 
+#> \-o-`*` 
+#>   +-2 
+#>   \-3
 ```
 
 Predicting the precedence of arithmetic operations is usually easy because it's drilled into you in school and is consistent across the vast majority of programming languages. Predicting the precedence of other operators is harder. There's one particularly surprising case in R: `!` has a much lower precedence (i.e. it binds less tightly) than you might expect. This allows you to write useful operations like:
@@ -265,10 +268,10 @@ Predicting the precedence of arithmetic operations is usually easy because it's 
 
 ```r
 lobstr::ast(!x %in% y)
-#> █─`!` 
-#> └─█─`%in%` 
-#>   ├─x 
-#>   └─y
+#> o-`!` 
+#> \-o-`%in%` 
+#>   +-x 
+#>   \-y
 ```
 
 R has over 30 infix operators divided into 18 precedence groups. While the details are described in `?Syntax`, very few people have memorised the complete ordering. Indeed, if there's any confusion, use parentheses! These also appear in the AST, like all other special forms:
@@ -276,12 +279,12 @@ R has over 30 infix operators divided into 18 precedence groups. While the detai
 
 ```r
 lobstr::ast(1 + (2 + 3))
-#> █─`+` 
-#> ├─1 
-#> └─█─`(` 
-#>   └─█─`+` 
-#>     ├─2 
-#>     └─3
+#> o-`+` 
+#> +-1 
+#> \-o-`(` 
+#>   \-o-`+` 
+#>     +-2 
+#>     \-3
 ```
 
 ### Associativity
@@ -293,11 +296,11 @@ In R, most operators are __left-associative__, i.e. the operations on the left a
 
 ```r
 lobstr::ast(1 + 2 + 3)
-#> █─`+` 
-#> ├─█─`+` 
-#> │ ├─1 
-#> │ └─2 
-#> └─3
+#> o-`+` 
+#> +-o-`+` 
+#> | +-1 
+#> | \-2 
+#> \-3
 ```
 
 There are two exceptions: exponentiation and assignment.
@@ -305,17 +308,17 @@ There are two exceptions: exponentiation and assignment.
 
 ```r
 lobstr::ast(2 ^ 2 ^ 3)
-#> █─`^` 
-#> ├─2 
-#> └─█─`^` 
-#>   ├─2 
-#>   └─3
+#> o-`^` 
+#> +-2 
+#> \-o-`^` 
+#>   +-2 
+#>   \-3
 lobstr::ast(x <- y <- z)
-#> █─`<-` 
-#> ├─x 
-#> └─█─`<-` 
-#>   ├─y 
-#>   └─z
+#> o-`<-` 
+#> +-x 
+#> \-o-`<-` 
+#>   +-y 
+#>   \-z
 ```
 
 ### Whitespace
@@ -325,14 +328,14 @@ R, in general, is not sensitive to white space. Most white space is not signific
 
 ```r
 lobstr::ast(y <- x)
-#> █─`<-` 
-#> ├─y 
-#> └─x
+#> o-`<-` 
+#> +-y 
+#> \-x
 lobstr::ast(y < -x)
-#> █─`<` 
-#> ├─y 
-#> └─█─`-` 
-#>   └─x
+#> o-`<` 
+#> +-y 
+#> \-o-`-` 
+#>   \-x
 ```
 
 ### Exercises
@@ -501,9 +504,9 @@ The main difference is that the first element of a call is special: it's the fun
 ```r
 x <- expr(read.table("important.csv", row = FALSE))
 lobstr::ast(!!x)
-#> █─read.table 
-#> ├─"important.csv" 
-#> └─row = FALSE
+#> o-read.table 
+#> +-"important.csv" 
+#> \-row = FALSE
 ```
 
 The length of a call minus one gives the number of arguments:
@@ -707,11 +710,11 @@ x2 <- rlang::parse_expr(x1)
 x2
 #> y <- x + 10
 lobstr::ast(!!x2)
-#> █─`<-` 
-#> ├─y 
-#> └─█─`+` 
-#>   ├─x 
-#>   └─10
+#> o-`<-` 
+#> +-y 
+#> \-o-`+` 
+#>   +-x 
+#>   \-10
 ```
 
 If you have multiple expressions in a string, you'll need to use `rlang::parse_exprs()`. It returns a list of expressions:
@@ -964,9 +967,9 @@ We start by looking at the AST for assignment:
 
 ```r
 ast(x <- 10)
-#> █─`<-` 
-#> ├─x 
-#> └─10
+#> o-`<-` 
+#> +-x 
+#> \-10
 ```
 
 Assignment is a call where the first element is the symbol `<-`, the second is the name of variable, and the third is the value to be assigned.
@@ -1000,7 +1003,7 @@ flat_map_chr <- function(.x, .f, ...) {
 }
 
 flat_map_chr(letters[1:3], ~ rep(., sample(3, 1)))
-#> [1] "a" "a" "b" "b" "b" "c" "c" "c"
+#> [1] "a" "b" "b" "b" "c" "c"
 ```
 
 The recursive case for pairlists is simple: we iterate over every element of the pairlist (i.e. each function argument) and combine the results. The case for calls is a little bit more complex - if this is a call to `<-` then we should return the second element of the call:

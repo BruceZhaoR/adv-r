@@ -130,15 +130,18 @@ l
 
 lineprof provides some functions to navigate through this data structure, but they're a bit clumsy. Instead, we'll start an interactive explorer using the shiny package. `shine(l)` will open a new web page (or if you're using RStudio, a new pane) that shows your source code annotated with information about how long each line took to run. `shine()` starts a shiny app which "blocks" your R session. To exit, you'll need to stop the process using escape or ctrl + c. 
 
-<img src="screenshots/profiling-lineprof-f.png" width="70%" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=0.7\linewidth]{screenshots/profiling-lineprof-f} \end{center}
 
 The `t` column visualises how much time is spent on each line. (You'll learn about the other columns in [memory profiling](#memory-profiling).) While not precise, it allows you to spot bottlenecks, and you can get precise numbers by hovering over each bar. This shows that twice as much time is spent on `g()` as on `h()`, so it would make sense to drill down into `g()` for more details. To do so, click `g()`:
 
-<img src="screenshots/profiling-lineprof-g.png" width="70%" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=0.7\linewidth]{screenshots/profiling-lineprof-g} \end{center}
 
 Then `h()`:
 
-<img src="screenshots/profiling-lineprof-h.png" width="70%" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=0.7\linewidth]{screenshots/profiling-lineprof-h} \end{center}
 
 This technique should allow you to quickly identify the major bottlenecks in your code.
 
@@ -205,7 +208,8 @@ prof <- lineprof(read_delim("diamonds.csv"))
 shine(prof)
 ```
 
-<img src="screenshots/memory-lineprof.png" width="70%" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=0.7\linewidth]{screenshots/memory-lineprof} \end{center}
 
 `shine()` will also open a new web page (or if you're using RStudio, a new pane) that shows your source code annotated with information about memory usage. `shine()` starts a shiny app which will "block" your R session. To exit, press escape or ctrl + break. 
 
@@ -343,9 +347,9 @@ microbenchmark(
   mean2(x)
 )
 #> Unit: nanoseconds
-#>      expr   min    lq  mean median    uq       max neval
-#>  mean1(x) 3,850 3,910 12866  3,970 4,080   886,000   100
-#>  mean2(x)   982 1,010 20787  1,110 1,140 1,970,000   100
+#>      expr   min    lq  mean median     uq       max neval cld
+#>  mean1(x) 6,400 7,890 47092  8,960 10,700 2,530,000   100   a
+#>  mean2(x)   853 1,070 43098  1,280  1,710 4,140,000   100   a
 ```
 
 (You might be surprised by the results: `mean(x)` is considerably slower than `sum(x) / length(x)`. This is because, among other reasons, `mean(x)` makes two passes over the vector to be more numerically accurate.)
@@ -443,10 +447,10 @@ microbenchmark(
   mean(x),
   mean.default(x)
 )
-#> Unit: microseconds
-#>             expr  min   lq mean median   uq   max neval
-#>          mean(x) 3.46 3.53 3.84   3.59 3.66 23.90   100
-#>  mean.default(x) 1.67 1.72 1.81   1.77 1.82  4.27   100
+#> Unit: nanoseconds
+#>             expr   min    lq mean median    uq    max neval cld
+#>          mean(x) 3,840 4,270 7890  5,970 8,960 58,500   100   b
+#>  mean.default(x)   853 1,280 1921  1,710 2,560  5,550   100  a
 ```
 
 This optimisation is a little risky. While `mean.default()` is almost twice as fast, it'll fail in surprising ways if `x` is not a numeric vector. You should only use it if you know for sure what `x` is.
@@ -469,9 +473,9 @@ microbenchmark(
   as.data.frame = as.data.frame(l)
 )
 #> Unit: microseconds
-#>           expr     min      lq   mean  median      uq   max neval
-#>       quick_df     9.1    10.4   41.6    13.6    14.2 2,830   100
-#>  as.data.frame 1,300.0 1,320.0 1414.9 1,340.0 1,400.0 4,030   100
+#>           expr      min      lq mean median      uq   max neval cld
+#>       quick_df     7.25    10.7   89     19    27.5 6,410   100  a 
+#>  as.data.frame 1,270.00 1,550.0 2201  1,990 2,680.0 5,630   100   b
 ```
 
 Again, note the trade-off. This method is fast because it's dangerous. If you give it bad inputs, you'll get a corrupt data frame:
@@ -591,11 +595,11 @@ microbenchmark(
   diff4(x)
 )
 #> Unit: microseconds
-#>      expr  min   lq   mean median   uq      max neval
-#>  diff1(x) 4.56 4.98 197.14   5.33 5.99 19,100.0   100
-#>  diff2(x) 3.85 4.16   5.04   4.45 5.07     25.9   100
-#>  diff3(x) 3.25 3.61  92.50   3.85 4.34  8,850.0   100
-#>  diff4(x) 2.36 2.70  36.27   2.87 3.21  3,330.0   100
+#>      expr  min   lq   mean median   uq      max neval cld
+#>  diff1(x) 3.41 3.84 217.94   4.27 4.27 21,400.0   100   a
+#>  diff2(x) 2.99 3.41   3.86   3.41 3.84     28.2   100   a
+#>  diff3(x) 2.56 2.56  84.54   2.99 3.41  8,150.0   100   a
+#>  diff4(x) 1.71 2.13  38.03   2.13 2.56  3,580.0   100   a
 ```
 
 You'll be able to make `diff()` even faster for this special case once you've read [Rcpp](#rcpp).
@@ -625,9 +629,9 @@ microbenchmark(
   boot_cor2(df, 10)
 )
 #> Unit: microseconds
-#>               expr   min    lq mean median    uq   max neval
-#>  boot_cor1(df, 10) 117.0 118.0  152  120.0 126.0 2,480   100
-#>  boot_cor2(df, 10)  76.3  77.9  123   78.5  79.5 2,580   100
+#>               expr   min    lq mean median  uq   max neval cld
+#>  boot_cor1(df, 10) 113.0 145.0  405    266 364 6,630   100   a
+#>  boot_cor2(df, 10)  75.5  85.5  272    163 226 6,990   100   a
 ```
 
 ### Exercises
@@ -655,10 +659,10 @@ microbenchmark(
     )
     system.time(rowSums(df))
     #>    user  system elapsed 
-    #>   0.076   0.004   0.077
+    #>    0.06    0.00    0.06
     system.time(rowSums2(df))
     #>    user  system elapsed 
-    #>   0.036   0.004   0.039
+    #>    0.03    0.00    0.03
     ```
 
 1.  What's the difference between `rowSums()` and `.rowSums()`?
@@ -748,10 +752,10 @@ microbenchmark(
   lookup[x100]
 )
 #> Unit: nanoseconds
-#>          expr   min    lq mean median    uq    max neval
-#>    lookup[x1]   663   692  735    712   738  1,410   100
-#>   lookup[x10] 1,450 1,480 1575  1,500 1,530  7,440   100
-#>  lookup[x100] 4,650 4,950 5245  5,150 5,390 10,400   100
+#>          expr   min    lq mean median    uq    max neval cld
+#>    lookup[x1]     0     1  461    427   428 11,500   100 a  
+#>   lookup[x10] 1,280 1,280 1558  1,710 1,710  3,840   100  b 
+#>  lookup[x100] 3,840 4,270 4865  4,690 4,690 14,500   100   c
 ```
 
 Vectorisation won't solve every problem, and rather than torturing an existing algorithm into one that uses a vectorised approach, you're often better off writing your own vectorised function in C++. You'll learn how to do so in [Rcpp](#rcpp). 
@@ -796,11 +800,11 @@ microbenchmark(
   vec100  = paste(strings100, collapse = "")
 )
 #> Unit: microseconds
-#>     expr    min     lq   mean median     uq     max neval
-#>   loop10  22.80  23.10  23.47  23.40  23.60    29.5   100
-#>  loop100 700.00 703.00 730.57 705.00 707.00 3,170.0   100
-#>    vec10   5.87   5.97   6.39   6.12   6.25    28.0   100
-#>   vec100  44.80  45.20  45.51  45.40  45.50    54.2   100
+#>     expr    min     lq   mean  median      uq     max neval cld
+#>   loop10  22.60  27.70   80.8    40.7    49.3 3,850.0   100  a 
+#>  loop100 875.00 982.00 1353.3 1,340.0 1,520.0 3,490.0   100   b
+#>    vec10   4.69   8.11   11.5    10.2    12.8    75.5   100  a 
+#>   vec100  39.30  50.30   71.2    71.9    80.6   157.0   100  a
 ```
 
 Modifying an object in a loop, e.g., `x[i] <- y`, can also create a copy, depending on the class of `x`. [Modification in place](#modification) discusses this issue in more depth and gives you some tools to determine when you're making copies.
@@ -828,10 +832,10 @@ microbenchmark(
   lapply(x, is.null)
 )
 #> Unit: microseconds
-#>                   expr  min   lq  mean median   uq      max neval
-#>    lapply2(x, is.null) 2.31 2.34 38.09   2.40 2.46 3,570.00   100
-#>  lapply2_c(x, is.null) 2.32 2.35  2.44   2.41 2.46     4.14   100
-#>     lapply(x, is.null) 2.88 2.92  3.10   2.96 3.04    12.30   100
+#>                   expr  min   lq  mean median   uq     max neval cld
+#>    lapply2(x, is.null) 1.71 1.71 39.76   1.71 2.13 3,790.0   100   a
+#>  lapply2_c(x, is.null) 1.71 1.71  2.08   1.71 2.13    16.2   100   a
+#>     lapply(x, is.null) 2.56 2.56  3.03   2.56 2.99    24.3   100   a
 ```
 
 Byte code compilation really helps here, but in most cases you're more likely to get a 5-10% improvement. All base R functions are byte code compiled by default. 
@@ -856,12 +860,12 @@ For data in this form, there are two ways to use `t.test()`. We can either use t
 ```r
 system.time(for(i in 1:m) t.test(X[i, ] ~ grp)$statistic)
 #>    user  system elapsed 
-#>    0.76    0.00    0.76
+#>    1.14    0.00    1.16
 system.time(
   for(i in 1:m) t.test(X[i, grp == 1], X[i, grp == 2])$statistic
 )
 #>    user  system elapsed 
-#>   0.220   0.000   0.222
+#>    0.26    0.00    0.27
 ```
 
 Of course, a for loop computes, but doesn't save the values. We'll use `apply()` to do that. This adds a little overhead:
@@ -873,7 +877,7 @@ compT <- function(x, grp){
 }
 system.time(t1 <- apply(X, 1, compT, grp = grp))
 #>    user  system elapsed 
-#>   0.228   0.000   0.225
+#>    0.25    0.00    0.26
 ```
 
 How can we make this faster? First, we could try doing less work. If you look at the source code of `stats:::t.test.default()`, you'll see that it does a lot more than just compute the t-statistic. It also computes the p-value and formats the output for printing. We can try to make our code faster by stripping out those pieces.
@@ -897,7 +901,7 @@ my_t <- function(x, grp) {
 }
 system.time(t2 <- apply(X, 1, my_t, grp = grp))
 #>    user  system elapsed 
-#>   0.028   0.000   0.027
+#>    0.03    0.00    0.04
 stopifnot(all.equal(t1, t2))
 ```
 
@@ -924,7 +928,7 @@ rowtstat <- function(X, grp){
 }
 system.time(t3 <- rowtstat(X, grp))
 #>    user  system elapsed 
-#>   0.012   0.000   0.012
+#>    0.00    0.00    0.01
 stopifnot(all.equal(t1, t3))
 ```
 
@@ -942,9 +946,9 @@ microbenchmark(
   unit = "ms"
 )
 #> Unit: milliseconds
-#>                 expr   min    lq  mean median    uq  max neval
-#>     rowtstat(X, grp) 0.536 0.550 0.666  0.702 0.726 1.47   100
-#>  rowtstat_bc(X, grp) 0.535 0.543 0.648  0.599 0.711 3.06   100
+#>                 expr   min    lq mean median   uq   max neval cld
+#>     rowtstat(X, grp) 0.457 0.766 1.09  0.895 1.24  6.45   100   a
+#>  rowtstat_bc(X, grp) 0.457 0.748 1.38  0.842 1.10 47.70   100   a
 ```
 
 In this example, byte code compilation doesn't help at all.

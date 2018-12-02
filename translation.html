@@ -1440,7 +1440,7 @@ We do this in order to specially handle unknown symbols and functions.</p></li>
 <a class="sourceLine" id="cb908-13" data-line-number="13"><span class="co">#&gt;     contents &lt;- paste(..., collapse = &quot;, &quot;)</span></a>
 <a class="sourceLine" id="cb908-14" data-line-number="14"><span class="co">#&gt;     paste0(&quot;\\mathrm{foo}(&quot;, contents, &quot;)&quot;)</span></a>
 <a class="sourceLine" id="cb908-15" data-line-number="15"><span class="co">#&gt; }</span></a>
-<a class="sourceLine" id="cb908-16" data-line-number="16"><span class="co">#&gt; &lt;environment: 0x2fa3fd8&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb908-16" data-line-number="16"><span class="co">#&gt; &lt;environment: 0x00000000190442d8&gt;</span></a></code></pre></div>
 <p>And again we update <code>latex_env()</code>:</p>
 <div class="sourceCode" id="cb909"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb909-1" data-line-number="1">latex_env &lt;-<span class="st"> </span><span class="cf">function</span>(expr) {</a>
 <a class="sourceLine" id="cb909-2" data-line-number="2">  calls &lt;-<span class="st"> </span><span class="kw">all_calls</span>(expr)</a>
@@ -1508,7 +1508,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Translation.Rmd",
 "text": "Edit"
 },
-"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.epub", "EPUB3"]],
+"download": ["adv-r.pdf", "adv-r.epub"],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

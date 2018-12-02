@@ -955,16 +955,16 @@ to ask what the first element of an environment is).</p></li>
 <p><img src="diagrams/environments/loop.png" width="293" style="display: block; margin: auto;" /></p>
 <p>Printing an environment just displays its memory address, which is not terribly useful:</p>
 <div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb251-1" data-line-number="1">e1</a>
-<a class="sourceLine" id="cb251-2" data-line-number="2"><span class="co">#&gt; &lt;environment: 0x196c3d8&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb251-2" data-line-number="2"><span class="co">#&gt; &lt;environment: 0x000000001c0ec3c0&gt;</span></a></code></pre></div>
 <p>Instead, we’ll use <code>env_print()</code> which gives us a little more information:</p>
 <div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb252-1" data-line-number="1"><span class="kw">env_print</span>(e1)</a>
-<a class="sourceLine" id="cb252-2" data-line-number="2"><span class="co">#&gt; &lt;environment: 0x196c3d8&gt;</span></a>
-<a class="sourceLine" id="cb252-3" data-line-number="3"><span class="co">#&gt;   parent: &lt;environment: global&gt;</span></a>
-<a class="sourceLine" id="cb252-4" data-line-number="4"><span class="co">#&gt;   bindings:</span></a>
-<a class="sourceLine" id="cb252-5" data-line-number="5"><span class="co">#&gt;    * a: &lt;lgl&gt;</span></a>
-<a class="sourceLine" id="cb252-6" data-line-number="6"><span class="co">#&gt;    * b: &lt;chr&gt;</span></a>
-<a class="sourceLine" id="cb252-7" data-line-number="7"><span class="co">#&gt;    * c: &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb252-8" data-line-number="8"><span class="co">#&gt;    * d: &lt;env&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb252-2" data-line-number="2"><span class="co">#&gt; &lt;environment: 000000001C0EC3C0&gt;</span></a>
+<a class="sourceLine" id="cb252-3" data-line-number="3"><span class="co">#&gt; parent: &lt;environment: global&gt;</span></a>
+<a class="sourceLine" id="cb252-4" data-line-number="4"><span class="co">#&gt; bindings:</span></a>
+<a class="sourceLine" id="cb252-5" data-line-number="5"><span class="co">#&gt;  * a: &lt;lgl&gt;</span></a>
+<a class="sourceLine" id="cb252-6" data-line-number="6"><span class="co">#&gt;  * b: &lt;chr&gt;</span></a>
+<a class="sourceLine" id="cb252-7" data-line-number="7"><span class="co">#&gt;  * c: &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb252-8" data-line-number="8"><span class="co">#&gt;  * d: &lt;env&gt;</span></a></code></pre></div>
 <p>You can use <code>env_names()</code> to get a character vector giving the current bindings</p>
 <div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb253-1" data-line-number="1"><span class="kw">env_names</span>(e1)</a>
 <a class="sourceLine" id="cb253-2" data-line-number="2"><span class="co">#&gt; [1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot;</span></a></code></pre></div>
@@ -998,7 +998,7 @@ You can set the parent environment by supplying an unnamed argument to <code>env
 <p>We use the metaphor of a family to name environments relative to one another. The grandparent of an environment is the parent’s parent, and the ancestors include all parent environments up to the empty environment. To save space, I typically won’t draw all the ancestors; just remember whenever you see a pale blue circle, there’s a parent environment somewhere.</p>
 <p>You can find the parent of an environment with <code>env_parent()</code>:</p>
 <div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb256-1" data-line-number="1"><span class="kw">env_parent</span>(e2b)</a>
-<a class="sourceLine" id="cb256-2" data-line-number="2"><span class="co">#&gt; &lt;environment: 0x42948b0&gt;</span></a>
+<a class="sourceLine" id="cb256-2" data-line-number="2"><span class="co">#&gt; &lt;environment: 0x00000000161cf330&gt;</span></a>
 <a class="sourceLine" id="cb256-3" data-line-number="3"><span class="kw">env_parent</span>(e2a)</a>
 <a class="sourceLine" id="cb256-4" data-line-number="4"><span class="co">#&gt; &lt;environment: R_GlobalEnv&gt;</span></a></code></pre></div>
 <p>
@@ -1011,11 +1011,11 @@ Only one environment doesn’t have a parent: the <strong>empty</strong> environ
 <a class="sourceLine" id="cb258-2" data-line-number="2"><span class="co">#&gt; Error: The empty environment has no parent</span></a></code></pre></div>
 <p>You can list all ancestors of an environment with <code>env_parents()</code>:</p>
 <div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb259-1" data-line-number="1"><span class="kw">env_parents</span>(e2b)</a>
-<a class="sourceLine" id="cb259-2" data-line-number="2"><span class="co">#&gt; [[1]]   &lt;env: 0x42948b0&gt;</span></a>
+<a class="sourceLine" id="cb259-2" data-line-number="2"><span class="co">#&gt; [[1]]   &lt;env: 00000000161CF330&gt;</span></a>
 <a class="sourceLine" id="cb259-3" data-line-number="3"><span class="co">#&gt; [[2]] $ &lt;env: global&gt;</span></a>
 <a class="sourceLine" id="cb259-4" data-line-number="4"></a>
 <a class="sourceLine" id="cb259-5" data-line-number="5"><span class="kw">env_parents</span>(e2d)</a>
-<a class="sourceLine" id="cb259-6" data-line-number="6"><span class="co">#&gt; [[1]]   &lt;env: 0x55816b0&gt;</span></a>
+<a class="sourceLine" id="cb259-6" data-line-number="6"><span class="co">#&gt; [[1]]   &lt;env: 0000000019038A00&gt;</span></a>
 <a class="sourceLine" id="cb259-7" data-line-number="7"><span class="co">#&gt; [[2]] $ &lt;env: empty&gt;</span></a></code></pre></div>
 <!-- GVW: so the empty environment *isn't* the parent of the global environment? -->
 <p>By default, <code>env_parents()</code> continues until it hits either the global environment or the empty environment. You can control this behaviour with the <code>last</code> environment.</p>
@@ -1292,14 +1292,14 @@ the parents or only looks in one environment.</p></li>
 <a class="sourceLine" id="cb278-3" data-line-number="3"><span class="co">#&gt; attr(,&quot;name&quot;)</span></a>
 <a class="sourceLine" id="cb278-4" data-line-number="4"><span class="co">#&gt; [1] &quot;package:rlang&quot;</span></a>
 <a class="sourceLine" id="cb278-5" data-line-number="5"><span class="co">#&gt; attr(,&quot;path&quot;)</span></a>
-<a class="sourceLine" id="cb278-6" data-line-number="6"><span class="co">#&gt; [1] &quot;/home/travis/R/Library/rlang&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb278-6" data-line-number="6"><span class="co">#&gt; [1] &quot;D:/R/library/rlang&quot;</span></a></code></pre></div>
 <p>And the parent of that package is the second to last package you attached:</p>
 <div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb279-1" data-line-number="1"><span class="kw">env_parent</span>(<span class="kw">env_parent</span>(<span class="kw">global_env</span>()))</a>
 <a class="sourceLine" id="cb279-2" data-line-number="2"><span class="co">#&gt; &lt;environment: package:stats&gt;</span></a>
 <a class="sourceLine" id="cb279-3" data-line-number="3"><span class="co">#&gt; attr(,&quot;name&quot;)</span></a>
 <a class="sourceLine" id="cb279-4" data-line-number="4"><span class="co">#&gt; [1] &quot;package:stats&quot;</span></a>
 <a class="sourceLine" id="cb279-5" data-line-number="5"><span class="co">#&gt; attr(,&quot;path&quot;)</span></a>
-<a class="sourceLine" id="cb279-6" data-line-number="6"><span class="co">#&gt; [1] &quot;/home/travis/R-bin/lib/R/library/stats&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb279-6" data-line-number="6"><span class="co">#&gt; [1] &quot;D:/R/R-3.5.1/library/stats&quot;</span></a></code></pre></div>
 <p>If you follow all the parents back, you see the order in which every package has been attached. This is known as the <strong>search path</strong> because all objects in these environments can be found from the top-level interactive workspace.</p>
 <div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb280-1" data-line-number="1"><span class="kw">search_envs</span>()</a>
 <a class="sourceLine" id="cb280-2" data-line-number="2"><span class="co">#&gt;  [[1]] $ &lt;env: global&gt;</span></a>
@@ -1358,7 +1358,7 @@ with <code>base_env()</code>.</p></li>
 <a class="sourceLine" id="cb283-2" data-line-number="2"><span class="co">#&gt; function (x, na.rm = FALSE) </span></a>
 <a class="sourceLine" id="cb283-3" data-line-number="3"><span class="co">#&gt; sqrt(var(if (is.vector(x) || is.factor(x)) x else as.double(x), </span></a>
 <a class="sourceLine" id="cb283-4" data-line-number="4"><span class="co">#&gt;     na.rm = na.rm))</span></a>
-<a class="sourceLine" id="cb283-5" data-line-number="5"><span class="co">#&gt; &lt;bytecode: 0x6d2bfb8&gt;</span></a>
+<a class="sourceLine" id="cb283-5" data-line-number="5"><span class="co">#&gt; &lt;bytecode: 0x000000001d5f84b8&gt;</span></a>
 <a class="sourceLine" id="cb283-6" data-line-number="6"><span class="co">#&gt; &lt;environment: namespace:stats&gt;</span></a></code></pre></div>
 <p><code>sd()</code> is defined in terms of <code>var()</code>, so you might worry that the result of <code>sd()</code> would be affected by any function called <code>var()</code> either in the global environment, or in one of the other attached packages. R avoids this problem by taking advantage of the function vs. binding environment described above. Every function in a package is associated with a pair of environments: the package environment, which you learned about earlier, and the <strong>namespace</strong> environment.</p>
 <ul>
@@ -1430,11 +1430,11 @@ to how S3 method dispatch works.</p></li>
 <a class="sourceLine" id="cb287-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb287-6" data-line-number="6">e &lt;-<span class="st"> </span><span class="kw">h2</span>(<span class="dt">x =</span> <span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb287-7" data-line-number="7"><span class="kw">env_print</span>(e)</a>
-<a class="sourceLine" id="cb287-8" data-line-number="8"><span class="co">#&gt; &lt;environment: 0x5a82300&gt;</span></a>
-<a class="sourceLine" id="cb287-9" data-line-number="9"><span class="co">#&gt;   parent: &lt;environment: global&gt;</span></a>
-<a class="sourceLine" id="cb287-10" data-line-number="10"><span class="co">#&gt;   bindings:</span></a>
-<a class="sourceLine" id="cb287-11" data-line-number="11"><span class="co">#&gt;    * a: &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb287-12" data-line-number="12"><span class="co">#&gt;    * x: &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb287-8" data-line-number="8"><span class="co">#&gt; &lt;environment: 000000001CDBE2A8&gt;</span></a>
+<a class="sourceLine" id="cb287-9" data-line-number="9"><span class="co">#&gt; parent: &lt;environment: global&gt;</span></a>
+<a class="sourceLine" id="cb287-10" data-line-number="10"><span class="co">#&gt; bindings:</span></a>
+<a class="sourceLine" id="cb287-11" data-line-number="11"><span class="co">#&gt;  * a: &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb287-12" data-line-number="12"><span class="co">#&gt;  * x: &lt;dbl&gt;</span></a>
 <a class="sourceLine" id="cb287-13" data-line-number="13"><span class="kw">fn_env</span>(h2)</a>
 <a class="sourceLine" id="cb287-14" data-line-number="14"><span class="co">#&gt; &lt;environment: R_GlobalEnv&gt;</span></a></code></pre></div>
 <p></p>
@@ -1447,7 +1447,7 @@ to how S3 method dispatch works.</p></li>
 <a class="sourceLine" id="cb288-5" data-line-number="5">plus_one &lt;-<span class="st"> </span><span class="kw">plus</span>(<span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb288-6" data-line-number="6">plus_one</a>
 <a class="sourceLine" id="cb288-7" data-line-number="7"><span class="co">#&gt; function(y) x + y</span></a>
-<a class="sourceLine" id="cb288-8" data-line-number="8"><span class="co">#&gt; &lt;environment: 0x48cb510&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb288-8" data-line-number="8"><span class="co">#&gt; &lt;environment: 0x00000000165ad7d8&gt;</span></a></code></pre></div>
 <p><img src="diagrams/environments/closure.png" width="189" style="display: block; margin: auto;" /></p>
 <p>What happens when we call <code>plus_one()</code>? Its execution environment will have the captured execution environment of <code>plus()</code> as its parent:</p>
 <div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb289-1" data-line-number="1"><span class="kw">plus_one</span>(<span class="dv">2</span>)</a>
@@ -1661,7 +1661,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Environments.Rmd",
 "text": "Edit"
 },
-"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.epub", "EPUB3"]],
+"download": ["adv-r.pdf", "adv-r.epub"],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

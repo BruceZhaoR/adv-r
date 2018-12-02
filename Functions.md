@@ -104,7 +104,8 @@ f01 <- function(x) {
 }
 ```
 
-<img src="diagrams/functions/first-class.png" width="156" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.62in]{diagrams/functions/first-class} \end{center}
 
 \index{functions!anonymous} 
 \index{anoynmous functions}
@@ -159,7 +160,8 @@ the values associated with the names.
 
 I'll draw functions as in the following diagram. The black dot on the left is the environment. The two blocks to the right are the function arguments. I won't draw the body, because it's usually large, and doesn't help you understand the "shape" of the function.
 
-<img src="diagrams/functions/components.png" width="118" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=1.23in]{diagrams/functions/components} \end{center}
 
 While the formals and body are specified explicitly when you create a function, the environment is specified implicitly, based on _where_ you defined the function. The function environment always exists, but it is only printed when the function isn't defined in the global environment.
 
@@ -854,7 +856,7 @@ Because of lazy evaluation, you don't need to worry about unnecessary computatio
     force
     #> function (x) 
     #> x
-    #> <bytecode: 0xce3c88>
+    #> <bytecode: 0x0000000012d116d0>
     #> <environment: namespace:base>
     ```
     
@@ -903,7 +905,7 @@ Because of lazy evaluation, you don't need to worry about unnecessary computatio
       print(x)
     }
     show_time()
-    #> [1] "2018-10-19 05:33:06 UTC"
+    #> [1] "2018-10-27 23:46:53 CST"
     ```
 
 1.  How many arguments are required when calling `library()`?
@@ -1040,7 +1042,9 @@ Using `...` comes with two downsides:
     plot(1:10, col = "red", pch = 20, xlab = "x", col.lab = "blue")
     ```
     
-    <img src="Functions_files/figure-epub3/unnamed-chunk-63-1.png" width="70%" style="display: block; margin: auto;" />
+    
+    
+    \begin{center}\includegraphics[width=0.7\linewidth]{Functions_files/figure-latex/unnamed-chunk-63-1} \end{center}
     
 1.  Why does `plot(1:10, col = "red")` only colour the points, not the axes 
     or labels? Read the source code of `plot.default()` to find out.
@@ -1230,9 +1234,9 @@ with_dir <- function(dir, code) {
 }
 
 getwd()
-#> [1] "/home/travis/build/BruceZhaoR/adv-r"
+#> [1] "C:/Users/Bruce/Documents/Github/BruceZhaoR/adv-r"
 with_dir("~", getwd())
-#> [1] "/home/travis"
+#> [1] "C:/Users/Bruce/Documents"
 ```
 
 See the [withr package](http://withr.r-lib.org) for a collection of functions of this nature.
@@ -1291,6 +1295,9 @@ f()
       readLines(temp)
     }
     capture.output2(cat("a", "b", "c", sep = "\n"))
+    #> Warning in file.remove(temp): cannot remove file 'C:
+    #> \Users\Bruce\AppData\Local\Temp\RtmpSSeNZ4\file399c33881861', reason
+    #> 'Permission denied'
     #> [1] "a" "b" "c"
     ```
 
@@ -1357,8 +1364,8 @@ Knowing the function name of a non-prefix function allows you to override its be
   }
 }
 replicate(50, (1 + 2))
-#>  [1] 3 3 3 3 3 3 3 3 3 3 4 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3
-#> [36] 3 4 3 4 3 3 3 3 4 3 3 3 3 3 3
+#>  [1] 3 3 3 3 3 3 3 3 3 3 4 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3
+#> [33] 3 3 3 3 4 3 4 3 3 3 3 4 3 3 3 3 3 3
 rm("(")
 ```
 

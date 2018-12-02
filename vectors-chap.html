@@ -1331,7 +1331,7 @@ tabulate more variables?</p></li>
 <a class="sourceLine" id="cb76-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb76-4" data-line-number="4">l2 &lt;-<span class="st"> </span><span class="kw">list</span>(mtcars, mtcars, mtcars, mtcars)</a>
 <a class="sourceLine" id="cb76-5" data-line-number="5">lobstr<span class="op">::</span><span class="kw">obj_size</span>(l2)</a>
-<a class="sourceLine" id="cb76-6" data-line-number="6"><span class="co">#&gt; 7,872 B</span></a></code></pre></div>
+<a class="sourceLine" id="cb76-6" data-line-number="6"><span class="co">#&gt; 7,792 B</span></a></code></pre></div>
 <p>Lists can contain complex objects so it’s not possible to pick one visual style that works for every list. Generally I’ll draw lists like vectors, using colour to remind you of the hierarchy.</p>
 <p><img src="diagrams/vectors/list.png" width="449" style="display: block; margin: auto;" /></p>
 <p>Lists are sometimes called <strong>recursive</strong> vectors, because a list can contain other lists. This makes them fundamentally different from atomic vectors.</p>
@@ -1582,16 +1582,16 @@ string surgery.</p>
 <a class="sourceLine" id="cb93-2" data-line-number="2"><span class="co">#&gt; # A tibble: 87 x 13</span></a>
 <a class="sourceLine" id="cb93-3" data-line-number="3"><span class="co">#&gt;    name  height  mass hair_color skin_color eye_color birth_year gender</span></a>
 <a class="sourceLine" id="cb93-4" data-line-number="4"><span class="co">#&gt;    &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; </span></a>
-<a class="sourceLine" id="cb93-5" data-line-number="5"><span class="co">#&gt;  1 Luke…    172    77 blond      fair       blue            19   male  </span></a>
+<a class="sourceLine" id="cb93-5" data-line-number="5"><span class="co">#&gt;  1 Luke~    172    77 blond      fair       blue            19   male  </span></a>
 <a class="sourceLine" id="cb93-6" data-line-number="6"><span class="co">#&gt;  2 C-3PO    167    75 &lt;NA&gt;       gold       yellow         112   &lt;NA&gt;  </span></a>
-<a class="sourceLine" id="cb93-7" data-line-number="7"><span class="co">#&gt;  3 R2-D2     96    32 &lt;NA&gt;       white, bl… red             33   &lt;NA&gt;  </span></a>
-<a class="sourceLine" id="cb93-8" data-line-number="8"><span class="co">#&gt;  4 Dart…    202   136 none       white      yellow          41.9 male  </span></a>
-<a class="sourceLine" id="cb93-9" data-line-number="9"><span class="co">#&gt;  5 Leia…    150    49 brown      light      brown           19   female</span></a>
-<a class="sourceLine" id="cb93-10" data-line-number="10"><span class="co">#&gt;  6 Owen…    178   120 brown, gr… light      blue            52   male  </span></a>
-<a class="sourceLine" id="cb93-11" data-line-number="11"><span class="co">#&gt;  7 Beru…    165    75 brown      light      blue            47   female</span></a>
+<a class="sourceLine" id="cb93-7" data-line-number="7"><span class="co">#&gt;  3 R2-D2     96    32 &lt;NA&gt;       white, bl~ red             33   &lt;NA&gt;  </span></a>
+<a class="sourceLine" id="cb93-8" data-line-number="8"><span class="co">#&gt;  4 Dart~    202   136 none       white      yellow          41.9 male  </span></a>
+<a class="sourceLine" id="cb93-9" data-line-number="9"><span class="co">#&gt;  5 Leia~    150    49 brown      light      brown           19   female</span></a>
+<a class="sourceLine" id="cb93-10" data-line-number="10"><span class="co">#&gt;  6 Owen~    178   120 brown, gr~ light      blue            52   male  </span></a>
+<a class="sourceLine" id="cb93-11" data-line-number="11"><span class="co">#&gt;  7 Beru~    165    75 brown      light      blue            47   female</span></a>
 <a class="sourceLine" id="cb93-12" data-line-number="12"><span class="co">#&gt;  8 R5-D4     97    32 &lt;NA&gt;       white, red red             NA   &lt;NA&gt;  </span></a>
-<a class="sourceLine" id="cb93-13" data-line-number="13"><span class="co">#&gt;  9 Bigg…    183    84 black      light      brown           24   male  </span></a>
-<a class="sourceLine" id="cb93-14" data-line-number="14"><span class="co">#&gt; 10 Obi-…    182    77 auburn, w… fair       blue-gray       57   male  </span></a>
+<a class="sourceLine" id="cb93-13" data-line-number="13"><span class="co">#&gt;  9 Bigg~    183    84 black      light      brown           24   male  </span></a>
+<a class="sourceLine" id="cb93-14" data-line-number="14"><span class="co">#&gt; 10 Obi-~    182    77 auburn, w~ fair       blue-gray       57   male  </span></a>
 <a class="sourceLine" id="cb93-15" data-line-number="15"><span class="co">#&gt; # ... with 77 more rows, and 5 more variables: homeworld &lt;chr&gt;,</span></a>
 <a class="sourceLine" id="cb93-16" data-line-number="16"><span class="co">#&gt; #   species &lt;chr&gt;, films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</span></a></code></pre></div>
 <p>Tibbles:</p>
@@ -1821,7 +1821,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Vectors.Rmd",
 "text": "Edit"
 },
-"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.epub", "EPUB3"]],
+"download": ["adv-r.pdf", "adv-r.epub"],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true
