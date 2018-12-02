@@ -10,8 +10,9 @@ git config --global user.name "BruceZhaoR"
 
 git clone -q -b gh-pages https://${GITHUB_PAT}@github.com/${TRAVIS_REPO_SLUG}.git book-output
 cd book-output
-cp -r -f ../_book/* ./
+git rm -rf *
+cp -r ../_book/* ./
 git add --all *
 git commit -m"Update the book (travis build ${TRAVIS_BUILD_NUMBER})"
-echo add files to gh-pages
-git push -q -f origin gh-pages
+# echo add files to gh-pages
+git push -q origin gh-pages
