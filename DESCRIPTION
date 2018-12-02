@@ -36,9 +36,9 @@ Imports:
     vctrs,
     zeallot,
     svglite
+    zeallot
 Remotes: 
     hadley/emo,
     hadley/lineprof,
     r-lib/lobstr,
-    r-lib/sloop,
     r-lib/vctrs
