@@ -54,5 +54,4 @@ The following three chapters discuss the three key functional techniques that he
 
 Collectively, these types of function are caled __higher-order functions__, and fill out a two-by-two table:
 
-
-\begin{center}\includegraphics[width=2.95in]{diagrams/fp} \end{center}
+<img src="diagrams/fp.png" width="283" style="display: block; margin: auto;" />

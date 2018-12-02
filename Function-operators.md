@@ -91,7 +91,7 @@ If you run the same code with a functional, you get no output and it can be hard
 
 ```r
 map_dbl(x, sum)
-#> Error in sum(..., na.rm = na.rm):
+#> Error in .Primitive("sum")(..., na.rm):
 #>   invalid 'type' (character) of argument
 ```
 
@@ -109,7 +109,7 @@ str(safe_sum(x[[4]]))
 #>  $ result: NULL
 #>  $ error :List of 2
 #>   ..$ message: chr "invalid 'type' (character) of argument"
-#>   ..$ call   : language sum(..., na.rm = na.rm)
+#>   ..$ call   : language .Primitive("sum")(..., na.rm)
 #>   ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
 ```
 
@@ -133,8 +133,8 @@ str(out)
 #>   ..$ result: NULL
 #>   ..$ error :List of 2
 #>   .. ..$ message: chr "invalid 'type' (character) of argument"
-#>   .. ..$ call   : language sum(..., na.rm = na.rm)
-#>   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condit"..
+#>   .. ..$ call   : language .Primitive("sum")(..., na.rm)
+#>   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
 ```
 
 The output is in a slightly inconvenient form, since we have four lists each containing a list containing the result and the error. We can make it more convenient by using `purrr::transpose()` to turn it "inside-out" so that we get a list of results and a list of errors:
@@ -155,8 +155,8 @@ str(out)
 #>   ..$ : NULL
 #>   ..$ :List of 2
 #>   .. ..$ message: chr "invalid 'type' (character) of argument"
-#>   .. ..$ call   : language sum(..., na.rm = na.rm)
-#>   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condit"..
+#>   .. ..$ call   : language .Primitive("sum")(..., na.rm)
+#>   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
 ```
 
 Now we can easily find the results that worked, or the inputs that failed:
@@ -232,12 +232,12 @@ slow_function <- function(x) {
 system.time(print(slow_function(1)))
 #> [1] 0.808
 #>    user  system elapsed 
-#>       0       0       1
+#>   0.001   0.000   1.001
 
 system.time(print(slow_function(1)))
 #> [1] 8.34
 #>    user  system elapsed 
-#>       0       0       1
+#>   0.004   0.000   1.004
 ```
 
 When we memoise this function, it's slow when we call it with new arguments. But when we call it with arguments that it's seen before it's instanteous: it retrieves the previous value of the computation.
@@ -248,12 +248,12 @@ fast_function <- memoise::memoise(slow_function)
 system.time(print(fast_function(1)))
 #> [1] 6.01
 #>    user  system elapsed 
-#>       0       0       1
+#>   0.001   0.000   1.001
 
 system.time(print(fast_function(1)))
 #> [1] 6.01
 #>    user  system elapsed 
-#>    0.02    0.00    0.01
+#>   0.019   0.000   0.019
 ```
 
 A relatively realistic use of memoisation is computing the Fibonacci series. The Fibonacci series is defined recursively: the first two values are defined by convention, $f(0) = 0$, $f(n) = 1$, and then $f(n) = f(n - 1) + f(n - 2)$ (for any positive integer). A naive version is slow because, for example, `fib(10)` computes `fib(9)` and `fib(8)`, and `fib(9)` computes `fib(8)` and `fib(7)`, and so on. 
@@ -266,10 +266,10 @@ fib <- function(n) {
 }
 system.time(fib(23))
 #>    user  system elapsed 
-#>    0.06    0.00    0.08
+#>   0.044   0.000   0.044
 system.time(fib(24))
 #>    user  system elapsed 
-#>    0.11    0.00    0.13
+#>   0.064   0.004   0.067
 ```
 
 Memoising `fib()` makes the implementation much faster because each value is computed only once:
@@ -282,7 +282,7 @@ fib2 <- memoise::memoise(function(n) {
 })
 system.time(fib2(23))
 #>    user  system elapsed 
-#>    0.05    0.00    0.05
+#>   0.033   0.000   0.032
 ```
 
 And future calls can rely on previous computations:
@@ -291,7 +291,7 @@ And future calls can rely on previous computations:
 ```r
 system.time(fib2(24))
 #>    user  system elapsed 
-#>       0       0       0
+#>   0.001   0.000   0.001
 ```
 
 This is an example of __dynamic programming__, where a complex problem can be broken down into many overlapping subproblems, and remembering the results of a subproblem considerably improves performance. 

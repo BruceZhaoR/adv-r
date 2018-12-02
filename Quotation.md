@@ -412,8 +412,7 @@ expr(f(!!x, y))
 #> f(a + b + c, y)
 ```
 
-
-\begin{center}\includegraphics[width=3.15in]{diagrams/expressions/bang-bang} \end{center}
+<img src="diagrams/expressions/bang-bang.png" width="302" style="display: block; margin: auto;" />
 
 `!!!` is a one-to-many replacement. It takes a list of expressions and inserts them at the location of the `!!!`:
 
@@ -424,8 +423,7 @@ expr(f(!!!x, z = z))
 #> f(1, 2, 3, y = 10, z = z)
 ```
 
-
-\begin{center}\includegraphics[width=4.72in]{diagrams/expressions/bang-bang-bang} \end{center}
+<img src="diagrams/expressions/bang-bang-bang.png" width="453" style="display: block; margin: auto;" />
 
 ### The polite fiction of `!!`
 
@@ -566,9 +564,7 @@ palette(RColorBrewer::brewer.pal(3, "Set1"))
 plot(Sepal.Length ~ Petal.Length, data = iris, col = Species, pch = 20, cex = 2)
 ```
 
-
-
-\begin{center}\includegraphics[width=0.7\linewidth]{Quotation_files/figure-latex/unnamed-chunk-40-1} \end{center}
+<img src="Quotation_files/figure-epub3/unnamed-chunk-40-1.svg" width="70%" style="display: block; margin: auto;" />
 
 In the next chapter, you'll learn how to simulate unquoting for these functions using tools from rlang.
 
@@ -586,8 +582,8 @@ x1 <- expr(class(!!data.frame(x = 10)))
 x1
 #> class(list(x = 10))
 lobstr::ast(!!x1)
-#> o-class 
-#> \-<inline data.frame>
+#> █─class 
+#> └─<inline data.frame>
 eval(x1)
 #> [1] "data.frame"
 ```
@@ -601,11 +597,11 @@ x2 <- expr(1 + !!y2)
 x2
 #> 1 + (2 + 3)
 lobstr::ast(!!x2)
-#> o-`+` 
-#> +-1 
-#> \-o-`+` 
-#>   +-2 
-#>   \-3
+#> █─`+` 
+#> ├─1 
+#> └─█─`+` 
+#>   ├─2 
+#>   └─3
 ```
 
 And finally, R will display integer sequences as if they were generated with `:`.
@@ -616,8 +612,8 @@ x3 <- expr(f(!!c(1L, 2L, 3L, 4L, 5L)))
 x3
 #> f(1:5)
 lobstr::ast(!!x3)
-#> o-f 
-#> \-<inline integer>
+#> █─f 
+#> └─<inline integer>
 ```
 
 In general, if you're ever confused about what is actually in an AST, display the object with `lobstr::ast()`!
@@ -823,12 +819,6 @@ partition_cols <- function(.data, ...) {
 
 df <- data.frame(x1 = 1, x2 = 3, y = "a", z = "b")
 partition_cols(df, starts_with("x"))
-#> Warning: `lang()` is soft-deprecated as of rlang 0.2.0.
-#> Please use `call2()` instead
-#> This warning is displayed once per session.
-#> Warning: `new_overscope()` is soft-deprecated as of rlang 0.2.0.
-#> Please use `new_data_mask()` instead
-#> This warning is displayed once per session.
 #> $incl
 #>   x1 x2
 #> 1  1  3
@@ -901,9 +891,7 @@ One application is to create functions that work like `graphics::curve()`. `curv
 curve(sin(exp(4 * x)), n = 1000)
 ```
 
-
-
-\begin{center}\includegraphics[width=0.7\linewidth]{Quotation_files/figure-latex/curve-demo-1} \end{center}
+<img src="Quotation_files/figure-epub3/curve-demo-1.svg" width="70%" style="display: block; margin: auto;" />
 
 Here `x` is a pronoun. As with `.` in pipelines and `.x` and `.y` in purrr functionals, `x` doesn't represent a single concrete value, but is instead a placeholder that varies over the range of the plot. Functions, like `curve()`, that use an expression containing a pronoun are known as __anaphoric__ functions[^anaphora].
 
@@ -937,7 +925,7 @@ negate1 <- function(f) {
 }
 negate1(is.null)
 #> function(...) !f(...)
-#> <environment: 0x000000001c50f468>
+#> <environment: 0x5faadf0>
 
 negate2 <- function(f) {
   f <- enexpr(f)

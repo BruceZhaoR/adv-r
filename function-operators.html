@@ -1058,18 +1058,18 @@ function when there’s an error.</p></li>
 <a class="sourceLine" id="cb477-10" data-line-number="10"><span class="kw">system.time</span>(<span class="kw">print</span>(<span class="kw">slow_function</span>(<span class="dv">1</span>)))</a>
 <a class="sourceLine" id="cb477-11" data-line-number="11"><span class="co">#&gt; [1] 8.34</span></a>
 <a class="sourceLine" id="cb477-12" data-line-number="12"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb477-13" data-line-number="13"><span class="co">#&gt;    0.01    0.00    1.02</span></a></code></pre></div>
+<a class="sourceLine" id="cb477-13" data-line-number="13"><span class="co">#&gt;   0.004   0.000   1.004</span></a></code></pre></div>
 <p>When we memoise this function, it’s slow when we call it with new arguments. But when we call it with arguments that it’s seen before it’s instanteous: it retrieves the previous value of the computation.</p>
 <div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb478-1" data-line-number="1">fast_function &lt;-<span class="st"> </span>memoise<span class="op">::</span><span class="kw">memoise</span>(slow_function)</a>
 <a class="sourceLine" id="cb478-2" data-line-number="2"><span class="kw">system.time</span>(<span class="kw">print</span>(<span class="kw">fast_function</span>(<span class="dv">1</span>)))</a>
 <a class="sourceLine" id="cb478-3" data-line-number="3"><span class="co">#&gt; [1] 6.01</span></a>
 <a class="sourceLine" id="cb478-4" data-line-number="4"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb478-5" data-line-number="5"><span class="co">#&gt;       0       0       1</span></a>
+<a class="sourceLine" id="cb478-5" data-line-number="5"><span class="co">#&gt;    0.00    0.00    1.01</span></a>
 <a class="sourceLine" id="cb478-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb478-7" data-line-number="7"><span class="kw">system.time</span>(<span class="kw">print</span>(<span class="kw">fast_function</span>(<span class="dv">1</span>)))</a>
 <a class="sourceLine" id="cb478-8" data-line-number="8"><span class="co">#&gt; [1] 6.01</span></a>
 <a class="sourceLine" id="cb478-9" data-line-number="9"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb478-10" data-line-number="10"><span class="co">#&gt;    0.01    0.00    0.02</span></a></code></pre></div>
+<a class="sourceLine" id="cb478-10" data-line-number="10"><span class="co">#&gt;   0.032   0.000   0.035</span></a></code></pre></div>
 <p>A relatively realistic use of memoisation is computing the Fibonacci series. The Fibonacci series is defined recursively: the first two values are defined by convention, <span class="math inline">\(f(0) = 0\)</span>, <span class="math inline">\(f(n) = 1\)</span>, and then <span class="math inline">\(f(n) = f(n - 1) + f(n - 2)\)</span> (for any positive integer). A naive version is slow because, for example, <code>fib(10)</code> computes <code>fib(9)</code> and <code>fib(8)</code>, and <code>fib(9)</code> computes <code>fib(8)</code> and <code>fib(7)</code>, and so on.</p>
 <div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb479-1" data-line-number="1">fib &lt;-<span class="st"> </span><span class="cf">function</span>(n) {</a>
 <a class="sourceLine" id="cb479-2" data-line-number="2">  <span class="cf">if</span> (n <span class="op">&lt;</span><span class="st"> </span><span class="dv">2</span>) <span class="kw">return</span>(<span class="dv">1</span>)</a>
@@ -1077,10 +1077,10 @@ function when there’s an error.</p></li>
 <a class="sourceLine" id="cb479-4" data-line-number="4">}</a>
 <a class="sourceLine" id="cb479-5" data-line-number="5"><span class="kw">system.time</span>(<span class="kw">fib</span>(<span class="dv">23</span>))</a>
 <a class="sourceLine" id="cb479-6" data-line-number="6"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb479-7" data-line-number="7"><span class="co">#&gt;    0.05    0.00    0.05</span></a>
+<a class="sourceLine" id="cb479-7" data-line-number="7"><span class="co">#&gt;   0.064   0.000   0.065</span></a>
 <a class="sourceLine" id="cb479-8" data-line-number="8"><span class="kw">system.time</span>(<span class="kw">fib</span>(<span class="dv">24</span>))</a>
 <a class="sourceLine" id="cb479-9" data-line-number="9"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb479-10" data-line-number="10"><span class="co">#&gt;    0.11    0.00    0.11</span></a></code></pre></div>
+<a class="sourceLine" id="cb479-10" data-line-number="10"><span class="co">#&gt;   0.104   0.000   0.104</span></a></code></pre></div>
 <p>Memoising <code>fib()</code> makes the implementation much faster because each value is computed only once:</p>
 <div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb480-1" data-line-number="1">fib2 &lt;-<span class="st"> </span>memoise<span class="op">::</span><span class="kw">memoise</span>(<span class="cf">function</span>(n) {</a>
 <a class="sourceLine" id="cb480-2" data-line-number="2">  <span class="cf">if</span> (n <span class="op">&lt;</span><span class="st"> </span><span class="dv">2</span>) <span class="kw">return</span>(<span class="dv">1</span>)</a>
@@ -1088,11 +1088,11 @@ function when there’s an error.</p></li>
 <a class="sourceLine" id="cb480-4" data-line-number="4">})</a>
 <a class="sourceLine" id="cb480-5" data-line-number="5"><span class="kw">system.time</span>(<span class="kw">fib2</span>(<span class="dv">23</span>))</a>
 <a class="sourceLine" id="cb480-6" data-line-number="6"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb480-7" data-line-number="7"><span class="co">#&gt;    0.03    0.00    0.03</span></a></code></pre></div>
+<a class="sourceLine" id="cb480-7" data-line-number="7"><span class="co">#&gt;   0.040   0.000   0.041</span></a></code></pre></div>
 <p>And future calls can rely on previous computations:</p>
 <div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb481-1" data-line-number="1"><span class="kw">system.time</span>(<span class="kw">fib2</span>(<span class="dv">24</span>))</a>
 <a class="sourceLine" id="cb481-2" data-line-number="2"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb481-3" data-line-number="3"><span class="co">#&gt;       0       0       0</span></a></code></pre></div>
+<a class="sourceLine" id="cb481-3" data-line-number="3"><span class="co">#&gt;   0.000   0.000   0.002</span></a></code></pre></div>
 <p>This is an example of <strong>dynamic programming</strong>, where a complex problem can be broken down into many overlapping subproblems, and remembering the results of a subproblem considerably improves performance.</p>
 <p>Think carefully before memoising a function. If the function is not <strong>pure</strong>, i.e. the output does not depend only on the input, you will get misleading and confusing results. I created a subtle bug in devtools because I memoised the results of <code>available.package()</code>, which is rather slow because it has to download a large file from CRAN. The available packages don’t change that frequently, but if you have an R process that’s been running for a few days, the changes can become important, and because the problem only arose in long-running R processes, the bug was very painful to find.</p>
 </div>

@@ -424,19 +424,19 @@ str(cnd)
 #>  $ trace  :List of 3
 #>   ..$ calls  :List of 6
 #>   .. ..$ : language rlang::catch_cnd(abort("An error"))
-#>   .. ..$ : language base::tryCatch(condition = identity, {     forc..
-#>   .. ..$ : language base:::tryCatchList(expr, classes, parentenv, h..
-#>   .. ..$ : language base:::tryCatchOne(expr, names, parentenv, hand..
-#>   .. ..$ : language base:::doTryCatch(return(expr), name, parentenv..
+#>   .. ..$ : language base::tryCatch(condition = identity, {     force(expr..
+#>   .. ..$ : language base:::tryCatchList(expr, classes, parentenv, handlers)
+#>   .. ..$ : language base:::tryCatchOne(expr, names, parentenv, handlers[[..
+#>   .. ..$ : language base:::doTryCatch(return(expr), name, parentenv, hand..
 #>   .. ..$ : language base::force(expr)
 #>   ..$ parents: int [1:6] 0 1 2 3 4 1
 #>   ..$ envs   :List of 6
-#>   .. ..$ : chr "000000001C9A3618"
-#>   .. ..$ : chr "000000001C9A3420"
-#>   .. ..$ : chr "000000001C9A6CE0"
-#>   .. ..$ : chr "000000001C9A6998"
-#>   .. ..$ : chr "000000001C9A6650"
-#>   .. ..$ : chr "000000001C9A6308"
+#>   .. ..$ : chr "0xbae360"
+#>   .. ..$ : chr "0xba1bb8"
+#>   .. ..$ : chr "0xba2868"
+#>   .. ..$ : chr "0xba3940"
+#>   .. ..$ : chr "0xb97558"
+#>   .. ..$ : chr "0xb97910"
 #>   ..- attr(*, "class")= chr "rlang_trace"
 #>  $ parent : NULL
 #>  - attr(*, "class")= chr [1:3] "rlang_error" "error" "condition"
@@ -655,18 +655,18 @@ withCallingHandlers(f(), message = function(cnd) {
   lobstr::cst()
   cnd_muffle(cnd)
 })
-#> x
-#> +-base::withCallingHandlers(...)
-#> +-global::f()
-#> | \-global::g()
-#> |   \-global::h()
-#> |     \-base::message("!")
-#> |       +-base::withRestarts(...)
-#> |       | \-base:::withOneRestart(expr, restarts[[1L]])
-#> |       |   \-base:::doWithOneRestart(return(expr), restart)
-#> |       \-base::signalCondition(cond)
-#> \-(function (cnd) ...
-#>   \-lobstr::cst()
+#> █
+#> ├─base::withCallingHandlers(...)
+#> ├─global::f()
+#> │ └─global::g()
+#> │   └─global::h()
+#> │     └─base::message("!")
+#> │       ├─base::withRestarts(...)
+#> │       │ └─base:::withOneRestart(expr, restarts[[1L]])
+#> │       │   └─base:::doWithOneRestart(return(expr), restart)
+#> │       └─base::signalCondition(cond)
+#> └─(function (cnd) ...
+#>   └─lobstr::cst()
 ```
 
 Whereas exiting handlers are called in the context of the call to `tryCatch()`:
@@ -674,12 +674,12 @@ Whereas exiting handlers are called in the context of the call to `tryCatch()`:
 
 ```r
 tryCatch(f(), message = function(cnd) lobstr::cst())
-#> x
-#> \-base::tryCatch(f(), message = function(cnd) lobstr::cst())
-#>   \-base:::tryCatchList(expr, classes, parentenv, handlers)
-#>     \-base:::tryCatchOne(expr, names, parentenv, handlers[[1L]])
-#>       \-value[[3L]](cond)
-#>         \-lobstr::cst()
+#> █
+#> └─base::tryCatch(f(), message = function(cnd) lobstr::cst())
+#>   └─base:::tryCatchList(expr, classes, parentenv, handlers)
+#>     └─base:::tryCatchOne(expr, names, parentenv, handlers[[1L]])
+#>       └─value[[3L]](cond)
+#>         └─lobstr::cst()
 ```
 
 ### Exercises
@@ -874,11 +874,6 @@ These structured condition objects are much easier to program with. The first pl
 
 ```r
 library(testthat)
-#> 
-#> Attaching package: 'testthat'
-#> The following objects are masked from 'package:rlang':
-#> 
-#>     is_false, is_null, is_true
 
 err <- catch_cnd(my_log("a"))
 expect_s3_class(err, "error_bad_argument")
@@ -1049,20 +1044,20 @@ str(safety(abort("Error!")))
 #>   .. ..$ calls  :List of 6
 #>   .. .. ..$ : language utils::str(safety(abort("Error!")))
 #>   .. .. ..$ : language global::safety(abort("Error!"))
-#>   .. .. ..$ : language base::tryCatch(error = function(cnd) {     l..
+#>   .. .. ..$ : language base::tryCatch(error = function(cnd) {     list(re..
 #>   .. .. .. ..- attr(*, "srcref")= 'srcref' int [1:8] 2 3 7 3 3 3 2 7
-#>   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfil..
-#>   .. .. ..$ : language base:::tryCatchList(expr, classes, parentenv..
-#>   .. .. ..$ : language base:::tryCatchOne(expr, names, parentenv, h..
-#>   .. .. ..$ : language base:::doTryCatch(return(expr), name, parent..
+#>   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <en..
+#>   .. .. ..$ : language base:::tryCatchList(expr, classes, parentenv, hand..
+#>   .. .. ..$ : language base:::tryCatchOne(expr, names, parentenv, handler..
+#>   .. .. ..$ : language base:::doTryCatch(return(expr), name, parentenv, h..
 #>   .. ..$ parents: int [1:6] 0 0 2 3 4 5
 #>   .. ..$ envs   :List of 6
-#>   .. .. ..$ : chr "000000001C095350"
-#>   .. .. ..$ : chr "000000001C0951C8"
-#>   .. .. ..$ : chr "000000001C215A08"
-#>   .. .. ..$ : chr "000000001C215308"
-#>   .. .. ..$ : chr "000000001C214FC0"
-#>   .. .. ..$ : chr "000000001C219048"
+#>   .. .. ..$ : chr "0x4c460e8"
+#>   .. .. ..$ : chr "0x4c45f60"
+#>   .. .. ..$ : chr "0x4dbe4d0"
+#>   .. .. ..$ : chr "0x4dbddd0"
+#>   .. .. ..$ : chr "0x4dbda88"
+#>   .. .. ..$ : chr "0x4dbd740"
 #>   .. ..- attr(*, "class")= chr "rlang_trace"
 #>   ..$ parent : NULL
 #>   ..- attr(*, "class")= chr [1:3] "rlang_error" "error" "condition"
@@ -1207,8 +1202,8 @@ catch_cnds({
 #> message: C
 #> class:   `rlang_error`
 #> backtrace:
-#>  -global::catch_cnds(...)
-#>  -base::withCallingHandlers(...)
+#>  ─global::catch_cnds(...)
+#>  ─base::withCallingHandlers(...)
 #> Call `summary(rlang::last_error())` to see the full backtrace
 ```
 

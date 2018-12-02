@@ -10,6 +10,14 @@ The combination of first-class environments, lexical scoping, and metaprogrammin
 ```r
 library(dbplyr)
 translate_sql(x ^ 2)
+#> Warning: `new_overscope()` is soft-deprecated as of rlang 0.2.0.
+#> Please use `new_data_mask()` instead
+#> This warning is displayed once per session.
+#> Warning: `overscope_eval_next()` is soft-deprecated as of rlang 0.2.0.
+#> Please use `eval_tidy()` with a data mask instead
+#> This warning is displayed once per session.
+#> Warning: `overscope_clean()` is soft-deprecated as of rlang 0.2.0.
+#> This warning is displayed once per session.
 #> <SQL> POWER("x", 2.0)
 translate_sql(x < 5 & !is.na(x))
 #> <SQL> "x" < 5.0 AND NOT((("x") IS NULL))
@@ -31,13 +39,6 @@ This chapter together pulls together many techniques discussed elsewhere in the 
 ```r
 library(rlang)
 library(purrr)
-#> 
-#> Attaching package: 'purrr'
-#> The following objects are masked from 'package:rlang':
-#> 
-#>     %@%, %||%, as_function, flatten, flatten_chr,
-#>     flatten_dbl, flatten_int, flatten_lgl, invoke,
-#>     list_along, modify, prepend, rep_along, splice
 ```
 
 ## HTML {#html}
@@ -367,8 +368,8 @@ with_html(
   )
 )
 #> <HTML> <body><h1 id='first'>A heading</h1><p>Some text
-#> &amp;<b>some bold text.</b></p><img src='myimg.png'
-#> width='100' height='100' /></body>
+#> &amp;<b>some bold text.</b></p><img src='myimg.png' width='100'
+#> height='100' /></body>
 ```
 
 If you want to access the R function overridden by an HTML tag with the same name inside `with_html()`, you can use the full `package::function` specification.
@@ -734,7 +735,7 @@ unknown_op("foo")
 #>     contents <- paste(..., collapse = ", ")
 #>     paste0("\\mathrm{foo}(", contents, ")")
 #> }
-#> <environment: 0x000000001c95d098>
+#> <environment: 0x2633480>
 ```
 
 And again we update `latex_env()`:

@@ -1445,7 +1445,7 @@ when the expression is evaluated in the specified environment.</p></li>
 <div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb197-1" data-line-number="1">force</a>
 <a class="sourceLine" id="cb197-2" data-line-number="2"><span class="co">#&gt; function (x) </span></a>
 <a class="sourceLine" id="cb197-3" data-line-number="3"><span class="co">#&gt; x</span></a>
-<a class="sourceLine" id="cb197-4" data-line-number="4"><span class="co">#&gt; &lt;bytecode: 0x0000000010651720&gt;</span></a>
+<a class="sourceLine" id="cb197-4" data-line-number="4"><span class="co">#&gt; &lt;bytecode: 0x14e9c88&gt;</span></a>
 <a class="sourceLine" id="cb197-5" data-line-number="5"><span class="co">#&gt; &lt;environment: namespace:base&gt;</span></a></code></pre></div>
 <p>Why is it better to <code>force(x)</code> instead of just <code>x</code>?</p></li>
 <li><p>What does this function return? Why? Which principle does it illustrate?</p>
@@ -1472,7 +1472,7 @@ value for <code>breaks</code> is <code>&quot;Sturges&quot;</code>, and</p>
 <a class="sourceLine" id="cb201-3" data-line-number="3">  <span class="kw">print</span>(x)</a>
 <a class="sourceLine" id="cb201-4" data-line-number="4">}</a>
 <a class="sourceLine" id="cb201-5" data-line-number="5"><span class="kw">show_time</span>()</a>
-<a class="sourceLine" id="cb201-6" data-line-number="6"><span class="co">#&gt; [1] &quot;2018-10-27 23:06:28 CST&quot;</span></a></code></pre></div></li>
+<a class="sourceLine" id="cb201-6" data-line-number="6"><span class="co">#&gt; [1] &quot;2018-10-18 10:56:18 UTC&quot;</span></a></code></pre></div></li>
 <li><p>How many arguments are required when calling <code>library()</code>?</p></li>
 </ol>
 </div>
@@ -1691,9 +1691,9 @@ The most common function that returns invisibly is <code>&lt;-</code>:</p>
 <a class="sourceLine" id="cb221-6" data-line-number="6">}</a>
 <a class="sourceLine" id="cb221-7" data-line-number="7"></a>
 <a class="sourceLine" id="cb221-8" data-line-number="8"><span class="kw">getwd</span>()</a>
-<a class="sourceLine" id="cb221-9" data-line-number="9"><span class="co">#&gt; [1] &quot;C:/Users/Bruce/Documents/Github/BruceZhaoR/adv-r&quot;</span></a>
+<a class="sourceLine" id="cb221-9" data-line-number="9"><span class="co">#&gt; [1] &quot;/home/travis/build/BruceZhaoR/adv-r&quot;</span></a>
 <a class="sourceLine" id="cb221-10" data-line-number="10"><span class="kw">with_dir</span>(<span class="st">&quot;~&quot;</span>, <span class="kw">getwd</span>())</a>
-<a class="sourceLine" id="cb221-11" data-line-number="11"><span class="co">#&gt; [1] &quot;C:/Users/Bruce/Documents&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb221-11" data-line-number="11"><span class="co">#&gt; [1] &quot;/home/travis&quot;</span></a></code></pre></div>
 <p>See the <a href="http://withr.r-lib.org">withr package</a> for a collection of functions of this nature.</p>
 <p>In R 3.4 and earlier, <code>on.exit()</code> expressions are always run in order of creation:</p>
 <div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb222-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>() {</a>
@@ -1734,10 +1734,7 @@ plotting code works).</p></li>
 <a class="sourceLine" id="cb224-9" data-line-number="9">  <span class="kw">readLines</span>(temp)</a>
 <a class="sourceLine" id="cb224-10" data-line-number="10">}</a>
 <a class="sourceLine" id="cb224-11" data-line-number="11"><span class="kw">capture.output2</span>(<span class="kw">cat</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>))</a>
-<a class="sourceLine" id="cb224-12" data-line-number="12"><span class="co">#&gt; Warning in file.remove(temp): cannot remove file &#39;C:</span></a>
-<a class="sourceLine" id="cb224-13" data-line-number="13"><span class="co">#&gt; \Users\Bruce\AppData\Local\Temp\RtmpqoqHGV\file3f8c437111e3&#39;, reason</span></a>
-<a class="sourceLine" id="cb224-14" data-line-number="14"><span class="co">#&gt; &#39;Permission denied&#39;</span></a>
-<a class="sourceLine" id="cb224-15" data-line-number="15"><span class="co">#&gt; [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb224-12" data-line-number="12"><span class="co">#&gt; [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</span></a></code></pre></div>
 <p>Compare <code>capture.output()</code> to <code>capture.output2()</code>. How do the functions
 differ? What features have I removed to make the key ideas easier to see?
 How have I rewritten the key ideas so they’re easier to understand?</p></li>

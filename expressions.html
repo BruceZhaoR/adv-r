@@ -924,10 +924,10 @@ emphasise their difference from symbols — more on that later.</p></li>
 </ul>
 <p>Drawing these diagrams by hand takes me some time, and obviously you can’t rely on me to draw diagrams for your own code. I’ll supplement the hand-drawn trees with trees drawn by <code>lobstr::ast()</code>. <code>ast()</code> tries to make trees as similar as possible to my hand-drawn trees, while respecting the limitations of the console. Let’s use <code>ast()</code> to display the tree above:</p>
 <div class="sourceCode" id="cb656"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb656-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="kw">f</span>(x, <span class="st">&quot;y&quot;</span>, <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb656-2" data-line-number="2"><span class="co">#&gt; o-f </span></a>
-<a class="sourceLine" id="cb656-3" data-line-number="3"><span class="co">#&gt; +-x </span></a>
-<a class="sourceLine" id="cb656-4" data-line-number="4"><span class="co">#&gt; +-&quot;y&quot; </span></a>
-<a class="sourceLine" id="cb656-5" data-line-number="5"><span class="co">#&gt; \-1</span></a></code></pre></div>
+<a class="sourceLine" id="cb656-2" data-line-number="2"><span class="co">#&gt; █─f </span></a>
+<a class="sourceLine" id="cb656-3" data-line-number="3"><span class="co">#&gt; ├─x </span></a>
+<a class="sourceLine" id="cb656-4" data-line-number="4"><span class="co">#&gt; ├─&quot;y&quot; </span></a>
+<a class="sourceLine" id="cb656-5" data-line-number="5"><span class="co">#&gt; └─1</span></a></code></pre></div>
 <p>Calls get an orange square, symbols are bold and purple, and strings are surrounded by quote marks. (The colours are not shown in the book, but you’ll see it if you run the code yourself.)</p>
 <p><code>ast()</code> supports “unquoting” with <code>!!</code> (pronounced bang-bang). We’ll talk about unquoting in detail in the next chapter; for now note that you’ll need it if you want to see the structure of an expression that you’ve already captured with <code>expr()</code>.</p>
 <div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb657-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">f</span>(x, <span class="st">&quot;y&quot;</span>, <span class="dv">1</span>))</a>
@@ -938,10 +938,10 @@ emphasise their difference from symbols — more on that later.</p></li>
 <a class="sourceLine" id="cb657-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb657-7" data-line-number="7"><span class="co"># what we want</span></a>
 <a class="sourceLine" id="cb657-8" data-line-number="8">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>x)</a>
-<a class="sourceLine" id="cb657-9" data-line-number="9"><span class="co">#&gt; o-f </span></a>
-<a class="sourceLine" id="cb657-10" data-line-number="10"><span class="co">#&gt; +-x </span></a>
-<a class="sourceLine" id="cb657-11" data-line-number="11"><span class="co">#&gt; +-&quot;y&quot; </span></a>
-<a class="sourceLine" id="cb657-12" data-line-number="12"><span class="co">#&gt; \-1</span></a></code></pre></div>
+<a class="sourceLine" id="cb657-9" data-line-number="9"><span class="co">#&gt; █─f </span></a>
+<a class="sourceLine" id="cb657-10" data-line-number="10"><span class="co">#&gt; ├─x </span></a>
+<a class="sourceLine" id="cb657-11" data-line-number="11"><span class="co">#&gt; ├─&quot;y&quot; </span></a>
+<a class="sourceLine" id="cb657-12" data-line-number="12"><span class="co">#&gt; └─1</span></a></code></pre></div>
 <p>For more complex code, you can also use RStudio’s tree viewer to explore the AST interactively, e.g. <code>View(expr(y &lt;- x * 10))</code>.</p>
 <div id="infix-vs.prefix-calls" class="section level3">
 <h3><span class="header-section-number">17.2.1</span> Infix vs. prefix calls</h3>
@@ -952,17 +952,17 @@ emphasise their difference from symbols — more on that later.</p></li>
 <p>And they have this AST:</p>
 <p><img src="diagrams/expressions/prefix.png" width="227" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb659-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(y &lt;-<span class="st"> </span>x <span class="op">*</span><span class="st"> </span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb659-2" data-line-number="2"><span class="co">#&gt; o-`&lt;-` </span></a>
-<a class="sourceLine" id="cb659-3" data-line-number="3"><span class="co">#&gt; +-y </span></a>
-<a class="sourceLine" id="cb659-4" data-line-number="4"><span class="co">#&gt; \-o-`*` </span></a>
-<a class="sourceLine" id="cb659-5" data-line-number="5"><span class="co">#&gt;   +-x </span></a>
-<a class="sourceLine" id="cb659-6" data-line-number="6"><span class="co">#&gt;   \-10</span></a></code></pre></div>
+<a class="sourceLine" id="cb659-2" data-line-number="2"><span class="co">#&gt; █─`&lt;-` </span></a>
+<a class="sourceLine" id="cb659-3" data-line-number="3"><span class="co">#&gt; ├─y </span></a>
+<a class="sourceLine" id="cb659-4" data-line-number="4"><span class="co">#&gt; └─█─`*` </span></a>
+<a class="sourceLine" id="cb659-5" data-line-number="5"><span class="co">#&gt;   ├─x </span></a>
+<a class="sourceLine" id="cb659-6" data-line-number="6"><span class="co">#&gt;   └─10</span></a></code></pre></div>
 <p>You might remember that code like <code>names(x) &lt;- y</code> ends up calling the <code>names&lt;-</code> function. That is not reflected in the parse tree because the translation needs to happen at run-time, not parse-time, due to the complexities of nested assignments like <code>names(x)[2] &lt;- &quot;z&quot;</code>.</p>
 <div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb660-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="kw">names</span>(x) &lt;-<span class="st"> </span>y)</a>
-<a class="sourceLine" id="cb660-2" data-line-number="2"><span class="co">#&gt; o-`&lt;-` </span></a>
-<a class="sourceLine" id="cb660-3" data-line-number="3"><span class="co">#&gt; +-o-names </span></a>
-<a class="sourceLine" id="cb660-4" data-line-number="4"><span class="co">#&gt; | \-x </span></a>
-<a class="sourceLine" id="cb660-5" data-line-number="5"><span class="co">#&gt; \-y</span></a></code></pre></div>
+<a class="sourceLine" id="cb660-2" data-line-number="2"><span class="co">#&gt; █─`&lt;-` </span></a>
+<a class="sourceLine" id="cb660-3" data-line-number="3"><span class="co">#&gt; ├─█─names </span></a>
+<a class="sourceLine" id="cb660-4" data-line-number="4"><span class="co">#&gt; │ └─x </span></a>
+<a class="sourceLine" id="cb660-5" data-line-number="5"><span class="co">#&gt; └─y</span></a></code></pre></div>
 <p>It’s informative to look at the ASTs for other special forms</p>
 <div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb661-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="cf">function</span>(x, y) {</a>
 <a class="sourceLine" id="cb661-2" data-line-number="2">  <span class="cf">if</span> (x <span class="op">&gt;</span><span class="st"> </span>y) {</a>
@@ -971,51 +971,51 @@ emphasise their difference from symbols — more on that later.</p></li>
 <a class="sourceLine" id="cb661-5" data-line-number="5">    y</a>
 <a class="sourceLine" id="cb661-6" data-line-number="6">  }</a>
 <a class="sourceLine" id="cb661-7" data-line-number="7">})</a>
-<a class="sourceLine" id="cb661-8" data-line-number="8"><span class="co">#&gt; o-`function` </span></a>
-<a class="sourceLine" id="cb661-9" data-line-number="9"><span class="co">#&gt; +-o-x = `` </span></a>
-<a class="sourceLine" id="cb661-10" data-line-number="10"><span class="co">#&gt; | \-y = `` </span></a>
-<a class="sourceLine" id="cb661-11" data-line-number="11"><span class="co">#&gt; +-o-`{` </span></a>
-<a class="sourceLine" id="cb661-12" data-line-number="12"><span class="co">#&gt; | \-o-`if` </span></a>
-<a class="sourceLine" id="cb661-13" data-line-number="13"><span class="co">#&gt; |   +-o-`&gt;` </span></a>
-<a class="sourceLine" id="cb661-14" data-line-number="14"><span class="co">#&gt; |   | +-x </span></a>
-<a class="sourceLine" id="cb661-15" data-line-number="15"><span class="co">#&gt; |   | \-y </span></a>
-<a class="sourceLine" id="cb661-16" data-line-number="16"><span class="co">#&gt; |   +-o-`{` </span></a>
-<a class="sourceLine" id="cb661-17" data-line-number="17"><span class="co">#&gt; |   | \-x </span></a>
-<a class="sourceLine" id="cb661-18" data-line-number="18"><span class="co">#&gt; |   \-o-`{` </span></a>
-<a class="sourceLine" id="cb661-19" data-line-number="19"><span class="co">#&gt; |     \-y </span></a>
-<a class="sourceLine" id="cb661-20" data-line-number="20"><span class="co">#&gt; \-&lt;inline srcref&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb661-8" data-line-number="8"><span class="co">#&gt; █─`function` </span></a>
+<a class="sourceLine" id="cb661-9" data-line-number="9"><span class="co">#&gt; ├─█─x = `` </span></a>
+<a class="sourceLine" id="cb661-10" data-line-number="10"><span class="co">#&gt; │ └─y = `` </span></a>
+<a class="sourceLine" id="cb661-11" data-line-number="11"><span class="co">#&gt; ├─█─`{` </span></a>
+<a class="sourceLine" id="cb661-12" data-line-number="12"><span class="co">#&gt; │ └─█─`if` </span></a>
+<a class="sourceLine" id="cb661-13" data-line-number="13"><span class="co">#&gt; │   ├─█─`&gt;` </span></a>
+<a class="sourceLine" id="cb661-14" data-line-number="14"><span class="co">#&gt; │   │ ├─x </span></a>
+<a class="sourceLine" id="cb661-15" data-line-number="15"><span class="co">#&gt; │   │ └─y </span></a>
+<a class="sourceLine" id="cb661-16" data-line-number="16"><span class="co">#&gt; │   ├─█─`{` </span></a>
+<a class="sourceLine" id="cb661-17" data-line-number="17"><span class="co">#&gt; │   │ └─x </span></a>
+<a class="sourceLine" id="cb661-18" data-line-number="18"><span class="co">#&gt; │   └─█─`{` </span></a>
+<a class="sourceLine" id="cb661-19" data-line-number="19"><span class="co">#&gt; │     └─y </span></a>
+<a class="sourceLine" id="cb661-20" data-line-number="20"><span class="co">#&gt; └─&lt;inline srcref&gt;</span></a></code></pre></div>
 <p>Note that functions include a node <code>&lt;inline srcref&gt;</code>, this contains the source code of the function, as described in Section <a href="functions.html#function-components">5.2.2</a>.</p>
 </div>
 <div id="function-factories-1" class="section level3">
 <h3><span class="header-section-number">17.2.2</span> Function factories</h3>
 <p>Another small detail we need to consider are calls like <code>f()()</code>. The first component of the call is usually a symbol:</p>
 <div class="sourceCode" id="cb662"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb662-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="kw">f</span>(a, <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb662-2" data-line-number="2"><span class="co">#&gt; o-f </span></a>
-<a class="sourceLine" id="cb662-3" data-line-number="3"><span class="co">#&gt; +-a </span></a>
-<a class="sourceLine" id="cb662-4" data-line-number="4"><span class="co">#&gt; \-1</span></a></code></pre></div>
+<a class="sourceLine" id="cb662-2" data-line-number="2"><span class="co">#&gt; █─f </span></a>
+<a class="sourceLine" id="cb662-3" data-line-number="3"><span class="co">#&gt; ├─a </span></a>
+<a class="sourceLine" id="cb662-4" data-line-number="4"><span class="co">#&gt; └─1</span></a></code></pre></div>
 <p>But if you are using a function factory (Chapter <a href="function-factories.html#function-factories">10</a>), a function that returns another function, the first component might be another call:</p>
 <div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb663-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="kw">f</span>()(a, <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb663-2" data-line-number="2"><span class="co">#&gt; o-o-f </span></a>
-<a class="sourceLine" id="cb663-3" data-line-number="3"><span class="co">#&gt; +-a </span></a>
-<a class="sourceLine" id="cb663-4" data-line-number="4"><span class="co">#&gt; \-1</span></a></code></pre></div>
+<a class="sourceLine" id="cb663-2" data-line-number="2"><span class="co">#&gt; █─█─f </span></a>
+<a class="sourceLine" id="cb663-3" data-line-number="3"><span class="co">#&gt; ├─a </span></a>
+<a class="sourceLine" id="cb663-4" data-line-number="4"><span class="co">#&gt; └─1</span></a></code></pre></div>
 <p>And of course that function might also take arguments:</p>
 <div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb664-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="kw">f</span>(b, <span class="dv">2</span>)(a, <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb664-2" data-line-number="2"><span class="co">#&gt; o-o-f </span></a>
-<a class="sourceLine" id="cb664-3" data-line-number="3"><span class="co">#&gt; | +-b </span></a>
-<a class="sourceLine" id="cb664-4" data-line-number="4"><span class="co">#&gt; | \-2 </span></a>
-<a class="sourceLine" id="cb664-5" data-line-number="5"><span class="co">#&gt; +-a </span></a>
-<a class="sourceLine" id="cb664-6" data-line-number="6"><span class="co">#&gt; \-1</span></a></code></pre></div>
+<a class="sourceLine" id="cb664-2" data-line-number="2"><span class="co">#&gt; █─█─f </span></a>
+<a class="sourceLine" id="cb664-3" data-line-number="3"><span class="co">#&gt; │ ├─b </span></a>
+<a class="sourceLine" id="cb664-4" data-line-number="4"><span class="co">#&gt; │ └─2 </span></a>
+<a class="sourceLine" id="cb664-5" data-line-number="5"><span class="co">#&gt; ├─a </span></a>
+<a class="sourceLine" id="cb664-6" data-line-number="6"><span class="co">#&gt; └─1</span></a></code></pre></div>
 <p>These forms are relatively rare, but it’s good to be able to recognise them when they crop up.</p>
 </div>
 <div id="argument-names-1" class="section level3">
 <h3><span class="header-section-number">17.2.3</span> Argument names</h3>
 <p>So far the examples have only used unnamed arguments. Named arguments don’t change the parsing rules, but just add some additional metadata:</p>
 <div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb665-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="kw">mean</span>(<span class="dt">x =</span> mtcars<span class="op">$</span>cyl, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a>
-<a class="sourceLine" id="cb665-2" data-line-number="2"><span class="co">#&gt; o-mean </span></a>
-<a class="sourceLine" id="cb665-3" data-line-number="3"><span class="co">#&gt; +-x = o-`$` </span></a>
-<a class="sourceLine" id="cb665-4" data-line-number="4"><span class="co">#&gt; |     +-mtcars </span></a>
-<a class="sourceLine" id="cb665-5" data-line-number="5"><span class="co">#&gt; |     \-cyl </span></a>
-<a class="sourceLine" id="cb665-6" data-line-number="6"><span class="co">#&gt; \-na.rm = TRUE</span></a></code></pre></div>
+<a class="sourceLine" id="cb665-2" data-line-number="2"><span class="co">#&gt; █─mean </span></a>
+<a class="sourceLine" id="cb665-3" data-line-number="3"><span class="co">#&gt; ├─x = █─`$` </span></a>
+<a class="sourceLine" id="cb665-4" data-line-number="4"><span class="co">#&gt; │     ├─mtcars </span></a>
+<a class="sourceLine" id="cb665-5" data-line-number="5"><span class="co">#&gt; │     └─cyl </span></a>
+<a class="sourceLine" id="cb665-6" data-line-number="6"><span class="co">#&gt; └─na.rm = TRUE</span></a></code></pre></div>
 <p>(Note the appearance of another infix function: <code>$</code>)</p>
 </div>
 <div id="exercises-50" class="section level3">
@@ -1042,62 +1042,62 @@ What are they?</p></li>
 <p><img src="diagrams/expressions/ambig-order.png" width="416" style="display: block; margin: auto;" /></p>
 <p>Programming languages use conventions called <strong>operator precedence</strong> to resolve this ambiguity. We can use <code>ast()</code> to see what R does:</p>
 <div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb666-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb666-2" data-line-number="2"><span class="co">#&gt; o-`+` </span></a>
-<a class="sourceLine" id="cb666-3" data-line-number="3"><span class="co">#&gt; +-1 </span></a>
-<a class="sourceLine" id="cb666-4" data-line-number="4"><span class="co">#&gt; \-o-`*` </span></a>
-<a class="sourceLine" id="cb666-5" data-line-number="5"><span class="co">#&gt;   +-2 </span></a>
-<a class="sourceLine" id="cb666-6" data-line-number="6"><span class="co">#&gt;   \-3</span></a></code></pre></div>
+<a class="sourceLine" id="cb666-2" data-line-number="2"><span class="co">#&gt; █─`+` </span></a>
+<a class="sourceLine" id="cb666-3" data-line-number="3"><span class="co">#&gt; ├─1 </span></a>
+<a class="sourceLine" id="cb666-4" data-line-number="4"><span class="co">#&gt; └─█─`*` </span></a>
+<a class="sourceLine" id="cb666-5" data-line-number="5"><span class="co">#&gt;   ├─2 </span></a>
+<a class="sourceLine" id="cb666-6" data-line-number="6"><span class="co">#&gt;   └─3</span></a></code></pre></div>
 <p>Predicting the precedence of arithmetic operations is usually easy because it’s drilled into you in school and is consistent across the vast majority of programming languages. Predicting the precedence of other operators is harder. There’s one particularly surprising case in R: <code>!</code> has a much lower precedence (i.e. it binds less tightly) than you might expect. This allows you to write useful operations like:</p>
 <div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb667-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!</span>x <span class="op">%in%</span><span class="st"> </span>y)</a>
-<a class="sourceLine" id="cb667-2" data-line-number="2"><span class="co">#&gt; o-`!` </span></a>
-<a class="sourceLine" id="cb667-3" data-line-number="3"><span class="co">#&gt; \-o-`%in%` </span></a>
-<a class="sourceLine" id="cb667-4" data-line-number="4"><span class="co">#&gt;   +-x </span></a>
-<a class="sourceLine" id="cb667-5" data-line-number="5"><span class="co">#&gt;   \-y</span></a></code></pre></div>
+<a class="sourceLine" id="cb667-2" data-line-number="2"><span class="co">#&gt; █─`!` </span></a>
+<a class="sourceLine" id="cb667-3" data-line-number="3"><span class="co">#&gt; └─█─`%in%` </span></a>
+<a class="sourceLine" id="cb667-4" data-line-number="4"><span class="co">#&gt;   ├─x </span></a>
+<a class="sourceLine" id="cb667-5" data-line-number="5"><span class="co">#&gt;   └─y</span></a></code></pre></div>
 <p>R has over 30 infix operators divided into 18 precedence groups. While the details are described in <code>?Syntax</code>, very few people have memorised the complete ordering. Indeed, if there’s any confusion, use parentheses! These also appear in the AST, like all other special forms:</p>
 <div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb668-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>(<span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb668-2" data-line-number="2"><span class="co">#&gt; o-`+` </span></a>
-<a class="sourceLine" id="cb668-3" data-line-number="3"><span class="co">#&gt; +-1 </span></a>
-<a class="sourceLine" id="cb668-4" data-line-number="4"><span class="co">#&gt; \-o-`(` </span></a>
-<a class="sourceLine" id="cb668-5" data-line-number="5"><span class="co">#&gt;   \-o-`+` </span></a>
-<a class="sourceLine" id="cb668-6" data-line-number="6"><span class="co">#&gt;     +-2 </span></a>
-<a class="sourceLine" id="cb668-7" data-line-number="7"><span class="co">#&gt;     \-3</span></a></code></pre></div>
+<a class="sourceLine" id="cb668-2" data-line-number="2"><span class="co">#&gt; █─`+` </span></a>
+<a class="sourceLine" id="cb668-3" data-line-number="3"><span class="co">#&gt; ├─1 </span></a>
+<a class="sourceLine" id="cb668-4" data-line-number="4"><span class="co">#&gt; └─█─`(` </span></a>
+<a class="sourceLine" id="cb668-5" data-line-number="5"><span class="co">#&gt;   └─█─`+` </span></a>
+<a class="sourceLine" id="cb668-6" data-line-number="6"><span class="co">#&gt;     ├─2 </span></a>
+<a class="sourceLine" id="cb668-7" data-line-number="7"><span class="co">#&gt;     └─3</span></a></code></pre></div>
 </div>
 <div id="associativity" class="section level3">
 <h3><span class="header-section-number">17.3.2</span> Associativity</h3>
 <p>Another source of ambiguity is introduced by repeated usage of the same infix function. For example, is <code>1 + 2 + 3</code> equivalent to <code>(1 + 2) + 3</code> or to <code>1 + (2 + 3)</code>? This normally doesn’t matter because <code>x + (y + z) == (x + y) + z</code>, i.e. addition is associative, but is needed because some S3 classes define <code>+</code> in a non-associative way. For example, ggplot2 overloads <code>+</code> to build up a complex plot from simple pieces; this usage is non-associative because earlier layers are drawn underneath later layers.</p>
 <p>In R, most operators are <strong>left-associative</strong>, i.e. the operations on the left are evaluated first:</p>
 <div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb669-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb669-2" data-line-number="2"><span class="co">#&gt; o-`+` </span></a>
-<a class="sourceLine" id="cb669-3" data-line-number="3"><span class="co">#&gt; +-o-`+` </span></a>
-<a class="sourceLine" id="cb669-4" data-line-number="4"><span class="co">#&gt; | +-1 </span></a>
-<a class="sourceLine" id="cb669-5" data-line-number="5"><span class="co">#&gt; | \-2 </span></a>
-<a class="sourceLine" id="cb669-6" data-line-number="6"><span class="co">#&gt; \-3</span></a></code></pre></div>
+<a class="sourceLine" id="cb669-2" data-line-number="2"><span class="co">#&gt; █─`+` </span></a>
+<a class="sourceLine" id="cb669-3" data-line-number="3"><span class="co">#&gt; ├─█─`+` </span></a>
+<a class="sourceLine" id="cb669-4" data-line-number="4"><span class="co">#&gt; │ ├─1 </span></a>
+<a class="sourceLine" id="cb669-5" data-line-number="5"><span class="co">#&gt; │ └─2 </span></a>
+<a class="sourceLine" id="cb669-6" data-line-number="6"><span class="co">#&gt; └─3</span></a></code></pre></div>
 <p>There are two exceptions: exponentiation and assignment.</p>
 <div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb670-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="dv">2</span> <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">^</span><span class="st"> </span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb670-2" data-line-number="2"><span class="co">#&gt; o-`^` </span></a>
-<a class="sourceLine" id="cb670-3" data-line-number="3"><span class="co">#&gt; +-2 </span></a>
-<a class="sourceLine" id="cb670-4" data-line-number="4"><span class="co">#&gt; \-o-`^` </span></a>
-<a class="sourceLine" id="cb670-5" data-line-number="5"><span class="co">#&gt;   +-2 </span></a>
-<a class="sourceLine" id="cb670-6" data-line-number="6"><span class="co">#&gt;   \-3</span></a>
+<a class="sourceLine" id="cb670-2" data-line-number="2"><span class="co">#&gt; █─`^` </span></a>
+<a class="sourceLine" id="cb670-3" data-line-number="3"><span class="co">#&gt; ├─2 </span></a>
+<a class="sourceLine" id="cb670-4" data-line-number="4"><span class="co">#&gt; └─█─`^` </span></a>
+<a class="sourceLine" id="cb670-5" data-line-number="5"><span class="co">#&gt;   ├─2 </span></a>
+<a class="sourceLine" id="cb670-6" data-line-number="6"><span class="co">#&gt;   └─3</span></a>
 <a class="sourceLine" id="cb670-7" data-line-number="7">lobstr<span class="op">::</span><span class="kw">ast</span>(x &lt;-<span class="st"> </span>y &lt;-<span class="st"> </span>z)</a>
-<a class="sourceLine" id="cb670-8" data-line-number="8"><span class="co">#&gt; o-`&lt;-` </span></a>
-<a class="sourceLine" id="cb670-9" data-line-number="9"><span class="co">#&gt; +-x </span></a>
-<a class="sourceLine" id="cb670-10" data-line-number="10"><span class="co">#&gt; \-o-`&lt;-` </span></a>
-<a class="sourceLine" id="cb670-11" data-line-number="11"><span class="co">#&gt;   +-y </span></a>
-<a class="sourceLine" id="cb670-12" data-line-number="12"><span class="co">#&gt;   \-z</span></a></code></pre></div>
+<a class="sourceLine" id="cb670-8" data-line-number="8"><span class="co">#&gt; █─`&lt;-` </span></a>
+<a class="sourceLine" id="cb670-9" data-line-number="9"><span class="co">#&gt; ├─x </span></a>
+<a class="sourceLine" id="cb670-10" data-line-number="10"><span class="co">#&gt; └─█─`&lt;-` </span></a>
+<a class="sourceLine" id="cb670-11" data-line-number="11"><span class="co">#&gt;   ├─y </span></a>
+<a class="sourceLine" id="cb670-12" data-line-number="12"><span class="co">#&gt;   └─z</span></a></code></pre></div>
 </div>
 <div id="whitespace" class="section level3">
 <h3><span class="header-section-number">17.3.3</span> Whitespace</h3>
 <p>R, in general, is not sensitive to white space. Most white space is not significant and is not recorded in the AST (this is one reason that it’s <em>abstract</em>). For example, <code>x+y</code> yields exactly the same AST as <code>x +        y</code>, and means that you’re generally free to add whitespace to enhance the readability of your code. There’s one major exception:</p>
 <div class="sourceCode" id="cb671"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb671-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(y &lt;-<span class="st"> </span>x)</a>
-<a class="sourceLine" id="cb671-2" data-line-number="2"><span class="co">#&gt; o-`&lt;-` </span></a>
-<a class="sourceLine" id="cb671-3" data-line-number="3"><span class="co">#&gt; +-y </span></a>
-<a class="sourceLine" id="cb671-4" data-line-number="4"><span class="co">#&gt; \-x</span></a>
+<a class="sourceLine" id="cb671-2" data-line-number="2"><span class="co">#&gt; █─`&lt;-` </span></a>
+<a class="sourceLine" id="cb671-3" data-line-number="3"><span class="co">#&gt; ├─y </span></a>
+<a class="sourceLine" id="cb671-4" data-line-number="4"><span class="co">#&gt; └─x</span></a>
 <a class="sourceLine" id="cb671-5" data-line-number="5">lobstr<span class="op">::</span><span class="kw">ast</span>(y <span class="op">&lt;</span><span class="st"> </span><span class="op">-</span>x)</a>
-<a class="sourceLine" id="cb671-6" data-line-number="6"><span class="co">#&gt; o-`&lt;` </span></a>
-<a class="sourceLine" id="cb671-7" data-line-number="7"><span class="co">#&gt; +-y </span></a>
-<a class="sourceLine" id="cb671-8" data-line-number="8"><span class="co">#&gt; \-o-`-` </span></a>
-<a class="sourceLine" id="cb671-9" data-line-number="9"><span class="co">#&gt;   \-x</span></a></code></pre></div>
+<a class="sourceLine" id="cb671-6" data-line-number="6"><span class="co">#&gt; █─`&lt;` </span></a>
+<a class="sourceLine" id="cb671-7" data-line-number="7"><span class="co">#&gt; ├─y </span></a>
+<a class="sourceLine" id="cb671-8" data-line-number="8"><span class="co">#&gt; └─█─`-` </span></a>
+<a class="sourceLine" id="cb671-9" data-line-number="9"><span class="co">#&gt;   └─x</span></a></code></pre></div>
 </div>
 <div id="exercises-51" class="section level3">
 <h3><span class="header-section-number">17.3.4</span> Exercises</h3>
@@ -1211,9 +1211,9 @@ and pairlists.</p></li>
 <p>The main difference is that the first element of a call is special: it’s the function that will get called. Let’s explore these ideas with a simple example:</p>
 <div class="sourceCode" id="cb681"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb681-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">read.table</span>(<span class="st">&quot;important.csv&quot;</span>, <span class="dt">row =</span> <span class="ot">FALSE</span>))</a>
 <a class="sourceLine" id="cb681-2" data-line-number="2">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>x)</a>
-<a class="sourceLine" id="cb681-3" data-line-number="3"><span class="co">#&gt; o-read.table </span></a>
-<a class="sourceLine" id="cb681-4" data-line-number="4"><span class="co">#&gt; +-&quot;important.csv&quot; </span></a>
-<a class="sourceLine" id="cb681-5" data-line-number="5"><span class="co">#&gt; \-row = FALSE</span></a></code></pre></div>
+<a class="sourceLine" id="cb681-3" data-line-number="3"><span class="co">#&gt; █─read.table </span></a>
+<a class="sourceLine" id="cb681-4" data-line-number="4"><span class="co">#&gt; ├─&quot;important.csv&quot; </span></a>
+<a class="sourceLine" id="cb681-5" data-line-number="5"><span class="co">#&gt; └─row = FALSE</span></a></code></pre></div>
 <p>The length of a call minus one gives the number of arguments:</p>
 <div class="sourceCode" id="cb682"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb682-1" data-line-number="1"><span class="kw">length</span>(x) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></a>
 <a class="sourceLine" id="cb682-2" data-line-number="2"><span class="co">#&gt; [1] 2</span></a></code></pre></div>
@@ -1334,11 +1334,11 @@ Why? What makes <code>mean()</code> special?</p>
 <a class="sourceLine" id="cb697-6" data-line-number="6">x2</a>
 <a class="sourceLine" id="cb697-7" data-line-number="7"><span class="co">#&gt; y &lt;- x + 10</span></a>
 <a class="sourceLine" id="cb697-8" data-line-number="8">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>x2)</a>
-<a class="sourceLine" id="cb697-9" data-line-number="9"><span class="co">#&gt; o-`&lt;-` </span></a>
-<a class="sourceLine" id="cb697-10" data-line-number="10"><span class="co">#&gt; +-y </span></a>
-<a class="sourceLine" id="cb697-11" data-line-number="11"><span class="co">#&gt; \-o-`+` </span></a>
-<a class="sourceLine" id="cb697-12" data-line-number="12"><span class="co">#&gt;   +-x </span></a>
-<a class="sourceLine" id="cb697-13" data-line-number="13"><span class="co">#&gt;   \-10</span></a></code></pre></div>
+<a class="sourceLine" id="cb697-9" data-line-number="9"><span class="co">#&gt; █─`&lt;-` </span></a>
+<a class="sourceLine" id="cb697-10" data-line-number="10"><span class="co">#&gt; ├─y </span></a>
+<a class="sourceLine" id="cb697-11" data-line-number="11"><span class="co">#&gt; └─█─`+` </span></a>
+<a class="sourceLine" id="cb697-12" data-line-number="12"><span class="co">#&gt;   ├─x </span></a>
+<a class="sourceLine" id="cb697-13" data-line-number="13"><span class="co">#&gt;   └─10</span></a></code></pre></div>
 <p>If you have multiple expressions in a string, you’ll need to use <code>rlang::parse_exprs()</code>. It returns a list of expressions:</p>
 <div class="sourceCode" id="cb698"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb698-1" data-line-number="1">x3 &lt;-<span class="st"> &quot;a &lt;- 1; a + 1&quot;</span></a>
 <a class="sourceLine" id="cb698-2" data-line-number="2">rlang<span class="op">::</span><span class="kw">parse_exprs</span>(x3)</a>
@@ -1510,9 +1510,9 @@ base case.</p></li>
 <p><code>logical_abbr()</code> is very simple: it only returns a single <code>TRUE</code> or <code>FALSE</code>. The next task, listing all variables created by assignment, is a little more complicated. We’ll start simply, and then make the function progressively more rigorous. </p>
 <p>We start by looking at the AST for assignment:</p>
 <div class="sourceCode" id="cb712"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb712-1" data-line-number="1"><span class="kw">ast</span>(x &lt;-<span class="st"> </span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb712-2" data-line-number="2"><span class="co">#&gt; o-`&lt;-` </span></a>
-<a class="sourceLine" id="cb712-3" data-line-number="3"><span class="co">#&gt; +-x </span></a>
-<a class="sourceLine" id="cb712-4" data-line-number="4"><span class="co">#&gt; \-10</span></a></code></pre></div>
+<a class="sourceLine" id="cb712-2" data-line-number="2"><span class="co">#&gt; █─`&lt;-` </span></a>
+<a class="sourceLine" id="cb712-3" data-line-number="3"><span class="co">#&gt; ├─x </span></a>
+<a class="sourceLine" id="cb712-4" data-line-number="4"><span class="co">#&gt; └─10</span></a></code></pre></div>
 <p>Assignment is a call where the first element is the symbol <code>&lt;-</code>, the second is the name of variable, and the third is the value to be assigned.</p>
 <p>Next, we need to decide what data structure we’re going to use for the results. Here I think it will be easiest if we return a character vector. If we return symbols, we’ll need to use a <code>list()</code> and that makes things a little more complicated.</p>
 <p>With that in hand we can start by implementing the base cases and providing a helpful wrapper around the recursive function. The base cases here are really simple!</p>
@@ -1534,7 +1534,7 @@ base case.</p></li>
 <a class="sourceLine" id="cb714-3" data-line-number="3">}</a>
 <a class="sourceLine" id="cb714-4" data-line-number="4"></a>
 <a class="sourceLine" id="cb714-5" data-line-number="5"><span class="kw">flat_map_chr</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], <span class="op">~</span><span class="st"> </span><span class="kw">rep</span>(., <span class="kw">sample</span>(<span class="dv">3</span>, <span class="dv">1</span>)))</a>
-<a class="sourceLine" id="cb714-6" data-line-number="6"><span class="co">#&gt; [1] &quot;a&quot; &quot;b&quot; &quot;b&quot; &quot;b&quot; &quot;c&quot; &quot;c&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb714-6" data-line-number="6"><span class="co">#&gt; [1] &quot;a&quot; &quot;a&quot; &quot;b&quot; &quot;b&quot; &quot;b&quot; &quot;c&quot; &quot;c&quot; &quot;c&quot;</span></a></code></pre></div>
 <p>The recursive case for pairlists is simple: we iterate over every element of the pairlist (i.e. each function argument) and combine the results. The case for calls is a little bit more complex - if this is a call to <code>&lt;-</code> then we should return the second element of the call:</p>
 <div class="sourceCode" id="cb715"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb715-1" data-line-number="1">find_assign_rec &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
 <a class="sourceLine" id="cb715-2" data-line-number="2">  <span class="kw">switch_expr</span>(x,</a>

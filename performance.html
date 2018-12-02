@@ -912,17 +912,17 @@ interface</a>, you’ll learn a little about R’s C internals.</p></li>
 <a class="sourceLine" id="cb915-6" data-line-number="6">  x <span class="op">^</span><span class="st"> </span><span class="fl">0.5</span></a>
 <a class="sourceLine" id="cb915-7" data-line-number="7">)</a>
 <a class="sourceLine" id="cb915-8" data-line-number="8"><span class="co">#&gt; Unit: nanoseconds</span></a>
-<a class="sourceLine" id="cb915-9" data-line-number="9"><span class="co">#&gt;     expr   min    lq mean median    uq    max neval cld</span></a>
-<a class="sourceLine" id="cb915-10" data-line-number="10"><span class="co">#&gt;  sqrt(x)   427   854 1439  1,280 1,490 22,600   100  a </span></a>
-<a class="sourceLine" id="cb915-11" data-line-number="11"><span class="co">#&gt;    x^0.5 4,690 4,690 6678  6,830 7,680 17,500   100   b</span></a></code></pre></div>
+<a class="sourceLine" id="cb915-9" data-line-number="9"><span class="co">#&gt;     expr   min    lq mean median    uq    max neval</span></a>
+<a class="sourceLine" id="cb915-10" data-line-number="10"><span class="co">#&gt;  sqrt(x) 1,150 1,640 1816  1,830 1,980  5,220   100</span></a>
+<a class="sourceLine" id="cb915-11" data-line-number="11"><span class="co">#&gt;    x^0.5 9,010 9,290 9783  9,400 9,570 43,600   100</span></a></code></pre></div>
 <p>By default, <code>microbenchmark()</code> runs each expression 100 times (controlled by the <code>times</code> parameter). In the process, it also randomises the order of the expressions. It summarises the results with a minimum (<code>min</code>), lower quartile (<code>lq</code>), median, upper quartile (<code>uq</code>), and maximum (<code>max</code>). Focus on the median, and use the upper and lower quartiles (<code>lq</code> and <code>uq</code>) to get a feel for the variability. In this example, you can see that using the special purpose <code>sqrt()</code> function is faster than the general exponentiation operator.</p>
-<p>As with all microbenchmarks, pay careful attention to the units: here, each computation takes about 400 ns, 400 billionths of a second. To help calibrate the impact of a microbenchmark on run time, it’s useful to think about how many times a function needs to run before it takes a second. If a microbenchmark takes:</p>
+<p>As with all microbenchmarks, pay careful attention to the units: here, each computation takes about 1,000 ns, 1,000 billionths of a second. To help calibrate the impact of a microbenchmark on run time, it’s useful to think about how many times a function needs to run before it takes a second. If a microbenchmark takes:</p>
 <ul>
 <li>1 ms, then one thousand calls takes a second</li>
 <li>1 µs, then one million calls takes a second</li>
 <li>1 ns, then one billion calls takes a second</li>
 </ul>
-<p>The <code>sqrt()</code> function takes about 400 ns, or 0.4 µs, to compute the square root of 100 numbers. That means if you repeated the operation a million times, it would take 0.4 s. So changing the way you compute the square root is unlikely to significantly affect real code.</p>
+<p>The <code>sqrt()</code> function takes about 1,000 ns, or 1 µs, to compute the square root of 100 numbers. That means if you repeated the operation a million times, it would take 1 s. So changing the way you compute the square root is unlikely to significantly affect real code.</p>
 <div id="exercises-66" class="section level3">
 <h3><span class="header-section-number">22.2.1</span> Exercises</h3>
 <ol style="list-style-type: decimal">
@@ -989,15 +989,13 @@ above with the eps unit. How does this change your intuition for performance?</p
 <a class="sourceLine" id="cb920-4" data-line-number="4">  <span class="dt">S4 =</span> <span class="kw">s4</span>(a),</a>
 <a class="sourceLine" id="cb920-5" data-line-number="5">  <span class="dt">RC =</span> b<span class="op">$</span><span class="kw">rc</span>()</a>
 <a class="sourceLine" id="cb920-6" data-line-number="6">)</a>
-<a class="sourceLine" id="cb920-7" data-line-number="7"><span class="co">#&gt; Warning in microbenchmark::microbenchmark(fun = f(), S3 = s3(1L), S4 =</span></a>
-<a class="sourceLine" id="cb920-8" data-line-number="8"><span class="co">#&gt; s4(a), : Could not measure a positive execution time for 14 evaluations.</span></a>
-<a class="sourceLine" id="cb920-9" data-line-number="9"><span class="co">#&gt; Unit: nanoseconds</span></a>
-<a class="sourceLine" id="cb920-10" data-line-number="10"><span class="co">#&gt;  expr    min     lq  mean median     uq       max neval cld</span></a>
-<a class="sourceLine" id="cb920-11" data-line-number="11"><span class="co">#&gt;   fun      0      0   342      1      1    28,600   100   a</span></a>
-<a class="sourceLine" id="cb920-12" data-line-number="12"><span class="co">#&gt;    S3  1,710  2,130 13232  2,560  2,990   967,000   100   a</span></a>
-<a class="sourceLine" id="cb920-13" data-line-number="13"><span class="co">#&gt;    S4 13,700 14,500 55885 15,400 16,200 2,700,000   100   a</span></a>
-<a class="sourceLine" id="cb920-14" data-line-number="14"><span class="co">#&gt;    RC  9,810 10,700 40811 11,500 12,400 2,790,000   100   a</span></a></code></pre></div>
-<p>The bare function takes about 1 ns. S3 method dispatch takes an additional 2,000 ns; S4 dispatch, 10,000 ns; and RC dispatch, 10,000 ns. S3 and S4 method dispatch are expensive because R must search for the right method every time the generic is called; it might have changed between this call and the last. R could do better by caching methods between calls, but caching is hard to do correctly and a notorious source of bugs.</p>
+<a class="sourceLine" id="cb920-7" data-line-number="7"><span class="co">#&gt; Unit: nanoseconds</span></a>
+<a class="sourceLine" id="cb920-8" data-line-number="8"><span class="co">#&gt;  expr    min     lq  mean median     uq       max neval</span></a>
+<a class="sourceLine" id="cb920-9" data-line-number="9"><span class="co">#&gt;   fun    419    548   868    616    764    17,200   100</span></a>
+<a class="sourceLine" id="cb920-10" data-line-number="10"><span class="co">#&gt;    S3  2,030  2,650 13976  3,130  3,550 1,030,000   100</span></a>
+<a class="sourceLine" id="cb920-11" data-line-number="11"><span class="co">#&gt;    S4 18,900 20,800 38260 22,000 23,300   969,000   100</span></a>
+<a class="sourceLine" id="cb920-12" data-line-number="12"><span class="co">#&gt;    RC 10,800 12,200 45668 13,800 14,900 3,120,000   100</span></a></code></pre></div>
+<p>The bare function takes about 600 ns. S3 method dispatch takes an additional 3,000 ns; S4 dispatch, 20,000 ns; and RC dispatch, 10,000 ns. S3 and S4 method dispatch are expensive because R must search for the right method every time the generic is called; it might have changed between this call and the last. R could do better by caching methods between calls, but caching is hard to do correctly and a notorious source of bugs.</p>
 </div>
 <div id="name-lookup-with-mutable-environments" class="section level3">
 <h3><span class="header-section-number">22.3.2</span> Name lookup with mutable environments</h3>
@@ -1042,11 +1040,11 @@ above with the eps unit. How does this change your intuition for performance?</p
 <a class="sourceLine" id="cb923-18" data-line-number="18">  <span class="dt">times =</span> <span class="dv">10000</span></a>
 <a class="sourceLine" id="cb923-19" data-line-number="19">)</a>
 <a class="sourceLine" id="cb923-20" data-line-number="20"><span class="co">#&gt; Unit: nanoseconds</span></a>
-<a class="sourceLine" id="cb923-21" data-line-number="21"><span class="co">#&gt;      expr min  lq mean median  uq       max neval cld</span></a>
-<a class="sourceLine" id="cb923-22" data-line-number="22"><span class="co">#&gt;   f(1, 2)   0   0  313      1   1 2,030,000 10000  a </span></a>
-<a class="sourceLine" id="cb923-23" data-line-number="23"><span class="co">#&gt;  f2(1, 2) 427 427  628    428 854    45,700 10000  ab</span></a>
-<a class="sourceLine" id="cb923-24" data-line-number="24"><span class="co">#&gt;  f3(1, 2) 427 427  654    428 854    33,700 10000  ab</span></a>
-<a class="sourceLine" id="cb923-25" data-line-number="25"><span class="co">#&gt;  f4(1, 2) 427 427  708    854 854    29,400 10000   b</span></a></code></pre></div>
+<a class="sourceLine" id="cb923-21" data-line-number="21"><span class="co">#&gt;      expr min    lq mean median    uq       max neval</span></a>
+<a class="sourceLine" id="cb923-22" data-line-number="22"><span class="co">#&gt;   f(1, 2) 522   592  999    622   693 2,700,000 10000</span></a>
+<a class="sourceLine" id="cb923-23" data-line-number="23"><span class="co">#&gt;  f2(1, 2) 912   983 1469  1,010 1,120 2,970,000 10000</span></a>
+<a class="sourceLine" id="cb923-24" data-line-number="24"><span class="co">#&gt;  f3(1, 2) 933 1,010 1202  1,040 1,150    11,700 10000</span></a>
+<a class="sourceLine" id="cb923-25" data-line-number="25"><span class="co">#&gt;  f4(1, 2) 982 1,050 1257  1,080 1,190   131,000 10000</span></a></code></pre></div>
 <p>Each additional environment between <code>f()</code> and the base environment makes the function slower by about 30 ns.</p>
 <p>It might be possible to implement a caching system so that R only needs to look up the value of each name once. This is hard because there are so many ways to change the value associated with a name: <code>&lt;&lt;-</code>, <code>assign()</code>, <code>eval()</code>, and so on. Any caching system would have to know about these functions to make sure the cache was correctly invalidated and you didn’t get an out-of-date value. </p>
 <p>Another simple fix would be to add more built-in constants that you can’t override. This, for example, would mean that R always knew exactly what <code>+</code>, <code>-</code>, <code>{</code>, and <code>(</code> meant, and you wouldn’t have to repeatedly look up their definitions. That would make the interpreter more complicated (because there are more special cases) and hence harder to maintain, and the language less flexible. This would change the R-language, but it would be unlikely to affect much existing code because it’s such a bad idea to override functions like <code>{</code> and <code>(</code>.</p>
@@ -1062,16 +1060,14 @@ above with the eps unit. How does this change your intuition for performance?</p
 <a class="sourceLine" id="cb924-5" data-line-number="5">f4 &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">a =</span> <span class="dv">1</span>, <span class="dt">b =</span> <span class="dv">2</span>, <span class="dt">c =</span> <span class="dv">4</span>, <span class="dt">d =</span> <span class="dv">4</span>) <span class="ot">NULL</span></a>
 <a class="sourceLine" id="cb924-6" data-line-number="6">f5 &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">a =</span> <span class="dv">1</span>, <span class="dt">b =</span> <span class="dv">2</span>, <span class="dt">c =</span> <span class="dv">4</span>, <span class="dt">d =</span> <span class="dv">4</span>, <span class="dt">e =</span> <span class="dv">5</span>) <span class="ot">NULL</span></a>
 <a class="sourceLine" id="cb924-7" data-line-number="7"><span class="kw">microbenchmark</span>(<span class="kw">f0</span>(), <span class="kw">f1</span>(), <span class="kw">f2</span>(), <span class="kw">f3</span>(), <span class="kw">f4</span>(), <span class="kw">f5</span>(), <span class="dt">times =</span> <span class="dv">10000</span>)</a>
-<a class="sourceLine" id="cb924-8" data-line-number="8"><span class="co">#&gt; Warning in microbenchmark::microbenchmark(f0(), f1(), f2(), f3(), f4(), :</span></a>
-<a class="sourceLine" id="cb924-9" data-line-number="9"><span class="co">#&gt; Could not measure a positive execution time for 11587 evaluations.</span></a>
-<a class="sourceLine" id="cb924-10" data-line-number="10"><span class="co">#&gt; Unit: nanoseconds</span></a>
-<a class="sourceLine" id="cb924-11" data-line-number="11"><span class="co">#&gt;  expr min lq  mean median uq     max neval cld</span></a>
-<a class="sourceLine" id="cb924-12" data-line-number="12"><span class="co">#&gt;  f0()   0  0  68.3      0  1 455,000 10000   a</span></a>
-<a class="sourceLine" id="cb924-13" data-line-number="13"><span class="co">#&gt;  f1()   0  0 107.8      0  1 734,000 10000   a</span></a>
-<a class="sourceLine" id="cb924-14" data-line-number="14"><span class="co">#&gt;  f2()   0  0 106.1      1  1 528,000 10000   a</span></a>
-<a class="sourceLine" id="cb924-15" data-line-number="15"><span class="co">#&gt;  f3()   0  0 107.7      1  1 506,000 10000   a</span></a>
-<a class="sourceLine" id="cb924-16" data-line-number="16"><span class="co">#&gt;  f4()   0  0 124.6      1  1 566,000 10000   a</span></a>
-<a class="sourceLine" id="cb924-17" data-line-number="17"><span class="co">#&gt;  f5()   0  0 132.1      1  1 645,000 10000   a</span></a></code></pre></div>
+<a class="sourceLine" id="cb924-8" data-line-number="8"><span class="co">#&gt; Unit: nanoseconds</span></a>
+<a class="sourceLine" id="cb924-9" data-line-number="9"><span class="co">#&gt;  expr min  lq mean median  uq       max neval</span></a>
+<a class="sourceLine" id="cb924-10" data-line-number="10"><span class="co">#&gt;  f0() 201 241  337    242 252   567,000 10000</span></a>
+<a class="sourceLine" id="cb924-11" data-line-number="11"><span class="co">#&gt;  f1() 241 271  411    281 291   609,000 10000</span></a>
+<a class="sourceLine" id="cb924-12" data-line-number="12"><span class="co">#&gt;  f2() 271 301  479    311 322   741,000 10000</span></a>
+<a class="sourceLine" id="cb924-13" data-line-number="13"><span class="co">#&gt;  f3() 291 341  595    351 372 1,180,000 10000</span></a>
+<a class="sourceLine" id="cb924-14" data-line-number="14"><span class="co">#&gt;  f4() 311 351  605    362 402   701,000 10000</span></a>
+<a class="sourceLine" id="cb924-15" data-line-number="15"><span class="co">#&gt;  f5() 351 391  650    402 471   694,000 10000</span></a></code></pre></div>
 <p>In most other programming languages there is little overhead for adding extra arguments. Many compiled languages will even warn you if arguments are never used (like in the above example), and automatically remove them from the function.</p>
 </div>
 <div id="exercises-67" class="section level3">
@@ -1107,16 +1103,13 @@ S4 method dispatch?</p></li>
 <a class="sourceLine" id="cb925-5" data-line-number="5">  <span class="st">&quot;[[11]][32]&quot;</span>    =<span class="st"> </span>mtcars[[<span class="dv">11</span>]][<span class="dv">32</span>],</a>
 <a class="sourceLine" id="cb925-6" data-line-number="6">  <span class="st">&quot;.subset2&quot;</span>      =<span class="st"> </span><span class="kw">.subset2</span>(mtcars, <span class="dv">11</span>)[<span class="dv">32</span>]</a>
 <a class="sourceLine" id="cb925-7" data-line-number="7">)</a>
-<a class="sourceLine" id="cb925-8" data-line-number="8"><span class="co">#&gt; Warning in microbenchmark::microbenchmark(`[32, 11]` = mtcars[32, 11],</span></a>
-<a class="sourceLine" id="cb925-9" data-line-number="9"><span class="co">#&gt; `$carb[32]` = mtcars$carb[32], : Could not measure a positive execution</span></a>
-<a class="sourceLine" id="cb925-10" data-line-number="10"><span class="co">#&gt; time for 2 evaluations.</span></a>
-<a class="sourceLine" id="cb925-11" data-line-number="11"><span class="co">#&gt; Unit: nanoseconds</span></a>
-<a class="sourceLine" id="cb925-12" data-line-number="12"><span class="co">#&gt;           expr    min     lq    mean median     uq     max neval cld</span></a>
-<a class="sourceLine" id="cb925-13" data-line-number="13"><span class="co">#&gt;       [32, 11] 11,500 11,900 14814.6 11,900 12,800  63,100   100   c</span></a>
-<a class="sourceLine" id="cb925-14" data-line-number="14"><span class="co">#&gt;      $carb[32]  5,120  5,970 13858.8  5,970  6,400 529,000   100  bc</span></a>
-<a class="sourceLine" id="cb925-15" data-line-number="15"><span class="co">#&gt;  [[c(11, 32)]]  4,690  5,120  5927.1  5,550  5,760  14,900   100 a c</span></a>
-<a class="sourceLine" id="cb925-16" data-line-number="16"><span class="co">#&gt;     [[11]][32]  4,270  4,690  5410.8  5,120  5,330  15,400   100 ab </span></a>
-<a class="sourceLine" id="cb925-17" data-line-number="17"><span class="co">#&gt;       .subset2      0      0    94.4      1      1   1,280   100 a</span></a></code></pre></div>
+<a class="sourceLine" id="cb925-8" data-line-number="8"><span class="co">#&gt; Unit: nanoseconds</span></a>
+<a class="sourceLine" id="cb925-9" data-line-number="9"><span class="co">#&gt;           expr    min     lq  mean median     uq     max neval</span></a>
+<a class="sourceLine" id="cb925-10" data-line-number="10"><span class="co">#&gt;       [32, 11] 12,800 15,300 16804 16,100 17,100  71,000   100</span></a>
+<a class="sourceLine" id="cb925-11" data-line-number="11"><span class="co">#&gt;      $carb[32]  7,100  8,400  9165  8,900  9,350  21,600   100</span></a>
+<a class="sourceLine" id="cb925-12" data-line-number="12"><span class="co">#&gt;  [[c(11, 32)]]  6,250  7,150 14084  7,660  8,180 648,000   100</span></a>
+<a class="sourceLine" id="cb925-13" data-line-number="13"><span class="co">#&gt;     [[11]][32]  5,670  6,560  7091  7,050  7,630   9,670   100</span></a>
+<a class="sourceLine" id="cb925-14" data-line-number="14"><span class="co">#&gt;       .subset2    381    522   789    592    738  13,100   100</span></a></code></pre></div>
 </div>
 <div id="ifelse-pmin-and-pmax" class="section level3">
 <h3><span class="header-section-number">22.4.2</span> <code>ifelse()</code>, <code>pmin()</code>, and <code>pmax()</code></h3>
@@ -1141,11 +1134,11 @@ S4 method dispatch?</p></li>
 <a class="sourceLine" id="cb926-18" data-line-number="18">  <span class="dt">unit =</span> <span class="st">&quot;us&quot;</span></a>
 <a class="sourceLine" id="cb926-19" data-line-number="19">)</a>
 <a class="sourceLine" id="cb926-20" data-line-number="20"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb926-21" data-line-number="21"><span class="co">#&gt;             expr   min    lq mean median    uq   max neval cld</span></a>
-<a class="sourceLine" id="cb926-22" data-line-number="22"><span class="co">#&gt;       squish_ife 20.50 22.20 72.8  23.50 42.90 4,050   100   a</span></a>
-<a class="sourceLine" id="cb926-23" data-line-number="23"><span class="co">#&gt;         squish_p 13.20 14.10 50.6  14.90 26.00 2,530   100   a</span></a>
-<a class="sourceLine" id="cb926-24" data-line-number="24"><span class="co">#&gt;  squish_in_place  2.13  2.56 40.2   2.99  4.69 3,650   100   a</span></a></code></pre></div>
-<p>Using <code>pmin()</code> and <code>pmax()</code> is about 2x faster than <code>ifelse()</code>, and using subsetting directly is about 5x as fast again. We can often do even better by using C++. The following example compares the best R implementation to a relatively simple, if verbose, implementation in C++. Even if you’ve never used C++, you should still be able to follow the basic strategy: loop over every element in the vector and perform a different action depending on whether or not the value is less than <code>a</code> and/or greater than <code>b</code>.</p>
+<a class="sourceLine" id="cb926-21" data-line-number="21"><span class="co">#&gt;             expr  min    lq mean median    uq   max neval</span></a>
+<a class="sourceLine" id="cb926-22" data-line-number="22"><span class="co">#&gt;       squish_ife 33.0 37.10 71.9  41.30 47.40 2,950   100</span></a>
+<a class="sourceLine" id="cb926-23" data-line-number="23"><span class="co">#&gt;         squish_p 20.4 21.90 49.5  24.60 25.40 1,960   100</span></a>
+<a class="sourceLine" id="cb926-24" data-line-number="24"><span class="co">#&gt;  squish_in_place  4.3  5.58 39.7   6.12  7.18 3,300   100</span></a></code></pre></div>
+<p>Using <code>pmin()</code> and <code>pmax()</code> is about 2x faster than <code>ifelse()</code>, and using subsetting directly is about 4x as fast again. We can often do even better by using C++. The following example compares the best R implementation to a relatively simple, if verbose, implementation in C++. Even if you’ve never used C++, you should still be able to follow the basic strategy: loop over every element in the vector and perform a different action depending on whether or not the value is less than <code>a</code> and/or greater than <code>b</code>.</p>
 <div class="sourceCode" id="cb927"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb927-1" data-line-number="1"><span class="pp">#include </span><span class="im">&lt;Rcpp.h&gt;</span></a>
 <a class="sourceLine" id="cb927-2" data-line-number="2"><span class="kw">using</span> <span class="kw">namespace</span> Rcpp;</a>
 <a class="sourceLine" id="cb927-3" data-line-number="3"></a>
@@ -1174,9 +1167,9 @@ S4 method dispatch?</p></li>
 <a class="sourceLine" id="cb928-4" data-line-number="4">  <span class="dt">unit =</span> <span class="st">&quot;us&quot;</span></a>
 <a class="sourceLine" id="cb928-5" data-line-number="5">)</a>
 <a class="sourceLine" id="cb928-6" data-line-number="6"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb928-7" data-line-number="7"><span class="co">#&gt;             expr  min   lq  mean median   uq      max neval cld</span></a>
-<a class="sourceLine" id="cb928-8" data-line-number="8"><span class="co">#&gt;  squish_in_place 2.56 2.56  3.61   2.99 4.69     7.25   100   a</span></a>
-<a class="sourceLine" id="cb928-9" data-line-number="9"><span class="co">#&gt;       squish_cpp 1.71 2.13 15.54   2.56 3.41 1,190.00   100   a</span></a></code></pre></div>
+<a class="sourceLine" id="cb928-7" data-line-number="7"><span class="co">#&gt;             expr  min   lq mean median    uq     max neval</span></a>
+<a class="sourceLine" id="cb928-8" data-line-number="8"><span class="co">#&gt;  squish_in_place 5.16 6.30  8.6   6.58 11.70    40.9   100</span></a>
+<a class="sourceLine" id="cb928-9" data-line-number="9"><span class="co">#&gt;       squish_cpp 3.52 4.24 22.0   4.46  8.33 1,620.0   100</span></a></code></pre></div>
 <p>The C++ implementation is around 1x faster than the best pure R implementation.</p>
 </div>
 <div id="exercises-68" class="section level3">
@@ -1258,10 +1251,10 @@ performance improvements.</p></li>
 <a class="sourceLine" id="cb931-8" data-line-number="8">  <span class="dt">unit =</span> <span class="st">&quot;ms&quot;</span></a>
 <a class="sourceLine" id="cb931-9" data-line-number="9">)</a>
 <a class="sourceLine" id="cb931-10" data-line-number="10"><span class="co">#&gt; Unit: milliseconds</span></a>
-<a class="sourceLine" id="cb931-11" data-line-number="11"><span class="co">#&gt;          expr   min    lq  mean median    uq    max neval cld</span></a>
-<a class="sourceLine" id="cb931-12" data-line-number="12"><span class="co">#&gt;  cond_sum_cpp  5.17  5.73  5.99   5.96  6.35   6.99   100  a </span></a>
-<a class="sourceLine" id="cb931-13" data-line-number="13"><span class="co">#&gt;    cond_sum_r 10.50 12.10 19.76  13.10 21.50 308.00   100   b</span></a></code></pre></div>
-<p>On my computer, this approach is about 2x faster than the vectorised R equivalent, which is already pretty fast.</p>
+<a class="sourceLine" id="cb931-11" data-line-number="11"><span class="co">#&gt;          expr   min    lq  mean median    uq    max neval</span></a>
+<a class="sourceLine" id="cb931-12" data-line-number="12"><span class="co">#&gt;  cond_sum_cpp  4.57  4.67  4.95    4.8  5.04   6.38   100</span></a>
+<a class="sourceLine" id="cb931-13" data-line-number="13"><span class="co">#&gt;    cond_sum_r 10.40 13.30 16.25   14.1 15.30 192.00   100</span></a></code></pre></div>
+<p>On my computer, this approach is about 3x faster than the vectorised R equivalent, which is already pretty fast.</p>
 <p>The goal of deferred evaluation is to perform this transformation automatically, so you can write concise R code and have it automatically translated into efficient machine code. Sophisticated translators can also figure out how to make the most of multiple cores. In the above example, if you have four cores, you could split <code>x</code>, <code>y</code>, and <code>z</code> into four pieces performing the conditional sum on each core, then adding together the four individual results. Deferred evaluation can also work with for loops, automatically discovering operations that can be vectorised.</p>
 <p>This chapter has discussed some of the fundamental reasons that R is slow. The following chapters will give you the tools to do something about it when it impacts your code.</p>
 

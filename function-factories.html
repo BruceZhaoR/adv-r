@@ -956,26 +956,26 @@ environment of the function factory.</p>
 <a class="sourceLine" id="cb430-2" data-line-number="2"><span class="co">#&gt; function(x) {</span></a>
 <a class="sourceLine" id="cb430-3" data-line-number="3"><span class="co">#&gt;     x ^ exp</span></a>
 <a class="sourceLine" id="cb430-4" data-line-number="4"><span class="co">#&gt;   }</span></a>
-<a class="sourceLine" id="cb430-5" data-line-number="5"><span class="co">#&gt; &lt;environment: 0x00000000198eef88&gt;</span></a>
+<a class="sourceLine" id="cb430-5" data-line-number="5"><span class="co">#&gt; &lt;environment: 0x268d4f8&gt;</span></a>
 <a class="sourceLine" id="cb430-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb430-7" data-line-number="7">cube</a>
 <a class="sourceLine" id="cb430-8" data-line-number="8"><span class="co">#&gt; function(x) {</span></a>
 <a class="sourceLine" id="cb430-9" data-line-number="9"><span class="co">#&gt;     x ^ exp</span></a>
 <a class="sourceLine" id="cb430-10" data-line-number="10"><span class="co">#&gt;   }</span></a>
-<a class="sourceLine" id="cb430-11" data-line-number="11"><span class="co">#&gt; &lt;bytecode: 0x000000001717cd80&gt;</span></a>
-<a class="sourceLine" id="cb430-12" data-line-number="12"><span class="co">#&gt; &lt;environment: 0x000000001973bc48&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb430-11" data-line-number="11"><span class="co">#&gt; &lt;bytecode: 0x34dba00&gt;</span></a>
+<a class="sourceLine" id="cb430-12" data-line-number="12"><span class="co">#&gt; &lt;environment: 0x33494b8&gt;</span></a></code></pre></div>
 <p>Printing manufactured functions is not revealing because the bodies are identical; it’s the contents of the enclosing environment that’s important. We can get a little more insight by using <code>rlang::env_print()</code>. That shows us that we have two different environments (each of which was originally an execution environment of <code>power1()</code>). The environments have the same parent, which is the enclosing environment of <code>power1()</code>, the global environment.</p>
 <div class="sourceCode" id="cb431"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb431-1" data-line-number="1"><span class="kw">env_print</span>(square)</a>
-<a class="sourceLine" id="cb431-2" data-line-number="2"><span class="co">#&gt; &lt;environment: 00000000198EEF88&gt;</span></a>
-<a class="sourceLine" id="cb431-3" data-line-number="3"><span class="co">#&gt; parent: &lt;environment: global&gt;</span></a>
-<a class="sourceLine" id="cb431-4" data-line-number="4"><span class="co">#&gt; bindings:</span></a>
-<a class="sourceLine" id="cb431-5" data-line-number="5"><span class="co">#&gt;  * exp: &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb431-2" data-line-number="2"><span class="co">#&gt; &lt;environment: 0x268d4f8&gt;</span></a>
+<a class="sourceLine" id="cb431-3" data-line-number="3"><span class="co">#&gt;   parent: &lt;environment: global&gt;</span></a>
+<a class="sourceLine" id="cb431-4" data-line-number="4"><span class="co">#&gt;   bindings:</span></a>
+<a class="sourceLine" id="cb431-5" data-line-number="5"><span class="co">#&gt;    * exp: &lt;dbl&gt;</span></a>
 <a class="sourceLine" id="cb431-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb431-7" data-line-number="7"><span class="kw">env_print</span>(cube)</a>
-<a class="sourceLine" id="cb431-8" data-line-number="8"><span class="co">#&gt; &lt;environment: 000000001973BC48&gt;</span></a>
-<a class="sourceLine" id="cb431-9" data-line-number="9"><span class="co">#&gt; parent: &lt;environment: global&gt;</span></a>
-<a class="sourceLine" id="cb431-10" data-line-number="10"><span class="co">#&gt; bindings:</span></a>
-<a class="sourceLine" id="cb431-11" data-line-number="11"><span class="co">#&gt;  * exp: &lt;dbl&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb431-8" data-line-number="8"><span class="co">#&gt; &lt;environment: 0x33494b8&gt;</span></a>
+<a class="sourceLine" id="cb431-9" data-line-number="9"><span class="co">#&gt;   parent: &lt;environment: global&gt;</span></a>
+<a class="sourceLine" id="cb431-10" data-line-number="10"><span class="co">#&gt;   bindings:</span></a>
+<a class="sourceLine" id="cb431-11" data-line-number="11"><span class="co">#&gt;    * exp: &lt;dbl&gt;</span></a></code></pre></div>
 <p><code>env_print()</code> shows us that both environments have a binding to <code>exp</code>, but we want to see its value<a href="#fn37" class="footnote-ref" id="fnref37"><sup>37</sup></a>. That’s easily done with <code>env_get()</code>:</p>
 <div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb432-1" data-line-number="1"><span class="kw">env_get</span>(square, <span class="st">&quot;exp&quot;</span>)</a>
 <a class="sourceLine" id="cb432-2" data-line-number="2"><span class="co">#&gt; Warning: Passing an environment wrapper like a function is deprecated.</span></a>
@@ -1065,7 +1065,7 @@ enclosing environment.</p></li>
 <a class="sourceLine" id="cb437-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb437-7" data-line-number="7">g1 &lt;-<span class="st"> </span><span class="kw">f1</span>(<span class="fl">1e6</span>)</a>
 <a class="sourceLine" id="cb437-8" data-line-number="8">lobstr<span class="op">::</span><span class="kw">obj_size</span>(g1)</a>
-<a class="sourceLine" id="cb437-9" data-line-number="9"><span class="co">#&gt; 8,013,608 B</span></a>
+<a class="sourceLine" id="cb437-9" data-line-number="9"><span class="co">#&gt; 8,013,592 B</span></a>
 <a class="sourceLine" id="cb437-10" data-line-number="10"></a>
 <a class="sourceLine" id="cb437-11" data-line-number="11">f2 &lt;-<span class="st"> </span><span class="cf">function</span>(n) {</a>
 <a class="sourceLine" id="cb437-12" data-line-number="12">  x &lt;-<span class="st"> </span><span class="kw">runif</span>(n)</a>
@@ -1076,7 +1076,7 @@ enclosing environment.</p></li>
 <a class="sourceLine" id="cb437-17" data-line-number="17"></a>
 <a class="sourceLine" id="cb437-18" data-line-number="18">g2 &lt;-<span class="st"> </span><span class="kw">f2</span>(<span class="fl">1e6</span>)</a>
 <a class="sourceLine" id="cb437-19" data-line-number="19">lobstr<span class="op">::</span><span class="kw">obj_size</span>(g2)</a>
-<a class="sourceLine" id="cb437-20" data-line-number="20"><span class="co">#&gt; 13,448 B</span></a></code></pre></div>
+<a class="sourceLine" id="cb437-20" data-line-number="20"><span class="co">#&gt; 13,432 B</span></a></code></pre></div>
 </div>
 <div id="exercises-30" class="section level3">
 <h3><span class="header-section-number">10.2.5</span> Exercises</h3>
@@ -1231,12 +1231,12 @@ by default, but the vector graphics use inches.</p></li>
 <a class="sourceLine" id="cb447-25" data-line-number="25"></a>
 <a class="sourceLine" id="cb447-26" data-line-number="26"><span class="kw">plot_dev</span>(<span class="st">&quot;pdf&quot;</span>)</a>
 <a class="sourceLine" id="cb447-27" data-line-number="27"><span class="co">#&gt; function(filename, ...) grDevices::pdf(file = filename, ...)</span></a>
-<a class="sourceLine" id="cb447-28" data-line-number="28"><span class="co">#&gt; &lt;bytecode: 0x0000000016334850&gt;</span></a>
-<a class="sourceLine" id="cb447-29" data-line-number="29"><span class="co">#&gt; &lt;environment: 0x0000000019c67a58&gt;</span></a>
+<a class="sourceLine" id="cb447-28" data-line-number="28"><span class="co">#&gt; &lt;bytecode: 0x6dd0530&gt;</span></a>
+<a class="sourceLine" id="cb447-29" data-line-number="29"><span class="co">#&gt; &lt;environment: 0x686f6d0&gt;</span></a>
 <a class="sourceLine" id="cb447-30" data-line-number="30"><span class="kw">plot_dev</span>(<span class="st">&quot;png&quot;</span>)</a>
 <a class="sourceLine" id="cb447-31" data-line-number="31"><span class="co">#&gt; function(...) grDevices::png(..., res = dpi, units = &quot;in&quot;)</span></a>
-<a class="sourceLine" id="cb447-32" data-line-number="32"><span class="co">#&gt; &lt;bytecode: 0x0000000016972c88&gt;</span></a>
-<a class="sourceLine" id="cb447-33" data-line-number="33"><span class="co">#&gt; &lt;environment: 0x000000001b923740&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb447-32" data-line-number="32"><span class="co">#&gt; &lt;bytecode: 0x6fde7a8&gt;</span></a>
+<a class="sourceLine" id="cb447-33" data-line-number="33"><span class="co">#&gt; &lt;environment: 0x461e930&gt;</span></a></code></pre></div>
 </div>
 <div id="exercises-31" class="section level3">
 <h3><span class="header-section-number">10.3.4</span> Exercises</h3>
@@ -1457,8 +1457,8 @@ How does changing the length of <code>x</code> change the results?</p></li>
 <a class="sourceLine" id="cb461-13" data-line-number="13"><span class="co">#&gt; function(x) {</span></a>
 <a class="sourceLine" id="cb461-14" data-line-number="14"><span class="co">#&gt;     x ^ exp</span></a>
 <a class="sourceLine" id="cb461-15" data-line-number="15"><span class="co">#&gt;   }</span></a>
-<a class="sourceLine" id="cb461-16" data-line-number="16"><span class="co">#&gt; &lt;bytecode: 0x000000001717cd80&gt;</span></a>
-<a class="sourceLine" id="cb461-17" data-line-number="17"><span class="co">#&gt; &lt;environment: 0x000000001cf7d4b0&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb461-16" data-line-number="16"><span class="co">#&gt; &lt;bytecode: 0x34dba00&gt;</span></a>
+<a class="sourceLine" id="cb461-17" data-line-number="17"><span class="co">#&gt; &lt;environment: 0x5f8f0a8&gt;</span></a></code></pre></div>
 <p>This idea extends in a straightforward way if your function factory takes two (replace <code>map()</code> with <code>map2()</code>) or more (replace with <code>pmap()</code>) arguments.</p>
 <div id="moving-a-list-to-the-global-environment" class="section level3">
 <h3><span class="header-section-number">10.5.1</span> Moving a list to the global environment</h3>
@@ -1514,7 +1514,7 @@ object that someone else created.</p>
 <a class="sourceLine" id="cb466-14" data-line-number="14"><span class="co">#&gt; {</span></a>
 <a class="sourceLine" id="cb466-15" data-line-number="15"><span class="co">#&gt;     x^0.5</span></a>
 <a class="sourceLine" id="cb466-16" data-line-number="16"><span class="co">#&gt; }</span></a>
-<a class="sourceLine" id="cb466-17" data-line-number="17"><span class="co">#&gt; &lt;environment: 0x000000001d1dd6c0&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb466-17" data-line-number="17"><span class="co">#&gt; &lt;environment: 0x74d7668&gt;</span></a></code></pre></div>
 <p>As well as <code>0.5</code> appearing directly in the body, note that the environment of the function is the global environment, not an execution environment of <code>power3()</code>.</p>
 </div>
 <div id="exercises-33" class="section level3">

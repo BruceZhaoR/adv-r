@@ -200,13 +200,13 @@ f <- function() g()
 g <- function() h()
 h <- function() eval(expr(lobstr::cst()), caller_env(2))
 f()
-#> x
-#> \-global::f()
-#>   +-global::g()
-#>   | \-global::h()
-#>   |   \-base::eval(expr(lobstr::cst()), caller_env(2))
-#>   |     \-base::eval(expr(lobstr::cst()), caller_env(2))
-#>   \-lobstr::cst()
+#> █
+#> └─global::f()
+#>   ├─global::g()
+#>   │ └─global::h()
+#>   │   └─base::eval(expr(lobstr::cst()), caller_env(2))
+#>   │     └─base::eval(expr(lobstr::cst()), caller_env(2))
+#>   └─lobstr::cst()
 ```
 
 ### Base R
@@ -401,7 +401,7 @@ Each of the `expr()` functions that you learned about in the previous chapter ha
     #> expr: ^x + y + z
     #> env:  global
     quos(x + 1, y + 2)
-    #> <listof<quosures>>
+    #> <list_of<quosure>>
     #> 
     #> [[1]]
     #> <quosure>
@@ -444,7 +444,7 @@ x <- new_quosure(expr(x + y), env(x = 1, y = 10))
 x
 #> <quosure>
 #> expr: ^x + y
-#> env:  000000001246FB28
+#> env:  0x42a3a18
 ```
 
 
@@ -482,7 +482,7 @@ And you can extract its components with the `quo_get_` helpers:
 
 ```r
 quo_get_env(x)
-#> <environment: 0x00000000178efe20>
+#> <environment: 0x4acec40>
 quo_get_expr(x)
 #> x + y
 ```
@@ -579,19 +579,19 @@ Almost all quoting functions should capture quosures rather than expressions, an
     q1
     #> <quosure>
     #> expr: ^x
-    #> env:  00000000193C58F0
+    #> env:  0x11f14a0
     
     q2 <- new_quosure(expr(x + !!q1), env(x = 10))
     q2
     #> <quosure>
     #> expr: ^x + (^x)
-    #> env:  0000000012533440
+    #> env:  0x3c2bdf8
     
     q3 <- new_quosure(expr(x + !!q2), env(x = 100))
     q3
     #> <quosure>
     #> expr: ^x + (^x + (^x))
-    #> env:  0000000013B96F98
+    #> env:  0x3ed61a0
     ```
 
 1.  Write a function `enenv()` that captures the environment associated
@@ -938,11 +938,11 @@ microbenchmark::microbenchmark(
   eval_tidy(q1, mtcars)
 )
 #> Unit: microseconds
-#>                   expr  min   lq mean median   uq   max neval cld
-#>               runif(n) 48.6 58.9 60.9   60.2 63.1  78.9   100  a 
-#>      eval_bare(x1, e1) 39.3 61.0 65.0   62.7 65.3 206.5   100  a 
-#>          eval_tidy(q1) 59.3 64.6 67.2   66.1 68.3  96.9   100  a 
-#>  eval_tidy(q1, mtcars) 65.7 70.0 83.1   71.7 77.7 774.0   100   b
+#>                   expr  min   lq mean median   uq   max neval
+#>               runif(n) 39.0 39.7 41.5   40.3 40.8  65.4   100
+#>      eval_bare(x1, e1) 40.0 40.7 43.5   41.2 41.8  91.8   100
+#>          eval_tidy(q1) 42.3 43.2 45.9   43.8 44.5  94.4   100
+#>  eval_tidy(q1, mtcars) 46.2 47.4 56.2   48.2 50.0 491.0   100
 ```
 
 However, most of the overhead is due to setting up the data mask so if you need to evaluate code repeatedly, it's a good idea to define the data mask once then reuse it. This considerably reduces the overhead, with a small change in behaviour: if the code being evaluated creates objects in the "current" environment, those objects will persist across calls.
@@ -957,14 +957,10 @@ microbenchmark::microbenchmark(
   eval_tidy(q1, d_mtcars)
 )
 #> Unit: microseconds
-#>                     expr   min    lq  mean median    uq   max neval
-#>     as_data_mask(mtcars)  3.41  4.27  6.47   4.69  7.47  25.2   100
-#>    eval_tidy(q1, mtcars) 42.67 43.95 61.46  47.79 62.08 372.5   100
-#>  eval_tidy(q1, d_mtcars) 39.68 40.96 51.26  42.45 52.05 109.7   100
-#>  cld
-#>  a  
-#>    c
-#>   b
+#>                     expr   min   lq mean median   uq   max neval
+#>     as_data_mask(mtcars)  5.23  7.0 12.2   11.0 15.2  58.4   100
+#>    eval_tidy(q1, mtcars) 46.16 48.1 65.8   70.5 79.8 137.1   100
+#>  eval_tidy(q1, d_mtcars) 42.10 43.4 56.9   50.9 70.7  77.0   100
 ```
 
 ### Exercises
@@ -1263,10 +1259,10 @@ There are two basic ways to overcome this challenge:
       eval_bare(lm_call, caller_env())
     }
     boot_lm1(y ~ x, data = df)$call
-    #> lm(formula = y ~ x, data = list(x = c(3L, 9L, 7L, 4L, 1L, 2L, 
-    #> 2L, 4L, 5L, 5L), y = c(14.1527498283867, 31.3577210908734, 25.590418059691, 
-    #> 16.2118102327009, 8.48257501673016, 11.0606709535963, 11.0606709535963, 
-    #> 16.2118102327009, 19.9122584164126, 19.9122584164126)))
+    #> lm(formula = y ~ x, data = list(x = c(3L, 6L, 7L, 9L, 9L, 9L, 
+    #> 4L, 1L, 7L, 3L), y = c(14.6648781752736, 22.1126241808277, 25.9200218389642, 
+    #> 33.1201105917209, 33.1201105917209, 33.1201105917209, 17.4530448354519, 
+    #> 7.91010669552239, 25.9200218389642, 14.6648781752736)))
     ```
     
 1.  Alternatively you can create a new environment that inherits from the 
@@ -1290,7 +1286,7 @@ There are two basic ways to overcome this challenge:
     #> 
     #> Coefficients:
     #> (Intercept)            x  
-    #>        5.71         2.83
+    #>        5.12         2.88
     ```
 
 ### Making formulas
