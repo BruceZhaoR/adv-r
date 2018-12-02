@@ -12,14 +12,13 @@ bookdown::gitbook:
     edit:
       link: https://github.com/hadley/adv-r/edit/master/%s
       text: "Edit"
-    download:
-      - ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.pdf", "PDF"]
-      - ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/_main.epub", "EPUB3"]
+    download: [pdf, epub]
     search: yes
     sharing: no
   css: adv-r.css
 
 bookdown::epub_book:
+  dev: svglite
   stylesheet: adv-r.css
   cover_image: cover.png
 

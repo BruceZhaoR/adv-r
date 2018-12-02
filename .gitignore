@@ -13,3 +13,4 @@ figures
 _book
 _main.*
 *.utf8.md
+*.rds

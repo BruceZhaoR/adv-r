@@ -1,5 +1,8 @@
-new_session: yes
+book_filename: "adv-r"
 delete_merged_file: yes
+repo: https://github.com/hadley/adv-r/
+output_dir: _book
+new_session: yes
 
 rmd_files:
   [
