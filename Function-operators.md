@@ -28,7 +28,9 @@ purrr::map_dbl(s, chatty(f))
 #> [1] 9 4 1
 ```
 
-Function operators are closely related to function factories; indeed they're just a function factory that takes a function as input. As well as being built from the same building blocks, there's nothing you can't do without them, but they often allow you to factor out complexity in order to make your code more readable and resuable. Function operators are typically paired with functionals. If you're using a for-loop, there's rarely a reason to use a FO, as it will make your code more complex for little gain.
+Function operators are closely related to function factories; indeed they're just a function factory that takes a function as input. Like factories, there's nothing you can't do without them, but they often allow you to factor out complexity in order to make your code more readable and resuable. 
+
+Function operators are typically paired with functionals. If you're using a for-loop, there's rarely a reason to use a FO, as it will make your code more complex for little gain.
 
 If you're familiar with Python, decorators are just another name for function operators.
 
@@ -37,14 +39,14 @@ If you're familiar with Python, decorators are just another name for function op
 * Section \@ref(existing-fos) introduces you to two extremely useful existing 
   FOs, and shows you how to use them to solve real problems.
   
-* Section \@ref(fo-case-study) works through a case study where you work through
-  a problem amenable to function operators: downloading many web pages.
+* Section \@ref(fo-case-study) works through a problem amenable to solution
+  with function operators: downloading many web pages.
 
 ### Prerequisites {-}
 
-Function operators are a type of function factory, so make sure you're familiar with Section \@ref(function-fundamentals) before you go on. 
+Function operators are a type of function factory, so make sure you're familiar with at least Section \@ref(function-fundamentals) before you go on. 
 
-We'll use a couple of functionals from purrr that you learned about in Chapter \@ref(functionals), as well as some function operators that you'll learn about below. We'll use the memoise package for a useful FO.
+We'll use purrr for a couple of functionals that you learned about in Chapter \@ref(functionals), and some function operators that you'll learn about below. We'll also use the memoise package for the `memoise()` operator.
 
 
 ```r
@@ -52,20 +54,19 @@ library(purrr)
 library(memoise)
 ```
 
-<!--
 ### In other languages
 
 Function operators are used extensively in FP languages like Haskell, and commonly in Lisp, Scheme and Clojure. They are also an important part of modern JavaScript programming, like in the [underscore.js](http://underscorejs.org/) library. They are particularly common in CoffeeScript because its syntax for anonymous functions is so concise. In stack-based languages like Forth and Factor, function operators are used almost exclusively because it's rare to refer to variables by name. Python's decorators are just function operators by a [different name](http://stackoverflow.com/questions/739654/). In Java, they are very rare because it's difficult to manipulate functions (although possible if you wrap them up in strategy-type objects). They are also rare in C++ because, while it's possible to create objects that work like functions ("functors") by overloading the `()` operator, modifying these objects with other functions is not a common programming technique. That said, C++ 11 includes partial application (`std::bind`) as part of the standard library.
--->
+
 
 ## Existing FOs
 
-There are two extremely useful function operators that will both help you solve common recurring problems, and give you a sense for what FOs can do: `purrr::safely()` and `memoise::memoise()`.
+There are two very useful function operators that will both help you solve common recurring problems, and give you a sense for what FOs can do: `purrr::safely()` and `memoise::memoise()`.
 
 ### Capturing errors with `purrr::safely()` {#safely}
 \indexc{safely()}
 
-One advantage of for-loops is that if one of the iterations fails in a for-loop you can still access all the previous results:
+One advantage of for-loops is that if one of the iterations fails, you can still access all the results up to the failure:
 
 
 ```r
@@ -86,7 +87,7 @@ out
 #> [1] 1.39 1.27 2.17   NA
 ```
 
-If you run the same code with a functional, you get no output and it can be hard to figure out where the problem lies:
+If you do the same thing with a functional, you get no output, making it hard to figure out where the problem lies:
 
 
 ```r
@@ -100,6 +101,17 @@ map_dbl(x, sum)
 
 ```r
 safe_sum <- safely(sum)
+safe_sum
+#> function (...) 
+#> capture_error(.f(...), otherwise, quiet)
+#> <bytecode: 0x1de14a8>
+#> <environment: 0x1de1940>
+```
+
+Like all function operators, `safely()` takes a function and returns a wrapped function which we can call as usual:
+
+
+```r
 str(safe_sum(x[[1]]))
 #> List of 2
 #>  $ result: num 1.39
@@ -113,7 +125,9 @@ str(safe_sum(x[[4]]))
 #>   ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
 ```
 
-A function transformed by `safely()` always returns a list with two elements, `result` and `error`. If the function runs successfully, `error` is `NULL` and `result` contains the result; if the function fails, `result` is `NULL` and `error` contains the error.
+You can see that a function transformed by `safely()` always returns a list with two elements, `result` and `error`. If the function runs successfully, `error` is `NULL` and `result` contains the result; if the function fails, `result` is `NULL` and `error` contains the error.
+
+Now lets use `safely()` with a functional:
 
 
 ```r
@@ -137,7 +151,7 @@ str(out)
 #>   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
 ```
 
-The output is in a slightly inconvenient form, since we have four lists each containing a list containing the result and the error. We can make it more convenient by using `purrr::transpose()` to turn it "inside-out" so that we get a list of results and a list of errors:
+The output is in a slightly inconvenient form, since we have four lists, each of which is a list containing the `result` and the `error`. We can make the output easier to use with `purrr::transpose()`. This turns it "inside-out" so that we get a list of `result`s and a list of `error`s:
 
 
 ```r
@@ -182,7 +196,8 @@ out$result[ok]
 #> [1] 2.17
 ```
 
-You can use this same technique in many different situtations. For example, imagine you're fitting a set of generalised linear models (GLMs) to a list of data frames. While GLMs can sometimes fail because of optimisation problems, you'd still want to be able to try to fit all the models, and later look back at those that failed: \index{fitting many models}
+\index{fitting many models}
+You can use this same technique in many different situtations. For example, imagine you're fitting a generalised linear model (GLM) to a list of data frames. GLMs can sometimes fail because of optimisation problems, but you still want to be able to try to fit all the models, and later look back at those that failed: 
 
 
 ```r
@@ -200,7 +215,7 @@ datasets[!ok]
 models[ok]
 ```
 
-I think this is a great example of the power of combining functionals and function operators: it lets you succinctly express what you need to solve a common data analysis problem. 
+I think this is a great example of the power of combining functionals and function operators: `safely()` lets you succinctly express what you need to solve a common data analysis problem. 
 
 purrr comes with three other function operators in a similar vein:
 
@@ -219,7 +234,7 @@ See their documentation for more details.
 \indexc{memoise()}
 \index{Fibonacci series}
 
-An extremely handy FO is `memoise::memoise()`. It __memoises__ a function, meaning that the function will remember previous inputs and return cached results. Memoisation is an example of the classic computer science tradeoff of memory versus speed. A memoised function can run much faster because it stores all of the previous inputs and outputs, using more memory.
+Another handy FO is `memoise::memoise()`. It __memoises__ a function, meaning that the function will remember previous inputs and return cached results. Memoisation is an example of the classic computer science tradeoff of memory versus speed. A memoised function can run much faster because it stores all of the previous inputs and outputs, using more memory.
 
 Let's explore this idea with a toy function that simulates an expensive operation:
 
@@ -232,12 +247,12 @@ slow_function <- function(x) {
 system.time(print(slow_function(1)))
 #> [1] 0.808
 #>    user  system elapsed 
-#>   0.001   0.000   1.001
+#>   0.001   0.000   1.002
 
 system.time(print(slow_function(1)))
 #> [1] 8.34
 #>    user  system elapsed 
-#>   0.004   0.000   1.004
+#>   0.004   0.000   1.006
 ```
 
 When we memoise this function, it's slow when we call it with new arguments. But when we call it with arguments that it's seen before it's instanteous: it retrieves the previous value of the computation.
@@ -248,12 +263,12 @@ fast_function <- memoise::memoise(slow_function)
 system.time(print(fast_function(1)))
 #> [1] 6.01
 #>    user  system elapsed 
-#>   0.001   0.000   1.001
+#>   0.001   0.000   1.002
 
 system.time(print(fast_function(1)))
 #> [1] 6.01
 #>    user  system elapsed 
-#>   0.019   0.000   0.019
+#>   0.043   0.000   0.042
 ```
 
 A relatively realistic use of memoisation is computing the Fibonacci series. The Fibonacci series is defined recursively: the first two values are defined by convention, $f(0) = 0$, $f(n) = 1$, and then $f(n) = f(n - 1) + f(n - 2)$ (for any positive integer). A naive version is slow because, for example, `fib(10)` computes `fib(9)` and `fib(8)`, and `fib(9)` computes `fib(8)` and `fib(7)`, and so on. 
@@ -266,10 +281,10 @@ fib <- function(n) {
 }
 system.time(fib(23))
 #>    user  system elapsed 
-#>   0.044   0.000   0.044
+#>   0.084   0.008   0.092
 system.time(fib(24))
 #>    user  system elapsed 
-#>   0.064   0.004   0.067
+#>   0.123   0.012   0.135
 ```
 
 Memoising `fib()` makes the implementation much faster because each value is computed only once:
@@ -282,7 +297,7 @@ fib2 <- memoise::memoise(function(n) {
 })
 system.time(fib2(23))
 #>    user  system elapsed 
-#>   0.033   0.000   0.032
+#>   0.063   0.000   0.063
 ```
 
 And future calls can rely on previous computations:
@@ -291,7 +306,7 @@ And future calls can rely on previous computations:
 ```r
 system.time(fib2(24))
 #>    user  system elapsed 
-#>   0.001   0.000   0.001
+#>   0.002   0.000   0.001
 ```
 
 This is an example of __dynamic programming__, where a complex problem can be broken down into many overlapping subproblems, and remembering the results of a subproblem considerably improves performance. 
@@ -302,13 +317,17 @@ Think carefully before memoising a function. If the function is not __pure__, i.
 
 1.  Base R provides a function operator in the form of `Vectorize()`. 
     What does it do? When might you use it?
+    
+1.  Read the source code for `possibly()`. How does it work?
+
+1.  Read the source code for `safely()`. How does it work?
+
 
 ## Case study: creating your own FOs {#fo-case-study}
 \indexc{delay\_by()}
 \indexc{dot\_every()}
 
-Imagine you have a named vector of URLs and you'd like to download each one to disk.
-That's pretty simple with `walk2()` and `file.download()`:
+`meomoise()` and `safely()` are very useful but also quite complex. In this case study you'll learn how to create your own simpler function operators. Imagine you have a named vector of URLs and you'd like to download each one to disk. That's pretty simple with `walk2()` and `file.download()`:
 
 
 ```r
@@ -340,7 +359,7 @@ for(i in seq_along(urls)) {
 }
 ```
 
-But I think this for loop is suboptimal because it interleaves different concerns (iteration, printing, and downloading). This makes the code harder to read, and it makes the components harder to reuse in new situations. Instead, let's see if we can use function operators to extract out the two ideas and make them reusable.
+I think this for loop is suboptimal because it interleaves different concerns: pausing, showing progress, and downloading. This makes the code harder to read, and it makes it harder to reuse the components in new situations. Instead, let's see if we can use function operators to extract out pausing and showing progress and make them reusable.
 
 First, let's write an FO that adds a small delay. I'm going to call it `delay_by()` for reasons that will be more clear shortly, and it has two arguments: the function to wrap, and the amount of delay to add. The actual implementation is quite simple. The main trick is forcing evaluation of all arguments as described in Section \@ref(factory-pitfalls), because function operators are a special type of function factory:
 
@@ -356,7 +375,11 @@ delay_by <- function(f, amount) {
   }
 }
 system.time(runif(100))
+#>    user  system elapsed 
+#>       0       0       0
 system.time(delay_by(runif, 0.1)(100))
+#>    user  system elapsed 
+#>     0.0     0.0     0.1
 ```
 
 And we can use it with the original `walk2()`:
@@ -366,7 +389,7 @@ And we can use it with the original `walk2()`:
 walk2(urls, path, delay_by(download.file, 0.1), quiet = TRUE)
 ```
 
-Creating a function to display the occassional dot is a little harder, because we can no longer rely on the index from the loop. We could pass the index along as another argument, but that breaks encapsulation: now a concern of the progress function becomes a problem that the higher level wrapper needs to deal with instead. Instead, we'll use another function factory trick (from Section \@ref(stateful-funs)), so that the progress wrapper can manage its own internal counter:
+Creating a function to display the occasional dot is a little harder, because we can no longer rely on the index from the loop. We could pass the index along as another argument, but that breaks encapsulation: a concern of the progress function now becomes a problem that the higher level wrapper needs to handle. Instead, we'll use another function factory trick (from Section \@ref(stateful-funs)), so that the progress wrapper can manage its own internal counter:
 
 
 ```r
@@ -386,11 +409,15 @@ walk(1:100, dot_every(runif, 10))
 #> ..........
 ```
 
-Now we can express our original goal as:
+Now we can express our original for loop as:
 
 
 ```r
-walk2(urls, path, dot_every(delay_by(download.file, 0.1), 10), quiet = TRUE)
+walk2(
+  urls, path, 
+  dot_every(delay_by(download.file, 0.1), 10), 
+  quiet = TRUE
+)
 ```
 
 This is starting to get a little hard to read because we are composing many function calls, and the arguments are getting spread out. One way to resolve that is to use the pipe:
@@ -406,29 +433,13 @@ walk2(
 
 The pipe works well here because I've carefully chosen the function names to yield an (almost) readable sentence: take `download.file` then (add) a dot every 10 iterations, then delay by 0.1s. The more clearly you can express the intent of your code through function names, the more easily others (including future you!) can read and understand the code.
 
-
 ### Exercises
 
-1.  Compare and contrast the for loop and `walk2()` approaches to downloading
-    many urls. Which makes it easier to see the core objects and functions?
-    Which requires more background knowledge? What are the advantages and
-    disadvantages in factoring out components of the problem into independent
-    functions?
-
+1.  Weigh the pros and cons of 
+    `download.file %>% dot_every(10) %>% delay_by(0.1)` vs
+    `download.file %>% delay_by(0.1) %>% dot_every(10)`.
     
-    ```r
-    for (i in seq_along(urls)) {
-      Sys.sleep(0.1)
-      if (i %% 10 == 0) cat(".")
-      download.file(urls[[i]], paths[[i]])
-    }
-    
-    walk2(
-      urls, path, 
-      download.file %>% dot_every(10) %>% delay_by(0.1), 
-      quiet = TRUE
-    )
-    ```
+1.  Should you memoise `file.download()`? Why/why not?
 
 1.  Create a FO that reports whenever a file is created or deleted in the 
     working directory, using `dir()` and `setdiff()`. What other global 

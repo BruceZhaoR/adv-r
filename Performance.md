@@ -49,9 +49,9 @@ microbenchmark(
   x ^ 0.5
 )
 #> Unit: nanoseconds
-#>     expr   min     lq  mean median     uq    max neval
-#>  sqrt(x) 1,520  2,740  2938  3,030  3,250  8,290   100
-#>    x^0.5 9,190 11,600 14024 14,800 15,300 54,600   100
+#>     expr   min    lq mean median    uq    max neval
+#>  sqrt(x) 1,300 1,680 1966  2,010 2,180  5,850   100
+#>    x^0.5 9,090 9,460 9946  9,590 9,750 43,000   100
 ```
 
 
@@ -158,10 +158,10 @@ microbenchmark(
 )
 #> Unit: nanoseconds
 #>  expr    min     lq  mean median     uq       max neval
-#>   fun    355    500   610    578    648     3,220   100
-#>    S3  1,890  2,480 12106  2,920  3,540   882,000   100
-#>    S4 18,000 19,500 35206 21,100 22,700 1,240,000   100
-#>    RC  9,130 10,100 16701 12,300 13,300   433,000   100
+#>   fun    330    496   796    634    692    17,900   100
+#>    S3  1,670  2,440 12371  2,860  3,150   888,000   100
+#>    S4 17,900 19,600 35524 21,300 22,300   971,000   100
+#>    RC 10,500 11,700 44071 13,000 14,500 3,100,000   100
 ```
 
 
@@ -340,9 +340,9 @@ microbenchmark(
 )
 #> Unit: microseconds
 #>             expr   min    lq mean median   uq   max neval
-#>       squish_ife 34.20 40.80 90.9  71.80 80.5 2,970   100
-#>         squish_p 20.10 23.90 62.8  38.40 51.9 2,000   100
-#>  squish_in_place  4.57  6.07 42.5   9.65 12.7 3,340   100
+#>       squish_ife 34.40 40.30 88.2  49.10 76.5 3,200   100
+#>         squish_p 19.40 23.10 72.4  25.50 46.2 2,780   100
+#>  squish_in_place  4.24  5.52 48.9   6.55 11.2 4,110   100
 ```
 
 Using `pmin()` and `pmax()` is about 2x faster than `ifelse()`, and using subsetting directly is about 4x as fast again. We can often do even better by using C++. The following example compares the best R implementation to a relatively simple, if verbose, implementation in C++. Even if you've never used C++, you should still be able to follow the basic strategy: loop over every element in the vector and perform a different action depending on whether or not the value is less than `a` and/or greater than `b`. 
@@ -382,9 +382,9 @@ microbenchmark(
   unit = "us"
 )
 #> Unit: microseconds
-#>             expr  min   lq  mean median   uq     max neval
-#>  squish_in_place 4.54 5.62  6.22   5.83 6.25    40.9   100
-#>       squish_cpp 3.43 3.79 18.83   3.94 4.20 1,430.0   100
+#>             expr  min   lq mean median   uq     max neval
+#>  squish_in_place 4.87 5.83  6.5   6.09 6.42    39.6   100
+#>       squish_cpp 3.20 3.82 19.0   4.11 4.42 1,470.0   100
 ```
 
 The C++ implementation is around 1x faster than the best pure R implementation.
@@ -486,12 +486,12 @@ microbenchmark(
   unit = "ms"
 )
 #> Unit: milliseconds
-#>          expr   min    lq  mean median    uq   max neval
-#>  cond_sum_cpp  4.63  4.76  5.01   4.94  5.12  6.27   100
-#>    cond_sum_r 12.80 16.50 17.78  17.50 19.10 22.40   100
+#>          expr   min    lq  mean median    uq    max neval
+#>  cond_sum_cpp  4.58  4.92  5.07    5.1  5.19   6.55   100
+#>    cond_sum_r 12.70 13.90 16.29   14.9 15.90 160.00   100
 ```
 
-On my computer, this approach is about 4x faster than the vectorised R equivalent, which is already pretty fast.
+On my computer, this approach is about 3x faster than the vectorised R equivalent, which is already pretty fast.
 
 The goal of deferred evaluation is to perform this transformation automatically, so you can write concise R code and have it automatically translated into efficient machine code. Sophisticated translators can also figure out how to make the most of multiple cores. In the above example, if you have four cores, you could split `x`, `y`, and `z` into four pieces performing the conditional sum on each core, then adding together the four individual results. Deferred evaluation can also work with for loops, automatically discovering operations that can be vectorised.
 

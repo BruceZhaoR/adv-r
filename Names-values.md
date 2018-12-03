@@ -4,10 +4,10 @@
 
 ## Introduction
 
-In R, it is important to understand the distinction between an object and its name. A correct mental model is important because it will help you:
+In R, it is important to understand the distinction between an object and its name. Doing so will help you:
 
-* More accurately predict performance and memory usage of R code. 
-* Write faster code because accidental copies are a major cause of slow code. 
+* More accurately predict the performance and memory usage of your code. 
+* Write faster code by avoiding accidental copies, a major source of slow code. 
 * Better understand R's functional programming tools.
 
 The goal of this chapter is to help you understand the distinction between names and values, and when R will copy an object.
@@ -49,24 +49,24 @@ Answer the following questions to see if you can safely skip this chapter. You c
   names and values, and discusses how `<-` creates a binding, or reference,
   between a name and a value. 
 
-* Section \@ref(copy-on-modify) describes when R makes a copy; whenever you
-  modify vector, you're almost always actually creating a new, modified vector.
-  You'll learn how to use `tracemem()` to figure out when a copy actually
-  occurs, and then explore the implications as they apply to function calls, 
+* Section \@ref(copy-on-modify) describes when R makes a copy: whenever you
+  modify a vector, you're almost certainly creating a new, modified vector. 
+  You'll learn how to use `tracemem()` to figure out when a copy actually 
+  occurs. Then you'll explore the implications as they apply to function calls, 
   lists, data frames, and character vectors. 
 
-* Section \@ref(object-size) explores the implications of the previous two
-  sections on how much memory an object occupies. You'll learn to use 
-  `lobstr::obj_size()` as your intuition may be profoundly wrong, and the
-  base `object.size()` is unfortunately inaccurate.
+* Section \@ref(object-size) explores the implications of the previous two 
+  sections on how much memory an object occupies. Since your intuition may be 
+  profoundly wrong and since `utils::object.size()` is unfortunately 
+  inaccurate, you'll learn how to use `lobstr::obj_size()`.
 
 * Section \@ref(modify-in-place) describes the two important exceptions to
-  copy-on-modify: values with a single name, and environments. In these two
-  special cases, objects are actually modified in place.
+  copy-on-modify: with environments and values with a single name, objects are 
+  actually modified in place.
 
-* Section \@ref(gc) closes out the chapter with a discussion of the 
-  garbage collector, which frees up memory used by objects that are no longer
-  referenced by a name.
+* Section \@ref(gc) concludes the chapter with a discussion of the garbage 
+  collector, which frees up the memory used by objects no longer referenced by 
+  a name.
 
 ### Prerequisites {-}
 
@@ -85,25 +85,27 @@ The details of R's memory management are not documented in a single place. Much 
 ## Binding basics
 \index{bindings} \index{assignment}
 
-Take this code: 
+Consider this code: 
 
 
 ```r
 x <- c(1, 2, 3)
 ```
 
-It's easy to read it as: "create an object named 'x', containing the values 1, 2, and 3". Unfortunately, that's a simplification that will lead you to make inaccurate predictions about what R is actually doing behind the scenes. It's more accurate to think about this code as doing two things:
+It's easy to read it as: "create an object named 'x', containing the values 1, 2, and 3". Unfortunately, that's a simplification that will lead to inaccurate predictions about what R is actually doing behind the scenes. It's more accurate to say that this code is doing two things:
 
-* Creating an object, a vector of values, `c(1, 2, 3)`.
-* Binding the object to a name, `x`.
+* It's creating an object, a vector of values, `c(1, 2, 3)`.
+* And it's binding that object to a name, `x`.
 
-Note that the object, or value, doesn't have a name; it's the name that has a value. To make that distinction more clear, I'll draw diagrams like this: 
+In other words, the object, or value, doesn't have a name; it's actually the name that has a value. 
+
+To further clarify this distinction, I'll draw diagrams like this:  
 
 <img src="diagrams/name-value/binding-1.png" width="160" style="display: block; margin: auto;" />
 
-The name, `x`, is drawn with a rounded rectangle, and it has an arrow that points to, binds, or references, the value, the vector `1:3`. Note that the arrow points in opposite direction to the assignment arrow: `<-` creates a binding from the name on the left-hand side to the object on the right-hand side.
+The name, `x`, is drawn with a rounded rectangle. It has an arrow that points to (or binds or references) the value, the vector `1:3`. Note that the arrow points in opposite direction to the assignment arrow: `<-` creates a binding from the name on the left-hand side to the object on the right-hand side.
 
-You can think of a name as a reference to a value. For example, if you run this code, you don't get another copy of the value `1:3`, you get another binding to the existing object:
+Thus, you can think of a name as a reference to a value. For example, if you run this code, you don't get another copy of the value `1:3`, you get another binding to the existing object:
 
 
 ```r
@@ -111,9 +113,9 @@ y <- x
 ```
 <img src="diagrams/name-value/binding-2.png" width="170" style="display: block; margin: auto;" />
 
-You might have noticed the value `1:3` has a label: `0x74b`. While the vector doesn't have a name, I'll occasionally need to refer to objects independent of their bindings. To make that possible, I'll label values with a unique identifier. These unique identifers have a special form that looks like the object's memory "address", i.e. the location in memory in which the object is stored. It doesn't make sense to use the actual memory address because that changes every time the code is run.
+You might have noticed that the value `1:3` has a label: `0x74b`. While the vector doesn't have a name, I'll occasionally need to refer to an object independent of its bindings. To make that possible, I'll label values with a unique identifier. These identifiers have a special form that looks like the object's memory "address", i.e. the location in memory where the object is stored. But because the actual memory addresses changes every time the code is run, we use these identifiers instead.
 
-You can access the address of an object with `lobstr::obj_addr()`. This allows us to see that `x` and `y` both point to the same location in memory:
+You can access an object's identifier with `lobstr::obj_addr()`. Doing so allows you to see that both `x` and `y` point to the same identifier:
 
 
 ```r
@@ -125,14 +127,14 @@ obj_addr(y)
 
 These identifiers are long, and change every time you restart R.
 
-It takes some time to get your head around the distinction between names and values, but it's really helpful for functional programming when you start to work with functions that have different names in different contexts.
+It can take some time to get your head around the distinction between names and values, but understanding this is really helpful in functional programming where functions can have different names in different contexts.
 
 ### Non-syntactic names {#non-syntactic}
 \index{reserved names} 
 \indexc{`} 
 \index{non-syntactic names}
 
-R has strict rules about what constitutes a valid name. A __syntactic__ name must consist of letters[^letters], digits, `.` and `_`, and can't begin with `_` or a digit. Additionally, it can not be one of a list of __reserved words__ like `TRUE`, `NULL`, `if`, and `function` (see the complete list in `?Reserved`). Names that don't follow these rules are called __non-syntactic__ names, and if you try to use them, you'll get an error:
+R has strict rules about what constitutes a valid name. A __syntactic__ name must consist of letters[^letters], digits, `.` and `_` but can't begin with `_` or a digit. Additionally, you can't use any of the __reserved words__ like `TRUE`, `NULL`, `if`, and `function` (see the complete list in `?Reserved`). A name that doesn't follow these rules is a __non-syntactic__ name; if you try to use them, you'll get an error:
 
 
 ```r
@@ -143,11 +145,9 @@ if <- 10
 #> Error: unexpected assignment in "if <-"
 ```
 
-[^letters]: Surprisingly, what constitutes a letter is determined by your current locale. That means that the syntax of R code actually differs from computer to computer, and it's possible for a file that works on one computer to not even parse on another!
+[^letters]: Surprisingly, what constitutes a letter is determined by your current locale. That means that the syntax of R code can actually differ from computer to computer, and that it's possible for a file that works on one computer to not even parse on another!
 
-<!-- GVW: please add a line to this footnote describing the safe character set to use in programs, or a link to the style guide section. -->
-
-It's possible to override the usual rules and use a name with any sequence of characters by surrounding the name with backticks:
+It's possible to override these rules and use any name, i.e., any sequence of characters, by surrounding it with backticks:
 
 
 ```r
@@ -160,10 +160,10 @@ It's possible to override the usual rules and use a name with any sequence of ch
 #> [1] 10
 ```
 
-Typically, you won't deliberately create such crazy names. Instead, you need to understand them because you'll be subjected to the crazy names created by others. This happens most commonly when you load data that has been created outside of R.
+While it's unlikely you'd deliberately create such crazy names, you need to understand how these crazy names work because you'll come across them, most commonly when you load data that has been created outside of R.
 
 ::: sidebar
-You _can_ create non-syntactic bindings using single or double quotes (e.g. `"_abc" <- 1`) instead of backticks, but you shouldn't, because you'll have to use a different syntax to retrieve the values. The ability to use strings on the left hand side of the assignment arrow is a historical artefact, used before R supported backticks.
+You _can_ also create non-syntactic bindings using single or double quotes (e.g. `"_abc" <- 1`) instead of backticks, but you shouldn't, because you'll have to use a different syntax to retrieve the values. The ability to use strings on the left hand side of the assignment arrow is an historical artefact, used before R supported backticks.
 :::
 
 ### Exercises
@@ -179,8 +179,8 @@ You _can_ create non-syntactic bindings using single or double quotes (e.g. `"_a
     d <- 1:10
     ```
 
-1.  The following code accesses the mean function in multiple different ways.
-    Do they all point to the same underlying function object? Verify with
+1.  The following code accesses the mean function in multiple ways. Do they all 
+    point to the same underlying function object? Verify this with 
     `lobstr::obj_addr()`.
     
     
@@ -192,23 +192,22 @@ You _can_ create non-syntactic bindings using single or double quotes (e.g. `"_a
     match.fun("mean")
     ```
     
-1.  By default, base R data import functions, like `read.csv()`, will automatically
-    convert non-syntactic names to syntactic names. Why might this be 
-    problematic? What option allows you to suppress this behaviour?
+1.  By default, base R data import functions, like `read.csv()`, will 
+    automatically convert non-syntactic names to syntactic ones. Why might 
+    this be problematic? What option allows you to suppress this behaviour
     
 1.  What rules does `make.names()` use to convert non-syntactic names into
-    syntactic names?
+    syntactic ones?
 
 1.  I slightly simplified the rules that govern syntactic names. Why is `.123e1`
     not a syntactic name? Read `?make.names` for the full details.
 
 ## Copy-on-modify
 
-Consider the following code, which binds `x` and `y` to the same underlying value, then modifies[^double-bracket] `y`.
+Consider the following code. It binds `x` and `y` to the same underlying value, then modifies `y`.[^double-bracket]
 
-[^double-bracket]: You may be surprised to see `[[` used with a numeric vector. We'll come back to this in Section \@ref(subset-single), but in brief, I think you should use `[[` whenever you are getting or setting a single element.
+[^double-bracket]: You may be surprised to see `[[` used with a numeric vector. We'll come back to this in Section \@ref(subset-single), but in brief, I think you should always use `[[` when you are getting or setting a single element.
 
-<!-- GVW: should I be surprised that `[[` is used with a numeric vector as subscript, or that it's being used to subscript a numeric vector? (I'm new enough that I don't know what should surprise me.) -->
 
 
 ```r
@@ -220,15 +219,15 @@ x
 #> [1] 1 2 3
 ```
 
-Modifying `y` clearly doesn't modify `x`, so what happened to the shared binding? While the value associated with `y` changes, the original object does not. Instead, R creates a new object, `0xcd2`, a copy of `0x74b` with one value changed, then rebinds `y` to that object.
+Modifying `y` clearly didn't modify `x`. So what happened to the shared binding? While the value associated with `y` changed, the original object did not. Instead, R created a new object, `0xcd2`, a copy of `0x74b` with one value changed, then rebinded `y` to that object.
 
 <img src="diagrams/name-value/binding-3.png" width="160" style="display: block; margin: auto;" />
 
-This behaviour is called __copy-on-modify__, and understanding it makes your intuition for the performance of R code radically better. A related way to describe this phenomenon is to say that R objects are __immutable__, or unchangeable. However, I'll generally avoid that term because there are a couple of important exceptions to copy-on-modify that you'll learn about in Section \@ref(modify-in-place). 
+This behaviour is called __copy-on-modify__. Understanding it will radically improve your intuition about the performance of R code. A related way to describe this behaviour is to say that R objects are unchangeable, or __immutable__. However, I'll generally avoid that term because there are a couple of important exceptions to copy-on-modify that you'll learn about in Section \@ref(modify-in-place). 
 
 ### `tracemem()`
 
-You can see when an object gets copied with the help of `base::tracemem()`. You call it with an object and it returns the current address of the object:
+You can see when an object gets copied with the help of `base::tracemem()`. Once you call that function with an object, you'll get the object's current address:
 
 
 ```r
@@ -237,9 +236,8 @@ cat(tracemem(x), "\n")
 #> <0x7f80c0e0ffc8> 
 ```
 
-Whenever that object is copied in the future, `tracemem()` will print out a message telling you which object was copied, what the new address is, and the sequence of calls that lead to the copy:
+From then on, whenever that object is copied, `tracemem()` will print a message telling you which object was copied, its new address, and the sequence of calls that led to the copy:
 
-<!-- GVW: that's cool. -->
 
 
 ```r
@@ -248,9 +246,8 @@ y[[3]] <- 4L
 #> tracemem[0x7f80c0e0ffc8 -> 0x7f80c4427f40]: 
 ```
 
-Note that if you modify `y` again, it doesn't get copied. That's because the new object now only has a single name binding to it, so R can apply a modify-in-place optimisation. We'll come back to that shortly.
+Note that if you modify `y` again, it won't get copied. That's because the new object now only has a single name bound to it, so R applies modify-in-place optimisation. We'll come back to this shortly.
 
-<!-- GVW: forward link to section that resolves the "shortly". -->
 
 
 ```r
@@ -281,30 +278,28 @@ z <- f(x)
 untracemem(x)
 ```
 
-While `f()` is running, `a` inside the function will point to the same value as `x` does outside of it:
+While `f()` is running, the `a` inside the function points to the same value as the `x` does outside the function:
 
 <img src="diagrams/name-value/binding-f1.png" width="250" style="display: block; margin: auto;" />
 
 (You'll learn more about the conventions used in this diagram in [Execution environments].)
 
-<!-- GVW: I think I've figured out what the colors and curves mean, but I'm not sure... -->
 
-And once complete, `x` and `z` will point to the same object. `0x74b` never gets copied because it never gets modified. If `f()` did modify `x`, R would create a new copy, and then `z` would bind that object. 
+Once `f()` completes, `x` and `z` will point to the same object. `0x74b` never gets copied because it never gets modified. If `f()` did modify `x`, R would create a new copy, and then `z` would bind that object.
 
 <img src="diagrams/name-value/binding-f2.png" width="170" style="display: block; margin: auto;" />
 
 ### Lists {#list-references}
 
-It's not just names (i.e. variables) that point to values; the elements of lists do too. Take this list, which superficially is very similar to the vector above:
+It's not just names (i.e. variables) that point to values; elements of lists do too. Take this list, which is superficially very similar to the vector above:
 
 
 ```r
 l1 <- list(1, 2, 3)
 ```
 
-The internal representation of the list is actually quite different to that of a vector. A list is really a vector of references:
+The internal representation of a list is actually quite different from that of a vector. A list is really a vector of references:
 
-<!-- GVW: isn't this exactly the same as the structure of a vector, just storing a different type? -->
 
 <img src="diagrams/name-value/list.png" width="189" style="display: block; margin: auto;" />
 
@@ -324,11 +319,10 @@ l2[[3]] <- 4
 
 <img src="diagrams/name-value/l-modify-2.png" width="222" style="display: block; margin: auto;" />
 
-Like vectors, lists are copied-on-modify; the original list is left unchanged, and R creates a modified copy. This is a __shallow__ copy: the list object and its bindings are copied, but the values pointed to by the bindings are not. The oppposite of a shallow copy is a deep copy, where the contents of every reference are also copied. Prior to R 3.1.0, copies were always deep copies.
+Like vectors, lists use copy-on-modify behaviour; the original list is left unchanged, and R creates a modified copy. This, however, is a __shallow__ copy: the list object and its bindings are copied, but the values pointed to by the bindings are not. The opposite of a shallow copy is a deep copy where the contents of every reference are copied. Prior to R 3.1.0, copies were always deep copies.
 
-You can use `lobstr::ref()` to see values that are shared across lists. `ref()` prints the memory address of each object, along with a local id so that you can easily cross-reference shared components.
+To see values that are shared across lists, use `lobstr::ref()`. `ref()` prints the memory address of each object, along with a local ID so that you can easily cross-reference shared components.
 
-<!-- GVW: install.packages("lobstr") produces "package 'lobstr' is not available (for R version 3.5.1).", but devtools::install_github("r-lib/lobstr") works. -->
 
 
 ```r
@@ -354,7 +348,7 @@ d1 <- data.frame(x = c(1, 5, 6), y = c(2, 4, 3))
 ```
 <img src="diagrams/name-value/dataframe.png" width="165" style="display: block; margin: auto;" />
 
-If you modify a column, only that column needs to be modified; the others can continue to point to the same place:
+If you modify a column, only _that_ column needs to be modified; the others will still point to their original references:
 
 
 ```r
@@ -363,9 +357,8 @@ d2[, 2] <- d2[, 2] * 2
 ```
 <img src="diagrams/name-value/d-modify-c.png" width="212" style="display: block; margin: auto;" />
 
-However, if you modify a row, there is no way to share data with the previous version of the data frame, and every column must be copied-and-modified.
+However, if you modify a row, there is no way to share data with the previous version of the data frame: every column must be copied-and-modified.
 
-<!-- GVW: "if you modify a row, every column is modified, which means every column must be copied" -->
 
 
 ```r
@@ -377,7 +370,7 @@ d3[1, ] <- d3[1, ] * 3
 ### Character vectors
 \index{string pool}
 
-The final place that R uses references is in character vectors. I usually draw character vectors like this:
+The final place that R uses references is with character vectors. I usually draw character vectors like this:
 
 
 ```r
@@ -385,13 +378,12 @@ x <- c("a", "a", "abc", "d")
 ```
 <img src="diagrams/name-value/character.png" width="241" style="display: block; margin: auto;" />
 
-But this is a polite fiction, because R has a __global string pool__. Each element of a character vector is actually a pointer to a unique string in that pool:
+But this is a polite fiction. R actually uses a __global string pool__ where each element of a character vector is a pointer to a unique string in the pool:
 
 <img src="diagrams/name-value/character-2.png" width="250" style="display: block; margin: auto;" />
 
-<!-- GVW: what I brought with me from other languages was that "character vector" referred to a single string (a vector of characters), but what I now understand is that "character vector" means "a vector of character strings".  Might be worth footnoting this for people who make the same mistake I did? -->
 
-You can request that `ref()` show these references:
+You can request that `ref()` show these references by setting the `character` argument to `TRUE`:
 
 
 ```r
@@ -403,7 +395,7 @@ ref(x, character = TRUE)
 #> └─[4:0x2b61ad8] <string: "d">
 ```
 
-This has a profound impact on the amount of memory a character vector takes, but is otherwise not generally important, so elsewhere in the book I'll draw character vectors as if the strings lived inside the vector.
+This has a profound impact on the amount of memory a character vector uses but is otherwise generally unimportant, so elsewhere in the book I'll draw character vectors as if the strings lived inside a vector.
 
 ### Exercises
 
@@ -444,9 +436,9 @@ This has a profound impact on the amount of memory a character vector takes, but
 \indexc{object\_size} 
 \indexc{obj\_size}
 
-You can find out how much space an object occupies in memory with `lobstr::obj_size()`[^object.size]:
+You can find out how much memory an object takes with `lobstr::obj_size()`[^object.size]:
 
-[^object.size]: Beware of the base `utils::object.size()` function. It does not correctly account for shared references and will return sizes that are too large.
+[^object.size]: Beware of the `utils::object.size()` function. It does not correctly account for shared references and will return sizes that are too large.
 
 
 ```r
@@ -469,7 +461,7 @@ obj_size(y)
 #> 8,000,128 B
 ```
 
-`y` is only 72 bytes[^32bit] bigger than `x`. That's the size of an empty list with three elements:
+`y` is only 80 bytes[^32bit] bigger than `x`. That's the size of an empty list with three elements:
 
 
 ```r
@@ -477,11 +469,9 @@ obj_size(list(NULL, NULL, NULL))
 #> 80 B
 ```
 
-[^32bit]: If you're running 32-bit R you'll see slightly different sizes.
+[^32bit]: If you're running the 32-bit version of R you'll see slightly different sizes.
 
-<!-- GVW: "On a 64-bit machine --- if you're running 32-bit R ..." -->
-
-Similarly, the global string pool means that character vectors take up less memory than you might expect: repeating a string 1000 times does not make it take up 1000 times as much memory.
+Similarly, because R uses a global string pool character vectors take up less memory than you might expect: repeating a string 1000 times does not make it take up 1000 times as much memory.
 
 
 ```r
@@ -546,15 +536,15 @@ obj_size(x, y)
 
 ## Modify-in-place
 
-As we've seen above, modifying an R object will usually create a copy. There are two exceptions that we'll explore below:
+As we've seen above, modifying an R object usually creates a copy. There are two exceptions:
 
 * Objects with a single binding get a special performance optimisation.
 
-* Environments are a special type of object that is always modified in place.
+* Environments, a special type of object, are always modified in place.
 
 ### Objects with a single binding {#single-binding}
 
-If an object only has a single name that binds it, R will modify it in place:
+If an object has a single name bound to it, R will modify it in place:
 
 
 ```r
@@ -570,24 +560,24 @@ v[[3]] <- 4
 
 <img src="diagrams/name-value/v-inplace-2.png" width="160" style="display: block; margin: auto;" />
 
-(Carefully note the object ids here: `v` continues to bind to the same object, `0x207`.)
+(Note the object IDs here: `v` continues to bind to the same object, `0x207`.)
 
-It's challenging to predict exactly when R applies this optimisation because of two complications:
+Two complications make predicting exactly when R applies this optimisation challenging:
 
 * When it comes to bindings, R can currently[^refcnt] only count 0, 1, 
-  and many. That means if an object has two bindings, and one goes away,
-  the reference count does not go back to 1 (because one less than many is 
-  still many).
+  or many. That means that if an object has two bindings, and one goes away,
+  the reference count does not go back to 1: one less than many is 
+  still many.
   
-* Whenever you call any regular function, it will make a reference to the 
+* Whenever you call any regular function, it makes a reference to the 
   object. The only exception are specially written C functions. These occur 
   mostly in the base package.
 
-[^refcnt]: By the time you read this, that may have changed, as plans are afoot to improve reference counting: https://developer.r-project.org/Refcnt.html
+[^refcnt]: By the time you read this, this may have changed, as plans are afoot to improve reference counting: https://developer.r-project.org/Refcnt.html
 
-Together, this makes it hard to predict whether or not a copy will occur. Instead, it's better to determine it empirically with `tracemem()`. Let's explore the subtleties with a case study using for loops. For loops have a reputation for being slow in R, but often that slowness is because every iteration of the loop is creating a copy. 
+Together, these two complications make it hard to predict whether or not a copy will occur. Instead, it's better to determine it empirically with `tracemem()`.
 
-Consider the following code. It subtracts the median from each column of a large data frame: \index{loops!avoiding copies}
+Let's explore the subtleties with a case study using for loops. For loops have a reputation for being slow in R, but often that slowness is caused by every iteration of the loop creating a copy. Consider the following code. It subtracts the median from each column of a large data frame: \index{loops!avoiding copies}
 
 
 ```r
@@ -599,7 +589,7 @@ for (i in seq_along(medians)) {
 }
 ```
 
-This loop is surprisingly slow because every iteration of the loop copies the data frame, as revealed by using `tracemem()`:
+This loop is surprisingly slow because each iteration of the loop copies the data frame. You can see this by using `tracemem()`:
 
 
 ```r
@@ -628,9 +618,9 @@ for (i in 1:5) {
 untracemem(x)
 ```
 
-In fact, each iteration copies the data frame not once, not twice, but three times! Two copies are made by `[[.data.frame`, and a further copy[^shallow-copy] it made because `[[.data.frame` is a regular function and hence increments the reference count of `x`. 
+In fact, each iteration copies the data frame not once, not twice, but three times! Two copies are made by `[[.data.frame`, and a further copy[^shallow-copy] is made because `[[.data.frame` is a regular function that increments the reference count of `x`. 
 
-[^shallow-copy]: Note that these copies are shallow, and only copy the reference to each individual column, not the contents. This means the performance isn't terrible, but it's obviously not as good as it could be.
+[^shallow-copy]: Note that these copies are shallow: they only copy the reference to each individual column, not the contents of the columns. This means the performance isn't terrible, but it's obviously not as good as it could be.
 
 We can reduce the number of copies by using a list instead of a data frame. Modifying a list uses internal C code, so the refs are not incremented and only a single copy is made:
 
@@ -646,11 +636,11 @@ for (i in 1:5) {
 #> tracemem[0x7f80c5c3de20 -> 0x7f80c48de210]: 
 ```
 
-While it's not hard to determine when copies are made, it is hard to prevent them. If you find yourself resorting to exotic tricks to avoid copies, it may be time to rewrite your function in C++, as described in Chapter \@ref(rcpp).
+While it's not hard to determine when a copy is made, it is hard to prevent it. If you find yourself resorting to exotic tricks to avoid copies, it may be time to rewrite your function in C++, as described in Chapter \@ref(rcpp).
 
 ### Environments {#env-modify}
 
-You'll learn more about environments in Chapter \@ref(environments), but it's important to mention them here because they behave differently to other objects: environments are always modified in place. This property is sometimes described as __reference semantics__ because when you modify an environment all existing bindings to the environment continue to have the same reference.
+You'll learn more about environments in Chapter \@ref(environments), but it's important to mention them here because their behavior is different from that of other objects: environments are always modified in place. This property is sometimes described as __reference semantics__ because when you modify an environment all existing bindings to that environment continue to have the same reference.
 
 Take this environment, which we bind to `e1` and `e2`:
 
@@ -672,7 +662,7 @@ e2$c
 ```
 <img src="diagrams/name-value/e-modify-2.png" width="184" style="display: block; margin: auto;" />
 
-This basic idea can be used to create functions that "remember" their previous state. See Section \@ref(stateful-funs) for more details. This property is also used to implemented the R6 object oriented programming system, the topic of Chapter \@ref(r6).
+This basic idea can be used to create functions that "remember" their previous state. See Section \@ref(stateful-funs) for more details. This property is also used to implement the R6 object oriented programming system, the topic of Chapter \@ref(r6).
 
 One consequence of this is that environments can contain themselves:
 
@@ -689,12 +679,11 @@ ref(e)
 
 This is a unique property of environments!
 
-<!-- GVW: having people explain why `x <- list(); x[[1]] <- x` *doesn't* produce a circular list might be a good exercise. -->
 
 ### Exercises
 
 1.  Wrap the two methods for subtracting medians into two functions, then
-    use the bench [@bench] package to carefully compare their speeds. How does
+    use the 'bench' package [@bench] to carefully compare their speeds. How does
     performance change as the number of columns increase?
 
 1.  What happens if you attempt to use `tracemem()` on an environment?
@@ -730,11 +719,10 @@ R uses a __tracing__ GC. That means it traces every object reachable from the gl
 
 [^callstack]: And every environment on the current call stack.
 
-The garbage collector (GC) is run automatically whenever R needs more memory to create a new object. From the outside, it's basically impossible to predict when the GC will run, and indeed, you shouldn't try. Instead, if you want to find out when the GC runs, call `gcinfo(TRUE)`: the the GC will print a message to the console every time it runs. 
+The garbage collector (GC) is run automatically whenever R needs more memory to create a new object. From the outside, it's basically impossible to predict when the GC will run, and indeed, you shouldn't try. Instead, if you want to find out when the GC runs, call `gcinfo(TRUE)`: then the GC will print a message to the console every time it runs.
 
 You can force the garbage collector to run by calling `gc()`. Despite what you might have read elsewhere, there's never any _need_ to call `gc()` yourself. You may _want_ to call `gc()` to ask R to return memory to your operating system, or for its side-effect of telling you how much memory is currently being used:  
 
-<!-- GVW: why would I want to ask R to return memory the OS? -->
 
 
 ```r

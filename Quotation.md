@@ -4,34 +4,58 @@
 
 ## Introduction
 
-Now that you understand the tree structure of R code, it's time to come back to one of the fundamental ideas that make `expr()` and `ast()` work: __quasiquotation__.  There are two sides to quasiquotation:
+Now that you understand the tree structure of R code, it's time to come back to one of the fundamental ideas that make `expr()` and `ast()` work: quasiquotation. __Quasiquotation__ is made up of two parts:
 
-* __Quotation__ allows you to capture the AST associated with an argument. 
-  As a function author, this gives you a lot of power to influence how
-  expressions are evaluated.
-  
-* __Unquotation__ allows you to selectively evaluate parts of a quoted 
-  expression. This is a powerful tool that makes it easy to build up a 
-  complex AST from simpler fragments.
+* __Quotation__ is the act of capturing an unevaluated expression.  
 
-The combination of these two ideas makes it easy to compose expressions that are mixtures of direct and indirect specification, and helps to solve a wide variety of challenging problems. 
+* __Unquotation__ is the ability to selectively evaluate evaluate parts of an
+  otherwise quoted expression. 
 
-Quoting functions have deep connections to Lisp __macros__. But macros are usually run at compile-time, which doesn't have any meaning in R, and they always input and output ASTs. (@lumley-2001 shows one way you might implement them in R). Quoting functions are more closely related to Lisp [__fexprs__](http://en.wikipedia.org/wiki/Fexpr), functions where all arguments are quoted by default. These terms are useful to know when looking for related techniques in other programming languages. \index{macros} \index{fexprs}
+The combination of these two ideas makes it easy create functions that combine code written by the function author with code written by the function user, and helps to solve a wide variety of challenging problems. 
+
+Quasiquotation is one of the three components of tidy evaluation. You'll learn learn about the other two components (quosures and the data mask) in Chapter \@ref(evaulation). By itself, quasiquotation is mostly useful for programming, particularly for generating code; when combined with the other techniques, tidy evalation is a powerful tool for data analysis.
 
 ### Outline {-}
 
+* Section \@ref(quasi-motivation) motivates the development of quasiquotation
+  with a function, `cement()`, that works like `paste()` but automatically
+  "quotes" its arguments so that you don't have to.
+  
+* Section \@ref(quoting) gvies you the tools to quote expressions, whether
+  they come from you or the user, or whether you use rlang or base R tools.
+  
+* Section \@ref(unquoting) introduces the biggest difference between rlang 
+  quoting functions and base quoting function: unquoting with `!!` and `!!!`.
+
+* Section \@ref(base-nonquote) discusses the three main "non-quoting"
+  techniques that base R functions uses to disable quoting behaviour. 
+  
+* Section \@ref(tidy-dots) explores another place that you can use `!!!`,
+  functions that take `...`. It also introduces the special `:=` operator,
+  which allows you to dynamically change argument names.
+  
+* Section \@ref(expr-case-studies) shows a few practical uses of quoting to solve
+  problems that naturally require some code generation.
+
 ### Prerequisites {-}
 
-Make sure you're familiar with the tree structure of code described in [Abstract syntax trees].
+Make sure you've read the metaprogramming overview in Chapter \@ref(meta) to get a broad overview of the motivation and the basic vocabulary, and that you're familiar with the tree structure of expressions as described in Section \@ref(expressions).
 
-You'll also need the development version of rlang:
+Code-wise, we'll mostly be using the tools from rlang, but at the end of the chapter you'll also see some powerful applications in conjunction with purrr.
 
 
 ```r
 library(rlang)
+library(purrr)
 ```
 
-## Motivation
+### Related work {-}
+\index{macros} 
+\index{fexprs}
+ 
+Quoting functions have deep connections to Lisp __macros__. But macros are usually run at compile-time, which doesn't exist in R, and they always input and output ASTs. See @lumley-2001 for one approach to implementing them in R. Quoting functions are more closely related to Lisp [__fexprs__](http://en.wikipedia.org/wiki/Fexpr), functions where all arguments are quoted by default. These terms are useful to know when looking for related techniques in other programming languages.
+
+## Motivation {#quasi-motivation}
 
 We'll start with a simple and concrete example that helps motivate the need for unquoting, and hence quasiquotation. Imagine you're creating a lot of strings by joining together words:
 
@@ -43,13 +67,13 @@ paste("Good", "afternoon", "Alice")
 #> [1] "Good afternoon Alice"
 ```
 
-You are sick and tired of writing all those quotes, and instead you just want to use bare words. To that end, you've managed to write the following function:
+You are sick and tired of writing all those quotes, and instead you just want to use bare words. To that end, you've written the following function:
 
 
 ```r
 cement <- function(...) {
-  dots <- exprs(...)
-  paste(purrr::map(dots, expr_name), collapse = " ")
+  args <- ensyms(...)
+  paste(purrr::map(args, as_string), collapse = " ")
 }
 
 cement(Good, morning, Hadley)
@@ -58,11 +82,11 @@ cement(Good, afternoon, Alice)
 #> [1] "Good afternoon Alice"
 ```
 
-(You'll learn what `exprs()` does shortly; for now just look at the results.)
+(You'll learn what `ensyms()` does shortly; for now just look at the results.)
 
-Formally, this function __quotes__ the arguments in `...`. You can think of it as automatically putting quotation marks around each argument. That's not precisely true as the intermediate objects it generates are expressions, not strings, but it's a useful approximation for now.
+Formally, this function _quotes_ the arguments in `...`. You can think of it as automatically putting quotation marks around each argument. That's not precisely true as the intermediate objects it generates are expressions, not strings, but it's a useful approximation, and meaning at the root of the term "quote".
 
-This function is nice because we no longer need to type quotes. The problem, however, comes when we want to use variables. It's easy to use variables with `paste()` as we just don't surround them with quotes:
+This function is nice because we no longer need to type quotation marks. The problem, however, comes when we want to use variables. It's easy to use variables with `paste()`: just don't surround them with quotation marks.
 
 
 ```r
@@ -81,7 +105,7 @@ cement(Good, time, name)
 #> [1] "Good time name"
 ```
 
-We need some way to explicitly __unquote__ the input, to tell `cement()` to remove the automatic quote marks. Here we need `time` and `name` to be treated differently to `Good`. Quasiquotation gives us a standard tool to do so: `!!`, called "unquote", and pronounced bang-bang. `!!` tells a quoting function to drop the implicit quotes:
+We need some way to explicitly _unquote_ the input, to tell `cement()` to remove the automatic quote marks. Here we need `time` and `name` to be treated differently to `Good`. Quasiquotation gives us a standard tool to do so: `!!`, called "unquote", and pronounced bang-bang. `!!` tells a quoting function to drop the implicit quotes:
 
 
 ```r
@@ -106,7 +130,9 @@ The distinction between quoted and evaluated arguments is important:
 * A __quoted__ argument is captured by the function and something unusual 
   will happen.
 
-If you're ever unsure about whether an argument is quoted or evaluated, try executing the code outside of the function. If it doesn't work, then that argument is quoted. For example, you can use this technique to determine that the first argument to `library()` is quoted:
+`paste()` evaluates all its arguments; `cement()` quotes all its arguments.
+
+If you're ever unsure about whether an argument is quoted or evaluated, try executing the code outside of the function. If it doesn't work (or does something profoundly different), then that argument is quoted. For example, you can use this technique to determine that the first argument to `library()` is quoted:
 
 
 ```r
@@ -119,17 +145,31 @@ MASS
 #>   object 'MASS' not found
 ```
 
-Talking about whether an argument is quoted or evaluated is a more precise way of stating whether or not a function uses NSE. I will sometimes use "quoting function" as short-hand for a "function that quotes one or more arguments", but generally, I'll refer to quoted arguments since that is the level at which the difference occurs.
+Talking about whether an argument is quoted or evaluated is a more precise way of stating whether or not a function uses non-standard evaluation (NSE). I will sometimes use "quoting function" as short-hand for a "function that quotes one or more arguments", but generally, I'll refer to quoted arguments since that is the level at which the difference applies.
 
-### Theory
+### History
 
-Now that you've seen the basic idea, it's time to talk a little bit about the theory. The idea of quasiquotation is an old one. It was first developed by a philosopher, Willard van Orman Quine[^quine], in the early 1940s. It's needed in philosophy because it helps when precisely delineating the use and mention of words, i.e. between the object and the words we use to refer to that object. 
+The idea of quasiquotation is an old one. It was first developed by a philosopher, Willard van Orman Quine[^quine], in the early 1940s. It's needed in philosophy[^mcfarlane] because it helps when precisely delineating the use and mention of words, i.e. between the object and the words we use to refer to that object. 
 
-[^quine]: You might be familiar with the name Quine from "quines", computer programs that when run return a copy of their own source code.
+[^quine]: You might be familiar with the name Quine from "quines", computer programs that return a copy of their own source when run.
 
-Quasiquotation was first used in a programming language, LISP, in the mid-1970s [@bawden-1999]. LISP has one quoting function `` ` ``, and uses `,` for unquoting. Most languages with a LISP heritage behave similarly. For example, racket (`` ` `` and `@`), clojure (`` ` `` and `~`), and julia (`:` and `@`) all have quasiquotation tools that differ only slightly from LISP. 
+[^mcfarlane]: A fun connection between philosophy and R is in <https://johnmacfarlane.net/142/substitutional-quantifiers.pdf>; this article is written by philosophy professor John MacFarlane, the author of pandoc, which powers RMarkdown.
 
-Quasiquotation has only come to R recently (2017). Despite its newness, I teach it in this book because it is a rich and powerful theory that makes many hard problems much easier. Quasiquotation in R is a little different to LISP and descendants. In LISP there is only one function that does quasiquotation (the quote function), and you must call it explicitly when needed. This makes these languages less ambiguous (because there's a clear code signal that something odd is happening), but is less appropriate for R because quasiquotation is such an important part of DSLs for data analysis.
+Quasiquotation was first used in a programming language, LISP, in the mid-1970s [@bawden-1999]. LISP has one quoting function `` ` ``, and uses `,` for unquoting. Most languages with a LISP heritage behave similarly. For example, racket (`` ` `` and `@`), clojure (`` ` `` and `~`), and julia (`:` and `@`) all have quasiquotation tools that differ only slightly from LISP. These languages have a single quoting function and you must call it explicitly. 
+
+In R, however, many functions quote one or more inputs. This introduces ambiguity (because you need to read the documentation to determine if an argument is quoted or not), but allows for concise and elegant data exploration code. In base R, only one function supports quasiquotation: `bquote()`, written in 2003 by Thomas Lumley. But `bquote()` is not used anywhere in base R, and has had relatively little impact on how R code is written. There are three challenges to effective use of `bquote()`:
+
+* It is only easily used with your code; it is hard to apply it to abitrary
+  code supplied by a user.
+  
+* It does not provide an unquote-splice operator that allows you to unquote
+  multiple expressions stored in a list.
+  
+* It lacks the ability to handle code accompanied by an environment, which 
+  is crucial for functions that evaluate code in the context of a data frame,
+  like `subset()` and friends.
+
+Figuring out how to fix the first and second challenges lead to my lazyeval package (2014-2015). Identifying and remedying the third challenge (the topic of Chapter \@ref(evaluation) lead to the tidy evaluation framework taught in this book and implemented in the rlang package by Lionel Henry, during 2017. Despite the newness of tidy eval, I teach it here because it is a rich and powerful theory that, once you master it, makes many hard problems much easier.
 
 ### Exercises
 
@@ -163,21 +203,13 @@ Quasiquotation has only come to R recently (2017). Despite its newness, I teach 
     ggplot(by_cyl, aes(cyl, mean)) + geom_point()
     ```
 
+## Quoting
 
-## Quotation
+The first part of quasiquotation is quotation: capturing an expression without evaluating it. There are two components to this: capturing an expression supplied directly, and capturing an expression supplied indirectly in a lazily-evaluated function argument. We'll discuss two sets of tools for these two ways of capturing: those provided by rlang, and those provided by base R.
 
-The first part of quasiquotation is quotation: capturing an AST without evaluating it. There are two components to this: capturing an expression directly, and capturing an expression from a lazily-evaluated function argument. We'll discuss two sets of tools for these two ways of capturing: those provided by rlang, and those provided by base R.
+### Capturing expressions
 
-### With rlang
-
-There are four important quoting functions, broken down by whether they capture one or many expressions, and whether they capture the developer's or user's expression:
-
-|      | Developer | User        |
-|------|-----------|-------------|
-| One  | `expr()`  | `enexpr()`  |
-| Many | `exprs()` | `enexprs()` |
-
-For interactive exploration, the most important quoting function is `expr()`. It captures its argument exactly as provided:
+There are four important quoting functions. For interactive exploration, the most important quoting function is `expr()`. It captures its argument exactly as provided:
 
 
 ```r
@@ -187,9 +219,9 @@ expr(1 / 2 / 3)
 #> 1/2/3
 ```
 
-(Remember that white space and comments are not part of the AST, so will not be captured by a quoting function.)
+(Remember that white space and comments are not part of the expression, so will not be captured by a quoting function.)
 
-`expr()` is great for interactive exploration, because it captures what you, the developer, typed. It's not useful inside a function:
+`expr()` is great for interactive exploration, because it captures what you, the developer, typed. It's not so useful inside a function:
 
 
 ```r
@@ -198,7 +230,7 @@ f1(a + b + c)
 #> x
 ```
 
-Instead, we need another function: `enexpr()`. This captures what the user supplies to the function by looking at the internal promise object that powers lazy evaluation.
+We need another function to solve this problem: `enexpr()`. This captures what the caller supplied to the function by looking at the internal promise object that powers lazy evaluation (Section \@ref(promises)).
 
 
 ```r
@@ -207,9 +239,7 @@ f2(a + b + c)
 #> a + b + c
 ```
 
-(Occasionally you just want to capture symbols, and throw an error for other types of input. In that case you can use `ensym()`. In the next chapter, you'll learn about `enquo()` which also captures the environment and is needed for tidy evaluation.)
-
-To capture multiple arguments, use `enexprs()`:
+To capture multiple arguments (e.g. all arguments in `...`), use `enexprs()`.
 
 
 ```r
@@ -239,18 +269,26 @@ exprs(x = x ^ 2, y = y ^ 3, z = z ^ 4)
 # list(x = expr(x ^ 2), y = expr(y ^ 3), z = expr(z ^ 4))
 ```
 
-Note that it can return missing arguments:
+In short, use `enexpr()` and `enexprs()` to capture the expressions supplied as arguments _by the user_. Use `expr()` and `exprs()` to capture expressions that _you_ supply.
+
+### Capturing symbols
+
+Sometimes you only want to allow the user to specify a variable name, not an arbtirary expression. In this case, you can use `ensym()` or `ensyms()`. These are variants of `enexpr()` and `enexprs()` that check the captured expression is either symbol or a string (which is converted to symbol[^string-symbol]).
+
+[^string-symbol]: This is for compatibility with base R, which allows you to provide a string instead of a symbol in many places: `"x" <- 1`, `"foo"(x, y)`, `c("x" = 1)`.
 
 
 ```r
-val <- exprs(x = )
-is_missing(val$x)
-#> [1] TRUE
+f <- function(...) ensyms(...)
+f(x)
+#> [[1]]
+#> x
+f("x")
+#> [[1]]
+#> x
 ```
 
-There's not much you can do with a list of expressions yet, but we'll see a few techniques later in [case studies](quasi-case-studies): using purrr to work with lists of expressions turns out to be a surprisingly powerful tool.
-
-Use `enexpr()` and `enexprs()` inside a function when you want to capture the expressions supplied as arguments _by the user_ of that function. Use `expr()` and `exprs()` when you want to capture expressions that _you_ supply.
+`ensym()` and `ensyms()` throw an error if given anything else.
 
 ### With base R
 
@@ -264,7 +302,7 @@ quote(1 / 2 / 3)
 #> 1/2/3
 ```
 
-It is identical to `expr()` except that it does not support unquoting, so it is a quoting function, not a quasiquoting function.
+It is identical to `expr()` except that it does not support unquoting (which we'll talk about very soon). This makes it is a quoting function, not a quasiquoting function.
 
 The base function closest to `enexpr()` is `substitute()`:
 
@@ -275,7 +313,10 @@ f3(x + y + z)
 #> x + y + z
 ```
 
-You'll most often see it used to capture unevaluated arguments; often in concert with `deparse()` to create labels for output. However, `substitute()` also does "substitution": if you give it an expression, rather than a symbol, it will substitute in values of symbols defined in the current environment. 
+::: sidebar
+**Substitution**
+
+You'll most often see `substitute()` used to capture unevaluated arguments. However, as well as quoting, `substitute()` also does "substitution": if you give it an expression, rather than a symbol, it will substitute in the values of symbols defined in the current environment. 
 
 
 ```r
@@ -284,13 +325,14 @@ f4(a + b + c)
 #> (a + b + c) * 2
 ```
 
-`substitute()` provides a sort of automatic unquoting for any symbol that is bound to a value. However, making use of this behaviour can make for hard to read code, because for example, taken out of context, you can't tell if the goal of `substitute(x + y)` is to replace `x`, or, `y`, or both. If you do want to use `substitute()` in this way, I recommend that you use the 2nd argument to make it clear that is your goal:
+I think this makes code hard to understand, because, taken out of context, you can't tell if the goal of `substitute(x + y)` is to replace `x`, or, `y`, or both. If you do want to use `substitute()` for substitution, I recommend that you use the 2nd argument to make your goal clear:
 
 
 ```r
 substitute(x * y * z, list(x = 10, y = quote(a + b)))
 #> 10 * (a + b) * z
 ```
+:::
 
 The base equivalent to `exprs()` is `alist()`:
   
@@ -304,19 +346,68 @@ alist(x = 1, y = x + 2)
 #> x + 2
 ```
 
+There the equivalent to `enexprs()` is an undocumented feature of `substitute()`[^peter-meilstrup]: you can pretend `...` is a function to capture all arguments in `...`:
+
+
+```r
+f <- function(...) as.list(substitute(...()))
+f(x = 1, y = 10 * z)
+#> $x
+#> [1] 1
+#> 
+#> $y
+#> 10 * z
+```
+
+[^peter-meilstrup]: Discovered by Peter Meilstrup and described in [R-devel on 2018-08-13](http://r.789695.n4.nabble.com/substitute-on-arguments-in-ellipsis-quot-dot-dot-dot-quot-td4751658.html).
+
 There are two other important base quoting functions that we'll cover elsewhere:
 
 * `bquote()` provides a limited form of quasiquotation, and is discussed in 
-  [unquoting with base R](#unquote-base). 
+  Section \@ref(base-nonquote). 
   
 * `~`, the formula, is a quoting function that also captures the environment. 
   It's the inspiration for quosures, the topic of the next chapter, and is 
-  discussed in [formulas].
+  discussed in Section \@ref(quosure-impl).
+
+### Summary
+
+When quoting (i.e. capturing code), there are two important distinctions: 
+
+* Is it supplied by the developer of the code or the user of the code?
+  i.e. is it fixed or varying, supplied in the body of the function or
+  via an argument?
+  
+* Do you want to capture a single expression or multiple expressions?
+
+This leads to a 2 x 2 table of function for rlang and base R:
+
+*   rlang:
+
+    |      | Developer | User        |
+    |------|-----------|-------------|
+    | One  | `expr()`  | `enexpr()`  |
+    | Many | `exprs()` | `enexprs()` |
+
+*   base R:
+
+    |      | Developer | User                        |
+    |------|-----------|-----------------------------|
+    | One  | `quote()` | `substitute()`              |
+    | Many | `alist()` | `eval(substitute(alist()))` |
 
 ### Exercises
 
-1.  What happens if you try to use `enexpr()` with an expression?
-    What happens if you try to use `enexpr()` with a missing argument?
+1.  What does the following command return? What information is lost? Why?
+
+    
+    ```r
+    expr({
+      x +              y # comment  
+    })
+    ```
+
+1.  How is `expr()` implemented?
 
 1.  Compare and contrast the following two functions. Can you predict the
     output before running them?
@@ -333,77 +424,40 @@ There are two other important base quoting functions that we'll cover elsewhere:
     f2(a + b, c + d)
     ```
 
+1.  What happens if you try to use `enexpr()` with an expression (i.e. 
+    `enexpr(x + y)` ? What happens if `enexpr()` is passed a missing argument?
+
 1.  How are `exprs(a)` and `exprs(a = )` different? Think about both the
     input and the output.
 
-1.  What does the following command return? What information is lost? Why?
-
-    
-    ```r
-    expr({
-      x +              y # comment  
-    })
-    ```
+1.  What are other differences between `exprs()` and `alist()`? Read the 
+    documentation for the named arguments of `exprs()` to find out.
 
 1.  The documentation for `substitute()` says:
 
     > Substitution takes place by examining each component of the parse tree 
-    > as follows: If it is not a bound symbol in env, it is unchanged. If it
-    > is a promise object, i.e., a formal argument to a function or explicitly 
-    > created using delayedAssign(), the expression slot of the promise replaces 
-    > the symbol. If it is an ordinary variable, its value is substituted, 
-    > unless env is .GlobalEnv in which case the symbol is left unchanged.
+    > as follows: 
+    > 
+    > * If it is not a bound symbol in `env`, it is unchanged. 
+    > * If it is a promise object (i.e., a formal argument to a function) 
+    >   the expression slot of the promise replaces the symbol. 
+    > * If it is an ordinary variable, its value is substituted;
+    > * Unless `env` is .GlobalEnv in which case the symbol is left 
+    >   unchanged.
     
     Create four examples that illustrate each of the different cases.
 
-## Evaluation {#eval-basics}
+## Unquoting
 
-Typically you have quoted a function argument for one of two reasons:
+So far, you've only seen relatively small advantages of the rlang quoting functions over the base R quoting functions: they have a more consistent naming scheme. The big difference is that rlang quoting functions are actually __quasiquoting__ functions, because they support unquoting with `!!` (called "unquote", and pronounced bang-bang).
 
-* You want to operate on the AST using the techniques described in the
-  previous chapter.
-  
-* You want to run, or __evaluate__ the code in a special context,
-  as described in depth next chapter.
+Unquoting allows you to selectively execute, or evaluate, parts of the expression that would otherwise be quoted, and it effectively allows you to merge together ASTs using a template AST. Since base functions don't use unquoting, they instead use a variety of other techniques, which you'll learnn about in Section \@ref(base-nonquote).
 
-Evaluation is a rich topic, so we'll cover it in depth in the next chapter. Here I'll just illustrate the most important ideas. 
+Unquoting is one inverse of quoting. It allows you to selectively evaluate code inside `expr()`, so that `expr(!!x)` is equivalent to `x`. In Chapter \@ref(evaluation), you'll learn about another inverse, evaluation. Evaluation happens outside `expr()`, so that `eval(expr(x))` is equivalent to `x`.
 
-The most important base R function is `base::eval()`. Its first argument is the expression to evaluate:
+### Unquoting one argument
 
-
-```r
-ru5 <- expr(runif(5))
-ru5
-#> runif(5)
-
-eval(ru5)
-#> [1] 0.0808 0.8343 0.6008 0.1572 0.0074
-eval(ru5)
-#> [1] 0.466 0.498 0.290 0.733 0.773
-```
-
-Note that every time we evaluate this expression we get a different result.
-
-The second argument to `eval()` is the environment in which the expression is evaluated. Manipulating this environment gives us amazing power to control the execution of R code. This is the basic technique that gives dbplyr the ability to turn R code into SQL.
-
-
-```r
-x <- 9
-fx <- expr(f(x))
-
-eval(fx, env(f = function(x) x * 10))
-#> [1] 90
-eval(fx, env(f = function(x) x ^ 2))
-#> [1] 81
-```
-
-## Unquotation
-
-Evaluation is a developer tool: in combination with quoting, it allows the author of a function to capture an argument and evaluate it in a special way. Unquoting is related to evaluation, but it's a user tool: it allows the person calling the function to selectively evaluate parts of the expression that would otherwise be quoted. 
-
-### With rlang
-
-All quoting functions in rlang (`expr()`, `enexpr()`, and friends) support unquoting with `!!` (called "unquote", and pronounced bang-bang) and `!!!` (called "unquote-splice", and pronounced bang-bang-bang). They both replace nodes in the AST. `!!` is a one-to-one replacement. It takes a single expression and inlines the AST at the location of the `!!`. 
+Use `!!` to unquote a single argument in a function call. `!!` takes a single expression, evaluates it, and inlines the result in to the AST. 
 
 
 ```r
@@ -412,215 +466,83 @@ expr(f(!!x, y))
 #> f(a + b + c, y)
 ```
 
-<img src="diagrams/expressions/bang-bang.png" width="302" style="display: block; margin: auto;" />
+I think this is easiest to understand with a diagram. `!!` introduces a placeholder in the AST, shown with dotted borders. Here the placeholder `x` is replaced by an AST, illustrated by a dotted connection.
 
-`!!!` is a one-to-many replacement. It takes a list of expressions and inserts them at the location of the `!!!`:
+<img src="diagrams/quotation/bang-bang.png" width="260" style="display: block; margin: auto;" />
 
-
-```r
-x <- exprs(1, 2, 3, y = 10)
-expr(f(!!!x, z = z))
-#> f(1, 2, 3, y = 10, z = z)
-```
-
-<img src="diagrams/expressions/bang-bang-bang.png" width="453" style="display: block; margin: auto;" />
-
-### The polite fiction of `!!`
-
-So far we have acted as if `!!` and `!!!` are regular prefix operators like `+` , `-`, and `!`. They're not. Instead, from R's perspective, `!!` and `!!!` are simply the repeated application of `!`: 
+As well as call objects, `!!` also works with symbols and constants:
 
 
 ```r
-!!TRUE
-#> [1] TRUE
-!!!TRUE
-#> [1] FALSE
+a <- sym("y")
+b <- 1
+expr(f(!!a, !!b))
+#> f(y, 1)
 ```
+<img src="diagrams/quotation/simple.png" width="226" style="display: block; margin: auto;" />
 
-`!!` and `!!!` have special behaviour inside all quoting functions powered by rlang, and the unquoting operators are given precedence similar to `+` and `-`, not `!`. We do this because the operator precedence for `!` is surprisingly low: it has lower precedence than that of the binary algebraic and logical operators. Most of the time this doesn't matter as it is unusual to mix `!` and binary operators (e.g. you typically would not write `!x + y` or `!x > y`). However, expressions like `!!x + !!y` are not uncommon when unquoting, and requiring explicit parentheses, `(!!x) + (!!y)`, feels onerous. For this reason, rlang manipulates the AST to give the unquoting operators a higher, more natural, precedence.
-
-You might wonder why rlang does not use a regular function call. Indeed, early versions of rlang provided `UQ()` and `UQS()` as alternatives to `!!` and `!!!`. However, these looked like regular function calls, rather than special syntactic operators, and evoked a misleading mental model, which made them harder to use correctly. In particular, function calls only happen (lazily) at evaluation time; unquoting always happens at quotation time. We adopted `!!` and `!!!` as the best compromise: they are strong visual symbols, don't look like existing syntax, and take over a rarely used piece of syntax. (And if for some reason you do need to doubly negate a value in a quasiquoting function, you can just add parentheses `!(!x)`.)
-
-The biggest downside[^bang-bang-print] to using a fake operator is that you might get silent errors when misusing `!!` outside of quasiquoting functions. Most of the time this is not an issue because `!!` is typically used to unquote expressions or quosures. Since expressions are not supported by the negation operator, you will get an argument type error in this case:
+Note that the right-hand side of `!!` can be a function call. `!!` will evaluate the call and insert the results in the AST:
 
 
 ```r
-x <- quote(variable)
-!!x
-#> Error in !x:
-#>   invalid argument type
+mean_rm <- function(var) {
+  var <- ensym(var)
+  expr(mean(!!var, na.rm = TRUE))
+}
+expr(!!mean_rm(x) + !!mean_rm(y))
+#> mean(x, na.rm = TRUE) + mean(y, na.rm = TRUE)
 ```
 
-However be extra careful when unquoting numeric values that can be negated silently:
+Note that `!!` preserves operator precedence because it works with expressions.
 
 
 ```r
-x <- 100
-with(mtcars, cyl + !!x)
-#>  [1] 7 7 5 7 9 7 9 5 5 7 7 9 9 9 9 9 9 5 5 5 5 9 9 9 9 5 5 5 9 7 9 5
-```
+x1 <- expr(x + 1)
+x2 <- expr(x + 2)
 
-Instead of adding the value of `x` to `cyl` as intended, we have in fact added the double negation of `x`:
+expr(!!x1 / !!x2)
+#> (x + 1)/(x + 2)
+```
+<img src="diagrams/quotation/infix.png" width="430" style="display: block; margin: auto;" />
+
+If we simply pasted the text of the expressions together, we'd end up with `x + 1 / x + 2`, which has a very different AST:
+
+<img src="diagrams/quotation/infix-bad.png" width="283" style="display: block; margin: auto;" />
+
+### Unquoting a function
+
+`!!` is most commonly used to replace the arguments to a function, but you can also use it to replace the function itself. The only challenge here is operator precedence: `expr(!!f(x, y))` unquotes the result of `f(x, y)`, so you need an extra pair of parentheses.
 
 
 ```r
-!x
-#> [1] FALSE
-!!x
-#> [1] TRUE
+f <- expr(foo)
+expr((!!f)(x, y, z))
+#> foo(x, y, z)
 ```
 
-[^bang-bang-print]: Prior to R 3.5.1, there was another major downside: the R deparser treated `!!x` as `!(!x)`. This is why in old versions of R you might see extra parentheses when printing tidyeval functions at the console. The good news is that these parentheses are not real and can be safely ignored most of the time. The bad news is that they will become real if you reparse that printed output to R code. These roundtripped functions will not work as expected since `!(!x)` does not unquote anything.
-
-### With base R {#unquote-base}
-
-Base R has one function that implements quasiquotation: `bquote()`. It uses `.()` for unquoting:
+This also works when `f` is itself a call:
 
 
 ```r
-xyz <- bquote((x + y + z))
-bquote(-.(xyz) / 2)
-#> -(x + y + z)/2
+f <- expr(pkg::foo)
+expr((!!f)(x, y, z))
+#> pkg::foo(x, y, z)
 ```
 
-`bquote()` is a neat function, but is not used by any other function in base R. Instead functions that quote an argument use some other technique to allow indirect specification. There are four basic forms seen in base R:
+<img src="diagrams/quotation/fun.png" width="298" style="display: block; margin: auto;" />
 
-
-
-*   A pair of quoting and non-quoting functions. For example, `$` has two 
-    arguments, and the second argument is quoted. This is easier to see if you 
-    write in prefix form: `mtcars$cyl` is equivalent to `` `$`(mtcars, cyl) ``. 
-    If you want to refer to a variable indirectly, you use `[[`, as it 
-    takes the name of a variable as a string.
-      
-    
-    ```r
-    x <- list(var = 1, y = 2)
-    var <- "y"
-    
-    x$var
-    #> [1] 1
-    x[[var]]
-    #> [1] 2
-    ```
-  
-    `<-`/`assign()` and `::`/`getExportedValue()` work similarly.
-
-*   A pair of quoting and non-quoting arguments. For example, `data()`, `rm()`, 
-    and `save()` allow you to provide bare variable names in `...`, or a 
-    character vector of variable names in `list`:
-
-    
-    ```r
-    x <- 1
-    rm(x)
-    
-    y <- 2
-    vars <- c("y", "vars")
-    rm(list = vars)
-    ```
-
-*   An argument that controls whether a different argument is quoting or 
-    non-quoting. For example, in `library()`, the `character.only` argument
-    controls the quoting behaviour of the first argument, `package`:
-    
-    
-    ```r
-    library(MASS)
-    
-    pkg <- "MASS"
-    library(pkg, character.only = TRUE)
-    ```
-    
-    `demo()`, `detach()`, `example()`, and `require()` work similarly.
-
-*   Quoting if evaluation fails. For example, the first argument to `help()`
-    is non-quoting if it evaluates to a string; if evaluation fails, the
-    first argument is quoted.
-
-    
-    ```r
-    # Shows help for var
-    help(var)
-    
-    var <- "mean"
-    # Shows help for mean
-    help(var)
-    
-    var <- 10
-    # Shows help for var
-    help(var)
-    ```
-    
-    `ls()`, `page()`, and `match.fun()` work similarly. 
-
-Some quoting functions, like `subset()`, `transform()`, and `with()`, don't have a non-quoting form. This is because they are seen as wrappers around `[` and `[<-` that are only suitable for interactive use. 
-
-Another important class of quoting functions are the base modelling and plotting functions, which quote some of their arguments, and follow the so-called standard non-standard evaluation rules: <http://developer.r-project.org/nonstandard-eval.pdf>. For example, `lm()` quotes the `weight` and `subset` arguments, and when used with a formula argument, the plotting function quotes the aesthetic arguments (`col`, `cex`, etc):
+Because of the large number of parentheses involved, it can be more clear to use `rlang::call2()`:
 
 
 ```r
-palette(RColorBrewer::brewer.pal(3, "Set1"))
-plot(Sepal.Length ~ Petal.Length, data = iris, col = Species, pch = 20, cex = 2)
+f <- expr(pkg::foo)
+call2(f, expr(x), expr(y))
+#> pkg::foo(x, y)
 ```
 
-<img src="Quotation_files/figure-epub3/unnamed-chunk-40-1.svg" width="70%" style="display: block; margin: auto;" />
+### Unquoting a missing argument {#unquote-missing}
 
-In the next chapter, you'll learn how to simulate unquoting for these functions using tools from rlang.
-
-### Non-standard ASTs
-
-Before we continue on to the case studies, we need to discuss a couple of technical issues. You might want to skip these sections on your first read through.
-
-With unquoting, it is easy to create non-standard ASTs, i.e. ASTs that contain components that are not constants, symbols, or calls. (It is also possible to create non-standard ASTs by directly manipulating the underlying objects, but it's harder to do so accidentally.) These are valid, and occasionally useful, but their correct use is beyond the scope of this book. However, it's important to learn about them because they can be deparsed, and hence printed, in misleading ways. 
-
-For example, if you inline more complex objects, their attributes are not printed. This can lead to confusing output:
-
-
-```r
-x1 <- expr(class(!!data.frame(x = 10)))
-x1
-#> class(list(x = 10))
-lobstr::ast(!!x1)
-#> █─class 
-#> └─<inline data.frame>
-eval(x1)
-#> [1] "data.frame"
-```
-
-In other cases, R will print parentheses that do not exist in the AST:
-
-
-```r
-y2 <- expr(2 + 3)
-x2 <- expr(1 + !!y2)
-x2
-#> 1 + (2 + 3)
-lobstr::ast(!!x2)
-#> █─`+` 
-#> ├─1 
-#> └─█─`+` 
-#>   ├─2 
-#>   └─3
-```
-
-And finally, R will display integer sequences as if they were generated with `:`.
-
-
-```r
-x3 <- expr(f(!!c(1L, 2L, 3L, 4L, 5L)))
-x3
-#> f(1:5)
-lobstr::ast(!!x3)
-#> █─f 
-#> └─<inline integer>
-```
-
-In general, if you're ever confused about what is actually in an AST, display the object with `lobstr::ast()`!
-
-### Missing arguments
-
-Occasionally it is useful to unquote a missing argument, but the naive approach doesn't work:
+Very occasionally it is useful to unquote a missing argument (Section \@ref(empty-symbol)), but the naive approach doesn't work:
 
 
 ```r
@@ -630,16 +552,155 @@ expr(foo(!!arg, !!arg))
 #>   argument "arg" is missing, with no default
 ```
 
-You can either wrap in a list and use unquote-splice, or use the `maybe_missing()` helper:
+You can work around this with the `maybe_missing()` helper:
 
 
 ```r
-args <- list(missing_arg(), missing_arg())
-expr(foo(!!!args))
-#> foo(, )
-
 expr(foo(!!maybe_missing(arg), !!maybe_missing(arg)))
 #> foo(, )
+```
+
+### Unquoting in special forms
+
+There are a few special forms where unquoting is a syntax error:
+
+```r
+expr(df$!!x)
+#> Error: unexpected '!' in "expr(df$!"
+```
+
+Here you need to use the prefix form:
+
+
+```r
+x <- expr(x)
+expr(`$`(df, !!x))
+#> df$x
+```
+
+
+### Unquoting many arguments
+
+`!!` is a one-to-one replacement. `!!!` (called "unquote-splice", and pronounced bang-bang-bang) is a one-to-many replacement. It takes a list of expressions and inserts them at the location of the `!!!`:
+
+
+```r
+xs <- exprs(1, a, -b)
+expr(f(!!!xs, y))
+#> f(1, a, -b, y)
+```
+
+<img src="diagrams/quotation/bang-bang-bang.png" width="373" style="display: block; margin: auto;" />
+
+`!!!` can be used in any rlang function that takes `...` regardless of whether or not `...` is quoted or evaluated. We'll come back to this in Section \@ref(tidy-dots); for now note that this can be useful in `call2()`.
+
+
+```r
+call2("f", !!!xs, expr(y))
+#> f(1, a, -b, y)
+```
+
+### The polite fiction of `!!`
+
+So far we have acted as if `!!` and `!!!` are regular prefix operators like `+` , `-`, and `!`. They're not. From R's perspective, `!!` and `!!!` are simply the repeated application of `!`: 
+
+
+```r
+!!TRUE
+#> [1] TRUE
+!!!TRUE
+#> [1] FALSE
+```
+
+`!!` and `!!!` behave specially inside all quoting functions powered by rlang, where they behave like real operators with precedence equivalent to unary `+` and `-`. This requires considerable work inside rlang, but means that you can write `!!x + !!y` instead of `(!!x) + (!!y)`.
+
+The biggest downside[^bang-bang-print] to using a fake operator is that you might get silent errors when misusing `!!` outside of quasiquoting functions. Most of the time this is not an issue because `!!` is typically used to unquote expressions or quosures. Since expressions are not supported by the negation operator, you will get an argument type error in this case:
+
+[^bang-bang-print]: Prior to R 3.5.1, there was another major downside: the R deparser treated `!!x` as `!(!x)`. This is why in old versions of R you might see extra parentheses when printing expressions. The good news is that these parentheses are not real and can be safely ignored most of the time. The bad news is that they will become real if you reparse that printed output to R code. These roundtripped functions will not work as expected since `!(!x)` does not unquote.
+
+
+```r
+x <- quote(variable)
+!!x
+#> Error in !x:
+#>   invalid argument type
+```
+
+But you can get silently incorrect results when working with numeric values:
+
+
+```r
+df <- data.frame(x = 1:5)
+y <- 100
+with(df, x + !!y)
+#> [1] 2 3 4 5 6
+```
+
+Given these drawbacks, you might wonder why we introduced new syntax instead of using regular function calls. Indeed, early versions of tidy eval used function calls like `UQ()` and `UQS()`, however they're not really function calls, and pretending they leads to a misleading mental mode. We chose `!!` and `!!!` as the least-worst solution:
+
+* The are visually strong and don't look like existing syntax. When you 
+  see `!!x` or `!!!x` it's clear that something unusual is happenning.
+  
+* They overrides a rarely used piece of syntax, as double negation is not a
+  common pattern in R[^js-double-neg]. If you you do need it, you can just
+  add parentheses `!(!x)`.
+
+[^js-double-neg]: Unlike, say, javascript, where `!!x` is a commonly used shortcut to convert an integer into a logical.
+
+### Non-standard ASTs {#non-standard-ast}
+
+With unquoting, it's easy to create non-standard ASTs, i.e. ASTs that contain components that are not expressions. (It is also possible to create non-standard ASTs by directly manipulating the underlying objects, but it's harder to do so accidentally.) These are valid, and occasionally useful, but their correct use is beyond the scope of this book. It's important to learn about them, however, because they can be deparsed, and hence printed, in misleading ways. 
+
+For example, if you inline more complex objects, their attributes are not printed. This can lead to confusing output:
+
+
+```r
+x1 <- expr(class(!!data.frame(x = 10)))
+x1
+#> class(list(x = 10))
+eval(x1)
+#> [1] "data.frame"
+```
+
+You have two main tools to reduce this confusion: `rlang::expr_print()` and `lobstr::ast()`:
+
+
+```r
+expr_print(x1)
+#> class(<data.frame>)
+lobstr::ast(!!x1)
+#> █─class 
+#> └─<inline data.frame>
+```
+
+Another confusing case arises if you inline an integer sequence:
+
+
+```r
+x2 <- expr(f(!!c(1L, 2L, 3L, 4L, 5L)))
+x2
+#> f(1:5)
+expr_print(x2)
+#> f(<int: 1L, 2L, 3L, 4L, 5L>)
+lobstr::ast(!!x2)
+#> █─f 
+#> └─<inline integer>
+```
+
+It's also possible to create regular ASTs that can not be generated from code because of operator precedence. In this case, R will print parentheses that do not exist in the AST:
+
+
+```r
+x3 <- expr(1 + !!expr(2 + 3))
+x3
+#> 1 + (2 + 3)
+
+lobstr::ast(!!x3)
+#> █─`+` 
+#> ├─1 
+#> └─█─`+` 
+#>   ├─2 
+#>   └─3
 ```
 
 ### Exercises
@@ -691,14 +752,451 @@ expr(foo(!!maybe_missing(arg), !!maybe_missing(arg)))
 
     What's the difference? Which one is more natural?
 
-## Case studies {#quasi-case-studies}
+## Non-quoting in base R {#base-nonquote}
 
-To make these ideas concrete, this section contains a few smaller case studies that show how quasiquotation can be used to solve real problems. Some of the case studies also use purrr: I find the combination of quasiquotation and functional programming to be particularly elegant.
+Base R has one function that implements quasiquotation: `bquote()`. It uses `.()` for unquoting:
 
 
 ```r
-library(purrr)
-library(dplyr)
+xyz <- bquote((x + y + z))
+bquote(-.(xyz) / 2)
+#> -(x + y + z)/2
+```
+
+However, `bquote()` isn't used in any other function in base R. Instead functions that quote an argument use some other technique to allow indirect specification. Rather than using use unquoting all base R approaches selectively turn quoting off, so I call them __non-quoting__ techniques.
+
+
+
+There are four basic forms seen in base R:
+
+*   A pair of quoting and non-quoting functions. For example, `$` has two 
+    arguments, and the second argument is quoted. This is easier to see if you 
+    write in prefix form: `mtcars$cyl` is equivalent to `` `$`(mtcars, cyl) ``. 
+    If you want to refer to a variable indirectly, you use `[[`, as it 
+    takes the name of a variable as a string.
+      
+    
+    ```r
+    x <- list(var = 1, y = 2)
+    var <- "y"
+    
+    x$var
+    #> [1] 1
+    x[[var]]
+    #> [1] 2
+    ```
+    
+    There are three other quoting functions closely related to `$`: `subset()`,
+    `transform()`, and `with()`. These are seen as wrappers around `$` only
+    suitable for interactive use so they all have the same non-quoting
+    alternative: `[`
+  
+    `<-`/`assign()` and `::`/`getExportedValue()` work similarly to `$`/`[`.
+
+*   A pair of quoting and non-quoting arguments. For example, `rm()` allows 
+    you to provide bare variable names in `...`, or a character vector of
+    variable names in `list`:
+
+    
+    ```r
+    x <- 1
+    rm(x)
+    
+    y <- 2
+    vars <- c("y", "vars")
+    rm(list = vars)
+    ```
+    
+    `data()` and `save()` work similarly.
+
+*   An argument that controls whether a different argument is quoting or 
+    non-quoting. For example, in `library()`, the `character.only` argument
+    controls the quoting behaviour of the first argument, `package`:
+    
+    
+    ```r
+    library(MASS)
+    
+    pkg <- "MASS"
+    library(pkg, character.only = TRUE)
+    ```
+    
+    `demo()`, `detach()`, `example()`, and `require()` work similarly.
+
+*   Quoting if evaluation fails. For example, the first argument to `help()`
+    is non-quoting if it evaluates to a string; if evaluation fails, the
+    first argument is quoted.
+
+    
+    ```r
+    # Shows help for var
+    help(var)
+    
+    var <- "mean"
+    # Shows help for mean
+    help(var)
+    
+    var <- 10
+    # Shows help for var
+    help(var)
+    ```
+    
+    `ls()`, `page()`, and `match.fun()` work similarly. 
+
+Another important class of quoting functions are the base modelling and plotting functions, which follow the so-called standard non-standard evaluation rules: <http://developer.r-project.org/nonstandard-eval.pdf>. For example, `lm()` quotes the `weight` and `subset` arguments, and when used with a formula argument, the plotting function quotes the aesthetic arguments (`col`, `cex`, etc):
+
+
+```r
+palette(RColorBrewer::brewer.pal(3, "Set1"))
+plot(
+  data = iris, 
+  Sepal.Length ~ Petal.Length, col = Species, 
+  pch = 20, cex = 2
+)
+```
+
+<img src="Quotation_files/figure-epub3/unnamed-chunk-59-1.svg" width="70%" style="display: block; margin: auto;" />
+
+These functions have no built-in options for indirect specification, but you'll learn how to simulate unquoting in Section \@ref(base-unquote).
+
+## Dot-dot-dot (`...`) {#tidy-dots}
+
+`!!!` is useful because it's not uncommon to have a list of expressions that you want to insert into a call. It turns out that this pattern is common elsewhere. Take the following two motivating problems:
+
+*   What do you do if the elements you want to put in `...` are already stored 
+    in a list? For example, imagine you have a list of data frames that 
+    you want to `rbind()` together:
+    
+    
+    ```r
+    dfs <- list(
+      a = data.frame(x = 1, y = 2),
+      b = data.frame(x = 3, y = 4)
+    )
+    ```
+    
+    You could solve this specific case with `rbind(dfs$a, df$b)`, but how
+    do you generalise that solution to a list of arbitrary length?
+
+*   What do you do if you want to supply the argument name indirectly? For 
+    example, imagine you want to create a single column data frame where 
+    the name of the column is specified in a variable:
+    
+    
+    ```r
+    var <- "x"
+    val <- c(4, 3, 9)
+    ```
+    
+    In this case, you could create a data frame and then change names
+    (i.e. `setNames(data.frame(val), var)`), but this feels inelegant.
+    How can we do better?
+
+One way to think about these problems is to draw explicit parallels to quasiquotation:
+
+*   Row-binding multiple data frames is like unquote-splicing: we want to inline
+    individual elements of the list into the call:
+
+    
+    ```r
+    dplyr::bind_rows(!!!dfs)
+    #>   x y
+    #> 1 1 2
+    #> 2 3 4
+    ```
+    
+    When used in this context, the behaviour of `!!!` is known as spatting in 
+    Ruby, Go, PHP, and Julia. It is closely related to `*args` (star-args) and
+    `**kwarg` (star-star-kwargs) in Python, which are sometimes called argument
+    unpacking. 
+
+*   The second problem is like unquoting the left-hand side of `=`: rather 
+    than interpreting `var` literally, we want to use the value stored in the 
+    variable called `var`:
+
+    
+    ```r
+    tibble::tibble(!!var := val)
+    #> Warning: `list_len()` is soft-deprecated as of rlang 0.2.0.
+    #> Please use `new_list()` instead
+    #> This warning is displayed once per session.
+    #> # A tibble: 3 x 1
+    #>       x
+    #>   <dbl>
+    #> 1     4
+    #> 2     3
+    #> 3     9
+    ```
+
+    Note the use of `:=` (pronounced colon-equals) rather than `=`. Unfortunately 
+    we need this new operation because R's grammar does not allow expressions as
+    argument names:
+    
+    
+    ```r
+    tibble::tibble(!!var = value)
+    #> Error: unexpected '=' in "tibble::tibble(!!var ="
+    ```
+    
+    `:=` is like a vestigial organ: it's recognised by R's parser, but it
+    doesn't have any code associated with it. It looks like an `=` but allows 
+    expressions on either side, making it a more flexible alternative to `=`. 
+    It is used in data.table for similar reasons.
+
+Base R takes a different approach, which we'll come back to Section \@ref{do-call}.
+
+We say functions that support these tools, without quoting arguments, have __tidy dots__[^tidy-dots]. To gain tidy dots behaviour in your own function, all you need to do is use `list2()`.
+
+[^tidy-dots]: This is admittedly not the most creative of names, but it clearly suggests it's something that has been added to R after the fact.
+
+### Examples
+
+One place we could use `list2()` is to create a wrapper around `attributes()` that allows us to flexibly set attributes:
+
+
+```r
+set_attr <- function(.x, ...) {
+  attr <- rlang::list2(...)
+  attributes(.x) <- attr
+  .x
+}
+
+attrs <- list(x = 1, y = 2)
+attr_name <- "z"
+
+1:10 %>%
+  set_attr(w = 0, !!!attrs, !!attr_name := 3) %>% 
+  str()
+#>  int [1:10] 1 2 3 4 5 6 7 8 9 10
+#>  - attr(*, "w")= num 0
+#>  - attr(*, "x")= num 1
+#>  - attr(*, "y")= num 2
+#>  - attr(*, "z")= num 3
+```
+
+### `exec()`
+
+What if you want to use this technique with a function that doesn't have tidy dots? One option is to use `rlang::exec()` which makes it easy to call functions with some arguments supplied  directly (in ...) and others indirectly (in a list):
+
+
+```r
+# Directly
+exec("mean", x = 1:10, na.rm = TRUE, trim = 0.1)
+#> [1] 5.5
+
+# Indirectly
+args <- list(x = 1:10, na.rm = TRUE, trim = 0.1)
+exec("mean", !!!args)
+#> [1] 5.5
+
+# Mixed
+params <- list(na.rm = TRUE, trim = 0.1)
+exec("mean", x = 1:10, !!!params)
+#> [1] 5.5
+```
+
+And also makes it possible to supply argument names indirectly:
+
+
+```r
+arg_name <- "na.rm"
+arg_val <- TRUE
+exec("mean", 1:10, !!arg_name := arg_val)
+#> [1] 5.5
+```
+
+And finally, it's useful if you have a vector of function names or a list of functions that you want to call with the same arguments:
+
+
+```r
+x <- c(runif(10), NA)
+funs <- c("mean", "median", "sd")
+
+purrr:::map_dbl(funs, exec, x, na.rm = TRUE)
+#> [1] 0.444 0.482 0.298
+```
+
+`exec()` is closely related to `call2()`; where `call2()` returns an expression, `exec()` evaluates it. 
+
+### `dots_list()`
+
+`list2()` provides one other handy feature: by default it will ignore any empty arguments at the end. This is useful in functions like `tibble::tibble()` because it means that you can easily change the order of variables without worrying about the final comma:
+
+
+```r
+# Can easily move x to first entry:
+tibble::tibble(
+  y = 1:5,
+  z = 3:-1,
+  x = 5:1,
+)
+
+# Need to remove comma from z and add comma to x
+data.frame(
+  y = 1:5,
+  z = 3:-1,
+  x = 5:1
+)
+```
+
+`list2()` is a wrapper around `rlang::dots_list()` with defaults set to the most commonly used settings. You can get more control by calling `dots_list()` directly:
+
+* `.ignore_empty` allows you to control exaclty which arguments are ignored.
+  The default ignores a single trailing argument to get the behaviour
+  describe above, but you can choose to ignore all missing arguments, or
+  no missing arguments.
+
+* `.homonoyms` controls what happens if multiple arguments use the same name:
+
+    
+    ```r
+    str(dots_list(x = 1, x = 2))
+    #> List of 2
+    #>  $ x: num 1
+    #>  $ x: num 2
+    str(dots_list(x = 1, x = 2, .homonyms = "first"))
+    #> List of 1
+    #>  $ x: num 1
+    str(dots_list(x = 1, x = 2, .homonyms = "last"))
+    #> List of 1
+    #>  $ x: num 2
+    str(dots_list(x = 1, x = 2, .homonyms = "error"))
+    #> Error: Arguments can't have the same name.
+    #> We found multiple arguments named `x` at positions 1 and 2
+    ```
+
+* If there are empty arguments that are not ignored, `.preserve_empty`
+  controls what to do with them. The default throws an error; setting
+  `.preserve_empty = TRUE` instead returns missing symbols. This is useful
+  if you're using `dots_list()` to generate function calls.
+
+### With base R {#do-call}
+
+Base R provides a swiss-army knife to solve these problems: `do.call()`. `do.call()` has two main arguments. The first argument, `what`, gives a function to call. The second argument, `args`, is a list of arguments to pass to that function, and so `do.call("f", list(x, y, z))` is equivalent to `f(x, y, z)`.
+
+*   `do.call()` gives a straightforward solution to `rbind()`ing together many 
+    data frames:
+
+    
+    ```r
+    do.call("rbind", dfs)
+    #>   x y
+    #> a 1 2
+    #> b 3 4
+    ```
+
+*   With a little more work, we can use `do.call()` to solve the second problem. 
+    We first create a list of arguments, then name that, then use `do.call()`:
+    
+    
+    ```r
+    args <- list(val)
+    names(args) <- var
+    
+    do.call("data.frame", args)
+    #>   x
+    #> 1 4
+    #> 2 3
+    #> 3 9
+    ```
+
+Some base functions (including `interaction()`, `expand.grid()`, `options()`, and `par()`) use a trick to avoid `do.call()`: if the first component of `...` is a list, they'll take its components instead of looking at the other elements of `...`. The implementation looks something like this:
+
+
+```r
+f <- function(...) {
+  dots <- list(...)
+  if (length(dots) == 1 && is.list(dots[[1]])) {
+    dots <- dots[[1]]
+  }
+  
+  # Do something
+  ...
+}
+```
+
+Another approach to avoiding `do.call()` is found in the `RCurl::getURL()` function written by Duncan Temple Lang. `getURL()` takes both `...` and `.opts` which are concatenated together. This looks something like this:
+
+
+```r
+f <- function(..., .dots) {
+  dots <- c(list(...), .dots)
+  # Do something
+}
+```
+
+At the time I discovered it, I found this technique particularly compelling so you can see it used throughout the tidyverse. Now, however, I prefer the approach described next.
+
+### Exercises
+
+1.  One way to implement `exec()` below. Describe how it works. What are the
+    key ideas?
+    
+    
+    ```r
+    exec <- function(f, ..., .env = caller_env()) {
+      args <- list2(...)
+      do.call(f, args, envir = .env)
+    }
+    ```
+    
+1.  Carefully read the source code for `interaction()`, `expand.grid()`, and 
+    `par()`.  Compare and contrast the techniques they use for switching 
+    between dots and list behaviour.
+
+1.  Explain the problem with this definition of `set_attr()`
+    
+    
+    ```r
+    set_attr <- function(x, ...) {
+      attr <- rlang::list2(...)
+      attributes(x) <- attr
+      x
+    }
+    set_attr(1:10, x = 10)
+    #> Error in attributes(x) <- attr:
+    #>   attributes must be named
+    ```
+
+
+## Case studies {#expr-case-studies}
+
+To make the ideas of quasiquotation concrete, this section contains a few smaller case studies that show how you can use it to solve real problems. Some of the case studies also use purrr: I find the combination of quasiquotation and functional programming to be particularly elegant.
+
+Most users of quasiquotation will not involve `expr()` or `exprs()` but will instead involve a function that calls `enexpr()` or `enexprs()`. You should be able tell if a function uses quasiquotation because the documentation will mention it, and consequently if you use `enexpr()` in a documented function, make sure to mention quasiquotation.
+
+This technique allows you to write functions that wrap around quasiquotation functions with a simple pattern: quote with `enexpr()` then unquote with `!!`:
+
+
+```r
+cv <- function(x) {
+  x <- enexpr(x)
+  expr(sd(!!x) / mean(!!x))
+}
+
+cv(x + y)
+#> sd(x + y)/mean(x + y)
+```
+
+### `lobstr::ast()`
+
+Quasiquotation allows us to solve an annoying problem with `lobstr::ast()`: what happens if we've already captured the expression?
+
+
+```r
+z <- expr(foo(x, y))
+lobstr::ast(z)
+#> z
+```
+
+Because `ast()` supports quasiquotation, we can use `!!`:
+
+
+```r
+lobstr::ast(!!z)
+#> █─foo 
+#> ├─x 
+#> └─y
 ```
 
 ### Map-reduce to generate code
@@ -724,7 +1222,7 @@ coef_sym
 #> x2
 ```
 
-Next we need to combine each variable name with its coefficient. We can do this by combining `expr()` with `map2()`:
+Next we need to combine each variable name with its coefficient. We can do this by combining `rlang::expr()` with `purrr::map2()`:
 
 
 ```r
@@ -762,77 +1260,61 @@ eq
 #> 10 + (x1 * 5) + (x2 * -4)
 ```
 
-This map-reduce pattern is an elegant way to solve many code generation problems.
-
-Once you have this expression, you could evaluate it with new data, or turn it into a function:
+We could make this even more general by allowing the user to supply the name of the coefficient, and instead of assuming many different variables, index into a single one.
 
 
 ```r
-df <- data.frame(x1 = runif(5), x2 = runif(5))
-eval(eq, df)
-#> [1] 13.59  9.26  9.92 10.05  8.11
-
-args <- map(coefs, ~ missing_arg())
-new_function(args, expr({!!eq}))
-#> function (x1, x2) 
-#> {
-#>     10 + (x1 * 5) + (x2 * -4)
-#> }
-```
-
-### Partition
-
-Imagine that you want to extend `dplyr::select()` to return two data frames: one with the variables you selected, and one with the variables that remain. (This problem was inspired by <https://stackoverflow.com/questions/46828296/>.)  There are plenty of ways to attack this problem, but one way is to take advantage of `select()'s` ability to negate a column selection expression in order to remove those columns. 
-
-We can capture the inputs with quasiquotation, then invert each selection call by negating it. We start by practicing interactively with a list of variables created with `exprs()`:
-
-
-```r
-vars <- exprs(x, y, c(a, b), starts_with("x"))
-map(vars, ~ expr(-!!.x))
+var <- expr(y)
+coef_sym <- map(seq_along(coefs), ~ expr((!!var)[[!!.x]]))
+coef_sym
 #> [[1]]
-#> -x
+#> y[[1L]]
 #> 
 #> [[2]]
-#> -y
-#> 
-#> [[3]]
-#> -c(a, b)
-#> 
-#> [[4]]
-#> -starts_with("x")
+#> y[[2L]]
 ```
 
-Then turn it into a function:
+And finish by wrapping this up into a function:
 
 
 ```r
-partition_cols <- function(.data, ...) {
-  included <- enexprs(...)
-  excluded <- map(included, ~ expr(-!!.x))
+linear <- function(var, val) {
+  var <- ensym(var)
+  coef_name <- map(seq_along(val[-1]), ~ expr((!!var)[[!!.x]]))
 
-  list(
-    incl = select(.data, !!!included),
-    excl = select(.data, !!!excluded)
-  )
+  summands <- map2(coefs, coef_name, ~ expr((!!.x * !!.y)))
+  summands <- c(val[[1]], summands)
+
+  reduce(summands, ~ expr(!!.x + !!.y))
 }
 
-df <- data.frame(x1 = 1, x2 = 3, y = "a", z = "b")
-partition_cols(df, starts_with("x"))
-#> $incl
-#>   x1 x2
-#> 1  1  3
-#> 
-#> $excl
-#>   y z
-#> 1 a b
+linear(x, c(10, 5, -4))
+#> 10 + (5 * x[[1L]]) + (-4 * x[[2L]])
 ```
 
-Note the name of the first argument: `.data`. This is a standard convention through the tidyverse because you don't need to explicitly name this argument (because it's always used), and it avoids potential clashes with argument names in `...`.
+Note the use of `ensym()`. We want the user to supply the name of a single variable, not a more complex expression.
+
+We could even make this into a function-generating function:
+
+
+```r
+linear_fun <- function(var, val) {
+  var <- ensym(var)
+  
+  new_function(
+    set_names(list(missing_arg()), var), 
+    linear(!!var, val),
+    caller_env()
+  )
+}
+linear_fun(x, c(10, 5, -4))
+#> function (x) 
+#> 10 + (5 * x[[1L]]) + (-4 * x[[2L]])
+```
 
 ### Slicing an array
 
-One occassionally useful tool that's missing from base R is the ability to extract a slice of an array given a dimension and an index. For example, we'd like to write `slice(x, 2, 1)` to extract the first slice along the second dimension, which you can write as `x[, 1, ]`. 
+An occassionally useful tool missing from base R is the ability to extract a slice of an array given a dimension and an index. For example, we'd like to write `slice(x, 2, 1)` to extract the first slice along the second dimension, which you can write as `x[, 1, ]`. This is a moderately challenging problem because it requires working with missing arguments. 
 
 We'll need to generate a call with multiple missing arguments. Fortunately that's easy with `rep()` and `missing_arg()`. Once we have those arguments, we can unquote-splice them into a call:
 
@@ -843,16 +1325,26 @@ expr(x[!!!indices])
 #> x[, , ]
 ```
 
-We then wrap this into a function, using subset-assignment to insert the index in the desired position:
+Then we use subset-assignment to insert the index in the desired position:
+
+
+```r
+indices[[2]] <- 1
+expr(x[!!!indices])
+#> x[, 1, ]
+```
+
+We then wrap this into a function, using a couple of `stopifnot()`s to make the interface clear:
 
 
 ```r
 slice <- function(x, along, index) {
+  stopifnot(length(along) == 1)
   stopifnot(length(index) == 1)
     
   nd <- length(dim(x))
   indices <- rep(list(missing_arg()), nd)
-  indices[along] <- index
+  indices[[along]] <- index
   
   expr(x[!!!indices])
 }
@@ -868,9 +1360,10 @@ slice(x, 3, 1)
 
 A real `slice()` would evaluate the generated call, but here I think it's more illuminating to see the code that's generated, as that's the hard part of the challenge.
 
-### Creating functions {#quasi-function}
+### Creating functions {#new-function}
+\index{anaphoric functions} \index{functions!anaphoric}
 
-Another powerful function to use in combination with unquoting is `rlang::new_function()`: it allows us to create a function by supplying the arguments, the body, and (optionally) the environment:
+Another powerful application of quotation is creating functions "by hand", using  `rlang::new_function()`. It's a function that create a function from its three components (Section \@ref(function-components)) arguments, body, and (optionally) environment:
 
 
 ```r
@@ -884,7 +1377,29 @@ new_function(
 #> }
 ```
 
-One application is to create functions that work like `graphics::curve()`. `curve()` allows you to plot a mathematical expression, without creating a function:
+One use of `new_function()` is as an alternative to function factories with scalar or symbol arguments. For example, we could write a function that generates functions that raise a function to the power of a number. 
+ 
+
+```r
+power <- function(exponent) {
+  new_function(
+    exprs(x = ), 
+    expr({
+      x ^ !!exponent
+    }), 
+    caller_env()
+  )
+}
+power(0.5)
+#> function (x) 
+#> {
+#>     x^0.5
+#> }
+```
+
+(Note that `power()` is not a quotating function. It inlines the _value_ of `exponent`, not the expression that generates it.)
+
+Another application of `new_function()` for functions that work like `graphics::curve()`. `curve()` allows you to plot a mathematical expression, without creating a function:
 
 
 ```r
@@ -893,13 +1408,7 @@ curve(sin(exp(4 * x)), n = 1000)
 
 <img src="Quotation_files/figure-epub3/curve-demo-1.svg" width="70%" style="display: block; margin: auto;" />
 
-Here `x` is a pronoun. As with `.` in pipelines and `.x` and `.y` in purrr functionals, `x` doesn't represent a single concrete value, but is instead a placeholder that varies over the range of the plot. Functions, like `curve()`, that use an expression containing a pronoun are known as __anaphoric__ functions[^anaphora].
-
-[^anaphora]: Anaphoric comes from the linguistics term "anaphora", an expression that is context dependent. Anaphoric functions are found in [Arc](http://www.arcfn.com/doc/anaphoric.html) (a LISP like language), [Perl](http://www.perlmonks.org/index.pl?node_id=666047), and [Clojure](http://amalloy.hubpages.com/hub/Unhygenic-anaphoric-Clojure-macros-for-fun-and-profit).
-
-\index{anaphoric functions} \index{functions!anaphoric}
-
-One way to implement `curve()` is to turn the expression into a function with a single argument, then call that function:
+Here `x` is a pronoun: it doesn't represent a single concrete value, but is instead a placeholder that varies over the range of the plot. One way to implement `curve()` is to turn that expression into a function with a single argument, `x`, then call that function:
 
 
 ```r
@@ -915,46 +1424,18 @@ curve2 <- function(expr, xlim = c(0, 1), n = 100) {
 curve2(sin(exp(4 * x)), n = 1000)
 ```
 
-Another use for `new_function()` is as an alternative to simple function factories and function operators. The primary advantage is that the generated functions have readable source code:
+Functions, like `curve()`, that use an expression containing a pronoun are known as __anaphoric__ functions[^anaphora].
 
-
-```r
-negate1 <- function(f) {
-  force(f)
-  function(...) !f(...)
-}
-negate1(is.null)
-#> function(...) !f(...)
-#> <environment: 0x5faadf0>
-
-negate2 <- function(f) {
-  f <- enexpr(f)
-  new_function(exprs(... = ), expr(!(!!f)(...)), caller_env())
-}
-negate2(is.null)
-#> function (...) 
-#> !is.null(...)
-```
-
-Note that this is often useful if the higher order functions have arguments that are expressions: inlining more complex objects into the AST can yield confusing source code.
+[^anaphora]: Anaphoric comes from the linguistics term "anaphora", an expression that is context dependent. Anaphoric functions are found in [Arc](http://www.arcfn.com/doc/anaphoric.html) (a LISP like language), [Perl](http://www.perlmonks.org/index.pl?node_id=666047), and [Clojure](http://amalloy.hubpages.com/hub/Unhygenic-anaphoric-Clojure-macros-for-fun-and-profit).
 
 ### Exercises
 
-1.  Implement `arrange_desc()`, a variant of `dplyr::arrange()` that sorts
-    in descending order by default.
+1.  In the linear-model example, we could replace the `expr()` in 
+    `reduce(summands, ~ expr(!!.x + !!.y))` with `call2()`:
+    `reduce(summands, call2, "+")`. Compare and constrast the two 
+    approaches. Which do you think is easier to read?
 
-2.  Implement `filter_or()`, a variant of `dplyr::filter()` that combines 
-    multiple arguments using `|` instead of `&`.
-
-3.  Implement `partition_rows()` which, like `partition_cols()`, returns two
-    data frames, one containing the selected rows, and the other containing
-    the rows that weren't selected.
-
-4.  Add error handling to `slice()`. Give clear error messages if either
-    `along` or `index` have invalid values (i.e. not numeric, not length 1,
-    too small, or too big).
-
-5.  Re-implement the Box-Cox transform defined below using unquoting and
+1.  Re-implement the Box-Cox transform defined below using unquoting and
     `new_function()`:
 
     
@@ -968,7 +1449,7 @@ Note that this is often useful if the higher order functions have arguments that
     }
     ```
 
-6.  Re-implement the simple `compose()` defined below using quasiquotation and 
+1.  Re-implement the simple `compose()` defined below using quasiquotation and 
     `new_function()`:
     
     
@@ -976,256 +1457,4 @@ Note that this is often useful if the higher order functions have arguments that
     compose <- function(f, g) {
       function(...) f(g(...))
     }
-    ```
-
-## Dot-dot-dot (`...`)
-
-Quasiquotation ensures that every quoted argument has an escape hatch that allows the user to unquote, or evaluate, selected components, if needed. A similar and related need arises with functions that take arbitrary additional arguments with `...`. Take the following two motivating problems:
-
-*   What do you do if the elements you want to put in `...` are already stored 
-    in a list? For example, imagine you have a list of data frames that 
-    you want to `rbind()` together:
-    
-    
-    ```r
-    dfs <- list(
-      a = data.frame(x = 1, y = 2),
-      b = data.frame(x = 3, y = 4)
-    )
-    ```
-    
-    You could solve this specific case with `rbind(dfs$a, df$b)`, but how
-    do you generalise that solution to a list of arbitrary length?
-
-*   What do you do if you want to supply the argument name indirectly? For 
-    example, imagine you want to create a single column data frame where 
-    the name of the column is specified in a variable:
-    
-    
-    ```r
-    var <- "x"
-    val <- c(4, 3, 9)
-    ```
-    
-    In this case, you could create a data frame and then change names
-    (i.e. `setNames(data.frame(val), var)`), but this feels inelegant.
-    How can we do better?
-
-### `do.call()`
-
-Base R provides a swiss-army knife to solve these problems: `do.call()`. `do.call()` has two main arguments. The first argument, `what`, gives a function to call. The second argument, `args`, is a list of arguments to pass to that function, and so `do.call("f", list(x, y, z))` is equivalent to `f(x, y, z)`.
-
-*   `do.call()` gives a straightforward solution to `rbind()`ing together many 
-    data frames:
-
-    
-    ```r
-    do.call("rbind", dfs)
-    #>   x y
-    #> a 1 2
-    #> b 3 4
-    ```
-
-*   With a little more work, we can use `do.call()` to solve the second problem. 
-    We first create a list of arguments, then name that, then use `do.call()`:
-    
-    
-    ```r
-    args <- list(val)
-    names(args) <- var
-    
-    do.call("data.frame", args)
-    #>   x
-    #> 1 4
-    #> 2 3
-    #> 3 9
-    ```
-
-### The tidyverse approach
-
-The tidyverse solves these problems in a different way to base R, by drawing parallel to quasiquotation:
-
-*   Row-binding multiple data frames is like unquote-splicing: we want to inline
-    individual elements of the list into the call:
-
-    
-    ```r
-    dplyr::bind_rows(!!!dfs)
-    #>   x y
-    #> 1 1 2
-    #> 2 3 4
-    ```
-    
-    When used in this context, the behaviour of `!!!` is known as spatting in 
-    Ruby, Go, PHP, and Julia. It is closely related to `*args` (star-args) and
-    `**kwarg` (star-star-kwargs) in Python, which are sometimes called argument
-    unpacking. 
-
-*   The second problem is like unquoting on the LHS of `=`: rather than 
-    interpreting `var` literally, we want to use the value stored in the variable 
-    called `var`:
-
-    
-    ```r
-    tibble::tibble(!!var := val)
-    #> Warning: `list_len()` is soft-deprecated as of rlang 0.2.0.
-    #> Please use `new_list()` instead
-    #> This warning is displayed once per session.
-    #> # A tibble: 3 x 1
-    #>       x
-    #>   <dbl>
-    #> 1     4
-    #> 2     3
-    #> 3     9
-    ```
-
-    Note the use of `:=` (pronounced colon-equals) rather than `=`. Unfortunately 
-    we need this new operation because R's grammar does not allow expressions as
-    argument names:
-    
-    
-    ```r
-    tibble::tibble(!!var = value)
-    #> Error: unexpected '=' in "tibble::tibble(!!var ="
-    ```
-    
-    `:=` is like a vestigial organ: it's recognised by R's parser, but it doesn't
-    have any code associated with it. It looks like an `=` but allows 
-    expressions on either side, making it a more flexible alternative to `=`. 
-    It is used in data.table for similar reasons.
-
-### `list2()`
-
-Both `dplyr::bind_rows()` and `tibble::tibble()` are powered by `rlang::list2(...)`. This function is very similar to `list(...)`, but it understands `!!!` and `!!`. If you want to take advantage of this behaviour in your own function, all you need to do is use `list2()` in your own code. For example, imagine you want to make a version of `structure()` that understands `!!!` and `!!`. We'll call it `set_attr()`:
-
-
-```r
-set_attr <- function(.x, ...) {
-  attr <- rlang::list2(...)
-  attributes(.x) <- attr
-  .x
-}
-
-attrs <- list(x = 1, y = 2)
-attr_name <- "z"
-
-1:10 %>%
-  set_attr(w = 0, !!!attrs, !!attr_name := 3) %>% 
-  str()
-#>  int [1:10] 1 2 3 4 5 6 7 8 9 10
-#>  - attr(*, "w")= num 0
-#>  - attr(*, "x")= num 1
-#>  - attr(*, "y")= num 2
-#>  - attr(*, "z")= num 3
-```
-
-(rlang also provides a `set_attr()` function with a few extra conveniences, but the essence is the same.)
-
-Note that we call the first argument `.x`: whenever you use `...` to take arbitrary data, it's good practice to give the other argument names a `.` prefix. This eliminates any ambiguity about who owns the argument, and in this case makes it possible to set the `x` attribute.
-
-`list2()` provides one other handy feature: by default it will ignore any empty arguments at the end. This is useful in functions like `tibble::tibble()` because it means that you can easily change the order of variables without worrying about the final comma:
-
-
-```r
-# Can easily move x to first entry:
-tibble::tibble(
-  y = 1:5,
-  z = 3:-1,
-  x = 5:1,
-)
-
-# Need to remove comma from z and add comma to x
-data.frame(
-  y = 1:5,
-  z = 3:-1,
-  x = 5:1
-)
-```
-
-As well as `list2()`, rlang also provides `lgl()`, `int()`, `dbl()`, and `chr()` which create atomic vectors in the same way.
-
-### Application: `invoke()` and `lang()`
-
-One useful application of `list2()` is `invoke()`:
-
-
-```r
-invoke <- function(.f, ...) {
-  do.call(.f, list2(...), envir = parent.frame())
-}
-```
-
-(At time of writing, both `purrr::invoke()` and `rlang::invoke()` have somewhat different definitions because they were written before we understood how quasiquotation syntax and `...` intersected.)
-
-As a wrapper around `do.call()`, `invoke()` gives powerful ways to call functions with arguments supplied directly (in ...) or indirectly (in a list):
-
-
-```r
-invoke("mean", x = 1:10, na.rm = TRUE)
-
-# Equivalent to
-x <- list(x = 1:10, na.rm = TRUE)
-invoke("mean", !!!x)
-```
-
-It also allows us to specify argument names indirectly:
-
-
-```r
-arg_name <- "na.rm"
-arg_val <- TRUE
-invoke("mean", 1:10, !!arg_name := arg_val)
-```
-
-Closely related to `invoke()` is `rlang::call2()`. It constructs a call from its components:
-
-
-```r
-call2("mean", 1:10, !!arg_name := arg_val)
-#> mean(1:10, na.rm = TRUE)
-```
-
-The chief advantage of `call2()` over `expr()` is that it can use `:=`.
-
-### Other approaches
-
-Apart from `rlang::list2()` there are several other techniques used to overcome the motivating challenges described above. One technique is to take `...` and a single unnamed argument that is a list, making `f(list(x, y, z))` equivalent to `f(x, y, z)`. The implementation looks something like this:
-
-
-```r
-f <- function(...) {
-  dots <- list(...)
-  if (length(dots) == 1 && is.list(dots[[1]])) {
-    dots <- dots[[1]]
-  }
-  
-  # Do something
-  ...
-}
-```
-
-Base functions that use this technique include `interaction()`, `expand.grid()`, `options()`, and `par()`. Since these functions take either a list or `...`, but not both, they are slightly less flexible than functions powered by `list2()`.
-
-Another related technique is used in the `RCurl::getURL()` function written by Duncan Temple Lang. `getURL()` takes both `...` and `.opts` which are concatenated together.  This is useful when writing functions to call web APIs because you often have some options that need to be passed to every request. You put these in a common list and pass to `.opts`, saving `...` for the options unique for a given call. 
-
-I found this technique particularly compelling so you can see it used throughout the tidyverse. Now, however, `rlang::list2()` dots solves more problems, more elegantly, by using the ideas from tidy eval. The tidyverse is slowly migrating to `list2()` style for all functions that take `...`.
-
-### Exercises
-
-1.  Carefully read the source code for `interaction()`, `expand.grid()`, and 
-    `par()`.  Compare and contrast the techniques they use for switching 
-    between dots and list behaviour.
-
-1.  Explain the problem with this definition of `set_attr()`
-    
-    
-    ```r
-    set_attr <- function(x, ...) {
-      attr <- rlang::list2(...)
-      attributes(x) <- attr
-      x
-    }
-    set_attr(1:10, x = 10)
-    #> Error in attributes(x) <- attr:
-    #>   attributes must be named
     ```

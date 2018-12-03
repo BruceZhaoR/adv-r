@@ -1390,7 +1390,7 @@ We'll explore this idea in detail in [functionals].
 The prefix form is the most common form in R code, and indeed in the majority of programming languages. Prefix calls in R are a little special because you can specify arguments in three ways:
 
 * By position, like `help(mean)`.
-* Using partial matching, like `help(to = mean)`. <!-- GVW: took me a moment to realize this is the same as `topic = mean` -->
+* Using partial matching, like `help(to = mean)`.
 * By name, like `help(topic = mean)`.
 
 As illustrated by the following chunk, arguments are matched by exact name, then with unique prefixes, and finally by position.
