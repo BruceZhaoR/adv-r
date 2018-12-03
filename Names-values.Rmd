@@ -148,6 +148,8 @@ if <- 10
 
 [^letters]: Surprisingly, what constitutes a letter is determined by your current locale. That means that the syntax of R code can actually differ from computer to computer, and that it's possible for a file that works on one computer to not even parse on another!
 
+<!-- GVW: please add a line to this footnote describing the safe character set to use in programs, or a link to the style guide section. -->
+
 It's possible to override these rules and use any name, i.e., any sequence of characters, by surrounding it with backticks:
 
 ```{r}
@@ -204,6 +206,7 @@ Consider the following code. It binds `x` and `y` to the same underlying value, 
 
 [^double-bracket]: You may be surprised to see `[[` used with a numeric vector. We'll come back to this in Section \@ref(subset-single), but in brief, I think you should always use `[[` when you are getting or setting a single element.
 
+<!-- GVW: should I be surprised that `[[` is used with a numeric vector as subscript, or that it's being used to subscript a numeric vector? (I'm new enough that I don't know what should surprise me.) -->
 
 ```{r}
 x <- c(1, 2, 3)
@@ -233,6 +236,7 @@ cat(tracemem(x), "\n")
 
 From then on, whenever that object is copied, `tracemem()` will print a message telling you which object was copied, its new address, and the sequence of calls that led to the copy:
 
+<!-- GVW: that's cool. -->
 
 ```{r trace2, dependson = "trace1", eval = FALSE}
 y <- x
@@ -242,6 +246,7 @@ y[[3]] <- 4L
 
 Note that if you modify `y` again, it won't get copied. That's because the new object now only has a single name bound to it, so R applies modify-in-place optimisation. We'll come back to this shortly.
 
+<!-- GVW: forward link to section that resolves the "shortly". -->
 
 ```{r trace3, dependson = "trace2"}
 y[[3]] <- 5L
@@ -277,6 +282,7 @@ knitr::include_graphics("diagrams/name-value/binding-f1.png")
 
 (You'll learn more about the conventions used in this diagram in [Execution environments].)
 
+<!-- GVW: I think I've figured out what the colors and curves mean, but I'm not sure... -->
 
 Once `f()` completes, `x` and `z` will point to the same object. `0x74b` never gets copied because it never gets modified. If `f()` did modify `x`, R would create a new copy, and then `z` would bind that object.
 
@@ -294,6 +300,7 @@ l1 <- list(1, 2, 3)
 
 The internal representation of a list is actually quite different from that of a vector. A list is really a vector of references:
 
+<!-- GVW: isn't this exactly the same as the structure of a vector, just storing a different type? -->
 
 ```{r, echo = FALSE, out.width = NULL}
 knitr::include_graphics("diagrams/name-value/list.png")
@@ -321,6 +328,7 @@ Like vectors, lists use copy-on-modify behaviour; the original list is left unch
 
 To see values that are shared across lists, use `lobstr::ref()`. `ref()` prints the memory address of each object, along with a local ID so that you can easily cross-reference shared components.
 
+<!-- GVW: install.packages("lobstr") produces "package 'lobstr' is not available (for R version 3.5.1).", but devtools::install_github("r-lib/lobstr") works. -->
 
 ```{r list4, dependson = "list3"}
 ref(l1, l2)
@@ -349,6 +357,7 @@ knitr::include_graphics("diagrams/name-value/d-modify-c.png")
 
 However, if you modify a row, there is no way to share data with the previous version of the data frame: every column must be copied-and-modified.
 
+<!-- GVW: "if you modify a row, every column is modified, which means every column must be copied" -->
 
 ```{r}
 d3 <- d1
@@ -376,6 +385,7 @@ But this is a polite fiction. R actually uses a __global string pool__ where eac
 knitr::include_graphics("diagrams/name-value/character-2.png")
 ```
 
+<!-- GVW: what I brought with me from other languages was that "character vector" referred to a single string (a vector of characters), but what I now understand is that "character vector" means "a vector of character strings".  Might be worth footnoting this for people who make the same mistake I did? -->
 
 You can request that `ref()` show these references by setting the `character` argument to `TRUE`:
 
@@ -447,6 +457,8 @@ obj_size(list(NULL, NULL, NULL))
 ```
 
 [^32bit]: If you're running the 32-bit version of R you'll see slightly different sizes.
+
+<!-- GVW: "On a 64-bit machine --- if you're running 32-bit R ..." -->
 
 Similarly, because R uses a global string pool character vectors take up less memory than you might expect: repeating a string 1000 times does not make it take up 1000 times as much memory.
 
@@ -644,6 +656,7 @@ knitr::include_graphics("diagrams/name-value/e-self.png")
 
 This is a unique property of environments!
 
+<!-- GVW: having people explain why `x <- list(); x[[1]] <- x` *doesn't* produce a circular list might be a good exercise. -->
 
 ### Exercises
 
@@ -691,6 +704,7 @@ The garbage collector (GC) is run automatically whenever R needs more memory to 
 
 You can force the garbage collector to run by calling `gc()`. Despite what you might have read elsewhere, there's never any _need_ to call `gc()` yourself. You may _want_ to call `gc()` to ask R to return memory to your operating system, or for its side-effect of telling you how much memory is currently being used:  
 
+<!-- GVW: why would I want to ask R to return memory the OS? -->
 
 ```{r}
 gc() 

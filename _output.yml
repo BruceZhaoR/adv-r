@@ -12,13 +12,14 @@ bookdown::gitbook:
     edit:
       link: https://github.com/hadley/adv-r/edit/master/%s
       text: "Edit"
-    download: [pdf, epub]
+    download:
+      - ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"]
+      - ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]
     search: yes
     sharing: no
   css: adv-r.css
 
 bookdown::epub_book:
-  dev: svglite
   stylesheet: adv-r.css
   cover_image: cover.png
 
@@ -27,7 +28,7 @@ bookdown::pdf_book:
     in_header: latex/preamble.tex
     before_body: latex/before_body.tex
     after_body: latex/after_body.tex
-  keep_tex: true
+  #keep_tex: true
   dev: "cairo_pdf"
   latex_engine: xelatex
   citation_package: natbib

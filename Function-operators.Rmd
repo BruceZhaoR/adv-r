@@ -50,10 +50,11 @@ library(purrr)
 library(memoise)
 ```
 
+<!--
 ### In other languages
 
 Function operators are used extensively in FP languages like Haskell, and commonly in Lisp, Scheme and Clojure. They are also an important part of modern JavaScript programming, like in the [underscore.js](http://underscorejs.org/) library. They are particularly common in CoffeeScript because its syntax for anonymous functions is so concise. In stack-based languages like Forth and Factor, function operators are used almost exclusively because it's rare to refer to variables by name. Python's decorators are just function operators by a [different name](http://stackoverflow.com/questions/739654/). In Java, they are very rare because it's difficult to manipulate functions (although possible if you wrap them up in strategy-type objects). They are also rare in C++ because, while it's possible to create objects that work like functions ("functors") by overloading the `()` operator, modifying these objects with other functions is not a common programming technique. That said, C++ 11 includes partial application (`std::bind`) as part of the standard library.
-
+-->
 
 ## Existing FOs
 
@@ -149,6 +150,7 @@ I think this is a great example of the power of combining functionals and functi
 purrr comes with three other function operators in a similar vein:
 
 * `possibly()`: returns a default value when there's an error.
+<!-- GVW: does it somehow signal where/when it's done this? if not, warn readers of that? -->
 
 * `quietly()`: turns output, messages, and warning side-effects into
   `output`, `message`, and `warning` components of the output.

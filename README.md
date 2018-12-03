@@ -1,4 +1,10 @@
-**forked from hadley/adv-r** [![Build Status](https://travis-ci.org/BruceZhaoR/adv-r.svg?branch=master)](https://travis-ci.org/BruceZhaoR/adv-r)
+**forked from [hadley/adv-r](https://github.com/hadley/adv-r)** [![Build Status](https://travis-ci.org/BruceZhaoR/adv-r.svg?branch=master)](https://travis-ci.org/BruceZhaoR/adv-r)
+
+change log:
+
+- latex/preamble.tex `Inconsolata` -> `inconsolata`
+- diagrams/s4/Matrix.png -> `matrix.png`
+- Profiling.Rmd parallel -> `eval = FALSE`
 
 You can download [pdf](https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf) and [epub](https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub), which you can read in iBooks.Or you can read online via :<https://brucezhaor.github.io/adv-r/index.html>
 

@@ -213,6 +213,7 @@ map_dbl(x, list("y", 1))
 
 # You'll get an error if a component doesn't exist:
 map_chr(x, "z")
+
 # Unless you supply a .default value
 map_chr(x, "z", .default = NA)
 ```
@@ -276,6 +277,7 @@ boostrap_summary <- function(x, f) {
 simple_map(mtcars, boostrap_summary, f = mean)
 ```
 
+<!-- GVW: a diagram here showing how the various f's and x's are matched to one another in the example above would be very helpful -->
 
 The error is a little bewildering until you remember that the call to `simple_map()` is equivalent to `simple_map(x = mtcars, f = mean, bootstrap_summary)` because named matching beats positional matching. 
 
@@ -317,6 +319,8 @@ x <- rcauchy(1000)
     ```{r}
     map_dbl(trims, ~ mean(x, trim = .x))
     ```
+
+<!-- GVW: use of `x` and `.x` here is confusing -->
 
 *   Sometimes, if you want to be (too) clever, you can take advantage of R's 
     flexible argument matching rules (as described in Section 
@@ -887,11 +891,7 @@ This also ensures that `reduce()` checks that length 1 inputs are valid for the 
 reduce("a", `+`, .init = 0)
 ```
 
-<<<<<<< HEAD
-If you want to get algebraic about it, 0 is called the __identity__ of the numbers under the operation of addition: if you add a 0 to any number, you get the same number back. R applies the same principle to determine what a summary function with a zero length input should return:
-=======
 If you want to get algebraic about it, 0 is called the __identity__ of the real numbers under the operation of addition: if you add a 0 to any number, you get the same number back. R applies the same principle to determine what a summary function with a zero length input should return:
->>>>>>> hadley
 
 ```{r, warning = FALSE}
 sum(integer())  # x + 0 = x
@@ -917,7 +917,9 @@ knitr::include_graphics("diagrams/functionals/reduce2-init.png")
 
 ### Map-reduce
 
-You might have heard of map-reduce, the idea that powers technology like Hadoop. Now you can see how simple and powerful the underlying idea is: all map-reduce is a map combined with a reduce. The special idea for large data is that the data is spread over multiple computers. Each computer performs the map on the data that it has, then it sends the result to back to a coordinator which _reduces_ the individual results back to a single result.
+You might have heard of map-reduce, the idea that powers technology like Hadoop. Now you can see how simple and powerful the underlying idea is: all map-reduce is a map combined with a reduce. The difference for large data is that the data is spread over multiple computers. Each computer performs the map on the data that it has, then it sends the result to back to a coordinator which _reduces_ the individual results back to a single result.
+
+<!-- GVW: provide a couple of examples here of how complex calculations can be decomposed into map followed by reduce -->
 
 ## Predicate functionals
 \index{predicates} 
@@ -930,10 +932,14 @@ A __predicate__ is a function that returns a single `TRUE` or `FALSE`, like `is.
 A __predicate functional__ applies a predicate to each element of a vector.  purrr proivdes six useful functions which come in three pairs:
 
 * `some(.x, .p)` returns `TRUE` if _any_ element matches;
-  `every(.x,, .p)` returns `TRUE` if _all_ elements match.
+  `every(.x, .p)` returns `TRUE` if _all_ elements match.
+
+<!-- GVW: explain in terms of map followed by any() or all()? -->
 
 * `detect(.x, .p)` returns the _value_ of the first match;
   `detect_index(.x, .p)` returns the _location_ of the first match.
+
+<!-- GVW: are there variants that start the search after a certain point? -->
   
 * `keep(.x, .p)` _keeps_ all matching elements;
   `discard(.x, .p)` _drops_ all matching elements.
@@ -1029,7 +1035,9 @@ apply(a, 1, mean)
 apply(a, 2, mean)
 ```
 
-You can specify multiple dimensions to `MARGINS`, which is useful for high-d arrays:
+<!-- HW: recreate diagrams from plyr paper -->
+
+You can specify multiple dimensions to `MARGIN`, which is useful for high-d arrays:
 
 ```{r}
 a <- array(1:24, c(2, 3, 4))
@@ -1052,6 +1060,7 @@ There are two caveats to using `apply()`:
     ```{r}
     a1 <- apply(a, 1, identity)
     identical(a, a1)
+
     a2 <- apply(a, 2, identity)
     identical(a, a2)
     ```

@@ -34,8 +34,7 @@ Imports:
     stringr,
     testthat,
     vctrs,
-    zeallot,
-    svglite
+    zeallot
 Remotes: 
     hadley/emo,
     hadley/lineprof,

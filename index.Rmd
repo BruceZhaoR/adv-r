@@ -11,6 +11,7 @@ site: bookdown::bookdown_site
 documentclass: krantz
 bibliography: book.bib
 link-citations: yes
+date: "`r Sys.Date()`"
 ---
 
 `r if (knitr::is_latex_output()) '<!--'` 
