@@ -21,6 +21,7 @@ square <- power1(2)
 cube <- power1(3)
 ```
 
+<!-- GVW: is `force` necessary? (my guess is "yes", because we could call `power1` with an expression as a parameter and be surprised when it's evaluated later) LATER: you touch on this in the factory pitfalls section below, so forward ref? -->
 
 I'll call `square()` and `cube()` __manufactured functions__, but this is just a term to ease communication with other humans: from R's perspective they are no different to functions created any other way. 
 
@@ -105,14 +106,14 @@ square
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <environment: 0x5b10328>
+#> <environment: 0x60e7c68>
 
 cube
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <bytecode: 0x5eb6e40>
-#> <environment: 0x5b63848>
+#> <bytecode: 0x6494c60>
+#> <environment: 0x613eb68>
 ```
 
 Printing manufactured functions is not revealing because the bodies are identical; it's the contents of the enclosing environment that's important. We can get a little more insight by using `rlang::env_print()`. That shows us that we have two different environments (each of which was originally an execution environment of `power1()`). The environments have the same parent, which is the enclosing environment of `power1()`, the global environment.
@@ -120,13 +121,13 @@ Printing manufactured functions is not revealing because the bodies are identica
 
 ```r
 env_print(square)
-#> <environment: 0x5b10328>
+#> <environment: 0x60e7c68>
 #> parent: <environment: global>
 #> bindings:
 #>  * exp: <dbl>
 
 env_print(cube)
-#> <environment: 0x5b63848>
+#> <environment: 0x613eb68>
 #> parent: <environment: global>
 #> bindings:
 #>  * exp: <dbl>
@@ -146,6 +147,15 @@ env_get(cube, "exp")
 #> [1] 3
 ```
 
+<!-- GVW: when I run the above, I get:
+
+Passing an environment wrapper like a function is deprecated.
+Please retrieve the environment before calling `env_get()`
+This warning is displayed once per session.
+
+I'm using R 3.5.1.
+
+-->
 
 This is what makes manufactured functions behave differently from one another: names in the enclosing environment are bound to different values.
 
@@ -361,6 +371,7 @@ number_format(scale = 1e-3, suffix = " K")(y)
 
 In other words, the primary interface is a function factory. At first glance, this seems to add extra complexity for little gain. But it enables a nice interaction with ggplot2's scales, because they accept functions in the `label` argument:
 
+<!-- GVW: I get "partially matched argument" warnings telling me `label -> labels` below -->
 
 
 ```r
@@ -376,7 +387,7 @@ core + scale_y_continuous(label = number_format(scale = 1e-3, suffix = " K"))
 core + scale_y_continuous(label = scientific_format())
 ```
 
-<img src="Function-factories_files/figure-epub3/unnamed-chunk-22-1.svg" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-2.svg" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-3.svg" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-4.svg" width="25%" />
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-22-1.png" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-2.png" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-3.png" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-4.png" width="25%" />
 
 ### Histogram bins
 
@@ -398,7 +409,7 @@ ggplot(df, aes(x)) +
   labs(x = NULL)
 ```
 
-<img src="Function-factories_files/figure-epub3/unnamed-chunk-23-1.svg" width="90%" style="display: block; margin: auto;" />
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-23-1.png" width="90%" style="display: block; margin: auto;" />
 
 Here each facet has the same number of observations, but the variability is very different. It would be nice if we could request that the binwidths vary so we get approximately the same number of observations in each bin. One way to do that is with a function factory that inputs the desired number of bins (`n`), and outputs a function that takes a numeric vector and returns a binwidth:
 
@@ -418,10 +429,11 @@ ggplot(df, aes(x)) +
   labs(x = NULL)
 ```
 
-<img src="Function-factories_files/figure-epub3/unnamed-chunk-24-1.svg" width="90%" style="display: block; margin: auto;" />
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" />
 
 We could use this same pattern to wrap around the base R functions that automatically find the "optimal"[^optimal] binwidth, `nclass.Sturges()`, `nclass.scott()`, and `nclass.FD()`:
 
+<!-- GVW: just curious - why is 'Sturges' name-cased but 'scott' is lower case? -->
 
 
 ```r
@@ -444,7 +456,7 @@ ggplot(df, aes(x)) +
   labs(x = NULL)
 ```
 
-<img src="Function-factories_files/figure-epub3/unnamed-chunk-25-1.svg" width="90%" style="display: block; margin: auto;" />
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-25-1.png" width="90%" style="display: block; margin: auto;" />
 
 [^optimal]: ggplot2 doesn't expose these functions directly because I don't think the defintion of optimality needed to make the problem mathematically tractable is a good match to the actual needs of data exploration.
 
@@ -488,12 +500,12 @@ plot_dev <- function(ext, dpi = 96) {
 
 plot_dev("pdf")
 #> function(filename, ...) grDevices::pdf(file = filename, ...)
-#> <bytecode: 0x3e27c68>
-#> <environment: 0x5096a60>
+#> <bytecode: 0x37e4818>
+#> <environment: 0x5994470>
 plot_dev("png")
 #> function(...) grDevices::png(..., res = dpi, units = "in")
-#> <bytecode: 0x2d3bfa8>
-#> <environment: 0x4568020>
+#> <bytecode: 0x22403f0>
+#> <environment: 0x4ceb5f0>
 ```
 
 ### Exercises
@@ -555,7 +567,7 @@ ggplot(data.frame(x = c(0.01, 1)), aes(x)) +
   scale_colour_viridis_c(limits = c(0, 1.5))
 ```
 
-<img src="Function-factories_files/figure-epub3/unnamed-chunk-28-1.svg" width="50%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-28-2.svg" width="50%" />
+<img src="Function-factories_files/figure-epub3/unnamed-chunk-28-1.png" width="50%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-28-2.png" width="50%" />
 
 In general, this allows you to use a Box-Cox transformation with any function that accepts a unary transformation function: you don't have to worry about that function providing `...` to pass along additional arguments. I also think that the partitioning of `lambda` and `x` into two different function arguments is natural since `lambda` plays quite a different role than `x`. 
 
@@ -669,6 +681,7 @@ So far we’ve been thinking of `lambda` as fixed and known and the function tol
 
 In statistics, we highlight this change in perspective by writing $f_{\mathbf{x}}(\lambda)$ instead of $f(\lambda, \mathbf{x})$. In R, we can use a function factory. We provide `x` and generate a function with a single parameter, `lambda`:
 
+<!-- GVW: you don't force(x) because length(x) implicitly does that? -->
 
 
 ```r
@@ -744,6 +757,7 @@ The advantage of using a function factory here is fairly small, but there are tw
 
 These advantages get bigger in more complex MLE problems, where you have multiple parameters and multiple data vectors.
 
+<!-- GVW: stepping back, what patterns in existing code should people look for that suggest "Hey, maybe use a function factory here"? -->
 
 ### Exercises
 
@@ -793,12 +807,13 @@ funs$root
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <bytecode: 0x5eb6e40>
-#> <environment: 0x4acf208>
+#> <bytecode: 0x6494c60>
+#> <environment: 0x1ec2810>
 ```
 
 This idea extends in a straightforward way if your function factory takes two (replace `map()` with `map2()`) or more (replace with `pmap()`) arguments.
 
+<!-- GVW: I wouldn't start a new subsection here, because on first reading it made me think that this was all you were going to say about this example -->
 
 ### Moving a list to the global environment
 \indexc{with()}
@@ -841,6 +856,7 @@ One downside of the current construction is that you have to prefix every functi
 *   Finally, you could copy the functions to the global environment with 
     `env_bind()`. This is mostly permanent:
     
+<!-- GVW: quasiquotation hasn't yet been introduced, and readers may not know about it, so maybe defer this discussion to that section with a forward ref? -->
 
     
     ```r
@@ -860,6 +876,7 @@ One downside of the current construction is that you have to prefix every functi
 
 ### Another approach
 
+<!-- GVW: as above, defer discussion of quasiquotation (that chapter can refer back to this example for motivation)? -->
 
 You'll learn an alternative approach to the same problem in Section \@ref(quasi-function). Instead of using a function factory, you could construct the function with quasiquotation. This requires additional knowledge, but generates functions with readable bodies, and avoids accidentally capturing large objects in the enclosing scope. The following code is a quick preview of how we could rewrite `power1()` to use quasiquotation:
 
@@ -881,7 +898,7 @@ funs$root
 #> {
 #>     x^0.5
 #> }
-#> <environment: 0x4abdb38>
+#> <environment: 0x24370c0>
 ```
 
 As well as `0.5` appearing directly in the body, note that the environment of the function is the global environment, not an execution environment of `power3()`.

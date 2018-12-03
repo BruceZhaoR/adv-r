@@ -207,7 +207,7 @@ This version of the book was built with the following version of R and packages.
 |collate  |en_US.UTF-8                  |
 |ctype    |en_US.UTF-8                  |
 |tz       |UTC                          |
-|date     |2018-12-02                   |
+|date     |2018-12-03                   |
 
 
 |package        |version    |source                            |
@@ -299,7 +299,7 @@ This version of the book was built with the following version of R and packages.
 |tidyselect     |0.2.5      |CRAN (R 3.5.1)                    |
 |tinytex        |0.9        |CRAN (R 3.5.1)                    |
 |utf8           |1.1.4      |CRAN (R 3.5.1)                    |
-|vctrs          |0.1.0      |Github (r-lib/vctrs\@c7e90fc)     |
+|vctrs          |0.1.0.9000 |Github (r-lib/vctrs\@14dfeb2)     |
 |viridisLite    |0.3.0      |CRAN (R 3.5.1)                    |
 |withr          |2.1.2      |CRAN (R 3.5.1)                    |
 |xfun           |0.4        |CRAN (R 3.5.1)                    |

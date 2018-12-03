@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -893,8 +893,10 @@ Proudly published with bookdown</a></li>
 <div id="introduction-2" class="section level2">
 <h2><span class="header-section-number">3.1</span> Introduction</h2>
 <p>This chapter discusses the most important family of data types in base R: the vector types<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>. You’ve probably used many (if not all) of the vectors before, but you may not have thought deeply about how they are interrelated. In this chapter, I won’t cover individual vectors types in too much depth. Instead, I’ll show you how they fit together as a whole. If you need more details, you can find them in R’s documentation.</p>
+<!-- GVW: at this point (after reading previous chapter), my mental model is that a list is a vector of references, and that there's no other significant difference between it and other vector types - if that's so, maybe emphasize the similarities rather than the differences? -->
 <p>Vectors come in two flavours: atomic vectors and lists<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>. They differ in the types of their elements: all elements of an atomic vector must be the same type, whereas the elements of a list can have different types. Closely related to vectors is <code>NULL</code>; <code>NULL</code> is not a vector, but often serves the role of a generic 0-length vector. Throughout this chapter we’ll expand on this diagram:</p>
 <p><img src="diagrams/vectors/summary-tree.png" width="198" style="display: block; margin: auto;" /></p>
+<!-- GVW: in the para below, you use double asterisk for some emphasis and double underscore for other - is this important to bookdown? -->
 <p>Every vector can also have <strong>attributes</strong>, which you can think of as a named list containing arbitrary metadata. Two attributes are particularly important because they create important vector variants. The <strong>dim</strong>ension attribute turns vectors into matrices and arrays. The <strong>class</strong> attribute powers the S3 object system. You’ll learn how to use S3 in Chapter <a href="s3.html#s3">13</a>, but here, you’ll learn about a handful of the most important S3 vectors: factors, date/times, data frames, and tibbles. Matrices and data frames are not necessarily what you think of as vectors, so you’ll learn why these 2d structures are considered to be vectors in R.</p>
 <div id="quiz-1" class="section level3 unnumbered">
 <h3>Quiz</h3>
@@ -944,9 +946,12 @@ that is a matrix?</p></li>
 <p></p>
 <p>Each of the four primary atomic vectors has special syntax to create an individual value, aka a <strong>scalar</strong><a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>, and its own missing value.:</p>
 <ul>
-<li><p>Strings are surrounded by <code>&quot;</code> (<code>&quot;hi&quot;</code>) or <code>'</code> (<code>'bye'</code>). The string
+<li>Strings are surrounded by <code>&quot;</code> (<code>&quot;hi&quot;</code>) or <code>'</code> (<code>'bye'</code>). The string
 missing value is <code>NA_character_</code>. Special characters are escaped with <code>\\</code>;
-see <code>?Quotes</code> for full details.</p></li>
+see <code>?Quotes</code> for full details.</li>
+</ul>
+<!-- GVW: in above, move description of missing value to end of point for consistency with following points -->
+<ul>
 <li><p>Doubles can be specified in decimal (<code>0.1234</code>), scientific (<code>1.23e4</code>), or
 hexadecimal (<code>0xcafe</code>) forms. There are three special values unique to
 doubles: <code>Inf</code>, <code>-Inf</code>, and <code>NaN</code>. The double missing value is <code>NA_real_</code>.</p></li>
@@ -956,6 +961,7 @@ missing value is <code>NA_integer_</code>.</p></li>
 <li><p>Logicals can be spelled out (<code>TRUE</code> or <code>FALSE</code>), or abbreviated (<code>T</code> or <code>F</code>).
 The logical missing value is <code>NA</code>.</p></li>
 </ul>
+<!-- GVW: coming from Python, I think the distinction is more than theoretical: the fact that `1[1]` works is pretty remarkable. -->
 </div>
 <div id="atomic-constructing" class="section level3">
 <h3><span class="header-section-number">3.2.2</span> Making longer vectors with <code>c()</code></h3>
@@ -965,6 +971,7 @@ The logical missing value is <code>NA</code>.</p></li>
 <a class="sourceLine" id="cb53-2" data-line-number="2">int_var &lt;-<span class="st"> </span><span class="kw">c</span>(1L, 6L, 10L)</a>
 <a class="sourceLine" id="cb53-3" data-line-number="3">lgl_var &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb53-4" data-line-number="4">chr_var &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;these are&quot;</span>, <span class="st">&quot;some strings&quot;</span>)</a></code></pre></div>
+<!-- GVW: point out early (again for people coming from other langs) that `c()` flattens, so `c(c(1, 2), c(3, 4))` is `c(1, 2, 3, 4)`, and not a list of two integer vectors (which is what I first expected). -->
 <p>In diagrams, I’ll depict vectors as connected rectangles, so the above code could be drawn as follows:</p>
 <p><img src="diagrams/vectors/atomic.png" width="350" style="display: block; margin: auto;" /></p>
 <p>You can determine the type of a vector with <code>typeof()</code> and its length with <code>length()</code>.</p>
@@ -981,7 +988,9 @@ The logical missing value is <code>NA</code>.</p></li>
 <h3><span class="header-section-number">3.2.3</span> Testing and coercing</h3>
 <p></p>
 <p>Generally, you can <strong>test</strong> if a vector is of a given type with an <code>is.</code> function, but they need to be used with care. <code>is.character()</code>, <code>is.double()</code>, <code>is.integer()</code>, and <code>is.logical()</code> do what you might expect: they test if a vector is a character, double, integer, or logical. Beware <code>is.vector()</code>, <code>is.atomic()</code>, and <code>is.numeric()</code>: they don’t test if you have a vector, atomic vector, or numeric vector, and you’ll need to carefully read the docs to figure out what they do do.</p>
+<!-- GVW: in previous, change "beware" to "avoid"? -->
 <p>The type is a property of the entire atomic vector, so all elements of an atomic must be the same type. When you attempt to combine different types they will be <strong>coerced</strong> to the most flexible one (character &gt;&gt; double &gt;&gt; integer &gt;&gt; logical). For example, combining a character and an integer yields a character:</p>
+<!-- GVW: in the above, I'm as likely to read "character is coerced to double" rather than "character is greater than double" -->
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1"><span class="kw">str</span>(<span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="dv">1</span>))</a>
 <a class="sourceLine" id="cb55-2" data-line-number="2"><span class="co">#&gt;  chr [1:2] &quot;a&quot; &quot;1&quot;</span></a></code></pre></div>
 <p>Coercion often happens automatically. Most mathematical functions (<code>+</code>, <code>log</code>, <code>abs</code>, etc.) will coerce to numeric. This coercion is particularly useful for logical vectors because <code>TRUE</code> becomes 1 and <code>FALSE</code> becomes 0.</p>
@@ -997,6 +1006,7 @@ The logical missing value is <code>NA</code>.</p></li>
 <a class="sourceLine" id="cb56-10" data-line-number="10"><span class="kw">mean</span>(x)</a>
 <a class="sourceLine" id="cb56-11" data-line-number="11"><span class="co">#&gt; [1] 0.333</span></a></code></pre></div>
 <p>Vectorised logical operations (<code>&amp;</code>, <code>|</code>, <code>any</code>, etc) will coerce to a logical, but since this might lose information, it’s always accompanied by a warning.</p>
+<!-- GVW: hm, from the above I expected that `c('a') & c('b')` would work, but it doesn't. -->
 <p>Generally, you can deliberately coerce by using an <code>as.</code> function, like <code>as.character()</code>, <code>as.double()</code>, <code>as.integer()</code>, or <code>as.logical()</code>. Failed coercions from strings generate a warning and a missing value:</p>
 <div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" data-line-number="1"><span class="kw">as.integer</span>(<span class="kw">c</span>(<span class="st">&quot;1&quot;</span>, <span class="st">&quot;1.5&quot;</span>, <span class="st">&quot;a&quot;</span>))</a>
 <a class="sourceLine" id="cb57-2" data-line-number="2"><span class="co">#&gt; Warning: NAs introduced by coercion</span></a>
@@ -1027,6 +1037,7 @@ about logical vectors? (Hint: think about <code>c(FALSE, NA_character_)</code>.)
 <h3><span class="header-section-number">3.3.1</span> Getting and setting</h3>
 
 <p>You can think of attributes as a named list<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a> used to attach metadata to an object. Individual attributes can be retrieved and modified with <code>attr()</code>, or retrieved en masse with <code>attributes()</code>, and set en masse with <code>structure()</code>.</p>
+<!-- GVW: rather than "think of as a named list" and then immediately walk it back in a footnote, revise first sentence above to say "think of attributes as a list of name/value pairs" and forward ref to discussion about pairlists. -->
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1">a &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">3</span></a>
 <a class="sourceLine" id="cb59-2" data-line-number="2"><span class="kw">attr</span>(a, <span class="st">&quot;x&quot;</span>) &lt;-<span class="st"> &quot;abcdef&quot;</span></a>
 <a class="sourceLine" id="cb59-3" data-line-number="3"><span class="kw">attr</span>(a, <span class="st">&quot;x&quot;</span>)</a>
@@ -1068,6 +1079,7 @@ into matrices and arrays.</li>
 
 </p>
 <p>You can name a vector in three ways:</p>
+<!-- GVW: "by assigning a character vector to names()" maybe? -->
 <div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1"><span class="co"># When creating it: </span></a>
 <a class="sourceLine" id="cb61-2" data-line-number="2">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dt">a =</span> <span class="dv">1</span>, <span class="dt">b =</span> <span class="dv">2</span>, <span class="dt">c =</span> <span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb61-3" data-line-number="3"></a>
@@ -1157,6 +1169,7 @@ into matrices and arrays.</li>
 </tr>
 </tbody>
 </table>
+<!-- GVW: nice - this table is very helpful -->
 <p>A vector without a <code>dim</code> attribute set is often thought of as 1-dimensional, but actually has <code>NULL</code> dimensions. You also can have matrices with a single row or single column, or arrays with a single dimension. They may print similarly, but will behave differently. The differences aren’t too important, but it’s useful to know they exist in case you get strange output from a function (<code>tapply()</code> is a frequent offender). As always, use <code>str()</code> to reveal the differences.</p>
 <div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1"><span class="kw">str</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)                   <span class="co"># 1d vector</span></a>
 <a class="sourceLine" id="cb63-2" data-line-number="2"><span class="co">#&gt;  int [1:3] 1 2 3</span></a>
@@ -1253,6 +1266,7 @@ biography</em></a> by Roger Peng, and <a href="http://notstatschat.tumblr.com/po
 <a class="sourceLine" id="cb69-6" data-line-number="6"><span class="co">#&gt; $class</span></a>
 <a class="sourceLine" id="cb69-7" data-line-number="7"><span class="co">#&gt; [1] &quot;Date&quot;</span></a></code></pre></div>
 <p>The value of the double (which can be seen by stripping the class), represents the number of days since 1970-01-01:</p>
+<!-- GVW: worth explaining why this odd starting date? -->
 <div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" data-line-number="1">date &lt;-<span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;1970-02-01&quot;</span>)</a>
 <a class="sourceLine" id="cb70-2" data-line-number="2"><span class="kw">unclass</span>(date)</a>
 <a class="sourceLine" id="cb70-3" data-line-number="3"><span class="co">#&gt; [1] 31</span></a></code></pre></div>
@@ -1273,6 +1287,7 @@ biography</em></a> by Roger Peng, and <a href="http://notstatschat.tumblr.com/po
 <a class="sourceLine" id="cb71-11" data-line-number="11"><span class="co">#&gt; $tzone</span></a>
 <a class="sourceLine" id="cb71-12" data-line-number="12"><span class="co">#&gt; [1] &quot;UTC&quot;</span></a></code></pre></div>
 <p>The <code>tzone</code> attribute controls how the date-time is formatted, not the instant of time represented by the vector. Note that the time is not printed if it is midnight.</p>
+<!-- GVW: er, what? that's madness.  And what date do I get - the day before midnight or the day after? -->
 <div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" data-line-number="1"><span class="kw">structure</span>(now_ct, <span class="dt">tzone =</span> <span class="st">&quot;Asia/Tokyo&quot;</span>)</a>
 <a class="sourceLine" id="cb72-2" data-line-number="2"><span class="co">#&gt; [1] &quot;2018-08-02 07:00:00 JST&quot;</span></a>
 <a class="sourceLine" id="cb72-3" data-line-number="3"><span class="kw">structure</span>(now_ct, <span class="dt">tzone =</span> <span class="st">&quot;America/New_York&quot;</span>)</a>
@@ -1303,6 +1318,7 @@ tabulate more variables?</p></li>
 <p>
 </p>
 <p>Lists are a step up in complexity from atomic vectors because an element of a list can be any type (not just vectors). An element of a list can even be another list!</p>
+<!-- GVW: as before, I think that saying "gosh, this is different" may not be appropriate for your audience - anyone capable of reading this material will probably comfortable with the idea of lists-of-lists, and with the idea of a list being a vector of references. -->
 <div id="list-creating" class="section level3">
 <h3><span class="header-section-number">3.5.1</span> Creating</h3>
 <p>Construct lists with <code>list()</code>:</p>
@@ -1421,6 +1437,7 @@ date and date-time into a single vector.</p></li>
 <a class="sourceLine" id="cb81-12" data-line-number="12"><span class="co">#&gt; $row.names</span></a>
 <a class="sourceLine" id="cb81-13" data-line-number="13"><span class="co">#&gt; [1] 1 2 3</span></a></code></pre></div>
 <p>Because each element of the list has the same length, data frames have a rectangular structure, and hence shares properties of both the matrix and the list:</p>
+<!-- GVW: I don't understand your use of 1d and 2d below: `colnames()` returns a 1D structure for me on `df1`. -->
 <ul>
 <li><p>A data frame has 1d <code>names()</code>, and 2d <code>colnames()</code> and
 <code>rownames()</code><a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>. The <code>names()</code> and <code>colnames()</code> are identical.</p></li>
@@ -1504,6 +1521,7 @@ The <code>length()</code> is the number of columns.</p></li>
 <a class="sourceLine" id="cb87-19" data-line-number="19"><span class="kw">tibble</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)</a>
 <a class="sourceLine" id="cb87-20" data-line-number="20"><span class="co">#&gt; Error: Column `y` must be length 1 or 4, not 2</span></a></code></pre></div>
 <p>There is one final difference: <code>tibble()</code> allows you to refer to newly created variables:</p>
+<!-- GVW: "during their construction", and maybe point out that this is evaluated in left-to-right order. -->
 <div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" data-line-number="1"><span class="kw">tibble</span>(</a>
 <a class="sourceLine" id="cb88-2" data-line-number="2">  <span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,</a>
 <a class="sourceLine" id="cb88-3" data-line-number="3">  <span class="dt">y =</span> x <span class="op">*</span><span class="st"> </span><span class="dv">2</span></a>
@@ -1606,6 +1624,7 @@ to highlight important information, and de-emphasise supplemental details.</p></
 <h3><span class="header-section-number">3.6.4</span> Subsetting</h3>
 <p>As you will learn in Chapter <a href="subsetting.html#subsetting">4</a>, you can subset a data frame or a tibble like a 1d structure (where it behaves like a list), or a 2d structure (where it behaves like a matrix).</p>
 <p>In my opinion, data frames have two suboptimal subsetting behaviours:</p>
+<!-- GVW: this is your third (?) use of suboptimal in this chapter.  I think you mean "undesirable"... -->
 <ul>
 <li><p>When you subset columns with <code>df[, vars]</code>, you will get a vector if <code>vars</code>
 selects one variable, otherwise you’ll get a data frame. This is a frequent
@@ -1627,6 +1646,7 @@ exist.</p></li>
 <a class="sourceLine" id="cb94-7" data-line-number="7"><span class="co">#&gt; Warning: Unknown or uninitialised column: &#39;x&#39;.</span></a>
 <a class="sourceLine" id="cb94-8" data-line-number="8"><span class="co">#&gt;  NULL</span></a></code></pre></div>
 <p>A tibble’s insistence on returning a data frame from <code>[</code> can cause problems with legacy code, which often uses <code>df[, &quot;col&quot;]</code> to extract a single column. To fix this, use <code>df[[&quot;col&quot;]]</code> instead; this is more expressive (since <code>[[</code> always extracts a single element) and works with both data frames and tibbles.</p>
+<!-- GVW: confused: do I use `df[["col"]]` on tibbles or on dataframes?  The use of the name `df` suggests dataframe: perhaps instead of `df1` and `df2`, use `df` and `tbl` (or something else that suggests their nature). -->
 </div>
 <div id="df-test-coerce" class="section level3">
 <h3><span class="header-section-number">3.6.5</span> Testing and coercing</h3>
@@ -1649,6 +1669,7 @@ exist.</p></li>
 </p>
 <p>Since a data frame is a list of vectors, it is possible for a data frame to have a column that is a list. This is very useful because a list can contain any other object, which means that you can put any object in a data frame. This allows you to keep related objects together in a row, no matter how complex the individual objects are. You can see an application of this in the “Many Models” chapter of “R for Data Science”, <a href="http://r4ds.had.co.nz/many-models.html" class="uri">http://r4ds.had.co.nz/many-models.html</a>.</p>
 <p>List-columns are allowed in data frames but you have to do a little extra work, either adding the list-column after creation, or wrapping the list in <code>I()</code>.</p>
+<!-- GVW: what does `I` stand for? -->
 <div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" data-line-number="1">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb97-2" data-line-number="2">df<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>)</a>
 <a class="sourceLine" id="cb97-3" data-line-number="3"></a>
@@ -1737,6 +1758,7 @@ value requires some computation (see Section <a href="functions.html#missing-arg
 more on this idea). Contrast this with <code>NA</code> which is used to indicate that
 an <em>element</em> of a vector is absent.</p></li>
 </ul>
+<!-- GVW: I don't think the footnote above adds anything to the discussion. -->
 <p>If you’re familiar with SQL, you know about relational <code>NULL</code> and might expect it to be the same as R’s. However, the database <code>NULL</code> is actually equivalent to <code>NA</code>.</p>
 </div>
 <div id="data-structure-answers" class="section level2">
@@ -1812,7 +1834,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Vectors.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

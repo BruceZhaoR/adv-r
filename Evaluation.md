@@ -31,13 +31,6 @@ As well as the ideas in the previous two chapters, environments play a very impo
 ```r
 library(rlang)
 library(purrr)
-#> 
-#> Attaching package: 'purrr'
-#> The following objects are masked from 'package:rlang':
-#> 
-#>     %@%, %||%, as_function, flatten, flatten_chr, flatten_dbl,
-#>     flatten_int, flatten_lgl, invoke, list_along, modify, prepend,
-#>     rep_along, splice
 ```
 
 ## Evaluation basics {#eval}
@@ -355,7 +348,7 @@ There are three ways to create quosures:
     new_quosure(expr(x + y), env(x = 1, y = 10))
     #> <quosure>
     #> expr: ^x + y
-    #> env:  0x7020488
+    #> env:  0x5a96bf8
     ```
 
 ### Evaluating
@@ -436,7 +429,7 @@ qs
 #> $f
 #> <quosure>
 #> expr: ^x
-#> env:  0x577ef68
+#> env:  0x680dcf8
 ```
 
 That means that when you evaluate them, you get the correct results:
@@ -515,19 +508,19 @@ An early version of tidy evaluation used formulas instead of quosures, as an att
     q1
     #> <quosure>
     #> expr: ^x
-    #> env:  0x6e741a0
+    #> env:  0x588fc78
     
     q2 <- new_quosure(expr(x + !!q1), env(x = 10))
     q2
     #> <quosure>
     #> expr: ^x + (^x)
-    #> env:  0x704aa60
+    #> env:  0x5a2d7b0
     
     q3 <- new_quosure(expr(x + !!q2), env(x = 100))
     q3
     #> <quosure>
     #> expr: ^x + (^x + (^x))
-    #> env:  0x7309c90
+    #> env:  0x5319ed8
     ```
 
 1.  Write an `enenv()` function that captures the environment associated
@@ -666,10 +659,10 @@ A more complicated situation is `base::transform()` which allows you to add new 
 ```r
 df <- data.frame(x = c(2, 3, 1), y = runif(3))
 transform(df, x = -x, y2 = 2 * y)
-#>    x     y   y2
-#> 1 -2 0.773 1.55
-#> 2 -3 0.875 1.75
-#> 3 -1 0.175 0.35
+#>    x      y    y2
+#> 1 -2 0.0808 0.162
+#> 2 -3 0.8343 1.669
+#> 3 -1 0.6008 1.202
 ```
 
 Implementing `transform2()` is again quite straightforward. We capture the unevalated `...`  with `enquos(...)`, and then evaluate each expression using a for loop. Real code would need to do more error checking, ensure that each input is named, and evaluates to a vector the same length as `data`.
@@ -690,10 +683,10 @@ transform2 <- function(.data, ..., .na.last = TRUE) {
 }
 
 transform2(df, x2 = x * 2, y = -y)
-#>   x      y x2
-#> 1 2 -0.773  4
-#> 2 3 -0.875  6
-#> 3 1 -0.175  2
+#>   x       y x2
+#> 1 2 -0.0808  4
+#> 2 3 -0.8343  6
+#> 3 1 -0.6008  2
 ```
 
 Note that I named the first argument `.data`. This avoids problems if the user tried to create a variable called `data`; similar to the reasoning that leads to `map()` having `.x` and `.f` arguments (Section \@ref(argument-names)).
@@ -814,10 +807,10 @@ df <- data.frame(x = c(1, 1, 1, 2, 2), y = 1:5)
 bootset(df, x == 1)
 #>     x y
 #> 1   1 1
-#> 2   1 2
-#> 3   1 3
 #> 1.1 1 1
+#> 3   1 3
 #> 3.1 1 3
+#> 2   1 2
 ```
 
 `bootset()` doesn't quote any arguments so `cond` is evaluated normally (not in a data mask), and we get an error when it tries to find a binding for  `x`. To fix this problem we need to quote `cond`, and then unquote it when we pass it on ot `subset2()`:
@@ -833,11 +826,11 @@ bootset <- function(df, cond, n = nrow(df)) {
 
 bootset(df, x == 1)
 #>     x y
-#> 1   1 1
-#> 2   1 2
 #> 3   1 3
-#> 1.1 1 1
 #> 3.1 1 3
+#> 3.2 1 3
+#> 1   1 1
+#> 1.1 1 1
 ```
 
 This is a very common pattern; whenever you call a quoting function with arguments from the user, you need to quote them yourself and then unquote.
@@ -1244,10 +1237,10 @@ There are two basic ways to overcome this challenge:
     }
     boot_lm1(y ~ x, data = df)$call
     #> lm(y ~ x, data = <data.frame>)
-    #> lm(formula = y ~ x, data = list(x = c(2L, 6L, 5L, 8L, 3L, 8L, 
-    #> 1L, 4L, 9L, 3L), y = c(13.0650248953592, 22.4779874852545, 18.1369885079317, 
-    #> 29.5429963426611, 12.3690105979178, 29.5429963426611, 8.62898204203601, 
-    #> 17.5124269498518, 31.0859251727401, 12.3690105979178)))
+    #> lm(formula = y ~ x, data = list(x = c(7L, 1L, 8L, 8L, 10L, 10L, 
+    #> 4L, 5L, 4L, 2L), y = c(26.6480432853289, 7.53337955186315, 29.0758039597908, 
+    #> 29.0758039597908, 34.2464592942242, 34.2464592942242, 18.9694248434104, 
+    #> 20.4631747068887, 18.9694248434104, 10.1428095974415)))
     ```
     
 1.  Alternatively you can create a new environment that inherits from the 
@@ -1273,7 +1266,7 @@ There are two basic ways to overcome this challenge:
     #> 
     #> Coefficients:
     #> (Intercept)            x  
-    #>        5.19         2.92
+    #>        4.14         3.12
     ```
     
     This is more work, but gives the cleanest specification.
@@ -1306,7 +1299,7 @@ There are two basic ways to overcome this challenge:
     #> 
     #> Coefficients:
     #> (Intercept)            x  
-    #>        5.87         2.79
+    #>        5.09         2.94
     ```
 
 

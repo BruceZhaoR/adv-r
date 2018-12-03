@@ -59,7 +59,7 @@ So we'll start by introducing some conventions for drawing ASTs, starting with a
 
 *   By "hand" (with omnigraffle):
 
-    <img src="diagrams/expressions/simple.png" width="283" style="display: block; margin: auto;" />
+    <img src="diagrams/expressions/simple.png" width="189" style="display: block; margin: auto;" />
 
 *   With `lobstr::ast()`[^more-complex]:
 
@@ -149,7 +149,7 @@ And they both have this AST[^ast-infix]:
 
 [^ast-infix]: The names of non-prefix functions are non-syntactic so I show them with `` ` ``, as in Section \@ref(non-syntactic).
 
-<img src="diagrams/expressions/prefix.png" width="283" style="display: block; margin: auto;" />
+<img src="diagrams/expressions/prefix.png" width="217" style="display: block; margin: auto;" />
 
 ```r
 lobstr::ast(y <- x * 10)
@@ -556,7 +556,7 @@ Infix functions introduce ambiguity in a way that prefix functions do not[^ambig
 
 [^ambig]: This ambiguity dooes not arise without infix operators, which can be considered an advantage of purely prefix and postfix languages. It's interesting to compare a simple arithmetic operation in Lisp (prefix) and Forth (postfix). In Lisp you'd write `(* (+ 1 2) 3))`; this avoids ambiguity by requiring parentheses everywhere. In Forth, you'd write `1 2 + 3 *`; this doesn't require any parentheses, but does require more thought when reading.
 
-<img src="diagrams/expressions/ambig-order.png" width="520" style="display: block; margin: auto;" />
+<img src="diagrams/expressions/ambig-order.png" width="373" style="display: block; margin: auto;" />
 
 Programming languages use conventions called __operator precedence__ to resolve this ambiguity. We can use `ast()` to see what R does: 
 

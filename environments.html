@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -959,9 +959,11 @@ to ask what the first element of an environment is).</p></li>
 <div class="base">
 <p>Use <code>new.env()</code> to create a new environment. Ignore the <code>hash</code> and <code>size</code> parameters; they are not needed. Note that you cannot simultaneously create and define values; use <code>$&lt;-</code>, as shown below.</p>
 </div>
+<!-- GVW: repeating the "i.e." from above -->
 <p>The job of an environment is to associate, or <strong>bind</strong>, a set of names to a set of values. You can think of an environment as a bag of names, with no implied order (i.e. it doesn’t make sense to ask which is the first element in an environment). For that reason, we’ll draw the environment as so:</p>
 <p><img src="diagrams/environments/bindings.png" width="293" style="display: block; margin: auto;" /></p>
 <p>As discussed in <a href="names-values.html#env-modify">names and values</a>, environments have reference semantics: unlike most R objects, when you modify them, you modify them in place, and don’t create a copy. One important implication is that environments can contain themselves. This means that environments go one step further in their level of recursion than lists: an environment can contain any object, including itself!</p>
+<!-- GVW: is it R's copy-on-modify semantics that prevents lists from containing lists? -->
 <div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb250-1" data-line-number="1">e1<span class="op">$</span>d &lt;-<span class="st"> </span>e1</a></code></pre></div>
 <p><img src="diagrams/environments/loop.png" width="293" style="display: block; margin: auto;" /></p>
 <p>Printing an environment just displays its memory address, which is not terribly useful:</p>
@@ -987,6 +989,7 @@ to ask what the first element of an environment is).</p></li>
 <h3><span class="header-section-number">6.2.2</span> Important environments</h3>
 <p>We’ll talk in detail about special environments in <a href="environments.html#function-envs">Special environments</a>, but for now we need to mention two. The current environment, or <code>current_env()</code> is the environment in which code is currently executing. When you’re experimenting interactively, that’s usually the global environment, or <code>global_env()</code>. The global environment is sometimes called your “workspace”, as it’s where all interactive (i.e. outside of a function) computation takes place.</p>
 <p>Note that to compare environments, you need to use <code>identical()</code> and not <code>==</code>:</p>
+<!-- GVW: why? -->
 <div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb254-1" data-line-number="1"><span class="kw">identical</span>(<span class="kw">global_env</span>(), <span class="kw">current_env</span>())</a>
 <a class="sourceLine" id="cb254-2" data-line-number="2"><span class="co">#&gt; [1] TRUE</span></a>
 <a class="sourceLine" id="cb254-3" data-line-number="3"></a>
@@ -1004,6 +1007,7 @@ You can set the parent environment by supplying an unnamed argument to <code>env
 <div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb255-1" data-line-number="1">e2a &lt;-<span class="st"> </span><span class="kw">env</span>(<span class="dt">d =</span> <span class="dv">4</span>, <span class="dt">e =</span> <span class="dv">5</span>)</a>
 <a class="sourceLine" id="cb255-2" data-line-number="2">e2b &lt;-<span class="st"> </span><span class="kw">env</span>(e2a, <span class="dt">a =</span> <span class="dv">1</span>, <span class="dt">b =</span> <span class="dv">2</span>, <span class="dt">c =</span> <span class="dv">3</span>)</a></code></pre></div>
 <p><img src="diagrams/environments/parents.png" width="359" style="display: block; margin: auto;" /></p>
+<!-- GVW: second sentence below is first mention of "empty environment" - reorder or forward ref? -->
 <p>We use the metaphor of a family to name environments relative to one another. The grandparent of an environment is the parent’s parent, and the ancestors include all parent environments up to the empty environment. To save space, I typically won’t draw all the ancestors; just remember whenever you see a pale blue circle, there’s a parent environment somewhere.</p>
 <p>You can find the parent of an environment with <code>env_parent()</code>:</p>
 <div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb256-1" data-line-number="1"><span class="kw">env_parent</span>(e2b)</a>
@@ -1026,6 +1030,7 @@ Only one environment doesn’t have a parent: the <strong>empty</strong> environ
 <a class="sourceLine" id="cb259-5" data-line-number="5"><span class="kw">env_parents</span>(e2d)</a>
 <a class="sourceLine" id="cb259-6" data-line-number="6"><span class="co">#&gt; [[1]]   &lt;env: 0x55816b0&gt;</span></a>
 <a class="sourceLine" id="cb259-7" data-line-number="7"><span class="co">#&gt; [[2]] $ &lt;env: empty&gt;</span></a></code></pre></div>
+<!-- GVW: so the empty environment *isn't* the parent of the global environment? -->
 <p>By default, <code>env_parents()</code> continues until it hits either the global environment or the empty environment. You can control this behaviour with the <code>last</code> environment.</p>
 <div class="base">
 <p>Use <code>parent.env()</code> to find the parent of an environment. No base function returns all ancestors.</p>
@@ -1033,6 +1038,7 @@ Only one environment doesn’t have a parent: the <strong>empty</strong> environ
 </div>
 <div id="super-assigment--" class="section level3">
 <h3><span class="header-section-number">6.2.4</span> Super assigment, <code>&lt;&lt;-</code></h3>
+<!-- GVW: "found by in" below... -->
 <p>The ancestors of an environment have an important relationship to <code>&lt;&lt;-</code>. Regular assignment, <code>&lt;-</code>, always creates a variable in the current environment. Super assignment, <code>&lt;&lt;-</code>, never creates a variable in the current environment, but instead modifies an existing variable found in a parent environment.</p>
 <div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb260-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="dv">0</span></a>
 <a class="sourceLine" id="cb260-2" data-line-number="2">f &lt;-<span class="st"> </span><span class="cf">function</span>() {</a>
@@ -1086,6 +1092,7 @@ Only one environment doesn’t have a parent: the <strong>empty</strong> environ
 <a class="sourceLine" id="cb267-2" data-line-number="2"><span class="co">#&gt;    a </span></a>
 <a class="sourceLine" id="cb267-3" data-line-number="3"><span class="co">#&gt; TRUE</span></a></code></pre></div>
 <p>Unlike lists, setting an element to <code>NULL</code> does not remove it. Instead, use <code>env_unbind()</code>:</p>
+<!-- GVW: maybe worth pointing out that this is because you do sometimes want a name that refers to NULL? -->
 <div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb268-1" data-line-number="1">e3<span class="op">$</span>a &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
 <a class="sourceLine" id="cb268-2" data-line-number="2"><span class="kw">env_has</span>(e3, <span class="st">&quot;a&quot;</span>)</a>
 <a class="sourceLine" id="cb268-3" data-line-number="3"><span class="co">#&gt;    a </span></a>
@@ -1127,7 +1134,8 @@ promises, so behave in the same way as function arguments.</p>
 <a class="sourceLine" id="cb269-13" data-line-number="13"><span class="co">#&gt;       0       0       0</span></a></code></pre></div>
 <p>Delayed bindings are used to implement <code>autoload()</code>, which makes R behave
 as if the package data is in memory, even though it’s only loaded from
-disk when you ask for it.</p></li>
+disk when you ask for it.</p>
+<!-- GVW: is `autoload` just one example, or is it the only major use? --></li>
 <li><p><code>env_bind_fns()</code> creates <strong>active bindings</strong> which are re-computed every
 time they’re accessed:</p>
 <div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb270-1" data-line-number="1"><span class="kw">env_bind_fns</span>(<span class="kw">current_env</span>(), <span class="dt">z1 =</span> <span class="cf">function</span>(val) <span class="kw">runif</span>(<span class="dv">1</span>))</a>
@@ -1154,6 +1162,7 @@ the variable is set:</p>
 <a class="sourceLine" id="cb271-11" data-line-number="11">z2 &lt;-<span class="st"> </span><span class="dv">3</span></a>
 <a class="sourceLine" id="cb271-12" data-line-number="12"><span class="co">#&gt; Error: Don&#39;t touch z2!</span></a></code></pre></div></li>
 </ul>
+<!-- GVW: example of where this is used in practice to correspond with the `autoload` example? -->
 <div class="base">
 <p>See <code>?delayedAssign()</code> and <code>?makeActiveBinding()</code>.</p>
 </div>
@@ -1196,6 +1205,7 @@ might you prefer it?</p>
 <p></p>
 <p>If you want to operate on every ancestor of an environment, it’s often convenient to write a recursive function. This section shows you how, applying your new knowledge of environments to write a function that given a name, finds the environment <code>where()</code> that name is defined, using R’s regular scoping rules.</p>
 <p>The definition of <code>where()</code> is straightforward. It has two arguments: the name to look for (as a string), and the environment in which to start the search. (We’ll learn why <code>caller_env()</code> is a good default in <a href="#calling-environments">calling environments</a>.)</p>
+<!-- GVW: am I correct that this avoids the problem Python has using function calls to create default values for parameters because the call to `caller_env` is delayed until `env` is used? -->
 <div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb273-1" data-line-number="1">where &lt;-<span class="st"> </span><span class="cf">function</span>(name, <span class="dt">env =</span> <span class="kw">caller_env</span>()) {</a>
 <a class="sourceLine" id="cb273-2" data-line-number="2">  <span class="cf">if</span> (<span class="kw">identical</span>(env, <span class="kw">empty_env</span>())) {</a>
 <a class="sourceLine" id="cb273-3" data-line-number="3">    <span class="co"># Base case</span></a>
@@ -1252,6 +1262,7 @@ and throws an error.</p></li>
 <div class="sidebar">
 <h3 id="iteration-vs-recursion" class="unnumbered">Iteration vs recursion</h3>
 <p>It’s possible to use a loop instead of recursion. I think it’s harder to understand than the recursive version, but I include it because you might find it easier to see what’s happening if you haven’t written many recursive functions.</p>
+<!-- GVW: shouldn't the success case branch below return `env`? -->
 <div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb277-1" data-line-number="1">f2 &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">env =</span> <span class="kw">caller_env</span>()) {</a>
 <a class="sourceLine" id="cb277-2" data-line-number="2">  <span class="cf">while</span> (<span class="op">!</span><span class="kw">identical</span>(env, <span class="kw">empty_env</span>())) {</a>
 <a class="sourceLine" id="cb277-3" data-line-number="3">    <span class="cf">if</span> (success) {</a>
@@ -1288,6 +1299,7 @@ the parents or only looks in one environment.</p></li>
 <h3><span class="header-section-number">6.4.1</span> Package environments and the search path</h3>
 <p> </p>
 <p>Each package attached by <code>library()</code> or <code>require()</code> becomes one of the parents of the global environment. The immediate parent of the global environment is the last package you attached<a href="#fn28" class="footnote-ref" id="fnref28"><sup>28</sup></a>:</p>
+<!-- GVW: I'd move the diagram 'diagrams/environments/search-path.png' to here -->
 <div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb278-1" data-line-number="1"><span class="kw">env_parent</span>(<span class="kw">global_env</span>())</a>
 <a class="sourceLine" id="cb278-2" data-line-number="2"><span class="co">#&gt; &lt;environment: package:rlang&gt;</span></a>
 <a class="sourceLine" id="cb278-3" data-line-number="3"><span class="co">#&gt; attr(,&quot;name&quot;)</span></a>
@@ -1342,6 +1354,7 @@ with <code>base_env()</code>.</p></li>
 <div class="base">
 <p>Use <code>environment(f)</code> to access the environment of function <code>f</code>.</p>
 </div>
+<!-- GVW: mixing singular and plural in the sentence below. -->
 <p>In diagrams, I’ll depict functions as rectangles with a rounded end that binds an environment.</p>
 <p><img src="diagrams/environments/binding.png" width="208" style="display: block; margin: auto;" /></p>
 <p>In this case, <code>f()</code> binds the environment that binds the name <code>f</code> to the function. But that’s not always the case: in the following example <code>g</code> is bound in a new environment <code>e</code>, but <code>g()</code> binds the global environment. The distinction between binding and being bound by is subtle but important; the difference is how we find <code>g</code> vs. how <code>g</code> finds its variables.</p>
@@ -1421,6 +1434,7 @@ to how S3 method dispatch works.</p></li>
 <a class="sourceLine" id="cb286-5" data-line-number="5">}</a>
 <a class="sourceLine" id="cb286-6" data-line-number="6">y &lt;-<span class="st"> </span><span class="kw">h</span>(<span class="dv">1</span>) <span class="co"># 3.</span></a></code></pre></div>
 <p><img src="diagrams/environments/execution.png" width="302" style="display: block; margin: auto;" /></p>
+<!-- GVW: "garbage collected" rather than "GC'd" -->
 <p>An execution environment is usually ephemeral; once the function has completed, the environment will be GC’d. There are several ways to make it stay around for longer. The first is to explicitly return it:</p>
 <div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb287-1" data-line-number="1">h2 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
 <a class="sourceLine" id="cb287-2" data-line-number="2">  a &lt;-<span class="st"> </span>x <span class="op">*</span><span class="st"> </span><span class="dv">2</span></a>
@@ -1535,6 +1549,7 @@ it was defined in.</p></li>
 <a class="sourceLine" id="cb294-12" data-line-number="12"><span class="co">#&gt;     └─h(x = 3)</span></a>
 <a class="sourceLine" id="cb294-13" data-line-number="13"><span class="co">#&gt;       └─lobstr::cst()</span></a></code></pre></div>
 <p><code>x</code> is lazily evaluated so this tree gets two branches. In the first branch <code>a()</code> calls <code>b()</code>, then <code>b()</code> calls <code>c()</code>. The second branch starts when <code>c()</code> evaluates its argument <code>x</code>. This argument is evaluated in a new branch because the environment in which it is evaluated is the global environment, not the environment of <code>c()</code>.</p>
+<!-- GVW: took me a couple of tries to understand this example, but I think that's the material, not the explanation. -->
 </div>
 <div id="frames" class="section level3">
 <h3><span class="header-section-number">6.5.3</span> Frames</h3>
@@ -1569,10 +1584,13 @@ in which it was called. It should return the same results as <code>ls()</code>.<
 <h2><span class="header-section-number">6.6</span> As data structures</h2>
 <p>As well as powering scoping, environments are also useful data structures in their own right because they have reference semantics. There are three common problems that they can help solve:</p>
 <ul>
-<li><p><strong>Avoiding copies of large data</strong>. Since environments have reference semantics,
+<li><strong>Avoiding copies of large data</strong>. Since environments have reference semantics,
 you’ll never accidentally create a copy. This makes it a useful vessel for
 large objects. Bare environments are not that pleasant to work with;
-I recommend using R6 objects instead. Learn more in <a href="r6.html#r6">R6</a>.</p></li>
+I recommend using R6 objects instead. Learn more in <a href="r6.html#r6">R6</a>.</li>
+</ul>
+<!-- GVW: previous point feels like you're telling me to use environments, but not to. -->
+<ul>
 <li><p><strong>Managing state within a package</strong>. Explicit environments are useful in
 packages because they allow you to maintain state across function calls.
 Normally, objects in a package are locked, so you can’t modify them
@@ -1655,7 +1673,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Environments.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

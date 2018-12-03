@@ -54,10 +54,11 @@ library(purrr)
 library(memoise)
 ```
 
+<!--
 ### In other languages
 
 Function operators are used extensively in FP languages like Haskell, and commonly in Lisp, Scheme and Clojure. They are also an important part of modern JavaScript programming, like in the [underscore.js](http://underscorejs.org/) library. They are particularly common in CoffeeScript because its syntax for anonymous functions is so concise. In stack-based languages like Forth and Factor, function operators are used almost exclusively because it's rare to refer to variables by name. Python's decorators are just function operators by a [different name](http://stackoverflow.com/questions/739654/). In Java, they are very rare because it's difficult to manipulate functions (although possible if you wrap them up in strategy-type objects). They are also rare in C++ because, while it's possible to create objects that work like functions ("functors") by overloading the `()` operator, modifying these objects with other functions is not a common programming technique. That said, C++ 11 includes partial application (`std::bind`) as part of the standard library.
-
+-->
 
 ## Existing FOs
 
@@ -104,8 +105,8 @@ safe_sum <- safely(sum)
 safe_sum
 #> function (...) 
 #> capture_error(.f(...), otherwise, quiet)
-#> <bytecode: 0x1de14a8>
-#> <environment: 0x1de1940>
+#> <bytecode: 0x4697048>
+#> <environment: 0x4696bb0>
 ```
 
 Like all function operators, `safely()` takes a function and returns a wrapped function which we can call as usual:
@@ -220,6 +221,7 @@ I think this is a great example of the power of combining functionals and functi
 purrr comes with three other function operators in a similar vein:
 
 * `possibly()`: returns a default value when there's an error.
+<!-- GVW: does it somehow signal where/when it's done this? if not, warn readers of that? -->
 
 * `quietly()`: turns output, messages, and warning side-effects into
   `output`, `message`, and `warning` components of the output.
@@ -247,12 +249,12 @@ slow_function <- function(x) {
 system.time(print(slow_function(1)))
 #> [1] 0.808
 #>    user  system elapsed 
-#>   0.001   0.000   1.002
+#>       0       0       1
 
 system.time(print(slow_function(1)))
 #> [1] 8.34
 #>    user  system elapsed 
-#>   0.004   0.000   1.006
+#>   0.003   0.000   1.003
 ```
 
 When we memoise this function, it's slow when we call it with new arguments. But when we call it with arguments that it's seen before it's instanteous: it retrieves the previous value of the computation.
@@ -268,7 +270,7 @@ system.time(print(fast_function(1)))
 system.time(print(fast_function(1)))
 #> [1] 6.01
 #>    user  system elapsed 
-#>   0.043   0.000   0.042
+#>   0.037   0.000   0.037
 ```
 
 A relatively realistic use of memoisation is computing the Fibonacci series. The Fibonacci series is defined recursively: the first two values are defined by convention, $f(0) = 0$, $f(n) = 1$, and then $f(n) = f(n - 1) + f(n - 2)$ (for any positive integer). A naive version is slow because, for example, `fib(10)` computes `fib(9)` and `fib(8)`, and `fib(9)` computes `fib(8)` and `fib(7)`, and so on. 
@@ -281,10 +283,10 @@ fib <- function(n) {
 }
 system.time(fib(23))
 #>    user  system elapsed 
-#>   0.084   0.008   0.092
+#>   0.083   0.000   0.083
 system.time(fib(24))
 #>    user  system elapsed 
-#>   0.123   0.012   0.135
+#>   0.115   0.000   0.115
 ```
 
 Memoising `fib()` makes the implementation much faster because each value is computed only once:
@@ -297,7 +299,7 @@ fib2 <- memoise::memoise(function(n) {
 })
 system.time(fib2(23))
 #>    user  system elapsed 
-#>   0.063   0.000   0.063
+#>   0.031   0.000   0.032
 ```
 
 And future calls can rely on previous computations:
@@ -306,7 +308,7 @@ And future calls can rely on previous computations:
 ```r
 system.time(fib2(24))
 #>    user  system elapsed 
-#>   0.002   0.000   0.001
+#>   0.001   0.000   0.001
 ```
 
 This is an example of __dynamic programming__, where a complex problem can be broken down into many overlapping subproblems, and remembering the results of a subproblem considerably improves performance. 
@@ -376,7 +378,7 @@ delay_by <- function(f, amount) {
 }
 system.time(runif(100))
 #>    user  system elapsed 
-#>       0       0       0
+#>   0.000   0.000   0.001
 system.time(delay_by(runif, 0.1)(100))
 #>    user  system elapsed 
 #>     0.0     0.0     0.1

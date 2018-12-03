@@ -254,6 +254,7 @@ map_dbl(x, list("y", 1))
 # You'll get an error if a component doesn't exist:
 map_chr(x, "z")
 #> Error: Result 3 is not a length 1 atomic vector
+
 # Unless you supply a .default value
 map_chr(x, "z", .default = NA)
 #> [1] "a" "b" NA
@@ -324,6 +325,7 @@ simple_map(mtcars, boostrap_summary, f = mean)
 #>   'trim' must be numeric of length one
 ```
 
+<!-- GVW: a diagram here showing how the various f's and x's are matched to one another in the example above would be very helpful -->
 
 The error is a little bewildering until you remember that the call to `simple_map()` is equivalent to `simple_map(x = mtcars, f = mean, bootstrap_summary)` because named matching beats positional matching. 
 
@@ -366,6 +368,8 @@ x <- rcauchy(1000)
     map_dbl(trims, ~ mean(x, trim = .x))
     #> [1] -0.3500  0.0434  0.0354  0.0502
     ```
+
+<!-- GVW: use of `x` and `.x` here is confusing -->
 
 *   Sometimes, if you want to be (too) clever, you can take advantage of R's 
     flexible argument matching rules (as described in Section 
@@ -775,7 +779,7 @@ imap_chr(x, ~ paste0("The highest value of ", .y, " is ", max(.x)))
 
 Since we have `map()` and `map2()`, you might expect `map3()`, `map4()`, `map5()`, ... But where would you stop? Instead of generalising `map2()` to an arbitrary number of arguments, purrr takes a slightly different tack with `pmap()`: you supply it a single list, which contains any number of arguments. In most cases, that will be a list of equal-length vectors, i.e. something very similar to a data frame. In diagrams, I'll emphasise that relationship by drawing the input similar to a data frame.
 
-<img src="diagrams/functionals/pmap.png" width="350" style="display: block; margin: auto;" />
+<img src="diagrams/functionals/pmap.png" width="354" style="display: block; margin: auto;" />
 
 There's a simple equivalence between `map2()` and `pmap()`: `map2(x, y, f)` is the same as `pmap(list(x, y), f)`. The `pmap()` equivalent to the `map2_dbl(xs, ws, weighted.mean)` used above is:
 
@@ -1039,11 +1043,7 @@ reduce("a", `+`, .init = 0)
 #>   non-numeric argument to binary operator
 ```
 
-<<<<<<< HEAD
-If you want to get algebraic about it, 0 is called the __identity__ of the numbers under the operation of addition: if you add a 0 to any number, you get the same number back. R applies the same principle to determine what a summary function with a zero length input should return:
-=======
 If you want to get algebraic about it, 0 is called the __identity__ of the real numbers under the operation of addition: if you add a 0 to any number, you get the same number back. R applies the same principle to determine what a summary function with a zero length input should return:
->>>>>>> hadley
 
 
 ```r
@@ -1070,7 +1070,9 @@ Note that the length of the second argument varies based on whether or not `.ini
 
 ### Map-reduce
 
-You might have heard of map-reduce, the idea that powers technology like Hadoop. Now you can see how simple and powerful the underlying idea is: all map-reduce is a map combined with a reduce. The special idea for large data is that the data is spread over multiple computers. Each computer performs the map on the data that it has, then it sends the result to back to a coordinator which _reduces_ the individual results back to a single result.
+You might have heard of map-reduce, the idea that powers technology like Hadoop. Now you can see how simple and powerful the underlying idea is: all map-reduce is a map combined with a reduce. The difference for large data is that the data is spread over multiple computers. Each computer performs the map on the data that it has, then it sends the result to back to a coordinator which _reduces_ the individual results back to a single result.
+
+<!-- GVW: provide a couple of examples here of how complex calculations can be decomposed into map followed by reduce -->
 
 ## Predicate functionals
 \index{predicates} 
@@ -1083,10 +1085,14 @@ A __predicate__ is a function that returns a single `TRUE` or `FALSE`, like `is.
 A __predicate functional__ applies a predicate to each element of a vector.  purrr proivdes six useful functions which come in three pairs:
 
 * `some(.x, .p)` returns `TRUE` if _any_ element matches;
-  `every(.x,, .p)` returns `TRUE` if _all_ elements match.
+  `every(.x, .p)` returns `TRUE` if _all_ elements match.
+
+<!-- GVW: explain in terms of map followed by any() or all()? -->
 
 * `detect(.x, .p)` returns the _value_ of the first match;
   `detect_index(.x, .p)` returns the _location_ of the first match.
+
+<!-- GVW: are there variants that start the search after a certain point? -->
   
 * `keep(.x, .p)` _keeps_ all matching elements;
   `discard(.x, .p)` _drops_ all matching elements.
@@ -1213,7 +1219,9 @@ apply(a, 2, mean)
 #> [1]  3  8 13 18
 ```
 
-You can specify multiple dimensions to `MARGINS`, which is useful for high-d arrays:
+<!-- HW: recreate diagrams from plyr paper -->
+
+You can specify multiple dimensions to `MARGIN`, which is useful for high-d arrays:
 
 
 ```r
@@ -1243,6 +1251,7 @@ There are two caveats to using `apply()`:
     a1 <- apply(a, 1, identity)
     identical(a, a1)
     #> [1] FALSE
+    
     a2 <- apply(a, 2, identity)
     identical(a, a2)
     #> [1] FALSE

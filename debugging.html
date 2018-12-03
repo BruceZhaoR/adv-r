@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -983,21 +983,21 @@ an arbitrary location in the code.</p></li>
 <div id="determining-the-sequence-of-calls" class="section level3">
 <h3><span class="header-section-number">21.3.1</span> Determining the sequence of calls</h3>
 <p>The first tool is the <strong>call stack</strong>, the sequence of calls that lead up to an error. Here’s a simple example: you can see that <code>f()</code> calls <code>g()</code> calls <code>h()</code> calls <code>i()</code> which adds together a number and a string creating an error:  </p>
-<div class="sourceCode" id="cb933"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb933-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>(a) <span class="kw">g</span>(a)</a>
-<a class="sourceLine" id="cb933-2" data-line-number="2">g &lt;-<span class="st"> </span><span class="cf">function</span>(b) <span class="kw">h</span>(b)</a>
-<a class="sourceLine" id="cb933-3" data-line-number="3">h &lt;-<span class="st"> </span><span class="cf">function</span>(c) <span class="kw">i</span>(c)</a>
-<a class="sourceLine" id="cb933-4" data-line-number="4">i &lt;-<span class="st"> </span><span class="cf">function</span>(d) <span class="st">&quot;a&quot;</span> <span class="op">+</span><span class="st"> </span>d</a>
-<a class="sourceLine" id="cb933-5" data-line-number="5"><span class="kw">f</span>(<span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb932"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb932-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>(a) <span class="kw">g</span>(a)</a>
+<a class="sourceLine" id="cb932-2" data-line-number="2">g &lt;-<span class="st"> </span><span class="cf">function</span>(b) <span class="kw">h</span>(b)</a>
+<a class="sourceLine" id="cb932-3" data-line-number="3">h &lt;-<span class="st"> </span><span class="cf">function</span>(c) <span class="kw">i</span>(c)</a>
+<a class="sourceLine" id="cb932-4" data-line-number="4">i &lt;-<span class="st"> </span><span class="cf">function</span>(d) <span class="st">&quot;a&quot;</span> <span class="op">+</span><span class="st"> </span>d</a>
+<a class="sourceLine" id="cb932-5" data-line-number="5"><span class="kw">f</span>(<span class="dv">10</span>)</a></code></pre></div>
 <p>When we run this code in RStudio we see:</p>
 <p><img src="screenshots/traceback-hidden.png" width="70%" style="display: block; margin: auto;" /></p>
 <p>Two options appear to the right of the error message: “Show Traceback” and “Rerun with Debug”. If you click “Show traceback” you see:</p>
 <p><img src="screenshots/traceback-shown.png" width="70%" style="display: block; margin: auto;" /></p>
 <p>If you’re not using RStudio, you can use <code>traceback()</code> to get the same information:</p>
-<div class="sourceCode" id="cb934"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb934-1" data-line-number="1"><span class="kw">traceback</span>()</a>
-<a class="sourceLine" id="cb934-2" data-line-number="2"><span class="co"># 4: i(c) at exceptions-example.R#3</span></a>
-<a class="sourceLine" id="cb934-3" data-line-number="3"><span class="co"># 3: h(b) at exceptions-example.R#2</span></a>
-<a class="sourceLine" id="cb934-4" data-line-number="4"><span class="co"># 2: g(a) at exceptions-example.R#1</span></a>
-<a class="sourceLine" id="cb934-5" data-line-number="5"><span class="co"># 1: f(10)</span></a></code></pre></div>
+<div class="sourceCode" id="cb933"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb933-1" data-line-number="1"><span class="kw">traceback</span>()</a>
+<a class="sourceLine" id="cb933-2" data-line-number="2"><span class="co"># 4: i(c) at exceptions-example.R#3</span></a>
+<a class="sourceLine" id="cb933-3" data-line-number="3"><span class="co"># 3: h(b) at exceptions-example.R#2</span></a>
+<a class="sourceLine" id="cb933-4" data-line-number="4"><span class="co"># 2: g(a) at exceptions-example.R#1</span></a>
+<a class="sourceLine" id="cb933-5" data-line-number="5"><span class="co"># 1: f(10)</span></a></code></pre></div>
 <p>Read the call stack from bottom to top: the initial call is <code>f()</code>, which calls <code>g()</code>, then <code>h()</code>, then <code>i()</code>, which triggers the error. If you’re calling code that you <code>source()</code>d into R, the traceback will also display the location of the function, in the form <code>filename.r#linenumber</code>. These are clickable in RStudio, and will take you to the corresponding line of code in the editor.</p>
 <p>Sometimes this is enough information to let you track down the error and fix it. However, it’s usually not. <code>traceback()</code> shows you where the error occurred, but not why. The next useful tool is the interactive debugger, which allows you to pause execution of a function and interactively explore its state.</p>
 </div>
@@ -1028,20 +1028,20 @@ accidentally, so I turn it off using <code>options(browserNLdisabled = TRUE)</co
 <code>traceback</code>).</p></li>
 </ul>
 <p>To enter this style of debugging outside of RStudio, you can use the <code>error</code> option which specifies a function to run when an error occurs. The function most similar to RStudio’s debug is <code>browser()</code>: this will start an interactive console in the environment where the error occurred. Use <code>options(error = browser)</code> to turn it on, re-run the previous command, then use <code>options(error = NULL)</code> to return to the default error behaviour. You could automate this with the <code>browseOnce()</code> function as defined below: </p>
-<div class="sourceCode" id="cb935"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb935-1" data-line-number="1">browseOnce &lt;-<span class="st"> </span><span class="cf">function</span>() {</a>
-<a class="sourceLine" id="cb935-2" data-line-number="2">  old &lt;-<span class="st"> </span><span class="kw">getOption</span>(<span class="st">&quot;error&quot;</span>)</a>
-<a class="sourceLine" id="cb935-3" data-line-number="3">  <span class="cf">function</span>() {</a>
-<a class="sourceLine" id="cb935-4" data-line-number="4">    <span class="kw">options</span>(<span class="dt">error =</span> old)</a>
-<a class="sourceLine" id="cb935-5" data-line-number="5">    <span class="kw">browser</span>()</a>
-<a class="sourceLine" id="cb935-6" data-line-number="6">  }</a>
-<a class="sourceLine" id="cb935-7" data-line-number="7">}</a>
-<a class="sourceLine" id="cb935-8" data-line-number="8"><span class="kw">options</span>(<span class="dt">error =</span> <span class="kw">browseOnce</span>())</a>
-<a class="sourceLine" id="cb935-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb935-10" data-line-number="10">f &lt;-<span class="st"> </span><span class="cf">function</span>() <span class="kw">stop</span>(<span class="st">&quot;!&quot;</span>)</a>
-<a class="sourceLine" id="cb935-11" data-line-number="11"><span class="co"># Enters browser</span></a>
-<a class="sourceLine" id="cb935-12" data-line-number="12"><span class="kw">f</span>()</a>
-<a class="sourceLine" id="cb935-13" data-line-number="13"><span class="co"># Runs normally</span></a>
-<a class="sourceLine" id="cb935-14" data-line-number="14"><span class="kw">f</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb934"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb934-1" data-line-number="1">browseOnce &lt;-<span class="st"> </span><span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb934-2" data-line-number="2">  old &lt;-<span class="st"> </span><span class="kw">getOption</span>(<span class="st">&quot;error&quot;</span>)</a>
+<a class="sourceLine" id="cb934-3" data-line-number="3">  <span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb934-4" data-line-number="4">    <span class="kw">options</span>(<span class="dt">error =</span> old)</a>
+<a class="sourceLine" id="cb934-5" data-line-number="5">    <span class="kw">browser</span>()</a>
+<a class="sourceLine" id="cb934-6" data-line-number="6">  }</a>
+<a class="sourceLine" id="cb934-7" data-line-number="7">}</a>
+<a class="sourceLine" id="cb934-8" data-line-number="8"><span class="kw">options</span>(<span class="dt">error =</span> <span class="kw">browseOnce</span>())</a>
+<a class="sourceLine" id="cb934-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb934-10" data-line-number="10">f &lt;-<span class="st"> </span><span class="cf">function</span>() <span class="kw">stop</span>(<span class="st">&quot;!&quot;</span>)</a>
+<a class="sourceLine" id="cb934-11" data-line-number="11"><span class="co"># Enters browser</span></a>
+<a class="sourceLine" id="cb934-12" data-line-number="12"><span class="kw">f</span>()</a>
+<a class="sourceLine" id="cb934-13" data-line-number="13"><span class="co"># Runs normally</span></a>
+<a class="sourceLine" id="cb934-14" data-line-number="14"><span class="kw">f</span>()</a></code></pre></div>
 <p>(You’ll learn more about functions that return functions in <a href="#functional-programming">Functional programming</a>.)</p>
 <p>There are two other useful functions that you can use with the <code>error</code> option:</p>
 <ul>
@@ -1053,18 +1053,18 @@ creates a <code>last.dump.rda</code> file in the current working directory. Then
 in a later interactive R session, you load that file, and use <code>debugger()</code>
 to enter an interactive debugger with the same interface as <code>recover()</code>.
 This allows interactive debugging of batch code. </p>
-<div class="sourceCode" id="cb936"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb936-1" data-line-number="1"><span class="co"># In batch R process ----</span></a>
-<a class="sourceLine" id="cb936-2" data-line-number="2">dump_and_quit &lt;-<span class="st"> </span><span class="cf">function</span>() {</a>
-<a class="sourceLine" id="cb936-3" data-line-number="3">  <span class="co"># Save debugging info to file last.dump.rda</span></a>
-<a class="sourceLine" id="cb936-4" data-line-number="4">  <span class="kw">dump.frames</span>(<span class="dt">to.file =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb936-5" data-line-number="5">  <span class="co"># Quit R with error status</span></a>
-<a class="sourceLine" id="cb936-6" data-line-number="6">  <span class="kw">q</span>(<span class="dt">status =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb936-7" data-line-number="7">}</a>
-<a class="sourceLine" id="cb936-8" data-line-number="8"><span class="kw">options</span>(<span class="dt">error =</span> dump_and_quit)</a>
-<a class="sourceLine" id="cb936-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb936-10" data-line-number="10"><span class="co"># In a later interactive session ----</span></a>
-<a class="sourceLine" id="cb936-11" data-line-number="11"><span class="kw">load</span>(<span class="st">&quot;last.dump.rda&quot;</span>)</a>
-<a class="sourceLine" id="cb936-12" data-line-number="12"><span class="kw">debugger</span>()</a></code></pre></div></li>
+<div class="sourceCode" id="cb935"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb935-1" data-line-number="1"><span class="co"># In batch R process ----</span></a>
+<a class="sourceLine" id="cb935-2" data-line-number="2">dump_and_quit &lt;-<span class="st"> </span><span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb935-3" data-line-number="3">  <span class="co"># Save debugging info to file last.dump.rda</span></a>
+<a class="sourceLine" id="cb935-4" data-line-number="4">  <span class="kw">dump.frames</span>(<span class="dt">to.file =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb935-5" data-line-number="5">  <span class="co"># Quit R with error status</span></a>
+<a class="sourceLine" id="cb935-6" data-line-number="6">  <span class="kw">q</span>(<span class="dt">status =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb935-7" data-line-number="7">}</a>
+<a class="sourceLine" id="cb935-8" data-line-number="8"><span class="kw">options</span>(<span class="dt">error =</span> dump_and_quit)</a>
+<a class="sourceLine" id="cb935-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb935-10" data-line-number="10"><span class="co"># In a later interactive session ----</span></a>
+<a class="sourceLine" id="cb935-11" data-line-number="11"><span class="kw">load</span>(<span class="st">&quot;last.dump.rda&quot;</span>)</a>
+<a class="sourceLine" id="cb935-12" data-line-number="12"><span class="kw">debugger</span>()</a></code></pre></div></li>
 </ul>
 <p>To reset error behaviour to the default, use <code>options(error = NULL)</code>. Then errors will print a message and abort function execution.</p>
 </div>
@@ -1138,32 +1138,32 @@ internal functions used to turn warnings into errors.
 <li><p>A function may generate an unexpected message. There’s no built-in tool to
 help solve this problem, but it’s possible to create one:
 </p>
-<div class="sourceCode" id="cb937"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb937-1" data-line-number="1">message2error &lt;-<span class="st"> </span><span class="cf">function</span>(code) {</a>
-<a class="sourceLine" id="cb937-2" data-line-number="2">  <span class="kw">withCallingHandlers</span>(code, <span class="dt">message =</span> <span class="cf">function</span>(e) <span class="kw">stop</span>(e))</a>
-<a class="sourceLine" id="cb937-3" data-line-number="3">}</a>
-<a class="sourceLine" id="cb937-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb937-5" data-line-number="5">f &lt;-<span class="st"> </span><span class="cf">function</span>() <span class="kw">g</span>()</a>
-<a class="sourceLine" id="cb937-6" data-line-number="6">g &lt;-<span class="st"> </span><span class="cf">function</span>() <span class="kw">message</span>(<span class="st">&quot;Hi!&quot;</span>)</a>
-<a class="sourceLine" id="cb937-7" data-line-number="7"><span class="kw">f</span>()</a>
-<a class="sourceLine" id="cb937-8" data-line-number="8"><span class="co"># Hi!</span></a>
-<a class="sourceLine" id="cb937-9" data-line-number="9"><span class="kw">message2error</span>(<span class="kw">f</span>())</a>
-<a class="sourceLine" id="cb937-10" data-line-number="10"><span class="co"># Error in message(&quot;Hi!&quot;): Hi!</span></a>
-<a class="sourceLine" id="cb937-11" data-line-number="11"><span class="kw">traceback</span>()</a>
-<a class="sourceLine" id="cb937-12" data-line-number="12"><span class="co"># 11: stop(e) at #2</span></a>
-<a class="sourceLine" id="cb937-13" data-line-number="13"><span class="co"># 10: (function (e) </span></a>
-<a class="sourceLine" id="cb937-14" data-line-number="14"><span class="co">#     stop(e))(list(message = &quot;Hi!\n&quot;, call = message(&quot;Hi!&quot;)))</span></a>
-<a class="sourceLine" id="cb937-15" data-line-number="15"><span class="co"># 9: signalCondition(cond)</span></a>
-<a class="sourceLine" id="cb937-16" data-line-number="16"><span class="co"># 8: doWithOneRestart(return(expr), restart)</span></a>
-<a class="sourceLine" id="cb937-17" data-line-number="17"><span class="co"># 7: withOneRestart(expr, restarts[[1L]])</span></a>
-<a class="sourceLine" id="cb937-18" data-line-number="18"><span class="co"># 6: withRestarts({</span></a>
-<a class="sourceLine" id="cb937-19" data-line-number="19"><span class="co">#        signalCondition(cond)</span></a>
-<a class="sourceLine" id="cb937-20" data-line-number="20"><span class="co">#        defaultHandler(cond)</span></a>
-<a class="sourceLine" id="cb937-21" data-line-number="21"><span class="co">#    }, muffleMessage = function() NULL)</span></a>
-<a class="sourceLine" id="cb937-22" data-line-number="22"><span class="co"># 5: message(&quot;Hi!&quot;) at #1</span></a>
-<a class="sourceLine" id="cb937-23" data-line-number="23"><span class="co"># 4: g() at #1</span></a>
-<a class="sourceLine" id="cb937-24" data-line-number="24"><span class="co"># 3: f() at #2</span></a>
-<a class="sourceLine" id="cb937-25" data-line-number="25"><span class="co"># 2: withCallingHandlers(code, message = function(e) stop(e)) at #2</span></a>
-<a class="sourceLine" id="cb937-26" data-line-number="26"><span class="co"># 1: message2error(f())</span></a></code></pre></div>
+<div class="sourceCode" id="cb936"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb936-1" data-line-number="1">message2error &lt;-<span class="st"> </span><span class="cf">function</span>(code) {</a>
+<a class="sourceLine" id="cb936-2" data-line-number="2">  <span class="kw">withCallingHandlers</span>(code, <span class="dt">message =</span> <span class="cf">function</span>(e) <span class="kw">stop</span>(e))</a>
+<a class="sourceLine" id="cb936-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb936-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb936-5" data-line-number="5">f &lt;-<span class="st"> </span><span class="cf">function</span>() <span class="kw">g</span>()</a>
+<a class="sourceLine" id="cb936-6" data-line-number="6">g &lt;-<span class="st"> </span><span class="cf">function</span>() <span class="kw">message</span>(<span class="st">&quot;Hi!&quot;</span>)</a>
+<a class="sourceLine" id="cb936-7" data-line-number="7"><span class="kw">f</span>()</a>
+<a class="sourceLine" id="cb936-8" data-line-number="8"><span class="co"># Hi!</span></a>
+<a class="sourceLine" id="cb936-9" data-line-number="9"><span class="kw">message2error</span>(<span class="kw">f</span>())</a>
+<a class="sourceLine" id="cb936-10" data-line-number="10"><span class="co"># Error in message(&quot;Hi!&quot;): Hi!</span></a>
+<a class="sourceLine" id="cb936-11" data-line-number="11"><span class="kw">traceback</span>()</a>
+<a class="sourceLine" id="cb936-12" data-line-number="12"><span class="co"># 11: stop(e) at #2</span></a>
+<a class="sourceLine" id="cb936-13" data-line-number="13"><span class="co"># 10: (function (e) </span></a>
+<a class="sourceLine" id="cb936-14" data-line-number="14"><span class="co">#     stop(e))(list(message = &quot;Hi!\n&quot;, call = message(&quot;Hi!&quot;)))</span></a>
+<a class="sourceLine" id="cb936-15" data-line-number="15"><span class="co"># 9: signalCondition(cond)</span></a>
+<a class="sourceLine" id="cb936-16" data-line-number="16"><span class="co"># 8: doWithOneRestart(return(expr), restart)</span></a>
+<a class="sourceLine" id="cb936-17" data-line-number="17"><span class="co"># 7: withOneRestart(expr, restarts[[1L]])</span></a>
+<a class="sourceLine" id="cb936-18" data-line-number="18"><span class="co"># 6: withRestarts({</span></a>
+<a class="sourceLine" id="cb936-19" data-line-number="19"><span class="co">#        signalCondition(cond)</span></a>
+<a class="sourceLine" id="cb936-20" data-line-number="20"><span class="co">#        defaultHandler(cond)</span></a>
+<a class="sourceLine" id="cb936-21" data-line-number="21"><span class="co">#    }, muffleMessage = function() NULL)</span></a>
+<a class="sourceLine" id="cb936-22" data-line-number="22"><span class="co"># 5: message(&quot;Hi!&quot;) at #1</span></a>
+<a class="sourceLine" id="cb936-23" data-line-number="23"><span class="co"># 4: g() at #1</span></a>
+<a class="sourceLine" id="cb936-24" data-line-number="24"><span class="co"># 3: f() at #2</span></a>
+<a class="sourceLine" id="cb936-25" data-line-number="25"><span class="co"># 2: withCallingHandlers(code, message = function(e) stop(e)) at #2</span></a>
+<a class="sourceLine" id="cb936-26" data-line-number="26"><span class="co"># 1: message2error(f())</span></a></code></pre></div>
 <p>As with warnings, you’ll need to ignore some of the calls on the traceback
 (i.e., the first two and the last six).</p></li>
 <li><p>A function might never return. This is particularly hard to debug
@@ -1215,7 +1215,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Debugging.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

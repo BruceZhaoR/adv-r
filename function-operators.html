@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -894,23 +894,23 @@ Proudly published with bookdown</a></li>
 <h2><span class="header-section-number">11.1</span> Introduction</h2>
 <p></p>
 <p>In this chapter, you’ll learn about function operators (FOs). A function operator is a function that takes one (or more) functions as input and returns a function as output. The following code shows a simple function operator, <code>chatty()</code>. It wraps a function, making a new function that prints out its first argument. You might create a function like this because it gives you a window to see how functionals, like <code>map_int()</code>, work.</p>
-<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb466-1" data-line-number="1">chatty &lt;-<span class="st"> </span><span class="cf">function</span>(f) {</a>
-<a class="sourceLine" id="cb466-2" data-line-number="2">  <span class="kw">force</span>(f)</a>
-<a class="sourceLine" id="cb466-3" data-line-number="3">  </a>
-<a class="sourceLine" id="cb466-4" data-line-number="4">  <span class="cf">function</span>(x, ...) {</a>
-<a class="sourceLine" id="cb466-5" data-line-number="5">    res &lt;-<span class="st"> </span><span class="kw">f</span>(x, ...)</a>
-<a class="sourceLine" id="cb466-6" data-line-number="6">    <span class="kw">cat</span>(<span class="st">&quot;Processing &quot;</span>, x, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a>
-<a class="sourceLine" id="cb466-7" data-line-number="7">    res</a>
-<a class="sourceLine" id="cb466-8" data-line-number="8">  }</a>
-<a class="sourceLine" id="cb466-9" data-line-number="9">}</a>
-<a class="sourceLine" id="cb466-10" data-line-number="10">f &lt;-<span class="st"> </span><span class="cf">function</span>(x) x <span class="op">^</span><span class="st"> </span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb466-11" data-line-number="11">s &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb466-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb466-13" data-line-number="13">purrr<span class="op">::</span><span class="kw">map_dbl</span>(s, <span class="kw">chatty</span>(f))</a>
-<a class="sourceLine" id="cb466-14" data-line-number="14"><span class="co">#&gt; Processing 3</span></a>
-<a class="sourceLine" id="cb466-15" data-line-number="15"><span class="co">#&gt; Processing 2</span></a>
-<a class="sourceLine" id="cb466-16" data-line-number="16"><span class="co">#&gt; Processing 1</span></a>
-<a class="sourceLine" id="cb466-17" data-line-number="17"><span class="co">#&gt; [1] 9 4 1</span></a></code></pre></div>
+<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb465-1" data-line-number="1">chatty &lt;-<span class="st"> </span><span class="cf">function</span>(f) {</a>
+<a class="sourceLine" id="cb465-2" data-line-number="2">  <span class="kw">force</span>(f)</a>
+<a class="sourceLine" id="cb465-3" data-line-number="3">  </a>
+<a class="sourceLine" id="cb465-4" data-line-number="4">  <span class="cf">function</span>(x, ...) {</a>
+<a class="sourceLine" id="cb465-5" data-line-number="5">    res &lt;-<span class="st"> </span><span class="kw">f</span>(x, ...)</a>
+<a class="sourceLine" id="cb465-6" data-line-number="6">    <span class="kw">cat</span>(<span class="st">&quot;Processing &quot;</span>, x, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a>
+<a class="sourceLine" id="cb465-7" data-line-number="7">    res</a>
+<a class="sourceLine" id="cb465-8" data-line-number="8">  }</a>
+<a class="sourceLine" id="cb465-9" data-line-number="9">}</a>
+<a class="sourceLine" id="cb465-10" data-line-number="10">f &lt;-<span class="st"> </span><span class="cf">function</span>(x) x <span class="op">^</span><span class="st"> </span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb465-11" data-line-number="11">s &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb465-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb465-13" data-line-number="13">purrr<span class="op">::</span><span class="kw">map_dbl</span>(s, <span class="kw">chatty</span>(f))</a>
+<a class="sourceLine" id="cb465-14" data-line-number="14"><span class="co">#&gt; Processing 3</span></a>
+<a class="sourceLine" id="cb465-15" data-line-number="15"><span class="co">#&gt; Processing 2</span></a>
+<a class="sourceLine" id="cb465-16" data-line-number="16"><span class="co">#&gt; Processing 1</span></a>
+<a class="sourceLine" id="cb465-17" data-line-number="17"><span class="co">#&gt; [1] 9 4 1</span></a></code></pre></div>
 <p>Function operators are closely related to function factories; indeed they’re just a function factory that takes a function as input. Like factories, there’s nothing you can’t do without them, but they often allow you to factor out complexity in order to make your code more readable and resuable.</p>
 <p>Function operators are typically paired with functionals. If you’re using a for-loop, there’s rarely a reason to use a FO, as it will make your code more complex for little gain.</p>
 <p>If you’re familiar with Python, decorators are just another name for function operators.</p>
@@ -927,12 +927,13 @@ with function operators: downloading many web pages.</p></li>
 <h3>Prerequisites</h3>
 <p>Function operators are a type of function factory, so make sure you’re familiar with at least Section <a href="functions.html#function-fundamentals">5.2</a> before you go on.</p>
 <p>We’ll use purrr for a couple of functionals that you learned about in Chapter <a href="functionals.html#functionals">9</a>, and some function operators that you’ll learn about below. We’ll also use the memoise package for the <code>memoise()</code> operator.</p>
-<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb467-1" data-line-number="1"><span class="kw">library</span>(purrr)</a>
-<a class="sourceLine" id="cb467-2" data-line-number="2"><span class="kw">library</span>(memoise)</a></code></pre></div>
-</div>
-<div id="in-other-languages" class="section level3">
-<h3><span class="header-section-number">11.1.1</span> In other languages</h3>
-<p>Function operators are used extensively in FP languages like Haskell, and commonly in Lisp, Scheme and Clojure. They are also an important part of modern JavaScript programming, like in the <a href="http://underscorejs.org/">underscore.js</a> library. They are particularly common in CoffeeScript because its syntax for anonymous functions is so concise. In stack-based languages like Forth and Factor, function operators are used almost exclusively because it’s rare to refer to variables by name. Python’s decorators are just function operators by a <a href="http://stackoverflow.com/questions/739654/">different name</a>. In Java, they are very rare because it’s difficult to manipulate functions (although possible if you wrap them up in strategy-type objects). They are also rare in C++ because, while it’s possible to create objects that work like functions (“functors”) by overloading the <code>()</code> operator, modifying these objects with other functions is not a common programming technique. That said, C++ 11 includes partial application (<code>std::bind</code>) as part of the standard library.</p>
+<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb466-1" data-line-number="1"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb466-2" data-line-number="2"><span class="kw">library</span>(memoise)</a></code></pre></div>
+<!--
+### In other languages
+
+Function operators are used extensively in FP languages like Haskell, and commonly in Lisp, Scheme and Clojure. They are also an important part of modern JavaScript programming, like in the [underscore.js](http://underscorejs.org/) library. They are particularly common in CoffeeScript because its syntax for anonymous functions is so concise. In stack-based languages like Forth and Factor, function operators are used almost exclusively because it's rare to refer to variables by name. Python's decorators are just function operators by a [different name](http://stackoverflow.com/questions/739654/). In Java, they are very rare because it's difficult to manipulate functions (although possible if you wrap them up in strategy-type objects). They are also rare in C++ because, while it's possible to create objects that work like functions ("functors") by overloading the `()` operator, modifying these objects with other functions is not a common programming technique. That said, C++ 11 includes partial application (`std::bind`) as part of the standard library.
+-->
 </div>
 </div>
 <div id="existing-fos" class="section level2">
@@ -942,117 +943,118 @@ with function operators: downloading many web pages.</p></li>
 <h3><span class="header-section-number">11.2.1</span> Capturing errors with <code>purrr::safely()</code></h3>
 
 <p>One advantage of for-loops is that if one of the iterations fails, you can still access all the results up to the failure:</p>
-<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb468-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb468-2" data-line-number="2">  <span class="kw">c</span>(<span class="fl">0.512</span>, <span class="fl">0.165</span>, <span class="fl">0.717</span>),</a>
-<a class="sourceLine" id="cb468-3" data-line-number="3">  <span class="kw">c</span>(<span class="fl">0.064</span>, <span class="fl">0.781</span>, <span class="fl">0.427</span>),</a>
-<a class="sourceLine" id="cb468-4" data-line-number="4">  <span class="kw">c</span>(<span class="fl">0.890</span>, <span class="fl">0.785</span>, <span class="fl">0.495</span>),</a>
-<a class="sourceLine" id="cb468-5" data-line-number="5">  <span class="st">&quot;oops&quot;</span></a>
-<a class="sourceLine" id="cb468-6" data-line-number="6">)</a>
-<a class="sourceLine" id="cb468-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb468-8" data-line-number="8">out &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="ot">NA_real_</span>, <span class="kw">length</span>(x))</a>
-<a class="sourceLine" id="cb468-9" data-line-number="9"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq_along</span>(x)) {</a>
-<a class="sourceLine" id="cb468-10" data-line-number="10">  out[[i]] &lt;-<span class="st"> </span><span class="kw">sum</span>(x[[i]])</a>
-<a class="sourceLine" id="cb468-11" data-line-number="11">}</a>
-<a class="sourceLine" id="cb468-12" data-line-number="12"><span class="co">#&gt; Error in sum(x[[i]]):</span></a>
-<a class="sourceLine" id="cb468-13" data-line-number="13"><span class="co">#&gt;   invalid &#39;type&#39; (character) of argument</span></a>
-<a class="sourceLine" id="cb468-14" data-line-number="14">out</a>
-<a class="sourceLine" id="cb468-15" data-line-number="15"><span class="co">#&gt; [1] 1.39 1.27 2.17   NA</span></a></code></pre></div>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb467-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb467-2" data-line-number="2">  <span class="kw">c</span>(<span class="fl">0.512</span>, <span class="fl">0.165</span>, <span class="fl">0.717</span>),</a>
+<a class="sourceLine" id="cb467-3" data-line-number="3">  <span class="kw">c</span>(<span class="fl">0.064</span>, <span class="fl">0.781</span>, <span class="fl">0.427</span>),</a>
+<a class="sourceLine" id="cb467-4" data-line-number="4">  <span class="kw">c</span>(<span class="fl">0.890</span>, <span class="fl">0.785</span>, <span class="fl">0.495</span>),</a>
+<a class="sourceLine" id="cb467-5" data-line-number="5">  <span class="st">&quot;oops&quot;</span></a>
+<a class="sourceLine" id="cb467-6" data-line-number="6">)</a>
+<a class="sourceLine" id="cb467-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb467-8" data-line-number="8">out &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="ot">NA_real_</span>, <span class="kw">length</span>(x))</a>
+<a class="sourceLine" id="cb467-9" data-line-number="9"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq_along</span>(x)) {</a>
+<a class="sourceLine" id="cb467-10" data-line-number="10">  out[[i]] &lt;-<span class="st"> </span><span class="kw">sum</span>(x[[i]])</a>
+<a class="sourceLine" id="cb467-11" data-line-number="11">}</a>
+<a class="sourceLine" id="cb467-12" data-line-number="12"><span class="co">#&gt; Error in sum(x[[i]]):</span></a>
+<a class="sourceLine" id="cb467-13" data-line-number="13"><span class="co">#&gt;   invalid &#39;type&#39; (character) of argument</span></a>
+<a class="sourceLine" id="cb467-14" data-line-number="14">out</a>
+<a class="sourceLine" id="cb467-15" data-line-number="15"><span class="co">#&gt; [1] 1.39 1.27 2.17   NA</span></a></code></pre></div>
 <p>If you do the same thing with a functional, you get no output, making it hard to figure out where the problem lies:</p>
-<div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb469-1" data-line-number="1"><span class="kw">map_dbl</span>(x, sum)</a>
-<a class="sourceLine" id="cb469-2" data-line-number="2"><span class="co">#&gt; Error in sum(..., na.rm = na.rm):</span></a>
-<a class="sourceLine" id="cb469-3" data-line-number="3"><span class="co">#&gt;   invalid &#39;type&#39; (character) of argument</span></a></code></pre></div>
+<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb468-1" data-line-number="1"><span class="kw">map_dbl</span>(x, sum)</a>
+<a class="sourceLine" id="cb468-2" data-line-number="2"><span class="co">#&gt; Error in sum(..., na.rm = na.rm):</span></a>
+<a class="sourceLine" id="cb468-3" data-line-number="3"><span class="co">#&gt;   invalid &#39;type&#39; (character) of argument</span></a></code></pre></div>
 <p><code>purrr::safely()</code> provides a tool to help with this problem. <code>safely()</code> is a function operator that transforms a function to turn errors into data. (You can learn the basic idea that makes it work in Section <a href="conditions.html#try-success-failure">7.6.2</a>). Let’s start by taking a look at it outside of <code>map_dbl()</code>:</p>
-<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb470-1" data-line-number="1">safe_sum &lt;-<span class="st"> </span><span class="kw">safely</span>(sum)</a>
-<a class="sourceLine" id="cb470-2" data-line-number="2">safe_sum</a>
-<a class="sourceLine" id="cb470-3" data-line-number="3"><span class="co">#&gt; function (...) </span></a>
-<a class="sourceLine" id="cb470-4" data-line-number="4"><span class="co">#&gt; capture_error(.f(...), otherwise, quiet)</span></a>
-<a class="sourceLine" id="cb470-5" data-line-number="5"><span class="co">#&gt; &lt;bytecode: 0x24bb720&gt;</span></a>
-<a class="sourceLine" id="cb470-6" data-line-number="6"><span class="co">#&gt; &lt;environment: 0x24bbbb8&gt;</span></a></code></pre></div>
+<div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb469-1" data-line-number="1">safe_sum &lt;-<span class="st"> </span><span class="kw">safely</span>(sum)</a>
+<a class="sourceLine" id="cb469-2" data-line-number="2">safe_sum</a>
+<a class="sourceLine" id="cb469-3" data-line-number="3"><span class="co">#&gt; function (...) </span></a>
+<a class="sourceLine" id="cb469-4" data-line-number="4"><span class="co">#&gt; capture_error(.f(...), otherwise, quiet)</span></a>
+<a class="sourceLine" id="cb469-5" data-line-number="5"><span class="co">#&gt; &lt;bytecode: 0x24bb720&gt;</span></a>
+<a class="sourceLine" id="cb469-6" data-line-number="6"><span class="co">#&gt; &lt;environment: 0x24bbbb8&gt;</span></a></code></pre></div>
 <p>Like all function operators, <code>safely()</code> takes a function and returns a wrapped function which we can call as usual:</p>
-<div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb471-1" data-line-number="1"><span class="kw">str</span>(<span class="kw">safe_sum</span>(x[[<span class="dv">1</span>]]))</a>
-<a class="sourceLine" id="cb471-2" data-line-number="2"><span class="co">#&gt; List of 2</span></a>
-<a class="sourceLine" id="cb471-3" data-line-number="3"><span class="co">#&gt;  $ result: num 1.39</span></a>
-<a class="sourceLine" id="cb471-4" data-line-number="4"><span class="co">#&gt;  $ error : NULL</span></a>
-<a class="sourceLine" id="cb471-5" data-line-number="5"><span class="kw">str</span>(<span class="kw">safe_sum</span>(x[[<span class="dv">4</span>]]))</a>
-<a class="sourceLine" id="cb471-6" data-line-number="6"><span class="co">#&gt; List of 2</span></a>
-<a class="sourceLine" id="cb471-7" data-line-number="7"><span class="co">#&gt;  $ result: NULL</span></a>
-<a class="sourceLine" id="cb471-8" data-line-number="8"><span class="co">#&gt;  $ error :List of 2</span></a>
-<a class="sourceLine" id="cb471-9" data-line-number="9"><span class="co">#&gt;   ..$ message: chr &quot;invalid &#39;type&#39; (character) of argument&quot;</span></a>
-<a class="sourceLine" id="cb471-10" data-line-number="10"><span class="co">#&gt;   ..$ call   : language .Primitive(&quot;sum&quot;)(..., na.rm)</span></a>
-<a class="sourceLine" id="cb471-11" data-line-number="11"><span class="co">#&gt;   ..- attr(*, &quot;class&quot;)= chr [1:3] &quot;simpleError&quot; &quot;error&quot; &quot;condition&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb470-1" data-line-number="1"><span class="kw">str</span>(<span class="kw">safe_sum</span>(x[[<span class="dv">1</span>]]))</a>
+<a class="sourceLine" id="cb470-2" data-line-number="2"><span class="co">#&gt; List of 2</span></a>
+<a class="sourceLine" id="cb470-3" data-line-number="3"><span class="co">#&gt;  $ result: num 1.39</span></a>
+<a class="sourceLine" id="cb470-4" data-line-number="4"><span class="co">#&gt;  $ error : NULL</span></a>
+<a class="sourceLine" id="cb470-5" data-line-number="5"><span class="kw">str</span>(<span class="kw">safe_sum</span>(x[[<span class="dv">4</span>]]))</a>
+<a class="sourceLine" id="cb470-6" data-line-number="6"><span class="co">#&gt; List of 2</span></a>
+<a class="sourceLine" id="cb470-7" data-line-number="7"><span class="co">#&gt;  $ result: NULL</span></a>
+<a class="sourceLine" id="cb470-8" data-line-number="8"><span class="co">#&gt;  $ error :List of 2</span></a>
+<a class="sourceLine" id="cb470-9" data-line-number="9"><span class="co">#&gt;   ..$ message: chr &quot;invalid &#39;type&#39; (character) of argument&quot;</span></a>
+<a class="sourceLine" id="cb470-10" data-line-number="10"><span class="co">#&gt;   ..$ call   : language .Primitive(&quot;sum&quot;)(..., na.rm)</span></a>
+<a class="sourceLine" id="cb470-11" data-line-number="11"><span class="co">#&gt;   ..- attr(*, &quot;class&quot;)= chr [1:3] &quot;simpleError&quot; &quot;error&quot; &quot;condition&quot;</span></a></code></pre></div>
 <p>You can see that a function transformed by <code>safely()</code> always returns a list with two elements, <code>result</code> and <code>error</code>. If the function runs successfully, <code>error</code> is <code>NULL</code> and <code>result</code> contains the result; if the function fails, <code>result</code> is <code>NULL</code> and <code>error</code> contains the error.</p>
 <p>Now lets use <code>safely()</code> with a functional:</p>
-<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb472-1" data-line-number="1">out &lt;-<span class="st"> </span><span class="kw">map</span>(x, <span class="kw">safely</span>(sum))</a>
-<a class="sourceLine" id="cb472-2" data-line-number="2"><span class="kw">str</span>(out)</a>
-<a class="sourceLine" id="cb472-3" data-line-number="3"><span class="co">#&gt; List of 4</span></a>
-<a class="sourceLine" id="cb472-4" data-line-number="4"><span class="co">#&gt;  $ :List of 2</span></a>
-<a class="sourceLine" id="cb472-5" data-line-number="5"><span class="co">#&gt;   ..$ result: num 1.39</span></a>
-<a class="sourceLine" id="cb472-6" data-line-number="6"><span class="co">#&gt;   ..$ error : NULL</span></a>
-<a class="sourceLine" id="cb472-7" data-line-number="7"><span class="co">#&gt;  $ :List of 2</span></a>
-<a class="sourceLine" id="cb472-8" data-line-number="8"><span class="co">#&gt;   ..$ result: num 1.27</span></a>
-<a class="sourceLine" id="cb472-9" data-line-number="9"><span class="co">#&gt;   ..$ error : NULL</span></a>
-<a class="sourceLine" id="cb472-10" data-line-number="10"><span class="co">#&gt;  $ :List of 2</span></a>
-<a class="sourceLine" id="cb472-11" data-line-number="11"><span class="co">#&gt;   ..$ result: num 2.17</span></a>
-<a class="sourceLine" id="cb472-12" data-line-number="12"><span class="co">#&gt;   ..$ error : NULL</span></a>
-<a class="sourceLine" id="cb472-13" data-line-number="13"><span class="co">#&gt;  $ :List of 2</span></a>
-<a class="sourceLine" id="cb472-14" data-line-number="14"><span class="co">#&gt;   ..$ result: NULL</span></a>
-<a class="sourceLine" id="cb472-15" data-line-number="15"><span class="co">#&gt;   ..$ error :List of 2</span></a>
-<a class="sourceLine" id="cb472-16" data-line-number="16"><span class="co">#&gt;   .. ..$ message: chr &quot;invalid &#39;type&#39; (character) of argument&quot;</span></a>
-<a class="sourceLine" id="cb472-17" data-line-number="17"><span class="co">#&gt;   .. ..$ call   : language .Primitive(&quot;sum&quot;)(..., na.rm)</span></a>
-<a class="sourceLine" id="cb472-18" data-line-number="18"><span class="co">#&gt;   .. ..- attr(*, &quot;class&quot;)= chr [1:3] &quot;simpleError&quot; &quot;error&quot; &quot;condition&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb471-1" data-line-number="1">out &lt;-<span class="st"> </span><span class="kw">map</span>(x, <span class="kw">safely</span>(sum))</a>
+<a class="sourceLine" id="cb471-2" data-line-number="2"><span class="kw">str</span>(out)</a>
+<a class="sourceLine" id="cb471-3" data-line-number="3"><span class="co">#&gt; List of 4</span></a>
+<a class="sourceLine" id="cb471-4" data-line-number="4"><span class="co">#&gt;  $ :List of 2</span></a>
+<a class="sourceLine" id="cb471-5" data-line-number="5"><span class="co">#&gt;   ..$ result: num 1.39</span></a>
+<a class="sourceLine" id="cb471-6" data-line-number="6"><span class="co">#&gt;   ..$ error : NULL</span></a>
+<a class="sourceLine" id="cb471-7" data-line-number="7"><span class="co">#&gt;  $ :List of 2</span></a>
+<a class="sourceLine" id="cb471-8" data-line-number="8"><span class="co">#&gt;   ..$ result: num 1.27</span></a>
+<a class="sourceLine" id="cb471-9" data-line-number="9"><span class="co">#&gt;   ..$ error : NULL</span></a>
+<a class="sourceLine" id="cb471-10" data-line-number="10"><span class="co">#&gt;  $ :List of 2</span></a>
+<a class="sourceLine" id="cb471-11" data-line-number="11"><span class="co">#&gt;   ..$ result: num 2.17</span></a>
+<a class="sourceLine" id="cb471-12" data-line-number="12"><span class="co">#&gt;   ..$ error : NULL</span></a>
+<a class="sourceLine" id="cb471-13" data-line-number="13"><span class="co">#&gt;  $ :List of 2</span></a>
+<a class="sourceLine" id="cb471-14" data-line-number="14"><span class="co">#&gt;   ..$ result: NULL</span></a>
+<a class="sourceLine" id="cb471-15" data-line-number="15"><span class="co">#&gt;   ..$ error :List of 2</span></a>
+<a class="sourceLine" id="cb471-16" data-line-number="16"><span class="co">#&gt;   .. ..$ message: chr &quot;invalid &#39;type&#39; (character) of argument&quot;</span></a>
+<a class="sourceLine" id="cb471-17" data-line-number="17"><span class="co">#&gt;   .. ..$ call   : language .Primitive(&quot;sum&quot;)(..., na.rm)</span></a>
+<a class="sourceLine" id="cb471-18" data-line-number="18"><span class="co">#&gt;   .. ..- attr(*, &quot;class&quot;)= chr [1:3] &quot;simpleError&quot; &quot;error&quot; &quot;condition&quot;</span></a></code></pre></div>
 <p>The output is in a slightly inconvenient form, since we have four lists, each of which is a list containing the <code>result</code> and the <code>error</code>. We can make the output easier to use with <code>purrr::transpose()</code>. This turns it “inside-out” so that we get a list of <code>result</code>s and a list of <code>error</code>s:</p>
-<div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb473-1" data-line-number="1">out &lt;-<span class="st"> </span><span class="kw">transpose</span>(<span class="kw">map</span>(x, <span class="kw">safely</span>(sum)))</a>
-<a class="sourceLine" id="cb473-2" data-line-number="2"><span class="kw">str</span>(out)</a>
-<a class="sourceLine" id="cb473-3" data-line-number="3"><span class="co">#&gt; List of 2</span></a>
-<a class="sourceLine" id="cb473-4" data-line-number="4"><span class="co">#&gt;  $ result:List of 4</span></a>
-<a class="sourceLine" id="cb473-5" data-line-number="5"><span class="co">#&gt;   ..$ : num 1.39</span></a>
-<a class="sourceLine" id="cb473-6" data-line-number="6"><span class="co">#&gt;   ..$ : num 1.27</span></a>
-<a class="sourceLine" id="cb473-7" data-line-number="7"><span class="co">#&gt;   ..$ : num 2.17</span></a>
-<a class="sourceLine" id="cb473-8" data-line-number="8"><span class="co">#&gt;   ..$ : NULL</span></a>
-<a class="sourceLine" id="cb473-9" data-line-number="9"><span class="co">#&gt;  $ error :List of 4</span></a>
-<a class="sourceLine" id="cb473-10" data-line-number="10"><span class="co">#&gt;   ..$ : NULL</span></a>
-<a class="sourceLine" id="cb473-11" data-line-number="11"><span class="co">#&gt;   ..$ : NULL</span></a>
-<a class="sourceLine" id="cb473-12" data-line-number="12"><span class="co">#&gt;   ..$ : NULL</span></a>
-<a class="sourceLine" id="cb473-13" data-line-number="13"><span class="co">#&gt;   ..$ :List of 2</span></a>
-<a class="sourceLine" id="cb473-14" data-line-number="14"><span class="co">#&gt;   .. ..$ message: chr &quot;invalid &#39;type&#39; (character) of argument&quot;</span></a>
-<a class="sourceLine" id="cb473-15" data-line-number="15"><span class="co">#&gt;   .. ..$ call   : language .Primitive(&quot;sum&quot;)(..., na.rm)</span></a>
-<a class="sourceLine" id="cb473-16" data-line-number="16"><span class="co">#&gt;   .. ..- attr(*, &quot;class&quot;)= chr [1:3] &quot;simpleError&quot; &quot;error&quot; &quot;condition&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb472-1" data-line-number="1">out &lt;-<span class="st"> </span><span class="kw">transpose</span>(<span class="kw">map</span>(x, <span class="kw">safely</span>(sum)))</a>
+<a class="sourceLine" id="cb472-2" data-line-number="2"><span class="kw">str</span>(out)</a>
+<a class="sourceLine" id="cb472-3" data-line-number="3"><span class="co">#&gt; List of 2</span></a>
+<a class="sourceLine" id="cb472-4" data-line-number="4"><span class="co">#&gt;  $ result:List of 4</span></a>
+<a class="sourceLine" id="cb472-5" data-line-number="5"><span class="co">#&gt;   ..$ : num 1.39</span></a>
+<a class="sourceLine" id="cb472-6" data-line-number="6"><span class="co">#&gt;   ..$ : num 1.27</span></a>
+<a class="sourceLine" id="cb472-7" data-line-number="7"><span class="co">#&gt;   ..$ : num 2.17</span></a>
+<a class="sourceLine" id="cb472-8" data-line-number="8"><span class="co">#&gt;   ..$ : NULL</span></a>
+<a class="sourceLine" id="cb472-9" data-line-number="9"><span class="co">#&gt;  $ error :List of 4</span></a>
+<a class="sourceLine" id="cb472-10" data-line-number="10"><span class="co">#&gt;   ..$ : NULL</span></a>
+<a class="sourceLine" id="cb472-11" data-line-number="11"><span class="co">#&gt;   ..$ : NULL</span></a>
+<a class="sourceLine" id="cb472-12" data-line-number="12"><span class="co">#&gt;   ..$ : NULL</span></a>
+<a class="sourceLine" id="cb472-13" data-line-number="13"><span class="co">#&gt;   ..$ :List of 2</span></a>
+<a class="sourceLine" id="cb472-14" data-line-number="14"><span class="co">#&gt;   .. ..$ message: chr &quot;invalid &#39;type&#39; (character) of argument&quot;</span></a>
+<a class="sourceLine" id="cb472-15" data-line-number="15"><span class="co">#&gt;   .. ..$ call   : language .Primitive(&quot;sum&quot;)(..., na.rm)</span></a>
+<a class="sourceLine" id="cb472-16" data-line-number="16"><span class="co">#&gt;   .. ..- attr(*, &quot;class&quot;)= chr [1:3] &quot;simpleError&quot; &quot;error&quot; &quot;condition&quot;</span></a></code></pre></div>
 <p>Now we can easily find the results that worked, or the inputs that failed:</p>
-<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb474-1" data-line-number="1">ok &lt;-<span class="st"> </span><span class="kw">map_lgl</span>(out<span class="op">$</span>error, is.null)</a>
-<a class="sourceLine" id="cb474-2" data-line-number="2">ok</a>
-<a class="sourceLine" id="cb474-3" data-line-number="3"><span class="co">#&gt; [1]  TRUE  TRUE  TRUE FALSE</span></a>
-<a class="sourceLine" id="cb474-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb474-5" data-line-number="5">x[<span class="op">!</span>ok]</a>
-<a class="sourceLine" id="cb474-6" data-line-number="6"><span class="co">#&gt; [[1]]</span></a>
-<a class="sourceLine" id="cb474-7" data-line-number="7"><span class="co">#&gt; [1] &quot;oops&quot;</span></a>
-<a class="sourceLine" id="cb474-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb474-9" data-line-number="9">out<span class="op">$</span>result[ok]</a>
-<a class="sourceLine" id="cb474-10" data-line-number="10"><span class="co">#&gt; [[1]]</span></a>
-<a class="sourceLine" id="cb474-11" data-line-number="11"><span class="co">#&gt; [1] 1.39</span></a>
-<a class="sourceLine" id="cb474-12" data-line-number="12"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb474-13" data-line-number="13"><span class="co">#&gt; [[2]]</span></a>
-<a class="sourceLine" id="cb474-14" data-line-number="14"><span class="co">#&gt; [1] 1.27</span></a>
-<a class="sourceLine" id="cb474-15" data-line-number="15"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb474-16" data-line-number="16"><span class="co">#&gt; [[3]]</span></a>
-<a class="sourceLine" id="cb474-17" data-line-number="17"><span class="co">#&gt; [1] 2.17</span></a></code></pre></div>
+<div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb473-1" data-line-number="1">ok &lt;-<span class="st"> </span><span class="kw">map_lgl</span>(out<span class="op">$</span>error, is.null)</a>
+<a class="sourceLine" id="cb473-2" data-line-number="2">ok</a>
+<a class="sourceLine" id="cb473-3" data-line-number="3"><span class="co">#&gt; [1]  TRUE  TRUE  TRUE FALSE</span></a>
+<a class="sourceLine" id="cb473-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb473-5" data-line-number="5">x[<span class="op">!</span>ok]</a>
+<a class="sourceLine" id="cb473-6" data-line-number="6"><span class="co">#&gt; [[1]]</span></a>
+<a class="sourceLine" id="cb473-7" data-line-number="7"><span class="co">#&gt; [1] &quot;oops&quot;</span></a>
+<a class="sourceLine" id="cb473-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb473-9" data-line-number="9">out<span class="op">$</span>result[ok]</a>
+<a class="sourceLine" id="cb473-10" data-line-number="10"><span class="co">#&gt; [[1]]</span></a>
+<a class="sourceLine" id="cb473-11" data-line-number="11"><span class="co">#&gt; [1] 1.39</span></a>
+<a class="sourceLine" id="cb473-12" data-line-number="12"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb473-13" data-line-number="13"><span class="co">#&gt; [[2]]</span></a>
+<a class="sourceLine" id="cb473-14" data-line-number="14"><span class="co">#&gt; [1] 1.27</span></a>
+<a class="sourceLine" id="cb473-15" data-line-number="15"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb473-16" data-line-number="16"><span class="co">#&gt; [[3]]</span></a>
+<a class="sourceLine" id="cb473-17" data-line-number="17"><span class="co">#&gt; [1] 2.17</span></a></code></pre></div>
 <p>
 You can use this same technique in many different situtations. For example, imagine you’re fitting a generalised linear model (GLM) to a list of data frames. GLMs can sometimes fail because of optimisation problems, but you still want to be able to try to fit all the models, and later look back at those that failed:</p>
-<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb475-1" data-line-number="1">fit_model &lt;-<span class="st"> </span><span class="cf">function</span>(df) {</a>
-<a class="sourceLine" id="cb475-2" data-line-number="2">  <span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2 <span class="op">*</span><span class="st"> </span>x3, <span class="dt">data =</span> df)</a>
-<a class="sourceLine" id="cb475-3" data-line-number="3">}</a>
-<a class="sourceLine" id="cb475-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb475-5" data-line-number="5">models &lt;-<span class="st"> </span><span class="kw">transpose</span>(<span class="kw">map</span>(datasets, <span class="kw">safely</span>(fit_model)))</a>
-<a class="sourceLine" id="cb475-6" data-line-number="6">ok &lt;-<span class="st"> </span><span class="kw">map_lgl</span>(models<span class="op">$</span>error, is.null)</a>
-<a class="sourceLine" id="cb475-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb475-8" data-line-number="8"><span class="co"># which data failed to converge?</span></a>
-<a class="sourceLine" id="cb475-9" data-line-number="9">datasets[<span class="op">!</span>ok]</a>
-<a class="sourceLine" id="cb475-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb475-11" data-line-number="11"><span class="co"># which models were successful?</span></a>
-<a class="sourceLine" id="cb475-12" data-line-number="12">models[ok]</a></code></pre></div>
+<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb474-1" data-line-number="1">fit_model &lt;-<span class="st"> </span><span class="cf">function</span>(df) {</a>
+<a class="sourceLine" id="cb474-2" data-line-number="2">  <span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2 <span class="op">*</span><span class="st"> </span>x3, <span class="dt">data =</span> df)</a>
+<a class="sourceLine" id="cb474-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb474-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb474-5" data-line-number="5">models &lt;-<span class="st"> </span><span class="kw">transpose</span>(<span class="kw">map</span>(datasets, <span class="kw">safely</span>(fit_model)))</a>
+<a class="sourceLine" id="cb474-6" data-line-number="6">ok &lt;-<span class="st"> </span><span class="kw">map_lgl</span>(models<span class="op">$</span>error, is.null)</a>
+<a class="sourceLine" id="cb474-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb474-8" data-line-number="8"><span class="co"># which data failed to converge?</span></a>
+<a class="sourceLine" id="cb474-9" data-line-number="9">datasets[<span class="op">!</span>ok]</a>
+<a class="sourceLine" id="cb474-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb474-11" data-line-number="11"><span class="co"># which models were successful?</span></a>
+<a class="sourceLine" id="cb474-12" data-line-number="12">models[ok]</a></code></pre></div>
 <p>I think this is a great example of the power of combining functionals and function operators: <code>safely()</code> lets you succinctly express what you need to solve a common data analysis problem.</p>
 <p>purrr comes with three other function operators in a similar vein:</p>
 <ul>
-<li><p><code>possibly()</code>: returns a default value when there’s an error.</p></li>
+<li><p><code>possibly()</code>: returns a default value when there’s an error.
+<!-- GVW: does it somehow signal where/when it's done this? if not, warn readers of that? --></p></li>
 <li><p><code>quietly()</code>: turns output, messages, and warning side-effects into
 <code>output</code>, <code>message</code>, and <code>warning</code> components of the output.</p></li>
 <li><p><code>auto_browser()</code>: automatically executes <code>browser()</code> inside the
@@ -1067,53 +1069,53 @@ function when there’s an error.</p></li>
 </p>
 <p>Another handy FO is <code>memoise::memoise()</code>. It <strong>memoises</strong> a function, meaning that the function will remember previous inputs and return cached results. Memoisation is an example of the classic computer science tradeoff of memory versus speed. A memoised function can run much faster because it stores all of the previous inputs and outputs, using more memory.</p>
 <p>Let’s explore this idea with a toy function that simulates an expensive operation:</p>
-<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb476-1" data-line-number="1">slow_function &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb476-2" data-line-number="2">  <span class="kw">Sys.sleep</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb476-3" data-line-number="3">  x <span class="op">*</span><span class="st"> </span><span class="dv">10</span> <span class="op">*</span><span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb476-4" data-line-number="4">}</a>
-<a class="sourceLine" id="cb476-5" data-line-number="5"><span class="kw">system.time</span>(<span class="kw">print</span>(<span class="kw">slow_function</span>(<span class="dv">1</span>)))</a>
-<a class="sourceLine" id="cb476-6" data-line-number="6"><span class="co">#&gt; [1] 0.808</span></a>
-<a class="sourceLine" id="cb476-7" data-line-number="7"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb476-8" data-line-number="8"><span class="co">#&gt;       0       0       1</span></a>
-<a class="sourceLine" id="cb476-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb476-10" data-line-number="10"><span class="kw">system.time</span>(<span class="kw">print</span>(<span class="kw">slow_function</span>(<span class="dv">1</span>)))</a>
-<a class="sourceLine" id="cb476-11" data-line-number="11"><span class="co">#&gt; [1] 8.34</span></a>
-<a class="sourceLine" id="cb476-12" data-line-number="12"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb476-13" data-line-number="13"><span class="co">#&gt;   0.005   0.000   1.006</span></a></code></pre></div>
+<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb475-1" data-line-number="1">slow_function &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb475-2" data-line-number="2">  <span class="kw">Sys.sleep</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb475-3" data-line-number="3">  x <span class="op">*</span><span class="st"> </span><span class="dv">10</span> <span class="op">*</span><span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb475-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb475-5" data-line-number="5"><span class="kw">system.time</span>(<span class="kw">print</span>(<span class="kw">slow_function</span>(<span class="dv">1</span>)))</a>
+<a class="sourceLine" id="cb475-6" data-line-number="6"><span class="co">#&gt; [1] 0.808</span></a>
+<a class="sourceLine" id="cb475-7" data-line-number="7"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb475-8" data-line-number="8"><span class="co">#&gt;       0       0       1</span></a>
+<a class="sourceLine" id="cb475-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb475-10" data-line-number="10"><span class="kw">system.time</span>(<span class="kw">print</span>(<span class="kw">slow_function</span>(<span class="dv">1</span>)))</a>
+<a class="sourceLine" id="cb475-11" data-line-number="11"><span class="co">#&gt; [1] 8.34</span></a>
+<a class="sourceLine" id="cb475-12" data-line-number="12"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb475-13" data-line-number="13"><span class="co">#&gt;   0.005   0.000   1.006</span></a></code></pre></div>
 <p>When we memoise this function, it’s slow when we call it with new arguments. But when we call it with arguments that it’s seen before it’s instanteous: it retrieves the previous value of the computation.</p>
-<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb477-1" data-line-number="1">fast_function &lt;-<span class="st"> </span>memoise<span class="op">::</span><span class="kw">memoise</span>(slow_function)</a>
-<a class="sourceLine" id="cb477-2" data-line-number="2"><span class="kw">system.time</span>(<span class="kw">print</span>(<span class="kw">fast_function</span>(<span class="dv">1</span>)))</a>
-<a class="sourceLine" id="cb477-3" data-line-number="3"><span class="co">#&gt; [1] 6.01</span></a>
-<a class="sourceLine" id="cb477-4" data-line-number="4"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb477-5" data-line-number="5"><span class="co">#&gt;       0       0       1</span></a>
-<a class="sourceLine" id="cb477-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb477-7" data-line-number="7"><span class="kw">system.time</span>(<span class="kw">print</span>(<span class="kw">fast_function</span>(<span class="dv">1</span>)))</a>
-<a class="sourceLine" id="cb477-8" data-line-number="8"><span class="co">#&gt; [1] 6.01</span></a>
-<a class="sourceLine" id="cb477-9" data-line-number="9"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb477-10" data-line-number="10"><span class="co">#&gt;   0.021   0.000   0.021</span></a></code></pre></div>
+<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb476-1" data-line-number="1">fast_function &lt;-<span class="st"> </span>memoise<span class="op">::</span><span class="kw">memoise</span>(slow_function)</a>
+<a class="sourceLine" id="cb476-2" data-line-number="2"><span class="kw">system.time</span>(<span class="kw">print</span>(<span class="kw">fast_function</span>(<span class="dv">1</span>)))</a>
+<a class="sourceLine" id="cb476-3" data-line-number="3"><span class="co">#&gt; [1] 6.01</span></a>
+<a class="sourceLine" id="cb476-4" data-line-number="4"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb476-5" data-line-number="5"><span class="co">#&gt;       0       0       1</span></a>
+<a class="sourceLine" id="cb476-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb476-7" data-line-number="7"><span class="kw">system.time</span>(<span class="kw">print</span>(<span class="kw">fast_function</span>(<span class="dv">1</span>)))</a>
+<a class="sourceLine" id="cb476-8" data-line-number="8"><span class="co">#&gt; [1] 6.01</span></a>
+<a class="sourceLine" id="cb476-9" data-line-number="9"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb476-10" data-line-number="10"><span class="co">#&gt;   0.021   0.000   0.021</span></a></code></pre></div>
 <p>A relatively realistic use of memoisation is computing the Fibonacci series. The Fibonacci series is defined recursively: the first two values are defined by convention, <span class="math inline">\(f(0) = 0\)</span>, <span class="math inline">\(f(n) = 1\)</span>, and then <span class="math inline">\(f(n) = f(n - 1) + f(n - 2)\)</span> (for any positive integer). A naive version is slow because, for example, <code>fib(10)</code> computes <code>fib(9)</code> and <code>fib(8)</code>, and <code>fib(9)</code> computes <code>fib(8)</code> and <code>fib(7)</code>, and so on.</p>
-<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb478-1" data-line-number="1">fib &lt;-<span class="st"> </span><span class="cf">function</span>(n) {</a>
-<a class="sourceLine" id="cb478-2" data-line-number="2">  <span class="cf">if</span> (n <span class="op">&lt;</span><span class="st"> </span><span class="dv">2</span>) <span class="kw">return</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb478-3" data-line-number="3">  <span class="kw">fib</span>(n <span class="op">-</span><span class="st"> </span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">fib</span>(n <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb478-4" data-line-number="4">}</a>
-<a class="sourceLine" id="cb478-5" data-line-number="5"><span class="kw">system.time</span>(<span class="kw">fib</span>(<span class="dv">23</span>))</a>
-<a class="sourceLine" id="cb478-6" data-line-number="6"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb478-7" data-line-number="7"><span class="co">#&gt;   0.041   0.004   0.045</span></a>
-<a class="sourceLine" id="cb478-8" data-line-number="8"><span class="kw">system.time</span>(<span class="kw">fib</span>(<span class="dv">24</span>))</a>
-<a class="sourceLine" id="cb478-9" data-line-number="9"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb478-10" data-line-number="10"><span class="co">#&gt;    0.07    0.00    0.07</span></a></code></pre></div>
+<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb477-1" data-line-number="1">fib &lt;-<span class="st"> </span><span class="cf">function</span>(n) {</a>
+<a class="sourceLine" id="cb477-2" data-line-number="2">  <span class="cf">if</span> (n <span class="op">&lt;</span><span class="st"> </span><span class="dv">2</span>) <span class="kw">return</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb477-3" data-line-number="3">  <span class="kw">fib</span>(n <span class="op">-</span><span class="st"> </span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">fib</span>(n <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb477-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb477-5" data-line-number="5"><span class="kw">system.time</span>(<span class="kw">fib</span>(<span class="dv">23</span>))</a>
+<a class="sourceLine" id="cb477-6" data-line-number="6"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb477-7" data-line-number="7"><span class="co">#&gt;   0.041   0.004   0.045</span></a>
+<a class="sourceLine" id="cb477-8" data-line-number="8"><span class="kw">system.time</span>(<span class="kw">fib</span>(<span class="dv">24</span>))</a>
+<a class="sourceLine" id="cb477-9" data-line-number="9"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb477-10" data-line-number="10"><span class="co">#&gt;    0.07    0.00    0.07</span></a></code></pre></div>
 <p>Memoising <code>fib()</code> makes the implementation much faster because each value is computed only once:</p>
-<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb479-1" data-line-number="1">fib2 &lt;-<span class="st"> </span>memoise<span class="op">::</span><span class="kw">memoise</span>(<span class="cf">function</span>(n) {</a>
-<a class="sourceLine" id="cb479-2" data-line-number="2">  <span class="cf">if</span> (n <span class="op">&lt;</span><span class="st"> </span><span class="dv">2</span>) <span class="kw">return</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb479-3" data-line-number="3">  <span class="kw">fib2</span>(n <span class="op">-</span><span class="st"> </span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">fib2</span>(n <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb479-4" data-line-number="4">})</a>
-<a class="sourceLine" id="cb479-5" data-line-number="5"><span class="kw">system.time</span>(<span class="kw">fib2</span>(<span class="dv">23</span>))</a>
-<a class="sourceLine" id="cb479-6" data-line-number="6"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb479-7" data-line-number="7"><span class="co">#&gt;   0.033   0.001   0.033</span></a></code></pre></div>
+<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb478-1" data-line-number="1">fib2 &lt;-<span class="st"> </span>memoise<span class="op">::</span><span class="kw">memoise</span>(<span class="cf">function</span>(n) {</a>
+<a class="sourceLine" id="cb478-2" data-line-number="2">  <span class="cf">if</span> (n <span class="op">&lt;</span><span class="st"> </span><span class="dv">2</span>) <span class="kw">return</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb478-3" data-line-number="3">  <span class="kw">fib2</span>(n <span class="op">-</span><span class="st"> </span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">fib2</span>(n <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb478-4" data-line-number="4">})</a>
+<a class="sourceLine" id="cb478-5" data-line-number="5"><span class="kw">system.time</span>(<span class="kw">fib2</span>(<span class="dv">23</span>))</a>
+<a class="sourceLine" id="cb478-6" data-line-number="6"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb478-7" data-line-number="7"><span class="co">#&gt;   0.033   0.001   0.033</span></a></code></pre></div>
 <p>And future calls can rely on previous computations:</p>
-<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb480-1" data-line-number="1"><span class="kw">system.time</span>(<span class="kw">fib2</span>(<span class="dv">24</span>))</a>
-<a class="sourceLine" id="cb480-2" data-line-number="2"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb480-3" data-line-number="3"><span class="co">#&gt;   0.001   0.000   0.001</span></a></code></pre></div>
+<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb479-1" data-line-number="1"><span class="kw">system.time</span>(<span class="kw">fib2</span>(<span class="dv">24</span>))</a>
+<a class="sourceLine" id="cb479-2" data-line-number="2"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb479-3" data-line-number="3"><span class="co">#&gt;   0.001   0.000   0.001</span></a></code></pre></div>
 <p>This is an example of <strong>dynamic programming</strong>, where a complex problem can be broken down into many overlapping subproblems, and remembering the results of a subproblem considerably improves performance.</p>
 <p>Think carefully before memoising a function. If the function is not <strong>pure</strong>, i.e. the output does not depend only on the input, you will get misleading and confusing results. I created a subtle bug in devtools because I memoised the results of <code>available.package()</code>, which is rather slow because it has to download a large file from CRAN. The available packages don’t change that frequently, but if you have an R process that’s been running for a few days, the changes can become important, and because the problem only arose in long-running R processes, the bug was very painful to find.</p>
 </div>
@@ -1131,14 +1133,14 @@ What does it do? When might you use it?</p></li>
 <h2><span class="header-section-number">11.3</span> Case study: creating your own FOs</h2>
 
 <p><code>meomoise()</code> and <code>safely()</code> are very useful but also quite complex. In this case study you’ll learn how to create your own simpler function operators. Imagine you have a named vector of URLs and you’d like to download each one to disk. That’s pretty simple with <code>walk2()</code> and <code>file.download()</code>:</p>
-<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb481-1" data-line-number="1">urls &lt;-<span class="st"> </span><span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb481-2" data-line-number="2">  <span class="st">&quot;adv-r&quot;</span> =<span class="st"> &quot;https://adv-r.hadley.nz&quot;</span>, </a>
-<a class="sourceLine" id="cb481-3" data-line-number="3">  <span class="st">&quot;r4ds&quot;</span> =<span class="st"> &quot;http://r4ds.had.co.nz/&quot;</span></a>
-<a class="sourceLine" id="cb481-4" data-line-number="4">  <span class="co"># and many many more</span></a>
-<a class="sourceLine" id="cb481-5" data-line-number="5">)</a>
-<a class="sourceLine" id="cb481-6" data-line-number="6">path &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="kw">tempdir</span>(), <span class="kw">names</span>(urls), <span class="st">&quot;.html&quot;</span>)</a>
-<a class="sourceLine" id="cb481-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb481-8" data-line-number="8"><span class="kw">walk2</span>(urls, path, download.file, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb480-1" data-line-number="1">urls &lt;-<span class="st"> </span><span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb480-2" data-line-number="2">  <span class="st">&quot;adv-r&quot;</span> =<span class="st"> &quot;https://adv-r.hadley.nz&quot;</span>, </a>
+<a class="sourceLine" id="cb480-3" data-line-number="3">  <span class="st">&quot;r4ds&quot;</span> =<span class="st"> &quot;http://r4ds.had.co.nz/&quot;</span></a>
+<a class="sourceLine" id="cb480-4" data-line-number="4">  <span class="co"># and many many more</span></a>
+<a class="sourceLine" id="cb480-5" data-line-number="5">)</a>
+<a class="sourceLine" id="cb480-6" data-line-number="6">path &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="kw">tempdir</span>(), <span class="kw">names</span>(urls), <span class="st">&quot;.html&quot;</span>)</a>
+<a class="sourceLine" id="cb480-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb480-8" data-line-number="8"><span class="kw">walk2</span>(urls, path, download.file, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>This approach is fine for a handful of URLs, but as the vector gets longer, it’d be nice to add a couple more features:</p>
 <ul>
 <li><p>Add a small delay between each request to avoid hammering the server.</p></li>
@@ -1146,57 +1148,57 @@ What does it do? When might you use it?</p></li>
 working.</p></li>
 </ul>
 <p>It’s relatively easy to add these extra features if we’re using a for loop:</p>
-<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb482-1" data-line-number="1"><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq_along</span>(urls)) {</a>
-<a class="sourceLine" id="cb482-2" data-line-number="2">  <span class="kw">Sys.sleep</span>(<span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb482-3" data-line-number="3">  <span class="cf">if</span> (i <span class="op">%%</span><span class="st"> </span><span class="dv">10</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="kw">cat</span>(<span class="st">&quot;.&quot;</span>)</a>
-<a class="sourceLine" id="cb482-4" data-line-number="4">  <span class="kw">download.file</span>(urls[[i]], paths[[i]])</a>
-<a class="sourceLine" id="cb482-5" data-line-number="5">}</a></code></pre></div>
+<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb481-1" data-line-number="1"><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq_along</span>(urls)) {</a>
+<a class="sourceLine" id="cb481-2" data-line-number="2">  <span class="kw">Sys.sleep</span>(<span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb481-3" data-line-number="3">  <span class="cf">if</span> (i <span class="op">%%</span><span class="st"> </span><span class="dv">10</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="kw">cat</span>(<span class="st">&quot;.&quot;</span>)</a>
+<a class="sourceLine" id="cb481-4" data-line-number="4">  <span class="kw">download.file</span>(urls[[i]], paths[[i]])</a>
+<a class="sourceLine" id="cb481-5" data-line-number="5">}</a></code></pre></div>
 <p>I think this for loop is suboptimal because it interleaves different concerns: pausing, showing progress, and downloading. This makes the code harder to read, and it makes it harder to reuse the components in new situations. Instead, let’s see if we can use function operators to extract out pausing and showing progress and make them reusable.</p>
 <p>First, let’s write an FO that adds a small delay. I’m going to call it <code>delay_by()</code> for reasons that will be more clear shortly, and it has two arguments: the function to wrap, and the amount of delay to add. The actual implementation is quite simple. The main trick is forcing evaluation of all arguments as described in Section <a href="function-factories.html#factory-pitfalls">10.2.4</a>, because function operators are a special type of function factory:</p>
-<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb483-1" data-line-number="1">delay_by &lt;-<span class="st"> </span><span class="cf">function</span>(f, amount) {</a>
-<a class="sourceLine" id="cb483-2" data-line-number="2">  <span class="kw">force</span>(f)</a>
-<a class="sourceLine" id="cb483-3" data-line-number="3">  <span class="kw">force</span>(amount)</a>
-<a class="sourceLine" id="cb483-4" data-line-number="4">  </a>
-<a class="sourceLine" id="cb483-5" data-line-number="5">  <span class="cf">function</span>(...) {</a>
-<a class="sourceLine" id="cb483-6" data-line-number="6">    <span class="kw">Sys.sleep</span>(amount)</a>
-<a class="sourceLine" id="cb483-7" data-line-number="7">    <span class="kw">f</span>(...)</a>
-<a class="sourceLine" id="cb483-8" data-line-number="8">  }</a>
-<a class="sourceLine" id="cb483-9" data-line-number="9">}</a>
-<a class="sourceLine" id="cb483-10" data-line-number="10"><span class="kw">system.time</span>(<span class="kw">runif</span>(<span class="dv">100</span>))</a>
-<a class="sourceLine" id="cb483-11" data-line-number="11"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb483-12" data-line-number="12"><span class="co">#&gt;       0       0       0</span></a>
-<a class="sourceLine" id="cb483-13" data-line-number="13"><span class="kw">system.time</span>(<span class="kw">delay_by</span>(runif, <span class="fl">0.1</span>)(<span class="dv">100</span>))</a>
-<a class="sourceLine" id="cb483-14" data-line-number="14"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb483-15" data-line-number="15"><span class="co">#&gt;     0.0     0.0     0.1</span></a></code></pre></div>
+<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb482-1" data-line-number="1">delay_by &lt;-<span class="st"> </span><span class="cf">function</span>(f, amount) {</a>
+<a class="sourceLine" id="cb482-2" data-line-number="2">  <span class="kw">force</span>(f)</a>
+<a class="sourceLine" id="cb482-3" data-line-number="3">  <span class="kw">force</span>(amount)</a>
+<a class="sourceLine" id="cb482-4" data-line-number="4">  </a>
+<a class="sourceLine" id="cb482-5" data-line-number="5">  <span class="cf">function</span>(...) {</a>
+<a class="sourceLine" id="cb482-6" data-line-number="6">    <span class="kw">Sys.sleep</span>(amount)</a>
+<a class="sourceLine" id="cb482-7" data-line-number="7">    <span class="kw">f</span>(...)</a>
+<a class="sourceLine" id="cb482-8" data-line-number="8">  }</a>
+<a class="sourceLine" id="cb482-9" data-line-number="9">}</a>
+<a class="sourceLine" id="cb482-10" data-line-number="10"><span class="kw">system.time</span>(<span class="kw">runif</span>(<span class="dv">100</span>))</a>
+<a class="sourceLine" id="cb482-11" data-line-number="11"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb482-12" data-line-number="12"><span class="co">#&gt;       0       0       0</span></a>
+<a class="sourceLine" id="cb482-13" data-line-number="13"><span class="kw">system.time</span>(<span class="kw">delay_by</span>(runif, <span class="fl">0.1</span>)(<span class="dv">100</span>))</a>
+<a class="sourceLine" id="cb482-14" data-line-number="14"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb482-15" data-line-number="15"><span class="co">#&gt;     0.0     0.0     0.1</span></a></code></pre></div>
 <p>And we can use it with the original <code>walk2()</code>:</p>
-<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb484-1" data-line-number="1"><span class="kw">walk2</span>(urls, path, <span class="kw">delay_by</span>(download.file, <span class="fl">0.1</span>), <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb483-1" data-line-number="1"><span class="kw">walk2</span>(urls, path, <span class="kw">delay_by</span>(download.file, <span class="fl">0.1</span>), <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>Creating a function to display the occasional dot is a little harder, because we can no longer rely on the index from the loop. We could pass the index along as another argument, but that breaks encapsulation: a concern of the progress function now becomes a problem that the higher level wrapper needs to handle. Instead, we’ll use another function factory trick (from Section <a href="function-factories.html#stateful-funs">10.2.3</a>), so that the progress wrapper can manage its own internal counter:</p>
-<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb485-1" data-line-number="1">dot_every &lt;-<span class="st"> </span><span class="cf">function</span>(f, n) {</a>
-<a class="sourceLine" id="cb485-2" data-line-number="2">  <span class="kw">force</span>(f)</a>
-<a class="sourceLine" id="cb485-3" data-line-number="3">  <span class="kw">force</span>(n)</a>
-<a class="sourceLine" id="cb485-4" data-line-number="4">  </a>
-<a class="sourceLine" id="cb485-5" data-line-number="5">  i &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb485-6" data-line-number="6">  <span class="cf">function</span>(...) {</a>
-<a class="sourceLine" id="cb485-7" data-line-number="7">    <span class="cf">if</span> (i <span class="op">%%</span><span class="st"> </span>n <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="kw">cat</span>(<span class="st">&quot;.&quot;</span>)</a>
-<a class="sourceLine" id="cb485-8" data-line-number="8">    i &lt;&lt;-<span class="st"> </span>i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb485-9" data-line-number="9">    <span class="kw">f</span>(...)</a>
-<a class="sourceLine" id="cb485-10" data-line-number="10">  }</a>
-<a class="sourceLine" id="cb485-11" data-line-number="11">}</a>
-<a class="sourceLine" id="cb485-12" data-line-number="12"><span class="kw">walk</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, runif)</a>
-<a class="sourceLine" id="cb485-13" data-line-number="13"><span class="kw">walk</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, <span class="kw">dot_every</span>(runif, <span class="dv">10</span>))</a>
-<a class="sourceLine" id="cb485-14" data-line-number="14"><span class="co">#&gt; ..........</span></a></code></pre></div>
+<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb484-1" data-line-number="1">dot_every &lt;-<span class="st"> </span><span class="cf">function</span>(f, n) {</a>
+<a class="sourceLine" id="cb484-2" data-line-number="2">  <span class="kw">force</span>(f)</a>
+<a class="sourceLine" id="cb484-3" data-line-number="3">  <span class="kw">force</span>(n)</a>
+<a class="sourceLine" id="cb484-4" data-line-number="4">  </a>
+<a class="sourceLine" id="cb484-5" data-line-number="5">  i &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb484-6" data-line-number="6">  <span class="cf">function</span>(...) {</a>
+<a class="sourceLine" id="cb484-7" data-line-number="7">    <span class="cf">if</span> (i <span class="op">%%</span><span class="st"> </span>n <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="kw">cat</span>(<span class="st">&quot;.&quot;</span>)</a>
+<a class="sourceLine" id="cb484-8" data-line-number="8">    i &lt;&lt;-<span class="st"> </span>i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb484-9" data-line-number="9">    <span class="kw">f</span>(...)</a>
+<a class="sourceLine" id="cb484-10" data-line-number="10">  }</a>
+<a class="sourceLine" id="cb484-11" data-line-number="11">}</a>
+<a class="sourceLine" id="cb484-12" data-line-number="12"><span class="kw">walk</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, runif)</a>
+<a class="sourceLine" id="cb484-13" data-line-number="13"><span class="kw">walk</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, <span class="kw">dot_every</span>(runif, <span class="dv">10</span>))</a>
+<a class="sourceLine" id="cb484-14" data-line-number="14"><span class="co">#&gt; ..........</span></a></code></pre></div>
 <p>Now we can express our original for loop as:</p>
+<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb485-1" data-line-number="1"><span class="kw">walk2</span>(</a>
+<a class="sourceLine" id="cb485-2" data-line-number="2">  urls, path, </a>
+<a class="sourceLine" id="cb485-3" data-line-number="3">  <span class="kw">dot_every</span>(<span class="kw">delay_by</span>(download.file, <span class="fl">0.1</span>), <span class="dv">10</span>), </a>
+<a class="sourceLine" id="cb485-4" data-line-number="4">  <span class="dt">quiet =</span> <span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb485-5" data-line-number="5">)</a></code></pre></div>
+<p>This is starting to get a little hard to read because we are composing many function calls, and the arguments are getting spread out. One way to resolve that is to use the pipe:</p>
 <div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb486-1" data-line-number="1"><span class="kw">walk2</span>(</a>
 <a class="sourceLine" id="cb486-2" data-line-number="2">  urls, path, </a>
-<a class="sourceLine" id="cb486-3" data-line-number="3">  <span class="kw">dot_every</span>(<span class="kw">delay_by</span>(download.file, <span class="fl">0.1</span>), <span class="dv">10</span>), </a>
+<a class="sourceLine" id="cb486-3" data-line-number="3">  download.file <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">dot_every</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">delay_by</span>(<span class="fl">0.1</span>), </a>
 <a class="sourceLine" id="cb486-4" data-line-number="4">  <span class="dt">quiet =</span> <span class="ot">TRUE</span></a>
 <a class="sourceLine" id="cb486-5" data-line-number="5">)</a></code></pre></div>
-<p>This is starting to get a little hard to read because we are composing many function calls, and the arguments are getting spread out. One way to resolve that is to use the pipe:</p>
-<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb487-1" data-line-number="1"><span class="kw">walk2</span>(</a>
-<a class="sourceLine" id="cb487-2" data-line-number="2">  urls, path, </a>
-<a class="sourceLine" id="cb487-3" data-line-number="3">  download.file <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">dot_every</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">delay_by</span>(<span class="fl">0.1</span>), </a>
-<a class="sourceLine" id="cb487-4" data-line-number="4">  <span class="dt">quiet =</span> <span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb487-5" data-line-number="5">)</a></code></pre></div>
 <p>The pipe works well here because I’ve carefully chosen the function names to yield an (almost) readable sentence: take <code>download.file</code> then (add) a dot every 10 iterations, then delay by 0.1s. The more clearly you can express the intent of your code through function names, the more easily others (including future you!) can read and understand the code.</p>
 <div id="exercises-35" class="section level3">
 <h3><span class="header-section-number">11.3.1</span> Exercises</h3>
@@ -1253,7 +1255,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Function-operators.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

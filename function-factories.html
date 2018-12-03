@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -904,6 +904,7 @@ Proudly published with bookdown</a></li>
 <a class="sourceLine" id="cb425-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb425-9" data-line-number="9">square &lt;-<span class="st"> </span><span class="kw">power1</span>(<span class="dv">2</span>)</a>
 <a class="sourceLine" id="cb425-10" data-line-number="10">cube &lt;-<span class="st"> </span><span class="kw">power1</span>(<span class="dv">3</span>)</a></code></pre></div>
+<!-- GVW: is `force` necessary? (my guess is "yes", because we could call `power1` with an expression as a parameter and be surprised when it's evaluated later) LATER: you touch on this in the factory pitfalls section below, so forward ref? -->
 <p>I’ll call <code>square()</code> and <code>cube()</code> <strong>manufactured functions</strong>, but this is just a term to ease communication with other humans: from R’s perspective they are no different to functions created any other way.</p>
 <div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb426-1" data-line-number="1"><span class="kw">square</span>(<span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb426-2" data-line-number="2"><span class="co">#&gt; [1] 9</span></a>
@@ -998,6 +999,15 @@ environment of the function factory.</p>
 <a class="sourceLine" id="cb430-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb430-7" data-line-number="7"><span class="kw">env_get</span>(cube, <span class="st">&quot;exp&quot;</span>)</a>
 <a class="sourceLine" id="cb430-8" data-line-number="8"><span class="co">#&gt; [1] 3</span></a></code></pre></div>
+<!-- GVW: when I run the above, I get:
+
+Passing an environment wrapper like a function is deprecated.
+Please retrieve the environment before calling `env_get()`
+This warning is displayed once per session.
+
+I'm using R 3.5.1.
+
+-->
 <p>This is what makes manufactured functions behave differently from one another: names in the enclosing environment are bound to different values.</p>
 </div>
 <div id="diagram-conventions" class="section level3">
@@ -1147,6 +1157,7 @@ with the code below.</p>
 <a class="sourceLine" id="cb440-5" data-line-number="5"><span class="kw">number_format</span>(<span class="dt">scale =</span> <span class="fl">1e-3</span>, <span class="dt">suffix =</span> <span class="st">&quot; K&quot;</span>)(y)</a>
 <a class="sourceLine" id="cb440-6" data-line-number="6"><span class="co">#&gt; [1] &quot;12 K&quot;    &quot;123 K&quot;   &quot;1 235 K&quot;</span></a></code></pre></div>
 <p>In other words, the primary interface is a function factory. At first glance, this seems to add extra complexity for little gain. But it enables a nice interaction with ggplot2’s scales, because they accept functions in the <code>label</code> argument:</p>
+<!-- GVW: I get "partially matched argument" warnings telling me `label -> labels` below -->
 <div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb441-1" data-line-number="1">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> y)</a>
 <a class="sourceLine" id="cb441-2" data-line-number="2">core &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(x, y)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb441-3" data-line-number="3"><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></a>
@@ -1189,6 +1200,7 @@ with the code below.</p>
 <a class="sourceLine" id="cb443-12" data-line-number="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>)</a></code></pre></div>
 <p><img src="Function-factories_files/figure-html/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" /></p>
 <p>We could use this same pattern to wrap around the base R functions that automatically find the “optimal”<a href="#fn39" class="footnote-ref" id="fnref39"><sup>39</sup></a> binwidth, <code>nclass.Sturges()</code>, <code>nclass.scott()</code>, and <code>nclass.FD()</code>:</p>
+<!-- GVW: just curious - why is 'Sturges' name-cased but 'scott' is lower case? -->
 <div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb444-1" data-line-number="1">base_bins &lt;-<span class="st"> </span><span class="cf">function</span>(type) {</a>
 <a class="sourceLine" id="cb444-2" data-line-number="2">  fun &lt;-<span class="st"> </span><span class="cf">switch</span>(type,</a>
 <a class="sourceLine" id="cb444-3" data-line-number="3">    <span class="dt">Sturges =</span> nclass.Sturges,</a>
@@ -1380,6 +1392,7 @@ floating point approximation used by a computer less accurate.</p></li>
 <a class="sourceLine" id="cb452-6" data-line-number="6"><span class="co">#&gt; [1] -31</span></a></code></pre></div>
 <p>So far we’ve been thinking of <code>lambda</code> as fixed and known and the function told us the probability of getting different values of <code>x</code>. But in real-life, we observe <code>x</code> and it is <code>lambda</code> that is unknown. The likelihood is the probability function seen through this lens: we want to find the <code>lambda</code> that makes the observed <code>x</code> the “most likely”. That is, given <code>x</code>, what value of <code>lambda</code> gives us the highest value of <code>lprob_poisson</code>()?</p>
 <p>In statistics, we highlight this change in perspective by writing <span class="math inline">\(f_{\mathbf{x}}(\lambda)\)</span> instead of <span class="math inline">\(f(\lambda, \mathbf{x})\)</span>. In R, we can use a function factory. We provide <code>x</code> and generate a function with a single parameter, <code>lambda</code>:</p>
+<!-- GVW: you don't force(x) because length(x) implicitly does that? -->
 <div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb453-1" data-line-number="1">ll_poisson1 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
 <a class="sourceLine" id="cb453-2" data-line-number="2">  n &lt;-<span class="st"> </span><span class="kw">length</span>(x)</a>
 <a class="sourceLine" id="cb453-3" data-line-number="3"></a>
@@ -1428,6 +1441,7 @@ in each iteration.</p></li>
 the underlying problem.</p></li>
 </ul>
 <p>These advantages get bigger in more complex MLE problems, where you have multiple parameters and multiple data vectors.</p>
+<!-- GVW: stepping back, what patterns in existing code should people look for that suggest "Hey, maybe use a function factory here"? -->
 </div>
 <div id="exercises-32" class="section level3">
 <h3><span class="header-section-number">10.4.4</span> Exercises</h3>
@@ -1473,6 +1487,7 @@ How does changing the length of <code>x</code> change the results?</p></li>
 <a class="sourceLine" id="cb459-16" data-line-number="16"><span class="co">#&gt; &lt;bytecode: 0x34dba00&gt;</span></a>
 <a class="sourceLine" id="cb459-17" data-line-number="17"><span class="co">#&gt; &lt;environment: 0x5f8f0a8&gt;</span></a></code></pre></div>
 <p>This idea extends in a straightforward way if your function factory takes two (replace <code>map()</code> with <code>map2()</code>) or more (replace with <code>pmap()</code>) arguments.</p>
+<!-- GVW: I wouldn't start a new subsection here, because on first reading it made me think that this was all you were going to say about this example -->
 <div id="moving-a-list-to-the-global-environment" class="section level3">
 <h3><span class="header-section-number">10.5.1</span> Moving a list to the global environment</h3>
 
@@ -1498,36 +1513,45 @@ because we’re attaching a list of functions, not a data frame. It’s less
 likely that you’ll modify a function than a column in a data frame, so the
 some of the worst problems with <code>attach()</code> don’t apply.</p></li>
 <li><p>Finally, you could copy the functions to the global environment with
-<code>env_bind()</code>. This is mostly permanent:</p>
-<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb462-1" data-line-number="1">rlang<span class="op">::</span><span class="kw">env_bind</span>(<span class="kw">globalenv</span>(), <span class="op">!!!</span>funs)</a>
-<a class="sourceLine" id="cb462-2" data-line-number="2"><span class="kw">root</span>(<span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb462-3" data-line-number="3"><span class="co">#&gt; [1] 10</span></a></code></pre></div>
-<p>You can later unbind those same names, but there’s no guarantee that
-they haven’t been rebound in the meantime, and you might be deleting an
-object that someone else created.</p>
-<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb463-1" data-line-number="1">rlang<span class="op">::</span><span class="kw">env_unbind</span>(<span class="kw">globalenv</span>(), <span class="kw">names</span>(funs))</a></code></pre></div></li>
+<code>env_bind()</code>. This is mostly permanent:</p></li>
 </ul>
+<!-- GVW: quasiquotation hasn't yet been introduced, and readers may not know about it, so maybe defer this discussion to that section with a forward ref? -->
+<pre><code>```r
+rlang::env_bind(globalenv(), !!!funs)
+root(100)
+#&gt; [1] 10
+```
+
+You can later unbind those same names, but there&#39;s no guarantee that 
+they haven&#39;t been rebound in the meantime, and you might be deleting an
+object that someone else created.
+
+
+```r
+rlang::env_unbind(globalenv(), names(funs))
+```</code></pre>
 </div>
 <div id="another-approach" class="section level3">
 <h3><span class="header-section-number">10.5.2</span> Another approach</h3>
+<!-- GVW: as above, defer discussion of quasiquotation (that chapter can refer back to this example for motivation)? -->
 <p>You’ll learn an alternative approach to the same problem in Section <a href="#quasi-function"><strong>??</strong></a>. Instead of using a function factory, you could construct the function with quasiquotation. This requires additional knowledge, but generates functions with readable bodies, and avoids accidentally capturing large objects in the enclosing scope. The following code is a quick preview of how we could rewrite <code>power1()</code> to use quasiquotation:</p>
-<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb464-1" data-line-number="1">power3 &lt;-<span class="st"> </span><span class="cf">function</span>(exponent) {</a>
-<a class="sourceLine" id="cb464-2" data-line-number="2">  <span class="kw">new_function</span>(</a>
-<a class="sourceLine" id="cb464-3" data-line-number="3">    <span class="kw">exprs</span>(<span class="dt">x =</span> ), </a>
-<a class="sourceLine" id="cb464-4" data-line-number="4">    <span class="kw">expr</span>({</a>
-<a class="sourceLine" id="cb464-5" data-line-number="5">      x <span class="op">^</span><span class="st"> </span><span class="op">!!</span>exponent</a>
-<a class="sourceLine" id="cb464-6" data-line-number="6">    }), </a>
-<a class="sourceLine" id="cb464-7" data-line-number="7">    <span class="kw">caller_env</span>()</a>
-<a class="sourceLine" id="cb464-8" data-line-number="8">  )</a>
-<a class="sourceLine" id="cb464-9" data-line-number="9">}</a>
-<a class="sourceLine" id="cb464-10" data-line-number="10">funs &lt;-<span class="st"> </span>purrr<span class="op">::</span><span class="kw">map</span>(names, power3)</a>
-<a class="sourceLine" id="cb464-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb464-12" data-line-number="12">funs<span class="op">$</span>root</a>
-<a class="sourceLine" id="cb464-13" data-line-number="13"><span class="co">#&gt; function (x) </span></a>
-<a class="sourceLine" id="cb464-14" data-line-number="14"><span class="co">#&gt; {</span></a>
-<a class="sourceLine" id="cb464-15" data-line-number="15"><span class="co">#&gt;     x^0.5</span></a>
-<a class="sourceLine" id="cb464-16" data-line-number="16"><span class="co">#&gt; }</span></a>
-<a class="sourceLine" id="cb464-17" data-line-number="17"><span class="co">#&gt; &lt;environment: 0x74d7668&gt;</span></a></code></pre></div>
+<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb463-1" data-line-number="1">power3 &lt;-<span class="st"> </span><span class="cf">function</span>(exponent) {</a>
+<a class="sourceLine" id="cb463-2" data-line-number="2">  <span class="kw">new_function</span>(</a>
+<a class="sourceLine" id="cb463-3" data-line-number="3">    <span class="kw">exprs</span>(<span class="dt">x =</span> ), </a>
+<a class="sourceLine" id="cb463-4" data-line-number="4">    <span class="kw">expr</span>({</a>
+<a class="sourceLine" id="cb463-5" data-line-number="5">      x <span class="op">^</span><span class="st"> </span><span class="op">!!</span>exponent</a>
+<a class="sourceLine" id="cb463-6" data-line-number="6">    }), </a>
+<a class="sourceLine" id="cb463-7" data-line-number="7">    <span class="kw">caller_env</span>()</a>
+<a class="sourceLine" id="cb463-8" data-line-number="8">  )</a>
+<a class="sourceLine" id="cb463-9" data-line-number="9">}</a>
+<a class="sourceLine" id="cb463-10" data-line-number="10">funs &lt;-<span class="st"> </span>purrr<span class="op">::</span><span class="kw">map</span>(names, power3)</a>
+<a class="sourceLine" id="cb463-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb463-12" data-line-number="12">funs<span class="op">$</span>root</a>
+<a class="sourceLine" id="cb463-13" data-line-number="13"><span class="co">#&gt; function (x) </span></a>
+<a class="sourceLine" id="cb463-14" data-line-number="14"><span class="co">#&gt; {</span></a>
+<a class="sourceLine" id="cb463-15" data-line-number="15"><span class="co">#&gt;     x^0.5</span></a>
+<a class="sourceLine" id="cb463-16" data-line-number="16"><span class="co">#&gt; }</span></a>
+<a class="sourceLine" id="cb463-17" data-line-number="17"><span class="co">#&gt; &lt;environment: 0x74d7668&gt;</span></a></code></pre></div>
 <p>As well as <code>0.5</code> appearing directly in the body, note that the environment of the function is the global environment, not an execution environment of <code>power3()</code>.</p>
 </div>
 <div id="exercises-33" class="section level3">
@@ -1543,21 +1567,21 @@ object that someone else created.</p>
 </ol></li>
 <li><p>Compare and contrast the effects of <code>env_bind()</code> vs. <code>attach()</code> for the
 following code.</p>
-<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb465-1" data-line-number="1">funs &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb465-2" data-line-number="2">  <span class="dt">mean =</span> <span class="cf">function</span>(x) <span class="kw">mean</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb465-3" data-line-number="3">  <span class="dt">sum =</span> <span class="cf">function</span>(x) <span class="kw">sum</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb465-4" data-line-number="4">)</a>
-<a class="sourceLine" id="cb465-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb465-6" data-line-number="6"><span class="kw">attach</span>(funs)</a>
-<a class="sourceLine" id="cb465-7" data-line-number="7"><span class="co">#&gt; The following objects are masked from package:base:</span></a>
-<a class="sourceLine" id="cb465-8" data-line-number="8"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb465-9" data-line-number="9"><span class="co">#&gt;     mean, sum</span></a>
-<a class="sourceLine" id="cb465-10" data-line-number="10">mean &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">stop</span>(<span class="st">&quot;Hi!&quot;</span>)</a>
-<a class="sourceLine" id="cb465-11" data-line-number="11"><span class="kw">detach</span>(funs)</a>
-<a class="sourceLine" id="cb465-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb465-13" data-line-number="13"><span class="kw">env_bind</span>(<span class="kw">globalenv</span>(), <span class="op">!!!</span>funs)</a>
-<a class="sourceLine" id="cb465-14" data-line-number="14">mean &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">stop</span>(<span class="st">&quot;Hi!&quot;</span>) </a>
-<a class="sourceLine" id="cb465-15" data-line-number="15"><span class="kw">env_unbind</span>(<span class="kw">globalenv</span>(), <span class="kw">names</span>(funs))</a></code></pre></div></li>
+<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb464-1" data-line-number="1">funs &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb464-2" data-line-number="2">  <span class="dt">mean =</span> <span class="cf">function</span>(x) <span class="kw">mean</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb464-3" data-line-number="3">  <span class="dt">sum =</span> <span class="cf">function</span>(x) <span class="kw">sum</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb464-4" data-line-number="4">)</a>
+<a class="sourceLine" id="cb464-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb464-6" data-line-number="6"><span class="kw">attach</span>(funs)</a>
+<a class="sourceLine" id="cb464-7" data-line-number="7"><span class="co">#&gt; The following objects are masked from package:base:</span></a>
+<a class="sourceLine" id="cb464-8" data-line-number="8"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb464-9" data-line-number="9"><span class="co">#&gt;     mean, sum</span></a>
+<a class="sourceLine" id="cb464-10" data-line-number="10">mean &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">stop</span>(<span class="st">&quot;Hi!&quot;</span>)</a>
+<a class="sourceLine" id="cb464-11" data-line-number="11"><span class="kw">detach</span>(funs)</a>
+<a class="sourceLine" id="cb464-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb464-13" data-line-number="13"><span class="kw">env_bind</span>(<span class="kw">globalenv</span>(), <span class="op">!!!</span>funs)</a>
+<a class="sourceLine" id="cb464-14" data-line-number="14">mean &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">stop</span>(<span class="st">&quot;Hi!&quot;</span>) </a>
+<a class="sourceLine" id="cb464-15" data-line-number="15"><span class="kw">env_unbind</span>(<span class="kw">globalenv</span>(), <span class="kw">names</span>(funs))</a></code></pre></div></li>
 </ol>
 
 </div>
@@ -1600,7 +1624,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Function-factories.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

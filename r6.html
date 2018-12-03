@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -922,8 +922,8 @@ system.</p></li>
 <div id="prerequisites-7" class="section level3 unnumbered">
 <h3>Prerequisites</h3>
 <p>Because R6 is not built into base R, you’ll need to install and load the R6 package to use it:</p>
-<div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb560-1" data-line-number="1"><span class="co"># install.packages(&quot;R6&quot;)</span></a>
-<a class="sourceLine" id="cb560-2" data-line-number="2"><span class="kw">library</span>(R6)</a></code></pre></div>
+<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb559-1" data-line-number="1"><span class="co"># install.packages(&quot;R6&quot;)</span></a>
+<a class="sourceLine" id="cb559-2" data-line-number="2"><span class="kw">library</span>(R6)</a></code></pre></div>
 <p>R6 objects have reference semantics which means that they are modified in-place, not copied-on-modify. If you’re not familiar with these terms, brush up your vocab by reading Section <a href="names-values.html#modify-in-place">2.5</a>.</p>
 </div>
 </div>
@@ -940,149 +940,149 @@ fields (anything else) that make up the public interface of the object.
 By convention, methods and fields use <code>snake_case</code>. Methods can access
 the methods and fields of the current object via <code>self$</code>.<a href="#fn48" class="footnote-ref" id="fnref48"><sup>48</sup></a></p></li>
 </ul>
-<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb561-1" data-line-number="1">Accumulator &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Accumulator&quot;</span>, <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb561-2" data-line-number="2">  <span class="dt">sum =</span> <span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb561-3" data-line-number="3">  <span class="dt">add =</span> <span class="cf">function</span>(<span class="dt">x =</span> <span class="dv">1</span>) {</a>
-<a class="sourceLine" id="cb561-4" data-line-number="4">    self<span class="op">$</span>sum &lt;-<span class="st"> </span>self<span class="op">$</span>sum <span class="op">+</span><span class="st"> </span>x </a>
-<a class="sourceLine" id="cb561-5" data-line-number="5">    <span class="kw">invisible</span>(self)</a>
-<a class="sourceLine" id="cb561-6" data-line-number="6">  })</a>
-<a class="sourceLine" id="cb561-7" data-line-number="7">)</a></code></pre></div>
+<div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb560-1" data-line-number="1">Accumulator &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Accumulator&quot;</span>, <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb560-2" data-line-number="2">  <span class="dt">sum =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb560-3" data-line-number="3">  <span class="dt">add =</span> <span class="cf">function</span>(<span class="dt">x =</span> <span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb560-4" data-line-number="4">    self<span class="op">$</span>sum &lt;-<span class="st"> </span>self<span class="op">$</span>sum <span class="op">+</span><span class="st"> </span>x </a>
+<a class="sourceLine" id="cb560-5" data-line-number="5">    <span class="kw">invisible</span>(self)</a>
+<a class="sourceLine" id="cb560-6" data-line-number="6">  })</a>
+<a class="sourceLine" id="cb560-7" data-line-number="7">)</a></code></pre></div>
 <p>You should always assign the result of <code>R6Class()</code> into a variable with the same name as the class, because <code>R6Class()</code> returns an R6 object that defines the class:</p>
-<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb562-1" data-line-number="1">Accumulator</a>
-<a class="sourceLine" id="cb562-2" data-line-number="2"><span class="co">#&gt; &lt;Accumulator&gt; object generator</span></a>
-<a class="sourceLine" id="cb562-3" data-line-number="3"><span class="co">#&gt;   Public:</span></a>
-<a class="sourceLine" id="cb562-4" data-line-number="4"><span class="co">#&gt;     sum: 0</span></a>
-<a class="sourceLine" id="cb562-5" data-line-number="5"><span class="co">#&gt;     add: function (x = 1) </span></a>
-<a class="sourceLine" id="cb562-6" data-line-number="6"><span class="co">#&gt;     clone: function (deep = FALSE) </span></a>
-<a class="sourceLine" id="cb562-7" data-line-number="7"><span class="co">#&gt;   Parent env: &lt;environment: R_GlobalEnv&gt;</span></a>
-<a class="sourceLine" id="cb562-8" data-line-number="8"><span class="co">#&gt;   Locked objects: TRUE</span></a>
-<a class="sourceLine" id="cb562-9" data-line-number="9"><span class="co">#&gt;   Locked class: FALSE</span></a>
-<a class="sourceLine" id="cb562-10" data-line-number="10"><span class="co">#&gt;   Portable: TRUE</span></a></code></pre></div>
+<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb561-1" data-line-number="1">Accumulator</a>
+<a class="sourceLine" id="cb561-2" data-line-number="2"><span class="co">#&gt; &lt;Accumulator&gt; object generator</span></a>
+<a class="sourceLine" id="cb561-3" data-line-number="3"><span class="co">#&gt;   Public:</span></a>
+<a class="sourceLine" id="cb561-4" data-line-number="4"><span class="co">#&gt;     sum: 0</span></a>
+<a class="sourceLine" id="cb561-5" data-line-number="5"><span class="co">#&gt;     add: function (x = 1) </span></a>
+<a class="sourceLine" id="cb561-6" data-line-number="6"><span class="co">#&gt;     clone: function (deep = FALSE) </span></a>
+<a class="sourceLine" id="cb561-7" data-line-number="7"><span class="co">#&gt;   Parent env: &lt;environment: R_GlobalEnv&gt;</span></a>
+<a class="sourceLine" id="cb561-8" data-line-number="8"><span class="co">#&gt;   Locked objects: TRUE</span></a>
+<a class="sourceLine" id="cb561-9" data-line-number="9"><span class="co">#&gt;   Locked class: FALSE</span></a>
+<a class="sourceLine" id="cb561-10" data-line-number="10"><span class="co">#&gt;   Portable: TRUE</span></a></code></pre></div>
 <p>You construct a new object from the class by calling the <code>new()</code> method. In R6, methods belong to objects, so you use <code>$</code> to access <code>new()</code>:</p>
-<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb563-1" data-line-number="1">x &lt;-<span class="st"> </span>Accumulator<span class="op">$</span><span class="kw">new</span>() </a></code></pre></div>
+<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb562-1" data-line-number="1">x &lt;-<span class="st"> </span>Accumulator<span class="op">$</span><span class="kw">new</span>() </a></code></pre></div>
 <p>You can then call methods and access fields with <code>$</code>:</p>
-<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb564-1" data-line-number="1">x<span class="op">$</span><span class="kw">add</span>(<span class="dv">4</span>) </a>
-<a class="sourceLine" id="cb564-2" data-line-number="2">x<span class="op">$</span>sum</a>
-<a class="sourceLine" id="cb564-3" data-line-number="3"><span class="co">#&gt; [1] 4</span></a></code></pre></div>
+<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb563-1" data-line-number="1">x<span class="op">$</span><span class="kw">add</span>(<span class="dv">4</span>) </a>
+<a class="sourceLine" id="cb563-2" data-line-number="2">x<span class="op">$</span>sum</a>
+<a class="sourceLine" id="cb563-3" data-line-number="3"><span class="co">#&gt; [1] 4</span></a></code></pre></div>
 <p>In this class, the fields and methods are public, which means that you can get or set the value of any field. Later, we’ll see how to use private fields and methods to prevent casual access to the internals of your class.</p>
 <p>To make it clear when we’re talking about fields and methods as opposed to variables and functions, I’ll prefix their names with <code>$</code>. For example, the <code>Accumulate</code> class has field <code>$sum</code> and method <code>$add()</code>.</p>
 <div id="method-chaining" class="section level3">
 <h3><span class="header-section-number">14.2.1</span> Method chaining</h3>
 <p><code>$add()</code> is called primarily for its side-effect of updating <code>$sum</code>.</p>
-<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb565-1" data-line-number="1">Accumulator &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Accumulator&quot;</span>, <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb565-2" data-line-number="2">  <span class="dt">sum =</span> <span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb565-3" data-line-number="3">  <span class="dt">add =</span> <span class="cf">function</span>(<span class="dt">x =</span> <span class="dv">1</span>) {</a>
-<a class="sourceLine" id="cb565-4" data-line-number="4">    self<span class="op">$</span>sum &lt;-<span class="st"> </span>self<span class="op">$</span>sum <span class="op">+</span><span class="st"> </span>x </a>
-<a class="sourceLine" id="cb565-5" data-line-number="5">    <span class="kw">invisible</span>(self)</a>
-<a class="sourceLine" id="cb565-6" data-line-number="6">  })</a>
-<a class="sourceLine" id="cb565-7" data-line-number="7">)</a></code></pre></div>
+<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb564-1" data-line-number="1">Accumulator &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Accumulator&quot;</span>, <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb564-2" data-line-number="2">  <span class="dt">sum =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb564-3" data-line-number="3">  <span class="dt">add =</span> <span class="cf">function</span>(<span class="dt">x =</span> <span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb564-4" data-line-number="4">    self<span class="op">$</span>sum &lt;-<span class="st"> </span>self<span class="op">$</span>sum <span class="op">+</span><span class="st"> </span>x </a>
+<a class="sourceLine" id="cb564-5" data-line-number="5">    <span class="kw">invisible</span>(self)</a>
+<a class="sourceLine" id="cb564-6" data-line-number="6">  })</a>
+<a class="sourceLine" id="cb564-7" data-line-number="7">)</a></code></pre></div>
 <p>Side-effect R6 methods should always return <code>self</code> invisibly. This returns the “current” object and makes it possible to chain together multiple method calls:</p>
-<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb566-1" data-line-number="1">x<span class="op">$</span><span class="kw">add</span>(<span class="dv">10</span>)<span class="op">$</span><span class="kw">add</span>(<span class="dv">10</span>)<span class="op">$</span>sum</a>
-<a class="sourceLine" id="cb566-2" data-line-number="2"><span class="co">#&gt; [1] 24</span></a></code></pre></div>
+<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb565-1" data-line-number="1">x<span class="op">$</span><span class="kw">add</span>(<span class="dv">10</span>)<span class="op">$</span><span class="kw">add</span>(<span class="dv">10</span>)<span class="op">$</span>sum</a>
+<a class="sourceLine" id="cb565-2" data-line-number="2"><span class="co">#&gt; [1] 24</span></a></code></pre></div>
 <p>For, readability, you might put one method call on each line:</p>
-<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb567-1" data-line-number="1">x<span class="op">$</span></a>
-<a class="sourceLine" id="cb567-2" data-line-number="2"><span class="st">  </span><span class="kw">add</span>(<span class="dv">10</span>)<span class="op">$</span></a>
-<a class="sourceLine" id="cb567-3" data-line-number="3"><span class="st">  </span><span class="kw">add</span>(<span class="dv">10</span>)<span class="op">$</span></a>
-<a class="sourceLine" id="cb567-4" data-line-number="4"><span class="st">  </span>sum</a>
-<a class="sourceLine" id="cb567-5" data-line-number="5"><span class="co">#&gt; [1] 44</span></a></code></pre></div>
+<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb566-1" data-line-number="1">x<span class="op">$</span></a>
+<a class="sourceLine" id="cb566-2" data-line-number="2"><span class="st">  </span><span class="kw">add</span>(<span class="dv">10</span>)<span class="op">$</span></a>
+<a class="sourceLine" id="cb566-3" data-line-number="3"><span class="st">  </span><span class="kw">add</span>(<span class="dv">10</span>)<span class="op">$</span></a>
+<a class="sourceLine" id="cb566-4" data-line-number="4"><span class="st">  </span>sum</a>
+<a class="sourceLine" id="cb566-5" data-line-number="5"><span class="co">#&gt; [1] 44</span></a></code></pre></div>
 <p>This technique is called <strong>method chaining</strong> and is commonly used in languages like Python and JavaScript. Method chaining is deeply related to the pipe, and we’ll discuss the pros and cons of each approach in Section <a href="oo-tradeoffs.html#tradeoffs-pipe">16.3.3</a>.</p>
 </div>
 <div id="r6-important-methods" class="section level3">
 <h3><span class="header-section-number">14.2.2</span> Important methods</h3>
 <p>There are two important methods that should be defined for most classes: <code>$initialize()</code> and <code>$print()</code>. They’re not required, but providing them will make your class easier to use.</p>
 <p><code>$initialize()</code> overrides the default behaviour of <code>$new()</code>. For example, the following code defines an Person class with fields <code>$name</code> and <code>$age</code>. To ensure that that <code>$name</code> is always a single string, and <code>$age</code> is always a single number, I placed checks in <code>$initialize()</code>.</p>
+<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb567-1" data-line-number="1">Person &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Person&quot;</span>, <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb567-2" data-line-number="2">  <span class="dt">name =</span> <span class="ot">NULL</span>,</a>
+<a class="sourceLine" id="cb567-3" data-line-number="3">  <span class="dt">age =</span> <span class="ot">NA</span>,</a>
+<a class="sourceLine" id="cb567-4" data-line-number="4">  <span class="dt">initialize =</span> <span class="cf">function</span>(name, <span class="dt">age =</span> <span class="ot">NA</span>) {</a>
+<a class="sourceLine" id="cb567-5" data-line-number="5">    <span class="kw">stopifnot</span>(<span class="kw">is.character</span>(name), <span class="kw">length</span>(name) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb567-6" data-line-number="6">    <span class="kw">stopifnot</span>(<span class="kw">is.numeric</span>(age), <span class="kw">length</span>(age) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb567-7" data-line-number="7">    </a>
+<a class="sourceLine" id="cb567-8" data-line-number="8">    self<span class="op">$</span>name &lt;-<span class="st"> </span>name</a>
+<a class="sourceLine" id="cb567-9" data-line-number="9">    self<span class="op">$</span>age &lt;-<span class="st"> </span>age</a>
+<a class="sourceLine" id="cb567-10" data-line-number="10">  }</a>
+<a class="sourceLine" id="cb567-11" data-line-number="11">))</a>
+<a class="sourceLine" id="cb567-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb567-13" data-line-number="13">hadley &lt;-<span class="st"> </span>Person<span class="op">$</span><span class="kw">new</span>(<span class="st">&quot;Hadley&quot;</span>, <span class="dt">age =</span> <span class="st">&quot;thirty-eight&quot;</span>)</a>
+<a class="sourceLine" id="cb567-14" data-line-number="14"><span class="co">#&gt; Error in .subset2(public_bind_env, &quot;initialize&quot;)(...):</span></a>
+<a class="sourceLine" id="cb567-15" data-line-number="15"><span class="co">#&gt;   is.numeric(age) is not TRUE</span></a>
+<a class="sourceLine" id="cb567-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb567-17" data-line-number="17">hadley &lt;-<span class="st"> </span>Person<span class="op">$</span><span class="kw">new</span>(<span class="st">&quot;Hadley&quot;</span>, <span class="dt">age =</span> <span class="dv">38</span>)</a></code></pre></div>
+<p>If you have more expensive validation requirements, implement them in a separate <code>$validate()</code> and only call when needed.</p>
+<p>Defining <code>$print()</code> allows you to override the default printing behaviour. As with any R6 method called for its side effects, <code>$print()</code> should return <code>invisible(self)</code>.</p>
 <div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb568-1" data-line-number="1">Person &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Person&quot;</span>, <span class="kw">list</span>(</a>
 <a class="sourceLine" id="cb568-2" data-line-number="2">  <span class="dt">name =</span> <span class="ot">NULL</span>,</a>
 <a class="sourceLine" id="cb568-3" data-line-number="3">  <span class="dt">age =</span> <span class="ot">NA</span>,</a>
 <a class="sourceLine" id="cb568-4" data-line-number="4">  <span class="dt">initialize =</span> <span class="cf">function</span>(name, <span class="dt">age =</span> <span class="ot">NA</span>) {</a>
-<a class="sourceLine" id="cb568-5" data-line-number="5">    <span class="kw">stopifnot</span>(<span class="kw">is.character</span>(name), <span class="kw">length</span>(name) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb568-6" data-line-number="6">    <span class="kw">stopifnot</span>(<span class="kw">is.numeric</span>(age), <span class="kw">length</span>(age) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb568-7" data-line-number="7">    </a>
-<a class="sourceLine" id="cb568-8" data-line-number="8">    self<span class="op">$</span>name &lt;-<span class="st"> </span>name</a>
-<a class="sourceLine" id="cb568-9" data-line-number="9">    self<span class="op">$</span>age &lt;-<span class="st"> </span>age</a>
-<a class="sourceLine" id="cb568-10" data-line-number="10">  }</a>
-<a class="sourceLine" id="cb568-11" data-line-number="11">))</a>
-<a class="sourceLine" id="cb568-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb568-13" data-line-number="13">hadley &lt;-<span class="st"> </span>Person<span class="op">$</span><span class="kw">new</span>(<span class="st">&quot;Hadley&quot;</span>, <span class="dt">age =</span> <span class="st">&quot;thirty-eight&quot;</span>)</a>
-<a class="sourceLine" id="cb568-14" data-line-number="14"><span class="co">#&gt; Error in .subset2(public_bind_env, &quot;initialize&quot;)(...):</span></a>
-<a class="sourceLine" id="cb568-15" data-line-number="15"><span class="co">#&gt;   is.numeric(age) is not TRUE</span></a>
-<a class="sourceLine" id="cb568-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb568-17" data-line-number="17">hadley &lt;-<span class="st"> </span>Person<span class="op">$</span><span class="kw">new</span>(<span class="st">&quot;Hadley&quot;</span>, <span class="dt">age =</span> <span class="dv">38</span>)</a></code></pre></div>
-<p>If you have more expensive validation requirements, implement them in a separate <code>$validate()</code> and only call when needed.</p>
-<p>Defining <code>$print()</code> allows you to override the default printing behaviour. As with any R6 method called for its side effects, <code>$print()</code> should return <code>invisible(self)</code>.</p>
-<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb569-1" data-line-number="1">Person &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Person&quot;</span>, <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb569-2" data-line-number="2">  <span class="dt">name =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb569-3" data-line-number="3">  <span class="dt">age =</span> <span class="ot">NA</span>,</a>
-<a class="sourceLine" id="cb569-4" data-line-number="4">  <span class="dt">initialize =</span> <span class="cf">function</span>(name, <span class="dt">age =</span> <span class="ot">NA</span>) {</a>
-<a class="sourceLine" id="cb569-5" data-line-number="5">    self<span class="op">$</span>name &lt;-<span class="st"> </span>name</a>
-<a class="sourceLine" id="cb569-6" data-line-number="6">    self<span class="op">$</span>age &lt;-<span class="st"> </span>age</a>
-<a class="sourceLine" id="cb569-7" data-line-number="7">  },</a>
-<a class="sourceLine" id="cb569-8" data-line-number="8">  <span class="dt">print =</span> <span class="cf">function</span>(...) {</a>
-<a class="sourceLine" id="cb569-9" data-line-number="9">    <span class="kw">cat</span>(<span class="st">&quot;Person: </span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
-<a class="sourceLine" id="cb569-10" data-line-number="10">    <span class="kw">cat</span>(<span class="st">&quot;  Name: &quot;</span>, self<span class="op">$</span>name, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a>
-<a class="sourceLine" id="cb569-11" data-line-number="11">    <span class="kw">cat</span>(<span class="st">&quot;  Age:  &quot;</span>, self<span class="op">$</span>age, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a>
-<a class="sourceLine" id="cb569-12" data-line-number="12">    <span class="kw">invisible</span>(self)</a>
-<a class="sourceLine" id="cb569-13" data-line-number="13">  }</a>
-<a class="sourceLine" id="cb569-14" data-line-number="14">))</a>
-<a class="sourceLine" id="cb569-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb569-16" data-line-number="16">hadley2 &lt;-<span class="st"> </span>Person<span class="op">$</span><span class="kw">new</span>(<span class="st">&quot;Hadley&quot;</span>)</a>
-<a class="sourceLine" id="cb569-17" data-line-number="17">hadley2</a>
-<a class="sourceLine" id="cb569-18" data-line-number="18"><span class="co">#&gt; Person: </span></a>
-<a class="sourceLine" id="cb569-19" data-line-number="19"><span class="co">#&gt;   Name: Hadley</span></a>
-<a class="sourceLine" id="cb569-20" data-line-number="20"><span class="co">#&gt;   Age:  NA</span></a></code></pre></div>
+<a class="sourceLine" id="cb568-5" data-line-number="5">    self<span class="op">$</span>name &lt;-<span class="st"> </span>name</a>
+<a class="sourceLine" id="cb568-6" data-line-number="6">    self<span class="op">$</span>age &lt;-<span class="st"> </span>age</a>
+<a class="sourceLine" id="cb568-7" data-line-number="7">  },</a>
+<a class="sourceLine" id="cb568-8" data-line-number="8">  <span class="dt">print =</span> <span class="cf">function</span>(...) {</a>
+<a class="sourceLine" id="cb568-9" data-line-number="9">    <span class="kw">cat</span>(<span class="st">&quot;Person: </span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
+<a class="sourceLine" id="cb568-10" data-line-number="10">    <span class="kw">cat</span>(<span class="st">&quot;  Name: &quot;</span>, self<span class="op">$</span>name, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a>
+<a class="sourceLine" id="cb568-11" data-line-number="11">    <span class="kw">cat</span>(<span class="st">&quot;  Age:  &quot;</span>, self<span class="op">$</span>age, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a>
+<a class="sourceLine" id="cb568-12" data-line-number="12">    <span class="kw">invisible</span>(self)</a>
+<a class="sourceLine" id="cb568-13" data-line-number="13">  }</a>
+<a class="sourceLine" id="cb568-14" data-line-number="14">))</a>
+<a class="sourceLine" id="cb568-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb568-16" data-line-number="16">hadley2 &lt;-<span class="st"> </span>Person<span class="op">$</span><span class="kw">new</span>(<span class="st">&quot;Hadley&quot;</span>)</a>
+<a class="sourceLine" id="cb568-17" data-line-number="17">hadley2</a>
+<a class="sourceLine" id="cb568-18" data-line-number="18"><span class="co">#&gt; Person: </span></a>
+<a class="sourceLine" id="cb568-19" data-line-number="19"><span class="co">#&gt;   Name: Hadley</span></a>
+<a class="sourceLine" id="cb568-20" data-line-number="20"><span class="co">#&gt;   Age:  NA</span></a></code></pre></div>
 <p>This code illustrates an important aspect of R6. Because methods are bound to individual objects, the previously created <code>hadley</code> object does not get this new method:</p>
-<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb570-1" data-line-number="1">hadley</a>
-<a class="sourceLine" id="cb570-2" data-line-number="2"><span class="co">#&gt; &lt;Person&gt;</span></a>
-<a class="sourceLine" id="cb570-3" data-line-number="3"><span class="co">#&gt;   Public:</span></a>
-<a class="sourceLine" id="cb570-4" data-line-number="4"><span class="co">#&gt;     age: 38</span></a>
-<a class="sourceLine" id="cb570-5" data-line-number="5"><span class="co">#&gt;     clone: function (deep = FALSE) </span></a>
-<a class="sourceLine" id="cb570-6" data-line-number="6"><span class="co">#&gt;     initialize: function (name, age = NA) </span></a>
-<a class="sourceLine" id="cb570-7" data-line-number="7"><span class="co">#&gt;     name: Hadley</span></a>
-<a class="sourceLine" id="cb570-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb570-9" data-line-number="9">hadley<span class="op">$</span>print</a>
-<a class="sourceLine" id="cb570-10" data-line-number="10"><span class="co">#&gt; NULL</span></a></code></pre></div>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb569-1" data-line-number="1">hadley</a>
+<a class="sourceLine" id="cb569-2" data-line-number="2"><span class="co">#&gt; &lt;Person&gt;</span></a>
+<a class="sourceLine" id="cb569-3" data-line-number="3"><span class="co">#&gt;   Public:</span></a>
+<a class="sourceLine" id="cb569-4" data-line-number="4"><span class="co">#&gt;     age: 38</span></a>
+<a class="sourceLine" id="cb569-5" data-line-number="5"><span class="co">#&gt;     clone: function (deep = FALSE) </span></a>
+<a class="sourceLine" id="cb569-6" data-line-number="6"><span class="co">#&gt;     initialize: function (name, age = NA) </span></a>
+<a class="sourceLine" id="cb569-7" data-line-number="7"><span class="co">#&gt;     name: Hadley</span></a>
+<a class="sourceLine" id="cb569-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb569-9" data-line-number="9">hadley<span class="op">$</span>print</a>
+<a class="sourceLine" id="cb569-10" data-line-number="10"><span class="co">#&gt; NULL</span></a></code></pre></div>
 <p>From the perspective of R6, there is no relationship between <code>hadley</code> and <code>hadley2</code>; they just coincidentally share the same class name. This doesn’t cause problems when using already developed R6 objects but can make interactive experimentation confusing. If you’re changing the code and can’t figure out why the results of method calls aren’t any different, make sure you’ve re-constructed R6 objects with the new class.</p>
 </div>
 <div id="adding-methods-after-creation" class="section level3">
 <h3><span class="header-section-number">14.2.3</span> Adding methods after creation</h3>
 <p>Instead of continuously creating new classes, it’s also possible to modify the fields and methods of an existing class. This is useful when exploring interactively, or when you have a class with many functions that you’d like to break up into pieces. Add new elements to an existing class with <code>$set()</code>, supplying the visibility (more on in Section <a href="r6.html#r6-access">14.3</a>), the name, and the component.</p>
-<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb571-1" data-line-number="1">Accumulator &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Accumulator&quot;</span>)</a>
-<a class="sourceLine" id="cb571-2" data-line-number="2">Accumulator<span class="op">$</span><span class="kw">set</span>(<span class="st">&quot;public&quot;</span>, <span class="st">&quot;sum&quot;</span>, <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb571-3" data-line-number="3">Accumulator<span class="op">$</span><span class="kw">set</span>(<span class="st">&quot;public&quot;</span>, <span class="st">&quot;add&quot;</span>, <span class="cf">function</span>(<span class="dt">x =</span> <span class="dv">1</span>) {</a>
-<a class="sourceLine" id="cb571-4" data-line-number="4">  self<span class="op">$</span>sum &lt;-<span class="st"> </span>self<span class="op">$</span>sum <span class="op">+</span><span class="st"> </span>x </a>
-<a class="sourceLine" id="cb571-5" data-line-number="5">})</a></code></pre></div>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb570-1" data-line-number="1">Accumulator &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Accumulator&quot;</span>)</a>
+<a class="sourceLine" id="cb570-2" data-line-number="2">Accumulator<span class="op">$</span><span class="kw">set</span>(<span class="st">&quot;public&quot;</span>, <span class="st">&quot;sum&quot;</span>, <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb570-3" data-line-number="3">Accumulator<span class="op">$</span><span class="kw">set</span>(<span class="st">&quot;public&quot;</span>, <span class="st">&quot;add&quot;</span>, <span class="cf">function</span>(<span class="dt">x =</span> <span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb570-4" data-line-number="4">  self<span class="op">$</span>sum &lt;-<span class="st"> </span>self<span class="op">$</span>sum <span class="op">+</span><span class="st"> </span>x </a>
+<a class="sourceLine" id="cb570-5" data-line-number="5">})</a></code></pre></div>
 <p>As above, new methods and fields are only available to new objects; they are not retrospectively added to existing objects.</p>
 </div>
 <div id="inheritance" class="section level3">
 <h3><span class="header-section-number">14.2.4</span> Inheritance</h3>
 <p>To inherit behaviour from an existing class, provide the class object to the <code>inherit</code> argument:</p>
-<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb572-1" data-line-number="1">AccumulatorChatty &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;AccumulatorChatty&quot;</span>, </a>
-<a class="sourceLine" id="cb572-2" data-line-number="2">  <span class="dt">inherit =</span> Accumulator,</a>
-<a class="sourceLine" id="cb572-3" data-line-number="3">  <span class="dt">public =</span> <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb572-4" data-line-number="4">    <span class="dt">add =</span> <span class="cf">function</span>(<span class="dt">x =</span> <span class="dv">1</span>) {</a>
-<a class="sourceLine" id="cb572-5" data-line-number="5">      <span class="kw">cat</span>(<span class="st">&quot;Adding &quot;</span>, x, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a>
-<a class="sourceLine" id="cb572-6" data-line-number="6">      super<span class="op">$</span><span class="kw">add</span>(<span class="dt">x =</span> x)</a>
-<a class="sourceLine" id="cb572-7" data-line-number="7">    }</a>
-<a class="sourceLine" id="cb572-8" data-line-number="8">  )</a>
-<a class="sourceLine" id="cb572-9" data-line-number="9">)</a>
-<a class="sourceLine" id="cb572-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb572-11" data-line-number="11">x2 &lt;-<span class="st"> </span>AccumulatorChatty<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb572-12" data-line-number="12">x2<span class="op">$</span><span class="kw">add</span>(<span class="dv">10</span>)<span class="op">$</span><span class="kw">add</span>(<span class="dv">1</span>)<span class="op">$</span>sum</a>
-<a class="sourceLine" id="cb572-13" data-line-number="13"><span class="co">#&gt; Adding 10</span></a>
-<a class="sourceLine" id="cb572-14" data-line-number="14"><span class="co">#&gt; Adding 1</span></a>
-<a class="sourceLine" id="cb572-15" data-line-number="15"><span class="co">#&gt; [1] 11</span></a></code></pre></div>
+<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb571-1" data-line-number="1">AccumulatorChatty &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;AccumulatorChatty&quot;</span>, </a>
+<a class="sourceLine" id="cb571-2" data-line-number="2">  <span class="dt">inherit =</span> Accumulator,</a>
+<a class="sourceLine" id="cb571-3" data-line-number="3">  <span class="dt">public =</span> <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb571-4" data-line-number="4">    <span class="dt">add =</span> <span class="cf">function</span>(<span class="dt">x =</span> <span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb571-5" data-line-number="5">      <span class="kw">cat</span>(<span class="st">&quot;Adding &quot;</span>, x, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a>
+<a class="sourceLine" id="cb571-6" data-line-number="6">      super<span class="op">$</span><span class="kw">add</span>(<span class="dt">x =</span> x)</a>
+<a class="sourceLine" id="cb571-7" data-line-number="7">    }</a>
+<a class="sourceLine" id="cb571-8" data-line-number="8">  )</a>
+<a class="sourceLine" id="cb571-9" data-line-number="9">)</a>
+<a class="sourceLine" id="cb571-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb571-11" data-line-number="11">x2 &lt;-<span class="st"> </span>AccumulatorChatty<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb571-12" data-line-number="12">x2<span class="op">$</span><span class="kw">add</span>(<span class="dv">10</span>)<span class="op">$</span><span class="kw">add</span>(<span class="dv">1</span>)<span class="op">$</span>sum</a>
+<a class="sourceLine" id="cb571-13" data-line-number="13"><span class="co">#&gt; Adding 10</span></a>
+<a class="sourceLine" id="cb571-14" data-line-number="14"><span class="co">#&gt; Adding 1</span></a>
+<a class="sourceLine" id="cb571-15" data-line-number="15"><span class="co">#&gt; [1] 11</span></a></code></pre></div>
 <p>Note that <code>$add()</code> overrides the implementation in the superclass, but we can delegate to the superclass implementation through <code>super$</code>. (This is analagous to <code>NextMethod()</code> in S3, as discussed in Section <a href="s3.html#s3-inheritance">13.6</a>.) Any methods which are not overridden will use the implementation in the parent class.</p>
 </div>
 <div id="introspection" class="section level3">
 <h3><span class="header-section-number">14.2.5</span> Introspection</h3>
 <p>Every R6 object has an S3 class that reflects its hierarchy of R6 classes. This means that the easiest way to determine the class (and all classes it inherits from) is to use <code>class()</code>:</p>
-<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb573-1" data-line-number="1"><span class="kw">class</span>(hadley2)</a>
-<a class="sourceLine" id="cb573-2" data-line-number="2"><span class="co">#&gt; [1] &quot;Person&quot; &quot;R6&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb572-1" data-line-number="1"><span class="kw">class</span>(hadley2)</a>
+<a class="sourceLine" id="cb572-2" data-line-number="2"><span class="co">#&gt; [1] &quot;Person&quot; &quot;R6&quot;</span></a></code></pre></div>
 <p>The S3 hierarchy includes the base “R6” class. This provides common behaviour, including a <code>print.R6()</code> method which calls <code>$print()</code>, as described above.</p>
 <p>You can list all methods and fields with <code>names()</code>:</p>
-<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb574-1" data-line-number="1"><span class="kw">names</span>(hadley2)</a>
-<a class="sourceLine" id="cb574-2" data-line-number="2"><span class="co">#&gt; [1] &quot;.__enclos_env__&quot; &quot;age&quot;             &quot;name&quot;            &quot;clone&quot;          </span></a>
-<a class="sourceLine" id="cb574-3" data-line-number="3"><span class="co">#&gt; [5] &quot;print&quot;           &quot;initialize&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb573-1" data-line-number="1"><span class="kw">names</span>(hadley2)</a>
+<a class="sourceLine" id="cb573-2" data-line-number="2"><span class="co">#&gt; [1] &quot;.__enclos_env__&quot; &quot;age&quot;             &quot;name&quot;            &quot;clone&quot;          </span></a>
+<a class="sourceLine" id="cb573-3" data-line-number="3"><span class="co">#&gt; [5] &quot;print&quot;           &quot;initialize&quot;</span></a></code></pre></div>
 <p>We defined <code>$name</code>, <code>$age</code>, <code>$print</code>, and <code>$initialize</code>. As suggested by the name <code>.__enclos_env__</code> is an internal implementation detail that you shouldn’t touch; we’ll come back to <code>$clone()</code> in Section <a href="r6.html#r6-semantics">14.4</a>.</p>
 </div>
 <div id="exercises-42" class="section level3">
@@ -1096,9 +1096,9 @@ you to go into overdraft, but charges you a fee.</p></li>
 able to draw cards from the deck with <code>$draw(n)</code>, and return all cards to
 the deck and reshuffle with <code>$reshuffle()</code>. Use the following code to make
 a vector of cards.</p>
-<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb575-1" data-line-number="1">suit &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;♠&quot;</span>, <span class="st">&quot;♥&quot;</span>, <span class="st">&quot;♦&quot;</span>, <span class="st">&quot;♣&quot;</span>)</a>
-<a class="sourceLine" id="cb575-2" data-line-number="2">value &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="dv">2</span><span class="op">:</span><span class="dv">10</span>, <span class="st">&quot;J&quot;</span>, <span class="st">&quot;Q&quot;</span>, <span class="st">&quot;K&quot;</span>)</a>
-<a class="sourceLine" id="cb575-3" data-line-number="3">cards &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">rep</span>(value, <span class="dv">4</span>), suit)</a></code></pre></div></li>
+<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb574-1" data-line-number="1">suit &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;♠&quot;</span>, <span class="st">&quot;♥&quot;</span>, <span class="st">&quot;♦&quot;</span>, <span class="st">&quot;♣&quot;</span>)</a>
+<a class="sourceLine" id="cb574-2" data-line-number="2">value &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="dv">2</span><span class="op">:</span><span class="dv">10</span>, <span class="st">&quot;J&quot;</span>, <span class="st">&quot;Q&quot;</span>, <span class="st">&quot;K&quot;</span>)</a>
+<a class="sourceLine" id="cb574-3" data-line-number="3">cards &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">rep</span>(value, <span class="dv">4</span>), suit)</a></code></pre></div></li>
 <li><p>Why can’t you model a bank account or a deck of cards with an S3 class?</p></li>
 <li><p>Create an R6 class that allows you to get and set the current timezone.
 You can access the current timezone with <code>Sys.timezone()</code> and set it
@@ -1135,93 +1135,93 @@ using <code>private$</code> instead of <code>self$</code>. You cannot access pri
 methods outside of the class.</p></li>
 </ul>
 <p>To make this concrete, we could make <code>$age</code> and <code>$name</code> fields of the Person class private. With this definition of <code>Person</code> we can only set <code>$age</code> and <code>$name</code> during object creation, and we cannot access their values from outside of the class.</p>
-<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb576-1" data-line-number="1">Person &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Person&quot;</span>, </a>
-<a class="sourceLine" id="cb576-2" data-line-number="2">  <span class="dt">public =</span> <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb576-3" data-line-number="3">    <span class="dt">initialize =</span> <span class="cf">function</span>(name, <span class="dt">age =</span> <span class="ot">NA</span>) {</a>
-<a class="sourceLine" id="cb576-4" data-line-number="4">      private<span class="op">$</span>name &lt;-<span class="st"> </span>name</a>
-<a class="sourceLine" id="cb576-5" data-line-number="5">      private<span class="op">$</span>age &lt;-<span class="st"> </span>age</a>
-<a class="sourceLine" id="cb576-6" data-line-number="6">    },</a>
-<a class="sourceLine" id="cb576-7" data-line-number="7">    <span class="dt">print =</span> <span class="cf">function</span>(...) {</a>
-<a class="sourceLine" id="cb576-8" data-line-number="8">      <span class="kw">cat</span>(<span class="st">&quot;Person: </span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
-<a class="sourceLine" id="cb576-9" data-line-number="9">      <span class="kw">cat</span>(<span class="st">&quot;  Name: &quot;</span>, private<span class="op">$</span>name, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a>
-<a class="sourceLine" id="cb576-10" data-line-number="10">      <span class="kw">cat</span>(<span class="st">&quot;  Age:  &quot;</span>, private<span class="op">$</span>age, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a>
-<a class="sourceLine" id="cb576-11" data-line-number="11">    }</a>
-<a class="sourceLine" id="cb576-12" data-line-number="12">  ),</a>
-<a class="sourceLine" id="cb576-13" data-line-number="13">  <span class="dt">private =</span> <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb576-14" data-line-number="14">    <span class="dt">age =</span> <span class="ot">NA</span>,</a>
-<a class="sourceLine" id="cb576-15" data-line-number="15">    <span class="dt">name =</span> <span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb576-16" data-line-number="16">  )</a>
-<a class="sourceLine" id="cb576-17" data-line-number="17">)</a>
-<a class="sourceLine" id="cb576-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb576-19" data-line-number="19">hadley3 &lt;-<span class="st"> </span>Person<span class="op">$</span><span class="kw">new</span>(<span class="st">&quot;Hadley&quot;</span>)</a>
-<a class="sourceLine" id="cb576-20" data-line-number="20">hadley3</a>
-<a class="sourceLine" id="cb576-21" data-line-number="21"><span class="co">#&gt; Person: </span></a>
-<a class="sourceLine" id="cb576-22" data-line-number="22"><span class="co">#&gt;   Name: Hadley</span></a>
-<a class="sourceLine" id="cb576-23" data-line-number="23"><span class="co">#&gt;   Age:  NA</span></a>
-<a class="sourceLine" id="cb576-24" data-line-number="24">hadley3<span class="op">$</span>name</a>
-<a class="sourceLine" id="cb576-25" data-line-number="25"><span class="co">#&gt; NULL</span></a></code></pre></div>
+<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb575-1" data-line-number="1">Person &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Person&quot;</span>, </a>
+<a class="sourceLine" id="cb575-2" data-line-number="2">  <span class="dt">public =</span> <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb575-3" data-line-number="3">    <span class="dt">initialize =</span> <span class="cf">function</span>(name, <span class="dt">age =</span> <span class="ot">NA</span>) {</a>
+<a class="sourceLine" id="cb575-4" data-line-number="4">      private<span class="op">$</span>name &lt;-<span class="st"> </span>name</a>
+<a class="sourceLine" id="cb575-5" data-line-number="5">      private<span class="op">$</span>age &lt;-<span class="st"> </span>age</a>
+<a class="sourceLine" id="cb575-6" data-line-number="6">    },</a>
+<a class="sourceLine" id="cb575-7" data-line-number="7">    <span class="dt">print =</span> <span class="cf">function</span>(...) {</a>
+<a class="sourceLine" id="cb575-8" data-line-number="8">      <span class="kw">cat</span>(<span class="st">&quot;Person: </span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
+<a class="sourceLine" id="cb575-9" data-line-number="9">      <span class="kw">cat</span>(<span class="st">&quot;  Name: &quot;</span>, private<span class="op">$</span>name, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a>
+<a class="sourceLine" id="cb575-10" data-line-number="10">      <span class="kw">cat</span>(<span class="st">&quot;  Age:  &quot;</span>, private<span class="op">$</span>age, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a>
+<a class="sourceLine" id="cb575-11" data-line-number="11">    }</a>
+<a class="sourceLine" id="cb575-12" data-line-number="12">  ),</a>
+<a class="sourceLine" id="cb575-13" data-line-number="13">  <span class="dt">private =</span> <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb575-14" data-line-number="14">    <span class="dt">age =</span> <span class="ot">NA</span>,</a>
+<a class="sourceLine" id="cb575-15" data-line-number="15">    <span class="dt">name =</span> <span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb575-16" data-line-number="16">  )</a>
+<a class="sourceLine" id="cb575-17" data-line-number="17">)</a>
+<a class="sourceLine" id="cb575-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb575-19" data-line-number="19">hadley3 &lt;-<span class="st"> </span>Person<span class="op">$</span><span class="kw">new</span>(<span class="st">&quot;Hadley&quot;</span>)</a>
+<a class="sourceLine" id="cb575-20" data-line-number="20">hadley3</a>
+<a class="sourceLine" id="cb575-21" data-line-number="21"><span class="co">#&gt; Person: </span></a>
+<a class="sourceLine" id="cb575-22" data-line-number="22"><span class="co">#&gt;   Name: Hadley</span></a>
+<a class="sourceLine" id="cb575-23" data-line-number="23"><span class="co">#&gt;   Age:  NA</span></a>
+<a class="sourceLine" id="cb575-24" data-line-number="24">hadley3<span class="op">$</span>name</a>
+<a class="sourceLine" id="cb575-25" data-line-number="25"><span class="co">#&gt; NULL</span></a></code></pre></div>
 <p>The distinction between public and private fields is important when you create complex networks of classes, and you want to make it as clear as possible what it’s ok for others to access. Anything that’s private can be more easily refactored because you know others aren’t relying on it. Private methods tend to be less important in R compared to other programming languages because the object hierarchies in R tend to be simpler.</p>
 </div>
 <div id="active-fields" class="section level3">
 <h3><span class="header-section-number">14.3.2</span> Active fields</h3>
 <p>Active fields allow you to define components that look like fields from the outside, but are defined with functions, like methods. Active fields are implemented using <strong>active bindings</strong> (see Section <a href="environments.html#advanced-bindings">6.2.7</a> for details). Each active binding is a function that takes a single argument: <code>value</code>. If the argument is <code>missing()</code>, the value is being retrieved; otherwise it’s being modified.</p>
 <p>For example, you could make an active field <code>random</code> that returns a different value every time you access it:</p>
-<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb577-1" data-line-number="1">Rando &lt;-<span class="st"> </span>R6<span class="op">::</span><span class="kw">R6Class</span>(<span class="st">&quot;Rando&quot;</span>, <span class="dt">active =</span> <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb577-2" data-line-number="2">  <span class="dt">random =</span> <span class="cf">function</span>(value) {</a>
-<a class="sourceLine" id="cb577-3" data-line-number="3">    <span class="cf">if</span> (<span class="kw">missing</span>(value)) {</a>
-<a class="sourceLine" id="cb577-4" data-line-number="4">      <span class="kw">runif</span>(<span class="dv">1</span>)  </a>
-<a class="sourceLine" id="cb577-5" data-line-number="5">    } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb577-6" data-line-number="6">      <span class="kw">stop</span>(<span class="st">&quot;Can&#39;t set `$random`&quot;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb577-7" data-line-number="7">    }</a>
-<a class="sourceLine" id="cb577-8" data-line-number="8">  }</a>
-<a class="sourceLine" id="cb577-9" data-line-number="9">))</a>
-<a class="sourceLine" id="cb577-10" data-line-number="10">x &lt;-<span class="st"> </span>Rando<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb577-11" data-line-number="11">x<span class="op">$</span>random</a>
-<a class="sourceLine" id="cb577-12" data-line-number="12"><span class="co">#&gt; [1] 0.0808</span></a>
-<a class="sourceLine" id="cb577-13" data-line-number="13">x<span class="op">$</span>random</a>
-<a class="sourceLine" id="cb577-14" data-line-number="14"><span class="co">#&gt; [1] 0.834</span></a>
-<a class="sourceLine" id="cb577-15" data-line-number="15">x<span class="op">$</span>random</a>
-<a class="sourceLine" id="cb577-16" data-line-number="16"><span class="co">#&gt; [1] 0.601</span></a></code></pre></div>
+<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb576-1" data-line-number="1">Rando &lt;-<span class="st"> </span>R6<span class="op">::</span><span class="kw">R6Class</span>(<span class="st">&quot;Rando&quot;</span>, <span class="dt">active =</span> <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb576-2" data-line-number="2">  <span class="dt">random =</span> <span class="cf">function</span>(value) {</a>
+<a class="sourceLine" id="cb576-3" data-line-number="3">    <span class="cf">if</span> (<span class="kw">missing</span>(value)) {</a>
+<a class="sourceLine" id="cb576-4" data-line-number="4">      <span class="kw">runif</span>(<span class="dv">1</span>)  </a>
+<a class="sourceLine" id="cb576-5" data-line-number="5">    } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb576-6" data-line-number="6">      <span class="kw">stop</span>(<span class="st">&quot;Can&#39;t set `$random`&quot;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb576-7" data-line-number="7">    }</a>
+<a class="sourceLine" id="cb576-8" data-line-number="8">  }</a>
+<a class="sourceLine" id="cb576-9" data-line-number="9">))</a>
+<a class="sourceLine" id="cb576-10" data-line-number="10">x &lt;-<span class="st"> </span>Rando<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb576-11" data-line-number="11">x<span class="op">$</span>random</a>
+<a class="sourceLine" id="cb576-12" data-line-number="12"><span class="co">#&gt; [1] 0.0808</span></a>
+<a class="sourceLine" id="cb576-13" data-line-number="13">x<span class="op">$</span>random</a>
+<a class="sourceLine" id="cb576-14" data-line-number="14"><span class="co">#&gt; [1] 0.834</span></a>
+<a class="sourceLine" id="cb576-15" data-line-number="15">x<span class="op">$</span>random</a>
+<a class="sourceLine" id="cb576-16" data-line-number="16"><span class="co">#&gt; [1] 0.601</span></a></code></pre></div>
 <p>Active fields are particularly useful in conjunction with private fields, because they make it possible to implement components that look like fields from the outside but provide additional checks. For example, we can use then make a read-only <code>age</code> field, and to ensure that <code>name</code> is a length 1 character vector.</p>
-<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb578-1" data-line-number="1">Person &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Person&quot;</span>, </a>
-<a class="sourceLine" id="cb578-2" data-line-number="2">  <span class="dt">private =</span> <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb578-3" data-line-number="3">    <span class="dt">.age =</span> <span class="ot">NA</span>,</a>
-<a class="sourceLine" id="cb578-4" data-line-number="4">    <span class="dt">.name =</span> <span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb578-5" data-line-number="5">  ),</a>
-<a class="sourceLine" id="cb578-6" data-line-number="6">  <span class="dt">active =</span> <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb578-7" data-line-number="7">    <span class="dt">age =</span> <span class="cf">function</span>(value) {</a>
-<a class="sourceLine" id="cb578-8" data-line-number="8">      <span class="cf">if</span> (<span class="kw">missing</span>(value)) {</a>
-<a class="sourceLine" id="cb578-9" data-line-number="9">        private<span class="op">$</span>.age</a>
-<a class="sourceLine" id="cb578-10" data-line-number="10">      } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb578-11" data-line-number="11">        <span class="kw">stop</span>(<span class="st">&quot;`$age` is read only&quot;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb578-12" data-line-number="12">      }</a>
-<a class="sourceLine" id="cb578-13" data-line-number="13">    },</a>
-<a class="sourceLine" id="cb578-14" data-line-number="14">    <span class="dt">name =</span> <span class="cf">function</span>(value) {</a>
-<a class="sourceLine" id="cb578-15" data-line-number="15">      <span class="cf">if</span> (<span class="kw">missing</span>(value)) {</a>
-<a class="sourceLine" id="cb578-16" data-line-number="16">        private<span class="op">$</span>.name</a>
-<a class="sourceLine" id="cb578-17" data-line-number="17">      } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb578-18" data-line-number="18">        <span class="kw">stopifnot</span>(<span class="kw">is.character</span>(value), <span class="kw">length</span>(value) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb578-19" data-line-number="19">        private<span class="op">$</span>.name &lt;-<span class="st"> </span>value</a>
-<a class="sourceLine" id="cb578-20" data-line-number="20">        self</a>
-<a class="sourceLine" id="cb578-21" data-line-number="21">      }</a>
-<a class="sourceLine" id="cb578-22" data-line-number="22">    }</a>
-<a class="sourceLine" id="cb578-23" data-line-number="23">  ),</a>
-<a class="sourceLine" id="cb578-24" data-line-number="24">  <span class="dt">public =</span> <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb578-25" data-line-number="25">    <span class="dt">initialize =</span> <span class="cf">function</span>(name, <span class="dt">age =</span> <span class="ot">NA</span>) {</a>
-<a class="sourceLine" id="cb578-26" data-line-number="26">      private<span class="op">$</span>.name &lt;-<span class="st"> </span>name</a>
-<a class="sourceLine" id="cb578-27" data-line-number="27">      private<span class="op">$</span>.age &lt;-<span class="st"> </span>age</a>
-<a class="sourceLine" id="cb578-28" data-line-number="28">    }</a>
-<a class="sourceLine" id="cb578-29" data-line-number="29">  )</a>
-<a class="sourceLine" id="cb578-30" data-line-number="30">)</a>
-<a class="sourceLine" id="cb578-31" data-line-number="31"></a>
-<a class="sourceLine" id="cb578-32" data-line-number="32">hadley4 &lt;-<span class="st"> </span>Person<span class="op">$</span><span class="kw">new</span>(<span class="st">&quot;Hadley&quot;</span>, <span class="dt">age =</span> <span class="dv">38</span>)</a>
-<a class="sourceLine" id="cb578-33" data-line-number="33">hadley4<span class="op">$</span>name</a>
-<a class="sourceLine" id="cb578-34" data-line-number="34"><span class="co">#&gt; [1] &quot;Hadley&quot;</span></a>
-<a class="sourceLine" id="cb578-35" data-line-number="35">hadley4<span class="op">$</span>name &lt;-<span class="st"> </span><span class="dv">10</span></a>
-<a class="sourceLine" id="cb578-36" data-line-number="36"><span class="co">#&gt; Error in (function (value) :</span></a>
-<a class="sourceLine" id="cb578-37" data-line-number="37"><span class="co">#&gt;   is.character(value) is not TRUE</span></a>
-<a class="sourceLine" id="cb578-38" data-line-number="38">hadley4<span class="op">$</span>age &lt;-<span class="st"> </span><span class="dv">20</span></a>
-<a class="sourceLine" id="cb578-39" data-line-number="39"><span class="co">#&gt; Error: `$age` is read only</span></a></code></pre></div>
+<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb577-1" data-line-number="1">Person &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;Person&quot;</span>, </a>
+<a class="sourceLine" id="cb577-2" data-line-number="2">  <span class="dt">private =</span> <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb577-3" data-line-number="3">    <span class="dt">.age =</span> <span class="ot">NA</span>,</a>
+<a class="sourceLine" id="cb577-4" data-line-number="4">    <span class="dt">.name =</span> <span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb577-5" data-line-number="5">  ),</a>
+<a class="sourceLine" id="cb577-6" data-line-number="6">  <span class="dt">active =</span> <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb577-7" data-line-number="7">    <span class="dt">age =</span> <span class="cf">function</span>(value) {</a>
+<a class="sourceLine" id="cb577-8" data-line-number="8">      <span class="cf">if</span> (<span class="kw">missing</span>(value)) {</a>
+<a class="sourceLine" id="cb577-9" data-line-number="9">        private<span class="op">$</span>.age</a>
+<a class="sourceLine" id="cb577-10" data-line-number="10">      } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb577-11" data-line-number="11">        <span class="kw">stop</span>(<span class="st">&quot;`$age` is read only&quot;</span>, <span class="dt">call. =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb577-12" data-line-number="12">      }</a>
+<a class="sourceLine" id="cb577-13" data-line-number="13">    },</a>
+<a class="sourceLine" id="cb577-14" data-line-number="14">    <span class="dt">name =</span> <span class="cf">function</span>(value) {</a>
+<a class="sourceLine" id="cb577-15" data-line-number="15">      <span class="cf">if</span> (<span class="kw">missing</span>(value)) {</a>
+<a class="sourceLine" id="cb577-16" data-line-number="16">        private<span class="op">$</span>.name</a>
+<a class="sourceLine" id="cb577-17" data-line-number="17">      } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb577-18" data-line-number="18">        <span class="kw">stopifnot</span>(<span class="kw">is.character</span>(value), <span class="kw">length</span>(value) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb577-19" data-line-number="19">        private<span class="op">$</span>.name &lt;-<span class="st"> </span>value</a>
+<a class="sourceLine" id="cb577-20" data-line-number="20">        self</a>
+<a class="sourceLine" id="cb577-21" data-line-number="21">      }</a>
+<a class="sourceLine" id="cb577-22" data-line-number="22">    }</a>
+<a class="sourceLine" id="cb577-23" data-line-number="23">  ),</a>
+<a class="sourceLine" id="cb577-24" data-line-number="24">  <span class="dt">public =</span> <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb577-25" data-line-number="25">    <span class="dt">initialize =</span> <span class="cf">function</span>(name, <span class="dt">age =</span> <span class="ot">NA</span>) {</a>
+<a class="sourceLine" id="cb577-26" data-line-number="26">      private<span class="op">$</span>.name &lt;-<span class="st"> </span>name</a>
+<a class="sourceLine" id="cb577-27" data-line-number="27">      private<span class="op">$</span>.age &lt;-<span class="st"> </span>age</a>
+<a class="sourceLine" id="cb577-28" data-line-number="28">    }</a>
+<a class="sourceLine" id="cb577-29" data-line-number="29">  )</a>
+<a class="sourceLine" id="cb577-30" data-line-number="30">)</a>
+<a class="sourceLine" id="cb577-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb577-32" data-line-number="32">hadley4 &lt;-<span class="st"> </span>Person<span class="op">$</span><span class="kw">new</span>(<span class="st">&quot;Hadley&quot;</span>, <span class="dt">age =</span> <span class="dv">38</span>)</a>
+<a class="sourceLine" id="cb577-33" data-line-number="33">hadley4<span class="op">$</span>name</a>
+<a class="sourceLine" id="cb577-34" data-line-number="34"><span class="co">#&gt; [1] &quot;Hadley&quot;</span></a>
+<a class="sourceLine" id="cb577-35" data-line-number="35">hadley4<span class="op">$</span>name &lt;-<span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb577-36" data-line-number="36"><span class="co">#&gt; Error in (function (value) :</span></a>
+<a class="sourceLine" id="cb577-37" data-line-number="37"><span class="co">#&gt;   is.character(value) is not TRUE</span></a>
+<a class="sourceLine" id="cb577-38" data-line-number="38">hadley4<span class="op">$</span>age &lt;-<span class="st"> </span><span class="dv">20</span></a>
+<a class="sourceLine" id="cb577-39" data-line-number="39"><span class="co">#&gt; Error: `$age` is read only</span></a></code></pre></div>
 </div>
 <div id="exercises-43" class="section level3">
 <h3><span class="header-section-number">14.3.3</span> Exercises</h3>
@@ -1243,21 +1243,21 @@ an experiment to find out.</p></li>
 <div id="r6-semantics" class="section level2">
 <h2><span class="header-section-number">14.4</span> Reference semantics</h2>
 <p>One of the big differences between R6 and most other objects is that they have reference semantics. The primary consequence of reference semantics is that objects are not copied when modified:</p>
+<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb578-1" data-line-number="1">y1 &lt;-<span class="st"> </span>Accumulator<span class="op">$</span><span class="kw">new</span>() </a>
+<a class="sourceLine" id="cb578-2" data-line-number="2">y2 &lt;-<span class="st"> </span>y1</a>
+<a class="sourceLine" id="cb578-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb578-4" data-line-number="4">y1<span class="op">$</span><span class="kw">add</span>(<span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb578-5" data-line-number="5"><span class="kw">c</span>(<span class="dt">y1 =</span> y1<span class="op">$</span>sum, <span class="dt">y2 =</span> y2<span class="op">$</span>sum)</a>
+<a class="sourceLine" id="cb578-6" data-line-number="6"><span class="co">#&gt; y1 y2 </span></a>
+<a class="sourceLine" id="cb578-7" data-line-number="7"><span class="co">#&gt; 10 10</span></a></code></pre></div>
+<p>Instead, if you want a copy, you’ll need to explicitly <code>$clone()</code> the object:</p>
 <div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb579-1" data-line-number="1">y1 &lt;-<span class="st"> </span>Accumulator<span class="op">$</span><span class="kw">new</span>() </a>
-<a class="sourceLine" id="cb579-2" data-line-number="2">y2 &lt;-<span class="st"> </span>y1</a>
+<a class="sourceLine" id="cb579-2" data-line-number="2">y2 &lt;-<span class="st"> </span>y1<span class="op">$</span><span class="kw">clone</span>()</a>
 <a class="sourceLine" id="cb579-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb579-4" data-line-number="4">y1<span class="op">$</span><span class="kw">add</span>(<span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb579-5" data-line-number="5"><span class="kw">c</span>(<span class="dt">y1 =</span> y1<span class="op">$</span>sum, <span class="dt">y2 =</span> y2<span class="op">$</span>sum)</a>
 <a class="sourceLine" id="cb579-6" data-line-number="6"><span class="co">#&gt; y1 y2 </span></a>
-<a class="sourceLine" id="cb579-7" data-line-number="7"><span class="co">#&gt; 10 10</span></a></code></pre></div>
-<p>Instead, if you want a copy, you’ll need to explicitly <code>$clone()</code> the object:</p>
-<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb580-1" data-line-number="1">y1 &lt;-<span class="st"> </span>Accumulator<span class="op">$</span><span class="kw">new</span>() </a>
-<a class="sourceLine" id="cb580-2" data-line-number="2">y2 &lt;-<span class="st"> </span>y1<span class="op">$</span><span class="kw">clone</span>()</a>
-<a class="sourceLine" id="cb580-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb580-4" data-line-number="4">y1<span class="op">$</span><span class="kw">add</span>(<span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb580-5" data-line-number="5"><span class="kw">c</span>(<span class="dt">y1 =</span> y1<span class="op">$</span>sum, <span class="dt">y2 =</span> y2<span class="op">$</span>sum)</a>
-<a class="sourceLine" id="cb580-6" data-line-number="6"><span class="co">#&gt; y1 y2 </span></a>
-<a class="sourceLine" id="cb580-7" data-line-number="7"><span class="co">#&gt; 10  0</span></a></code></pre></div>
+<a class="sourceLine" id="cb579-7" data-line-number="7"><span class="co">#&gt; 10  0</span></a></code></pre></div>
 <p>(Note that <code>$clone()</code> does not recursively clone nested R6 objects. If you want that, you’ll need to use <code>$clone(deep = TRUE)</code>.)</p>
 <p>There are three other less obvious consequences:</p>
 <ul>
@@ -1272,77 +1272,77 @@ can write a <code>$finalize()</code> to complement the <code>$initialize()</code
 <div id="reasoning" class="section level3">
 <h3><span class="header-section-number">14.4.1</span> Reasoning</h3>
 <p>Generally, reference semantics makes code harder to reason about. Take this very simple example:</p>
-<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb581-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">a =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb581-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">b =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb581-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb581-4" data-line-number="4">z &lt;-<span class="st"> </span><span class="kw">f</span>(x, y)</a></code></pre></div>
+<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb580-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">a =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb580-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">b =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb580-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb580-4" data-line-number="4">z &lt;-<span class="st"> </span><span class="kw">f</span>(x, y)</a></code></pre></div>
 <p>For the vast majority of functions, you know that the final line only modifies <code>z</code>.</p>
 <p>Take a similar example that uses an imaginary <code>List</code> reference class:</p>
-<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb582-1" data-line-number="1">x &lt;-<span class="st"> </span>List<span class="op">$</span><span class="kw">new</span>(<span class="dt">a =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb582-2" data-line-number="2">y &lt;-<span class="st"> </span>List<span class="op">$</span><span class="kw">new</span>(<span class="dt">b =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb582-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb582-4" data-line-number="4">z &lt;-<span class="st"> </span><span class="kw">f</span>(x, y)</a></code></pre></div>
+<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb581-1" data-line-number="1">x &lt;-<span class="st"> </span>List<span class="op">$</span><span class="kw">new</span>(<span class="dt">a =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb581-2" data-line-number="2">y &lt;-<span class="st"> </span>List<span class="op">$</span><span class="kw">new</span>(<span class="dt">b =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb581-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb581-4" data-line-number="4">z &lt;-<span class="st"> </span><span class="kw">f</span>(x, y)</a></code></pre></div>
 <p>The final line is much harder to reason about: if <code>f()</code> calls methods of <code>x</code> or <code>y</code>, it might modify them as well as <code>z</code>. This is the biggest potential downside of R6 and you should take care to avoid it by writing functions that either return a value, or modify their R6 inputs, but not both. That said, doing both can lead to substantially simpler code in some cases, and we’ll discuss this further in Section <a href="oo-tradeoffs.html#threading-state">16.3.2</a>.</p>
 </div>
 <div id="finalizer" class="section level3">
 <h3><span class="header-section-number">14.4.2</span> Finalizer</h3>
 <p>One useful property of reference semantics is that it makes sense to think about when an R6 object is <strong>finalized</strong>, i.e. when it’s deleted. This doesn’t make sense for most objects because copy-on-modify semantics mean that there may be many transient versions of an object, as alluded to in Section <a href="names-values.html#gc">2.6</a>. For example, the following creates two factor objects: the second is created when the levels are modified, leaving the first to be destroyed by the garbage collector.</p>
-<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb583-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>))</a>
-<a class="sourceLine" id="cb583-2" data-line-number="2"><span class="kw">levels</span>(x) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;c&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;a&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb582-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>))</a>
+<a class="sourceLine" id="cb582-2" data-line-number="2"><span class="kw">levels</span>(x) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;c&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;a&quot;</span>)</a></code></pre></div>
 <p>Since R6 objects are not copied-on-modify they are only deleted once, and it makes sense to think about <code>$finalize()</code> as a complement to <code>$initialize()</code>. Finalizers usually play a similar role to <code>on.exit()</code> (as described in Section <a href="functions.html#on-exit">5.7.4</a>), cleaning up any resources created by the initializer. For example, the following class wraps up a temporary file, automatically deleting it when the class is finalized.</p>
-<div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb584-1" data-line-number="1">TemporaryFile &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;TemporaryFile&quot;</span>, <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb584-2" data-line-number="2">  <span class="dt">path =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb584-3" data-line-number="3">  <span class="dt">initialize =</span> <span class="cf">function</span>() {</a>
-<a class="sourceLine" id="cb584-4" data-line-number="4">    self<span class="op">$</span>path &lt;-<span class="st"> </span><span class="kw">tempfile</span>()</a>
-<a class="sourceLine" id="cb584-5" data-line-number="5">  },</a>
-<a class="sourceLine" id="cb584-6" data-line-number="6">  <span class="dt">finalize =</span> <span class="cf">function</span>() {</a>
-<a class="sourceLine" id="cb584-7" data-line-number="7">    <span class="kw">message</span>(<span class="st">&quot;Cleaning up &quot;</span>, self<span class="op">$</span>path)</a>
-<a class="sourceLine" id="cb584-8" data-line-number="8">    <span class="kw">unlink</span>(self<span class="op">$</span>path)</a>
-<a class="sourceLine" id="cb584-9" data-line-number="9">  }</a>
-<a class="sourceLine" id="cb584-10" data-line-number="10">))</a></code></pre></div>
+<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb583-1" data-line-number="1">TemporaryFile &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;TemporaryFile&quot;</span>, <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb583-2" data-line-number="2">  <span class="dt">path =</span> <span class="ot">NULL</span>,</a>
+<a class="sourceLine" id="cb583-3" data-line-number="3">  <span class="dt">initialize =</span> <span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb583-4" data-line-number="4">    self<span class="op">$</span>path &lt;-<span class="st"> </span><span class="kw">tempfile</span>()</a>
+<a class="sourceLine" id="cb583-5" data-line-number="5">  },</a>
+<a class="sourceLine" id="cb583-6" data-line-number="6">  <span class="dt">finalize =</span> <span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb583-7" data-line-number="7">    <span class="kw">message</span>(<span class="st">&quot;Cleaning up &quot;</span>, self<span class="op">$</span>path)</a>
+<a class="sourceLine" id="cb583-8" data-line-number="8">    <span class="kw">unlink</span>(self<span class="op">$</span>path)</a>
+<a class="sourceLine" id="cb583-9" data-line-number="9">  }</a>
+<a class="sourceLine" id="cb583-10" data-line-number="10">))</a></code></pre></div>
 <p>The finalize method will be run when the object is deleted (or more precisely, by the first garbage collection after the object has been unbound from all names) or when R exits. This means that the finalizer can called effectively anywhere in your R code, and therefore it’s almost impossible to reason about finalizer code that touches shared data structures. Avoid these potential problems by only using the finalizer to clean up private resources allocated by initializer.</p>
-<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb585-1" data-line-number="1">tf &lt;-<span class="st"> </span>TemporaryFile<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb585-2" data-line-number="2"><span class="kw">rm</span>(tf)</a>
-<a class="sourceLine" id="cb585-3" data-line-number="3"><span class="co">#&gt; Cleaning up /tmp/Rtmpk73JdI/file155f31d8424bd</span></a></code></pre></div>
+<div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb584-1" data-line-number="1">tf &lt;-<span class="st"> </span>TemporaryFile<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb584-2" data-line-number="2"><span class="kw">rm</span>(tf)</a>
+<a class="sourceLine" id="cb584-3" data-line-number="3"><span class="co">#&gt; Cleaning up /tmp/Rtmpk73JdI/file155f31d8424bd</span></a></code></pre></div>
 </div>
 <div id="r6-fields" class="section level3">
 <h3><span class="header-section-number">14.4.3</span> R6 fields</h3>
 <p>A final consequence of reference semantics can crop up where you don’t expect it. If you use a R6 class as the default value of a field, it will be shared across all instances of the object! Take the following code: we want to create a temporary database every time we call <code>TemporaryDatabase$new()</code>, but the current code always uses the same path.</p>
-<div class="sourceCode" id="cb586"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb586-1" data-line-number="1">TemporaryDatabase &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;TemporaryDatabase&quot;</span>, <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb586-2" data-line-number="2">  <span class="dt">con =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb586-3" data-line-number="3">  <span class="dt">file =</span> TemporaryFile<span class="op">$</span><span class="kw">new</span>(),</a>
-<a class="sourceLine" id="cb586-4" data-line-number="4">  <span class="dt">initialize =</span> <span class="cf">function</span>() {</a>
-<a class="sourceLine" id="cb586-5" data-line-number="5">    self<span class="op">$</span>con &lt;-<span class="st"> </span>DBI<span class="op">::</span><span class="kw">dbConnect</span>(RSQLite<span class="op">::</span><span class="kw">SQLite</span>(), <span class="dt">path =</span> file<span class="op">$</span>path)</a>
-<a class="sourceLine" id="cb586-6" data-line-number="6">  },</a>
-<a class="sourceLine" id="cb586-7" data-line-number="7">  <span class="dt">finalize =</span> <span class="cf">function</span>() {</a>
-<a class="sourceLine" id="cb586-8" data-line-number="8">    DBI<span class="op">::</span><span class="kw">dbDisconnect</span>(self<span class="op">$</span>con)</a>
-<a class="sourceLine" id="cb586-9" data-line-number="9">  }</a>
-<a class="sourceLine" id="cb586-10" data-line-number="10">))</a>
-<a class="sourceLine" id="cb586-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb586-12" data-line-number="12">db_a &lt;-<span class="st"> </span>TemporaryDatabase<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb586-13" data-line-number="13">db_b &lt;-<span class="st"> </span>TemporaryDatabase<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb586-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb586-15" data-line-number="15">db_a<span class="op">$</span>file<span class="op">$</span>path <span class="op">==</span><span class="st"> </span>db_b<span class="op">$</span>file<span class="op">$</span>path</a>
-<a class="sourceLine" id="cb586-16" data-line-number="16"><span class="co">#&gt; [1] TRUE</span></a></code></pre></div>
+<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb585-1" data-line-number="1">TemporaryDatabase &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;TemporaryDatabase&quot;</span>, <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb585-2" data-line-number="2">  <span class="dt">con =</span> <span class="ot">NULL</span>,</a>
+<a class="sourceLine" id="cb585-3" data-line-number="3">  <span class="dt">file =</span> TemporaryFile<span class="op">$</span><span class="kw">new</span>(),</a>
+<a class="sourceLine" id="cb585-4" data-line-number="4">  <span class="dt">initialize =</span> <span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb585-5" data-line-number="5">    self<span class="op">$</span>con &lt;-<span class="st"> </span>DBI<span class="op">::</span><span class="kw">dbConnect</span>(RSQLite<span class="op">::</span><span class="kw">SQLite</span>(), <span class="dt">path =</span> file<span class="op">$</span>path)</a>
+<a class="sourceLine" id="cb585-6" data-line-number="6">  },</a>
+<a class="sourceLine" id="cb585-7" data-line-number="7">  <span class="dt">finalize =</span> <span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb585-8" data-line-number="8">    DBI<span class="op">::</span><span class="kw">dbDisconnect</span>(self<span class="op">$</span>con)</a>
+<a class="sourceLine" id="cb585-9" data-line-number="9">  }</a>
+<a class="sourceLine" id="cb585-10" data-line-number="10">))</a>
+<a class="sourceLine" id="cb585-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb585-12" data-line-number="12">db_a &lt;-<span class="st"> </span>TemporaryDatabase<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb585-13" data-line-number="13">db_b &lt;-<span class="st"> </span>TemporaryDatabase<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb585-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb585-15" data-line-number="15">db_a<span class="op">$</span>file<span class="op">$</span>path <span class="op">==</span><span class="st"> </span>db_b<span class="op">$</span>file<span class="op">$</span>path</a>
+<a class="sourceLine" id="cb585-16" data-line-number="16"><span class="co">#&gt; [1] TRUE</span></a></code></pre></div>
 <p>(If you’re familiar with Python, this is very similar to the “mutable default argument” problem.)</p>
 <p>The problem arises because <code>TemporaryFile$new()</code> is called only once when the <code>TemporaryDatabase</code> class is defined. To fix the problem, we need to make sure it’s called every time that <code>TemporaryDatabase$new()</code> is called, i.e. we need to put it in <code>$initialize()</code>:</p>
-<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb587-1" data-line-number="1">TemporaryDatabase &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;TemporaryDatabase&quot;</span>, <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb587-2" data-line-number="2">  <span class="dt">con =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb587-3" data-line-number="3">  <span class="dt">file =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb587-4" data-line-number="4">  <span class="dt">initialize =</span> <span class="cf">function</span>() {</a>
-<a class="sourceLine" id="cb587-5" data-line-number="5">    self<span class="op">$</span>file &lt;-<span class="st"> </span>TemporaryFile<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb587-6" data-line-number="6">    self<span class="op">$</span>con &lt;-<span class="st"> </span>DBI<span class="op">::</span><span class="kw">dbConnect</span>(RSQLite<span class="op">::</span><span class="kw">SQLite</span>(), <span class="dt">path =</span> file<span class="op">$</span>path)</a>
-<a class="sourceLine" id="cb587-7" data-line-number="7">  },</a>
-<a class="sourceLine" id="cb587-8" data-line-number="8">  <span class="dt">finalize =</span> <span class="cf">function</span>() {</a>
-<a class="sourceLine" id="cb587-9" data-line-number="9">    DBI<span class="op">::</span><span class="kw">dbDisconnect</span>(self<span class="op">$</span>con)</a>
-<a class="sourceLine" id="cb587-10" data-line-number="10">  }</a>
-<a class="sourceLine" id="cb587-11" data-line-number="11">))</a>
-<a class="sourceLine" id="cb587-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb587-13" data-line-number="13">db_a &lt;-<span class="st"> </span>TemporaryDatabase<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb587-14" data-line-number="14">db_b &lt;-<span class="st"> </span>TemporaryDatabase<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb587-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb587-16" data-line-number="16">db_a<span class="op">$</span>file<span class="op">$</span>path <span class="op">==</span><span class="st"> </span>db_b<span class="op">$</span>file<span class="op">$</span>path</a>
-<a class="sourceLine" id="cb587-17" data-line-number="17"><span class="co">#&gt; [1] FALSE</span></a></code></pre></div>
+<div class="sourceCode" id="cb586"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb586-1" data-line-number="1">TemporaryDatabase &lt;-<span class="st"> </span><span class="kw">R6Class</span>(<span class="st">&quot;TemporaryDatabase&quot;</span>, <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb586-2" data-line-number="2">  <span class="dt">con =</span> <span class="ot">NULL</span>,</a>
+<a class="sourceLine" id="cb586-3" data-line-number="3">  <span class="dt">file =</span> <span class="ot">NULL</span>,</a>
+<a class="sourceLine" id="cb586-4" data-line-number="4">  <span class="dt">initialize =</span> <span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb586-5" data-line-number="5">    self<span class="op">$</span>file &lt;-<span class="st"> </span>TemporaryFile<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb586-6" data-line-number="6">    self<span class="op">$</span>con &lt;-<span class="st"> </span>DBI<span class="op">::</span><span class="kw">dbConnect</span>(RSQLite<span class="op">::</span><span class="kw">SQLite</span>(), <span class="dt">path =</span> file<span class="op">$</span>path)</a>
+<a class="sourceLine" id="cb586-7" data-line-number="7">  },</a>
+<a class="sourceLine" id="cb586-8" data-line-number="8">  <span class="dt">finalize =</span> <span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb586-9" data-line-number="9">    DBI<span class="op">::</span><span class="kw">dbDisconnect</span>(self<span class="op">$</span>con)</a>
+<a class="sourceLine" id="cb586-10" data-line-number="10">  }</a>
+<a class="sourceLine" id="cb586-11" data-line-number="11">))</a>
+<a class="sourceLine" id="cb586-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb586-13" data-line-number="13">db_a &lt;-<span class="st"> </span>TemporaryDatabase<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb586-14" data-line-number="14">db_b &lt;-<span class="st"> </span>TemporaryDatabase<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb586-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb586-16" data-line-number="16">db_a<span class="op">$</span>file<span class="op">$</span>path <span class="op">==</span><span class="st"> </span>db_b<span class="op">$</span>file<span class="op">$</span>path</a>
+<a class="sourceLine" id="cb586-17" data-line-number="17"><span class="co">#&gt; [1] FALSE</span></a></code></pre></div>
 </div>
 <div id="exercises-44" class="section level3">
 <h3><span class="header-section-number">14.4.4</span> Exercises</h3>
@@ -1421,7 +1421,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/R6.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

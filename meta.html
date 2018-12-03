@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -908,130 +908,130 @@ In particular, this book focusses on tidy evaluation, or tidy eval for short. Ti
 <li>A quosure captures an expression with its environment.</li>
 </ul>
 <p>Below, I’ll use tools primarily from the rlang package, as it allows you to focus on the big ideas, rather than implementation quirks that arise from R’s history. This approach seems backward to some, but it’s analogous to learning how to drive an automatic transmission before a manual transmission so you can focus on the big picture before learning the details.</p>
-<div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb630-1" data-line-number="1"><span class="kw">library</span>(rlang)</a></code></pre></div>
+<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb629-1" data-line-number="1"><span class="kw">library</span>(rlang)</a></code></pre></div>
 <div id="code-is-data" class="section level3">
 <h3><span class="header-section-number">16.4.1</span> Code is data</h3>
 <p>The first big idea is that code is data: you can capture code and compute on it like any other type of data. To compute on code, you first need some way to capture it. The first function that captures code is <code>rlang::expr()</code>. You can think of it returning exactly what you pass in:</p>
-<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb631-1" data-line-number="1"><span class="kw">expr</span>(<span class="kw">mean</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a>
-<a class="sourceLine" id="cb631-2" data-line-number="2"><span class="co">#&gt; mean(x, na.rm = TRUE)</span></a>
-<a class="sourceLine" id="cb631-3" data-line-number="3"><span class="kw">expr</span>(<span class="dv">10</span> <span class="op">+</span><span class="st"> </span><span class="dv">100</span> <span class="op">+</span><span class="st"> </span><span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb631-4" data-line-number="4"><span class="co">#&gt; 10 + 100 + 1000</span></a></code></pre></div>
+<div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb630-1" data-line-number="1"><span class="kw">expr</span>(<span class="kw">mean</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb630-2" data-line-number="2"><span class="co">#&gt; mean(x, na.rm = TRUE)</span></a>
+<a class="sourceLine" id="cb630-3" data-line-number="3"><span class="kw">expr</span>(<span class="dv">10</span> <span class="op">+</span><span class="st"> </span><span class="dv">100</span> <span class="op">+</span><span class="st"> </span><span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb630-4" data-line-number="4"><span class="co">#&gt; 10 + 100 + 1000</span></a></code></pre></div>
 <p>More formally, captured code is called an <strong>expression</strong>. An expression isn’t a single type of object, but is a collective term for any of four types (call, symbol, constant, or pairlist), which you’ll learn more about in Chapter <a href="expressions.html#expressions">17</a>.</p>
 <p><code>expr()</code> lets you capture code that you’ve typed. You need a different tool to capture code passed to a function because <code>expr()</code> doesn’t work:</p>
+<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb631-1" data-line-number="1">capture_it &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb631-2" data-line-number="2">  <span class="kw">expr</span>(x)</a>
+<a class="sourceLine" id="cb631-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb631-4" data-line-number="4"><span class="kw">capture_it</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span>c)</a>
+<a class="sourceLine" id="cb631-5" data-line-number="5"><span class="co">#&gt; x</span></a></code></pre></div>
+<p>Here you need to use a function specifically designed to capture user input in a function argument: <code>enexpr()</code>.</p>
 <div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb632-1" data-line-number="1">capture_it &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb632-2" data-line-number="2">  <span class="kw">expr</span>(x)</a>
+<a class="sourceLine" id="cb632-2" data-line-number="2">  <span class="kw">enexpr</span>(x)</a>
 <a class="sourceLine" id="cb632-3" data-line-number="3">}</a>
 <a class="sourceLine" id="cb632-4" data-line-number="4"><span class="kw">capture_it</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span>c)</a>
-<a class="sourceLine" id="cb632-5" data-line-number="5"><span class="co">#&gt; x</span></a></code></pre></div>
-<p>Here you need to use a function specifically designed to capture user input in a function argument: <code>enexpr()</code>.</p>
-<div class="sourceCode" id="cb633"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb633-1" data-line-number="1">capture_it &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb633-2" data-line-number="2">  <span class="kw">enexpr</span>(x)</a>
-<a class="sourceLine" id="cb633-3" data-line-number="3">}</a>
-<a class="sourceLine" id="cb633-4" data-line-number="4"><span class="kw">capture_it</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span>c)</a>
-<a class="sourceLine" id="cb633-5" data-line-number="5"><span class="co">#&gt; a + b + c</span></a></code></pre></div>
+<a class="sourceLine" id="cb632-5" data-line-number="5"><span class="co">#&gt; a + b + c</span></a></code></pre></div>
 <p>Once you have captured an expression, you can inspect and modify it. Complex expressions behave much like lists. That means you can modify them using <code>[[</code> and <code>$</code>:</p>
-<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb634-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">f</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb634-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb634-3" data-line-number="3"><span class="co"># Add a new argument</span></a>
-<a class="sourceLine" id="cb634-4" data-line-number="4">f<span class="op">$</span>z &lt;-<span class="st"> </span><span class="dv">3</span></a>
-<a class="sourceLine" id="cb634-5" data-line-number="5">f</a>
-<a class="sourceLine" id="cb634-6" data-line-number="6"><span class="co">#&gt; f(x = 1, y = 2, z = 3)</span></a>
-<a class="sourceLine" id="cb634-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb634-8" data-line-number="8"><span class="co"># Or remove an argument:</span></a>
-<a class="sourceLine" id="cb634-9" data-line-number="9">f[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb634-10" data-line-number="10">f</a>
-<a class="sourceLine" id="cb634-11" data-line-number="11"><span class="co">#&gt; f(y = 2, z = 3)</span></a></code></pre></div>
+<div class="sourceCode" id="cb633"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb633-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">f</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb633-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb633-3" data-line-number="3"><span class="co"># Add a new argument</span></a>
+<a class="sourceLine" id="cb633-4" data-line-number="4">f<span class="op">$</span>z &lt;-<span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb633-5" data-line-number="5">f</a>
+<a class="sourceLine" id="cb633-6" data-line-number="6"><span class="co">#&gt; f(x = 1, y = 2, z = 3)</span></a>
+<a class="sourceLine" id="cb633-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb633-8" data-line-number="8"><span class="co"># Or remove an argument:</span></a>
+<a class="sourceLine" id="cb633-9" data-line-number="9">f[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb633-10" data-line-number="10">f</a>
+<a class="sourceLine" id="cb633-11" data-line-number="11"><span class="co">#&gt; f(y = 2, z = 3)</span></a></code></pre></div>
 <p>Note that the first element of the call is the function to be called, which means the first argument is in the second position. You’ll learn about the full details in Section <a href="expressions.html#calls">17.3.3</a>.</p>
 </div>
 <div id="code-is-a-tree" class="section level3">
 <h3><span class="header-section-number">16.4.2</span> Code is a tree</h3>
 <p>To do more complex manipulation with code, you need to fully understand its structure. Behind the scenes, almost every programming language represents code as a tree, often called the <strong>abstract syntax tree</strong>, or AST for short. R is unusual in that you can actually inspect and manipulate this tree.</p>
 <p>A very convenient tool for understanding the tree-like structure is <code>lobstr::ast()</code>. Given some code, will display the underlying tree structure. Function calls form the branches of the tree, and are shown by rectangles. The leaves of the tree are symbols (like <code>a</code>) and constants (like <code>&quot;b&quot;</code>).</p>
-<div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb635-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="kw">f</span>(a, <span class="st">&quot;b&quot;</span>))</a>
-<a class="sourceLine" id="cb635-2" data-line-number="2"><span class="co">#&gt; █─f </span></a>
-<a class="sourceLine" id="cb635-3" data-line-number="3"><span class="co">#&gt; ├─a </span></a>
-<a class="sourceLine" id="cb635-4" data-line-number="4"><span class="co">#&gt; └─&quot;b&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb634-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="kw">f</span>(a, <span class="st">&quot;b&quot;</span>))</a>
+<a class="sourceLine" id="cb634-2" data-line-number="2"><span class="co">#&gt; █─f </span></a>
+<a class="sourceLine" id="cb634-3" data-line-number="3"><span class="co">#&gt; ├─a </span></a>
+<a class="sourceLine" id="cb634-4" data-line-number="4"><span class="co">#&gt; └─&quot;b&quot;</span></a></code></pre></div>
 <p>Nested function calls create more deeply branching trees:</p>
-<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb636-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="kw">f1</span>(<span class="kw">f2</span>(a, b), <span class="kw">f3</span>(<span class="dv">1</span>, <span class="kw">f4</span>(<span class="dv">2</span>))))</a>
-<a class="sourceLine" id="cb636-2" data-line-number="2"><span class="co">#&gt; █─f1 </span></a>
-<a class="sourceLine" id="cb636-3" data-line-number="3"><span class="co">#&gt; ├─█─f2 </span></a>
-<a class="sourceLine" id="cb636-4" data-line-number="4"><span class="co">#&gt; │ ├─a </span></a>
-<a class="sourceLine" id="cb636-5" data-line-number="5"><span class="co">#&gt; │ └─b </span></a>
-<a class="sourceLine" id="cb636-6" data-line-number="6"><span class="co">#&gt; └─█─f3 </span></a>
-<a class="sourceLine" id="cb636-7" data-line-number="7"><span class="co">#&gt;   ├─1 </span></a>
-<a class="sourceLine" id="cb636-8" data-line-number="8"><span class="co">#&gt;   └─█─f4 </span></a>
-<a class="sourceLine" id="cb636-9" data-line-number="9"><span class="co">#&gt;     └─2</span></a></code></pre></div>
-<p>Because all function forms in can be written in prefix form (Section <a href="functions.html#prefix-form">5.8.1</a>), every R expression can be displayed in this way:</p>
-<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb637-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb637-2" data-line-number="2"><span class="co">#&gt; █─`+` </span></a>
-<a class="sourceLine" id="cb637-3" data-line-number="3"><span class="co">#&gt; ├─1 </span></a>
-<a class="sourceLine" id="cb637-4" data-line-number="4"><span class="co">#&gt; └─█─`*` </span></a>
-<a class="sourceLine" id="cb637-5" data-line-number="5"><span class="co">#&gt;   ├─2 </span></a>
-<a class="sourceLine" id="cb637-6" data-line-number="6"><span class="co">#&gt;   └─3</span></a></code></pre></div>
+<div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb635-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="kw">f1</span>(<span class="kw">f2</span>(a, b), <span class="kw">f3</span>(<span class="dv">1</span>, <span class="kw">f4</span>(<span class="dv">2</span>))))</a>
+<a class="sourceLine" id="cb635-2" data-line-number="2"><span class="co">#&gt; █─f1 </span></a>
+<a class="sourceLine" id="cb635-3" data-line-number="3"><span class="co">#&gt; ├─█─f2 </span></a>
+<a class="sourceLine" id="cb635-4" data-line-number="4"><span class="co">#&gt; │ ├─a </span></a>
+<a class="sourceLine" id="cb635-5" data-line-number="5"><span class="co">#&gt; │ └─b </span></a>
+<a class="sourceLine" id="cb635-6" data-line-number="6"><span class="co">#&gt; └─█─f3 </span></a>
+<a class="sourceLine" id="cb635-7" data-line-number="7"><span class="co">#&gt;   ├─1 </span></a>
+<a class="sourceLine" id="cb635-8" data-line-number="8"><span class="co">#&gt;   └─█─f4 </span></a>
+<a class="sourceLine" id="cb635-9" data-line-number="9"><span class="co">#&gt;     └─2</span></a></code></pre></div>
+<p>Because all function forms in can be written in prefix form (Section <a href="functions.html#prefix-form">5.8.2</a>), every R expression can be displayed in this way:</p>
+<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb636-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb636-2" data-line-number="2"><span class="co">#&gt; █─`+` </span></a>
+<a class="sourceLine" id="cb636-3" data-line-number="3"><span class="co">#&gt; ├─1 </span></a>
+<a class="sourceLine" id="cb636-4" data-line-number="4"><span class="co">#&gt; └─█─`*` </span></a>
+<a class="sourceLine" id="cb636-5" data-line-number="5"><span class="co">#&gt;   ├─2 </span></a>
+<a class="sourceLine" id="cb636-6" data-line-number="6"><span class="co">#&gt;   └─3</span></a></code></pre></div>
 <p>Displaying the code tree in this way provides useful tools for exploring R’s grammar, the topic of Section <a href="expressions.html#grammar">17.4</a>.</p>
 </div>
 <div id="code-can-generate-code" class="section level3">
 <h3><span class="header-section-number">16.4.3</span> Code can generate code</h3>
 <p>As well as seeing the tree from code typed by a human, you can also use code to create new trees. There are two main tools: <code>call2()</code> and unquoting.</p>
 <p><code>rlang::call2()</code> constructs a function call from its components: the function to call, and the arguments to call it with.</p>
-<div class="sourceCode" id="cb638"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb638-1" data-line-number="1"><span class="kw">call2</span>(<span class="st">&quot;f&quot;</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb638-2" data-line-number="2"><span class="co">#&gt; f(1, 2, 3)</span></a>
-<a class="sourceLine" id="cb638-3" data-line-number="3"><span class="kw">call2</span>(<span class="st">&quot;+&quot;</span>, <span class="dv">1</span>, <span class="kw">call2</span>(<span class="st">&quot;*&quot;</span>, <span class="dv">2</span>, <span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb638-4" data-line-number="4"><span class="co">#&gt; 1 + 2 * 3</span></a></code></pre></div>
+<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb637-1" data-line-number="1"><span class="kw">call2</span>(<span class="st">&quot;f&quot;</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb637-2" data-line-number="2"><span class="co">#&gt; f(1, 2, 3)</span></a>
+<a class="sourceLine" id="cb637-3" data-line-number="3"><span class="kw">call2</span>(<span class="st">&quot;+&quot;</span>, <span class="dv">1</span>, <span class="kw">call2</span>(<span class="st">&quot;*&quot;</span>, <span class="dv">2</span>, <span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb637-4" data-line-number="4"><span class="co">#&gt; 1 + 2 * 3</span></a></code></pre></div>
 <p>This is often convenient to program with, but is a bit clunkly for interactive use. An alternative technique is to build complex code trees by combining simpler code trees with a template. <code>expr()</code> and <code>enexpr()</code> have built-in support for this idea via <code>!!</code> (pronounced bang-bang), the <strong>unquote operator</strong>.</p>
 <p>The precise details are the topic of Chapter <a href="quasiquotation.html#quasiquotation">18</a>, but basically <code>!!x</code> inserts the code tree stored in <code>x</code>. This makes it easy to build complex trees from simple fragments:</p>
-<div class="sourceCode" id="cb639"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb639-1" data-line-number="1">xx &lt;-<span class="st"> </span><span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>x)</a>
-<a class="sourceLine" id="cb639-2" data-line-number="2">yy &lt;-<span class="st"> </span><span class="kw">expr</span>(y <span class="op">+</span><span class="st"> </span>y)</a>
-<a class="sourceLine" id="cb639-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb639-4" data-line-number="4"><span class="kw">expr</span>(<span class="op">!!</span>xx <span class="op">/</span><span class="st"> </span><span class="op">!!</span>yy)</a>
-<a class="sourceLine" id="cb639-5" data-line-number="5"><span class="co">#&gt; (x + x)/(y + y)</span></a></code></pre></div>
+<div class="sourceCode" id="cb638"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb638-1" data-line-number="1">xx &lt;-<span class="st"> </span><span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>x)</a>
+<a class="sourceLine" id="cb638-2" data-line-number="2">yy &lt;-<span class="st"> </span><span class="kw">expr</span>(y <span class="op">+</span><span class="st"> </span>y)</a>
+<a class="sourceLine" id="cb638-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb638-4" data-line-number="4"><span class="kw">expr</span>(<span class="op">!!</span>xx <span class="op">/</span><span class="st"> </span><span class="op">!!</span>yy)</a>
+<a class="sourceLine" id="cb638-5" data-line-number="5"><span class="co">#&gt; (x + x)/(y + y)</span></a></code></pre></div>
 <p>Notice that the output preserves the operator precedence so we get <code>(x + x) / (y + y)</code> not <code>x + x / y + y</code> (i.e. <code>x + (x / y) + y</code>). This is important to note, particularly if you’ve been thinking “wouldn’t this be easier to do by pasting strings?”.</p>
 <p>Unquoting gets even more useful when you wrap it up into a function, first using <code>enexpr()</code> to capture the user’s expression, then <code>expr()</code> and <code>!!</code> to create an new expression using a template. The example below shows you might generate an expression that computes the coefficient of variation:</p>
-<div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb640-1" data-line-number="1">cv &lt;-<span class="st"> </span><span class="cf">function</span>(var) {</a>
-<a class="sourceLine" id="cb640-2" data-line-number="2">  var &lt;-<span class="st"> </span><span class="kw">enexpr</span>(var)</a>
-<a class="sourceLine" id="cb640-3" data-line-number="3">  <span class="kw">expr</span>(<span class="kw">mean</span>(<span class="op">!!</span>var) <span class="op">/</span><span class="st"> </span><span class="kw">sd</span>(<span class="op">!!</span>var))</a>
-<a class="sourceLine" id="cb640-4" data-line-number="4">}</a>
-<a class="sourceLine" id="cb640-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb640-6" data-line-number="6"><span class="kw">cv</span>(x)</a>
-<a class="sourceLine" id="cb640-7" data-line-number="7"><span class="co">#&gt; mean(x)/sd(x)</span></a>
-<a class="sourceLine" id="cb640-8" data-line-number="8"><span class="kw">cv</span>(x <span class="op">+</span><span class="st"> </span>y)</a>
-<a class="sourceLine" id="cb640-9" data-line-number="9"><span class="co">#&gt; mean(x + y)/sd(x + y)</span></a></code></pre></div>
+<div class="sourceCode" id="cb639"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb639-1" data-line-number="1">cv &lt;-<span class="st"> </span><span class="cf">function</span>(var) {</a>
+<a class="sourceLine" id="cb639-2" data-line-number="2">  var &lt;-<span class="st"> </span><span class="kw">enexpr</span>(var)</a>
+<a class="sourceLine" id="cb639-3" data-line-number="3">  <span class="kw">expr</span>(<span class="kw">mean</span>(<span class="op">!!</span>var) <span class="op">/</span><span class="st"> </span><span class="kw">sd</span>(<span class="op">!!</span>var))</a>
+<a class="sourceLine" id="cb639-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb639-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb639-6" data-line-number="6"><span class="kw">cv</span>(x)</a>
+<a class="sourceLine" id="cb639-7" data-line-number="7"><span class="co">#&gt; mean(x)/sd(x)</span></a>
+<a class="sourceLine" id="cb639-8" data-line-number="8"><span class="kw">cv</span>(x <span class="op">+</span><span class="st"> </span>y)</a>
+<a class="sourceLine" id="cb639-9" data-line-number="9"><span class="co">#&gt; mean(x + y)/sd(x + y)</span></a></code></pre></div>
 <p>Importantly, this works even when given weird variable names:</p>
-<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb641-1" data-line-number="1"><span class="kw">cv</span>(<span class="st">`</span><span class="dt">)</span><span class="st">`</span>)</a>
-<a class="sourceLine" id="cb641-2" data-line-number="2"><span class="co">#&gt; mean(`)`)/sd(`)`)</span></a></code></pre></div>
+<div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb640-1" data-line-number="1"><span class="kw">cv</span>(<span class="st">`</span><span class="dt">)</span><span class="st">`</span>)</a>
+<a class="sourceLine" id="cb640-2" data-line-number="2"><span class="co">#&gt; mean(`)`)/sd(`)`)</span></a></code></pre></div>
 <p>Dealing with non-syntactic variable names is another good reason to <code>paste()</code> when generating R code. You might think this is an esoteric concern, but not worrying about it when generating SQL code in web applications lead to SQL injection attacks that have collectively cost billions of dollars.</p>
 <p>These techniques become yet more powerful when combined with functional programming. You’ll explore these ideas in detail in Section <a href="#quasi-case-studies"><strong>??</strong></a> but the teaser belows shows how you might generate a complex model specification from simple inputs.</p>
-<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb642-1" data-line-number="1"><span class="kw">library</span>(purrr)</a>
-<a class="sourceLine" id="cb642-2" data-line-number="2"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb642-3" data-line-number="3"><span class="co">#&gt; Attaching package: &#39;purrr&#39;</span></a>
-<a class="sourceLine" id="cb642-4" data-line-number="4"><span class="co">#&gt; The following objects are masked from &#39;package:rlang&#39;:</span></a>
-<a class="sourceLine" id="cb642-5" data-line-number="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb642-6" data-line-number="6"><span class="co">#&gt;     %@%, %||%, as_function, flatten, flatten_chr, flatten_dbl,</span></a>
-<a class="sourceLine" id="cb642-7" data-line-number="7"><span class="co">#&gt;     flatten_int, flatten_lgl, invoke, list_along, modify, prepend,</span></a>
-<a class="sourceLine" id="cb642-8" data-line-number="8"><span class="co">#&gt;     rep_along, splice</span></a>
-<a class="sourceLine" id="cb642-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb642-10" data-line-number="10">poly &lt;-<span class="st"> </span><span class="cf">function</span>(n) {</a>
-<a class="sourceLine" id="cb642-11" data-line-number="11">  i &lt;-<span class="st"> </span><span class="kw">as.double</span>(<span class="kw">seq</span>(<span class="dv">2</span>, n))</a>
-<a class="sourceLine" id="cb642-12" data-line-number="12">  xs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="kw">expr</span>(x), <span class="kw">map</span>(i, <span class="cf">function</span>(i) <span class="kw">expr</span>(<span class="kw">I</span>(x<span class="op">^!!</span>i))))</a>
-<a class="sourceLine" id="cb642-13" data-line-number="13">  terms &lt;-<span class="st"> </span><span class="kw">reduce</span>(xs, call2, <span class="dt">.fn =</span> <span class="st">&quot;+&quot;</span>)</a>
-<a class="sourceLine" id="cb642-14" data-line-number="14">  <span class="kw">expr</span>(y <span class="op">~</span><span class="st"> </span><span class="op">!!</span>terms)</a>
-<a class="sourceLine" id="cb642-15" data-line-number="15">}</a>
-<a class="sourceLine" id="cb642-16" data-line-number="16"><span class="kw">poly</span>(<span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb642-17" data-line-number="17"><span class="co">#&gt; y ~ 1 + x + I(x^2) + I(x^3) + I(x^4) + I(x^5)</span></a></code></pre></div>
+<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb641-1" data-line-number="1"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb641-2" data-line-number="2"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb641-3" data-line-number="3"><span class="co">#&gt; Attaching package: &#39;purrr&#39;</span></a>
+<a class="sourceLine" id="cb641-4" data-line-number="4"><span class="co">#&gt; The following objects are masked from &#39;package:rlang&#39;:</span></a>
+<a class="sourceLine" id="cb641-5" data-line-number="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb641-6" data-line-number="6"><span class="co">#&gt;     %@%, %||%, as_function, flatten, flatten_chr, flatten_dbl,</span></a>
+<a class="sourceLine" id="cb641-7" data-line-number="7"><span class="co">#&gt;     flatten_int, flatten_lgl, invoke, list_along, modify, prepend,</span></a>
+<a class="sourceLine" id="cb641-8" data-line-number="8"><span class="co">#&gt;     rep_along, splice</span></a>
+<a class="sourceLine" id="cb641-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb641-10" data-line-number="10">poly &lt;-<span class="st"> </span><span class="cf">function</span>(n) {</a>
+<a class="sourceLine" id="cb641-11" data-line-number="11">  i &lt;-<span class="st"> </span><span class="kw">as.double</span>(<span class="kw">seq</span>(<span class="dv">2</span>, n))</a>
+<a class="sourceLine" id="cb641-12" data-line-number="12">  xs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="kw">expr</span>(x), <span class="kw">map</span>(i, <span class="cf">function</span>(i) <span class="kw">expr</span>(<span class="kw">I</span>(x<span class="op">^!!</span>i))))</a>
+<a class="sourceLine" id="cb641-13" data-line-number="13">  terms &lt;-<span class="st"> </span><span class="kw">reduce</span>(xs, call2, <span class="dt">.fn =</span> <span class="st">&quot;+&quot;</span>)</a>
+<a class="sourceLine" id="cb641-14" data-line-number="14">  <span class="kw">expr</span>(y <span class="op">~</span><span class="st"> </span><span class="op">!!</span>terms)</a>
+<a class="sourceLine" id="cb641-15" data-line-number="15">}</a>
+<a class="sourceLine" id="cb641-16" data-line-number="16"><span class="kw">poly</span>(<span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb641-17" data-line-number="17"><span class="co">#&gt; y ~ 1 + x + I(x^2) + I(x^3) + I(x^4) + I(x^5)</span></a></code></pre></div>
 </div>
 <div id="evaluation-excutes-an-expression-in-an-environment" class="section level3">
 <h3><span class="header-section-number">16.4.4</span> Evaluation excutes an expression in an environment</h3>
 <p>Inspecting and modifying code gives you one set of powerful tools. You get another set of powerful tools when you <strong>evaluate</strong>, i.e. execute, an expression. Evaluating an expression requires an environment. This tells R what the symbols (found in the leaves of tree) mean. You’ll learn the details of evaluation in Chapter <a href="evaluation.html#evaluation">19</a>.</p>
 <p>The primary tool for evaluating expressions is <code>base::eval()</code>, which takes an expression and an environment:</p>
-<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb643-1" data-line-number="1"><span class="kw">eval</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y), <span class="kw">env</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">10</span>))</a>
-<a class="sourceLine" id="cb643-2" data-line-number="2"><span class="co">#&gt; [1] 11</span></a>
-<a class="sourceLine" id="cb643-3" data-line-number="3"><span class="kw">eval</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y), <span class="kw">env</span>(<span class="dt">x =</span> <span class="dv">2</span>, <span class="dt">y =</span> <span class="dv">100</span>))</a>
-<a class="sourceLine" id="cb643-4" data-line-number="4"><span class="co">#&gt; [1] 102</span></a></code></pre></div>
+<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb642-1" data-line-number="1"><span class="kw">eval</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y), <span class="kw">env</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">10</span>))</a>
+<a class="sourceLine" id="cb642-2" data-line-number="2"><span class="co">#&gt; [1] 11</span></a>
+<a class="sourceLine" id="cb642-3" data-line-number="3"><span class="kw">eval</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y), <span class="kw">env</span>(<span class="dt">x =</span> <span class="dv">2</span>, <span class="dt">y =</span> <span class="dv">100</span>))</a>
+<a class="sourceLine" id="cb642-4" data-line-number="4"><span class="co">#&gt; [1] 102</span></a></code></pre></div>
 <p>If you omit the environment, it will use the current environment. Here that’s the global environment:</p>
-<div class="sourceCode" id="cb644"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb644-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="dv">10</span></a>
-<a class="sourceLine" id="cb644-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="dv">100</span></a>
-<a class="sourceLine" id="cb644-3" data-line-number="3"><span class="kw">eval</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y))</a>
-<a class="sourceLine" id="cb644-4" data-line-number="4"><span class="co">#&gt; [1] 110</span></a></code></pre></div>
+<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb643-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb643-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb643-3" data-line-number="3"><span class="kw">eval</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y))</a>
+<a class="sourceLine" id="cb643-4" data-line-number="4"><span class="co">#&gt; [1] 110</span></a></code></pre></div>
 <p>One of the big advantages of evaluating code manually is that you can tweak the execution environment. There are two main reaons to do this:</p>
 <ul>
 <li>To temporarily override functions to implement a domain specific language.</li>
@@ -1043,81 +1043,81 @@ they are variables in an environment.</li>
 <h3><span class="header-section-number">16.4.5</span> You can override functions to make a DSL</h3>
 <p>It’s fairly straightforward to understand customising the environment with different variable values. It’s less obvious that you can also rebind functions to do different things. This is a big idea that we’ll come back to in Chapter <a href="#translating"><strong>??</strong></a>, but I wanted to show a small example here.</p>
 <p>The example below evalutes code in a special environment where the basic algebraic operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>) have been overridden to work with string instead of numbers:</p>
-<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb645-1" data-line-number="1">string_math &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb645-2" data-line-number="2">  e &lt;-<span class="st"> </span><span class="kw">env</span>(</a>
-<a class="sourceLine" id="cb645-3" data-line-number="3">    <span class="kw">caller_env</span>(),</a>
-<a class="sourceLine" id="cb645-4" data-line-number="4">    <span class="st">`</span><span class="dt">+</span><span class="st">`</span> =<span class="st"> </span><span class="cf">function</span>(x, y) <span class="kw">paste0</span>(x, y),</a>
-<a class="sourceLine" id="cb645-5" data-line-number="5">    <span class="st">`</span><span class="dt">*</span><span class="st">`</span> =<span class="st"> </span><span class="cf">function</span>(x, y) <span class="kw">strrep</span>(x, y),</a>
-<a class="sourceLine" id="cb645-6" data-line-number="6">    <span class="st">`</span><span class="dt">-</span><span class="st">`</span> =<span class="st"> </span><span class="cf">function</span>(x, y) <span class="kw">sub</span>(<span class="kw">paste0</span>(y, <span class="st">&quot;$&quot;</span>), <span class="st">&quot;&quot;</span>, x),</a>
-<a class="sourceLine" id="cb645-7" data-line-number="7">    <span class="st">`</span><span class="dt">/</span><span class="st">`</span> =<span class="st"> </span><span class="cf">function</span>(x, y) <span class="kw">substr</span>(x, <span class="dv">1</span>, <span class="kw">nchar</span>(x) <span class="op">/</span><span class="st"> </span>y)</a>
-<a class="sourceLine" id="cb645-8" data-line-number="8">  )</a>
-<a class="sourceLine" id="cb645-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb645-10" data-line-number="10">  <span class="kw">eval</span>(<span class="kw">enexpr</span>(x), e)</a>
-<a class="sourceLine" id="cb645-11" data-line-number="11">}</a>
-<a class="sourceLine" id="cb645-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb645-13" data-line-number="13">name &lt;-<span class="st"> &quot;Hadley&quot;</span></a>
-<a class="sourceLine" id="cb645-14" data-line-number="14"><span class="kw">string_math</span>(<span class="st">&quot;Hi&quot;</span> <span class="op">-</span><span class="st"> &quot;i&quot;</span> <span class="op">+</span><span class="st"> &quot;ello &quot;</span> <span class="op">+</span><span class="st"> </span>name)</a>
-<a class="sourceLine" id="cb645-15" data-line-number="15"><span class="co">#&gt; [1] &quot;Hello Hadley&quot;</span></a>
-<a class="sourceLine" id="cb645-16" data-line-number="16"><span class="kw">string_math</span>(<span class="st">&quot;x-&quot;</span> <span class="op">*</span><span class="st"> </span><span class="dv">3</span> <span class="op">+</span><span class="st"> &quot;y&quot;</span>)</a>
-<a class="sourceLine" id="cb645-17" data-line-number="17"><span class="co">#&gt; [1] &quot;x-x-x-y&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb644"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb644-1" data-line-number="1">string_math &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb644-2" data-line-number="2">  e &lt;-<span class="st"> </span><span class="kw">env</span>(</a>
+<a class="sourceLine" id="cb644-3" data-line-number="3">    <span class="kw">caller_env</span>(),</a>
+<a class="sourceLine" id="cb644-4" data-line-number="4">    <span class="st">`</span><span class="dt">+</span><span class="st">`</span> =<span class="st"> </span><span class="cf">function</span>(x, y) <span class="kw">paste0</span>(x, y),</a>
+<a class="sourceLine" id="cb644-5" data-line-number="5">    <span class="st">`</span><span class="dt">*</span><span class="st">`</span> =<span class="st"> </span><span class="cf">function</span>(x, y) <span class="kw">strrep</span>(x, y),</a>
+<a class="sourceLine" id="cb644-6" data-line-number="6">    <span class="st">`</span><span class="dt">-</span><span class="st">`</span> =<span class="st"> </span><span class="cf">function</span>(x, y) <span class="kw">sub</span>(<span class="kw">paste0</span>(y, <span class="st">&quot;$&quot;</span>), <span class="st">&quot;&quot;</span>, x),</a>
+<a class="sourceLine" id="cb644-7" data-line-number="7">    <span class="st">`</span><span class="dt">/</span><span class="st">`</span> =<span class="st"> </span><span class="cf">function</span>(x, y) <span class="kw">substr</span>(x, <span class="dv">1</span>, <span class="kw">nchar</span>(x) <span class="op">/</span><span class="st"> </span>y)</a>
+<a class="sourceLine" id="cb644-8" data-line-number="8">  )</a>
+<a class="sourceLine" id="cb644-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb644-10" data-line-number="10">  <span class="kw">eval</span>(<span class="kw">enexpr</span>(x), e)</a>
+<a class="sourceLine" id="cb644-11" data-line-number="11">}</a>
+<a class="sourceLine" id="cb644-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb644-13" data-line-number="13">name &lt;-<span class="st"> &quot;Hadley&quot;</span></a>
+<a class="sourceLine" id="cb644-14" data-line-number="14"><span class="kw">string_math</span>(<span class="st">&quot;Hi&quot;</span> <span class="op">-</span><span class="st"> &quot;i&quot;</span> <span class="op">+</span><span class="st"> &quot;ello &quot;</span> <span class="op">+</span><span class="st"> </span>name)</a>
+<a class="sourceLine" id="cb644-15" data-line-number="15"><span class="co">#&gt; [1] &quot;Hello Hadley&quot;</span></a>
+<a class="sourceLine" id="cb644-16" data-line-number="16"><span class="kw">string_math</span>(<span class="st">&quot;x-&quot;</span> <span class="op">*</span><span class="st"> </span><span class="dv">3</span> <span class="op">+</span><span class="st"> &quot;y&quot;</span>)</a>
+<a class="sourceLine" id="cb644-17" data-line-number="17"><span class="co">#&gt; [1] &quot;x-x-x-y&quot;</span></a></code></pre></div>
 <p>dplyr takes this idea to the extreme, running code in an environment that generates SQL for execution in a remote database:</p>
-<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb646-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb646-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb646-3" data-line-number="3">con &lt;-<span class="st"> </span>DBI<span class="op">::</span><span class="kw">dbConnect</span>(RSQLite<span class="op">::</span><span class="kw">SQLite</span>(), <span class="dt">filename =</span> <span class="st">&quot;:memory:&quot;</span>)</a>
-<a class="sourceLine" id="cb646-4" data-line-number="4">mtcars_db &lt;-<span class="st"> </span><span class="kw">copy_to</span>(con, mtcars)</a>
-<a class="sourceLine" id="cb646-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb646-6" data-line-number="6">mtcars_db <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb646-7" data-line-number="7"><span class="st">  </span><span class="kw">filter</span>(cyl <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb646-8" data-line-number="8"><span class="st">  </span><span class="kw">select</span>(mpg<span class="op">:</span>hp) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb646-9" data-line-number="9"><span class="st">  </span><span class="kw">head</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb646-10" data-line-number="10"><span class="st">  </span><span class="kw">show_query</span>()</a>
-<a class="sourceLine" id="cb646-11" data-line-number="11"><span class="co">#&gt; &lt;SQL&gt;</span></a>
-<a class="sourceLine" id="cb646-12" data-line-number="12"><span class="co">#&gt; SELECT `mpg`, `cyl`, `disp`, `hp`</span></a>
-<a class="sourceLine" id="cb646-13" data-line-number="13"><span class="co">#&gt; FROM `mtcars`</span></a>
-<a class="sourceLine" id="cb646-14" data-line-number="14"><span class="co">#&gt; WHERE (`cyl` &gt; 2.0)</span></a>
-<a class="sourceLine" id="cb646-15" data-line-number="15"><span class="co">#&gt; LIMIT 10</span></a>
-<a class="sourceLine" id="cb646-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb646-17" data-line-number="17">DBI<span class="op">::</span><span class="kw">dbDisconnect</span>(con)</a></code></pre></div>
+<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb645-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb645-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb645-3" data-line-number="3">con &lt;-<span class="st"> </span>DBI<span class="op">::</span><span class="kw">dbConnect</span>(RSQLite<span class="op">::</span><span class="kw">SQLite</span>(), <span class="dt">filename =</span> <span class="st">&quot;:memory:&quot;</span>)</a>
+<a class="sourceLine" id="cb645-4" data-line-number="4">mtcars_db &lt;-<span class="st"> </span><span class="kw">copy_to</span>(con, mtcars)</a>
+<a class="sourceLine" id="cb645-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb645-6" data-line-number="6">mtcars_db <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb645-7" data-line-number="7"><span class="st">  </span><span class="kw">filter</span>(cyl <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb645-8" data-line-number="8"><span class="st">  </span><span class="kw">select</span>(mpg<span class="op">:</span>hp) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb645-9" data-line-number="9"><span class="st">  </span><span class="kw">head</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb645-10" data-line-number="10"><span class="st">  </span><span class="kw">show_query</span>()</a>
+<a class="sourceLine" id="cb645-11" data-line-number="11"><span class="co">#&gt; &lt;SQL&gt;</span></a>
+<a class="sourceLine" id="cb645-12" data-line-number="12"><span class="co">#&gt; SELECT `mpg`, `cyl`, `disp`, `hp`</span></a>
+<a class="sourceLine" id="cb645-13" data-line-number="13"><span class="co">#&gt; FROM `mtcars`</span></a>
+<a class="sourceLine" id="cb645-14" data-line-number="14"><span class="co">#&gt; WHERE (`cyl` &gt; 2.0)</span></a>
+<a class="sourceLine" id="cb645-15" data-line-number="15"><span class="co">#&gt; LIMIT 10</span></a>
+<a class="sourceLine" id="cb645-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb645-17" data-line-number="17">DBI<span class="op">::</span><span class="kw">dbDisconnect</span>(con)</a></code></pre></div>
 </div>
 <div id="data-masks-blur-the-line-between-data-frames-and-environments" class="section level3">
 <h3><span class="header-section-number">16.4.6</span> Data masks blur the line between data frames and environments</h3>
 <p>Rebinding functions is an extremely powerful technique, but it tends to require a lot of investment. A more immediately practical application is modifying evaluation to look for variables in a data frame instead of an environment. This idea powers the base <code>subset()</code> and <code>transform()</code> functions, as well as many tidyverse functions like <code>ggplot2::aes()</code> and <code>dplyr::mutate()</code>. It’s possible to use <code>eval()</code> for this, but there are a few potential pitfalls, so we’ll use <code>rlang::eval_tidy()</code> instead.</p>
 <p>As well as expression and environment, <code>eval_tidy()</code> also takes a <strong>data mask</strong>, which is typically a data frame:</p>
-<div class="sourceCode" id="cb647"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb647-1" data-line-number="1">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">y =</span> <span class="kw">sample</span>(<span class="dv">5</span>))</a>
-<a class="sourceLine" id="cb647-2" data-line-number="2"><span class="kw">eval_tidy</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y), df)</a>
-<a class="sourceLine" id="cb647-3" data-line-number="3"><span class="co">#&gt; [1] 2 6 5 9 8</span></a></code></pre></div>
+<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb646-1" data-line-number="1">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">y =</span> <span class="kw">sample</span>(<span class="dv">5</span>))</a>
+<a class="sourceLine" id="cb646-2" data-line-number="2"><span class="kw">eval_tidy</span>(<span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y), df)</a>
+<a class="sourceLine" id="cb646-3" data-line-number="3"><span class="co">#&gt; [1] 2 6 5 9 8</span></a></code></pre></div>
 <p>Evaluating with a data mask is a useful technique for interactive analysis because it allows you to write <code>x + y</code> rather than <code>df$x + df$y</code>. However, that convenience comes at a cost: ambiguity. In Section <a href="evaluation.html#pronouns">19.4.2</a> you’ll learn how to deal ambiugity using special <code>.data</code> and <code>.env</code> pronouns.</p>
 <p>We can wrap this pattern up into a function by using <code>enexpr()</code>. This gives us a function very similar to <code>base::with()</code>:</p>
-<div class="sourceCode" id="cb648"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb648-1" data-line-number="1">with2 &lt;-<span class="st"> </span><span class="cf">function</span>(df, expr) {</a>
-<a class="sourceLine" id="cb648-2" data-line-number="2">  <span class="kw">eval_tidy</span>(<span class="kw">enexpr</span>(expr), df)</a>
-<a class="sourceLine" id="cb648-3" data-line-number="3">}</a>
-<a class="sourceLine" id="cb648-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb648-5" data-line-number="5"><span class="kw">with2</span>(df, x <span class="op">+</span><span class="st"> </span>y)</a>
-<a class="sourceLine" id="cb648-6" data-line-number="6"><span class="co">#&gt; [1] 2 6 5 9 8</span></a></code></pre></div>
+<div class="sourceCode" id="cb647"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb647-1" data-line-number="1">with2 &lt;-<span class="st"> </span><span class="cf">function</span>(df, expr) {</a>
+<a class="sourceLine" id="cb647-2" data-line-number="2">  <span class="kw">eval_tidy</span>(<span class="kw">enexpr</span>(expr), df)</a>
+<a class="sourceLine" id="cb647-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb647-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb647-5" data-line-number="5"><span class="kw">with2</span>(df, x <span class="op">+</span><span class="st"> </span>y)</a>
+<a class="sourceLine" id="cb647-6" data-line-number="6"><span class="co">#&gt; [1] 2 6 5 9 8</span></a></code></pre></div>
 <p>Unfortunately, however, this function has a subtle bug, and we need a new data structure to deal with it.</p>
 </div>
 <div id="quosures-capture-an-expression-with-its-environment" class="section level3">
 <h3><span class="header-section-number">16.4.7</span> Quosures capture an expression with its environment</h3>
 <p>To make the problem more obvious, I’m going to modify <code>with2()</code>:</p>
-<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb649-1" data-line-number="1">with2 &lt;-<span class="st"> </span><span class="cf">function</span>(df, expr) {</a>
-<a class="sourceLine" id="cb649-2" data-line-number="2">  a &lt;-<span class="st"> </span><span class="dv">1000</span></a>
-<a class="sourceLine" id="cb649-3" data-line-number="3">  <span class="kw">eval_tidy</span>(<span class="kw">enexpr</span>(expr), df)</a>
-<a class="sourceLine" id="cb649-4" data-line-number="4">}</a></code></pre></div>
+<div class="sourceCode" id="cb648"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb648-1" data-line-number="1">with2 &lt;-<span class="st"> </span><span class="cf">function</span>(df, expr) {</a>
+<a class="sourceLine" id="cb648-2" data-line-number="2">  a &lt;-<span class="st"> </span><span class="dv">1000</span></a>
+<a class="sourceLine" id="cb648-3" data-line-number="3">  <span class="kw">eval_tidy</span>(<span class="kw">enexpr</span>(expr), df)</a>
+<a class="sourceLine" id="cb648-4" data-line-number="4">}</a></code></pre></div>
 <p>(The problem occurs without this modification but it’s a sublter and creates error messages that are harder to understand.)</p>
 <p>We can see the problem if we attempt to use <code>with2()</code> mingling a variable from the data frame, and a variable called <code>a</code> in the current environment:</p>
-<div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb650-1" data-line-number="1">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb650-2" data-line-number="2">a &lt;-<span class="st"> </span><span class="dv">10</span></a>
-<a class="sourceLine" id="cb650-3" data-line-number="3"><span class="kw">with2</span>(df, x <span class="op">+</span><span class="st"> </span>a)</a>
-<a class="sourceLine" id="cb650-4" data-line-number="4"><span class="co">#&gt; [1] 1001 1002 1003</span></a></code></pre></div>
+<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb649-1" data-line-number="1">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb649-2" data-line-number="2">a &lt;-<span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb649-3" data-line-number="3"><span class="kw">with2</span>(df, x <span class="op">+</span><span class="st"> </span>a)</a>
+<a class="sourceLine" id="cb649-4" data-line-number="4"><span class="co">#&gt; [1] 1001 1002 1003</span></a></code></pre></div>
 <p>That’s because we really want to evaluate the captured expression in the environment where it was written (where <code>a</code> is 10), not the environment inside of <code>with2()</code> (where <code>a</code> is 1000).</p>
 <p>Fortunately we call solve this problem by using a new data structure: the <strong>quosure</strong> which bundles an expression with an environment. <code>eval_tidy()</code> knows how to work with quosures so all we need to do is switch out <code>enexpr()</code> for <code>enquo()</code>:</p>
-<div class="sourceCode" id="cb651"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb651-1" data-line-number="1">with2 &lt;-<span class="st"> </span><span class="cf">function</span>(df, expr) {</a>
-<a class="sourceLine" id="cb651-2" data-line-number="2">  a &lt;-<span class="st"> </span><span class="dv">1000</span></a>
-<a class="sourceLine" id="cb651-3" data-line-number="3">  <span class="kw">eval_tidy</span>(<span class="kw">enquo</span>(expr), df)</a>
-<a class="sourceLine" id="cb651-4" data-line-number="4">}</a>
-<a class="sourceLine" id="cb651-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb651-6" data-line-number="6"><span class="kw">with2</span>(df, x <span class="op">+</span><span class="st"> </span>a)</a>
-<a class="sourceLine" id="cb651-7" data-line-number="7"><span class="co">#&gt; [1] 11 12 13</span></a></code></pre></div>
+<div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb650-1" data-line-number="1">with2 &lt;-<span class="st"> </span><span class="cf">function</span>(df, expr) {</a>
+<a class="sourceLine" id="cb650-2" data-line-number="2">  a &lt;-<span class="st"> </span><span class="dv">1000</span></a>
+<a class="sourceLine" id="cb650-3" data-line-number="3">  <span class="kw">eval_tidy</span>(<span class="kw">enquo</span>(expr), df)</a>
+<a class="sourceLine" id="cb650-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb650-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb650-6" data-line-number="6"><span class="kw">with2</span>(df, x <span class="op">+</span><span class="st"> </span>a)</a>
+<a class="sourceLine" id="cb650-7" data-line-number="7"><span class="co">#&gt; [1] 11 12 13</span></a></code></pre></div>
 <p>Whenever you use a data mask, you must always use <code>enquo()</code> instead of <code>enexpr()</code>. This is the topic of Chapter <a href="evaluation.html#evaluation">19</a>.</p>
 </div>
 </div>
@@ -1189,7 +1189,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Meta.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

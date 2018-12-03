@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -909,80 +909,82 @@ objects are built up from.</p></li>
 
 <p></p>
 <p>To tell the difference between a base and OO object, use <code>is.object()</code> or <code>sloop::otype()</code>:</p>
-<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb491-1" data-line-number="1"><span class="co"># A base object:</span></a>
-<a class="sourceLine" id="cb491-2" data-line-number="2"><span class="kw">is.object</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb491-3" data-line-number="3"><span class="co">#&gt; [1] FALSE</span></a>
-<a class="sourceLine" id="cb491-4" data-line-number="4">sloop<span class="op">::</span><span class="kw">otype</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb491-5" data-line-number="5"><span class="co">#&gt; [1] &quot;base&quot;</span></a>
-<a class="sourceLine" id="cb491-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb491-7" data-line-number="7"><span class="co"># An OO object</span></a>
-<a class="sourceLine" id="cb491-8" data-line-number="8"><span class="kw">is.object</span>(mtcars)</a>
-<a class="sourceLine" id="cb491-9" data-line-number="9"><span class="co">#&gt; [1] TRUE</span></a>
-<a class="sourceLine" id="cb491-10" data-line-number="10">sloop<span class="op">::</span><span class="kw">otype</span>(mtcars)</a>
-<a class="sourceLine" id="cb491-11" data-line-number="11"><span class="co">#&gt; [1] &quot;S3&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb490-1" data-line-number="1"><span class="co"># A base object:</span></a>
+<a class="sourceLine" id="cb490-2" data-line-number="2"><span class="kw">is.object</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb490-3" data-line-number="3"><span class="co">#&gt; [1] FALSE</span></a>
+<a class="sourceLine" id="cb490-4" data-line-number="4">sloop<span class="op">::</span><span class="kw">otype</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb490-5" data-line-number="5"><span class="co">#&gt; [1] &quot;base&quot;</span></a>
+<a class="sourceLine" id="cb490-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb490-7" data-line-number="7"><span class="co"># An OO object</span></a>
+<a class="sourceLine" id="cb490-8" data-line-number="8"><span class="kw">is.object</span>(mtcars)</a>
+<a class="sourceLine" id="cb490-9" data-line-number="9"><span class="co">#&gt; [1] TRUE</span></a>
+<a class="sourceLine" id="cb490-10" data-line-number="10">sloop<span class="op">::</span><span class="kw">otype</span>(mtcars)</a>
+<a class="sourceLine" id="cb490-11" data-line-number="11"><span class="co">#&gt; [1] &quot;S3&quot;</span></a></code></pre></div>
 <p>Technically, the difference between base and OO objects is that OO objects have a “class” attribute:</p>
-<div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb492-1" data-line-number="1"><span class="kw">attr</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="st">&quot;class&quot;</span>)</a>
-<a class="sourceLine" id="cb492-2" data-line-number="2"><span class="co">#&gt; NULL</span></a>
-<a class="sourceLine" id="cb492-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb492-4" data-line-number="4"><span class="kw">attr</span>(mtcars, <span class="st">&quot;class&quot;</span>)</a>
-<a class="sourceLine" id="cb492-5" data-line-number="5"><span class="co">#&gt; [1] &quot;data.frame&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb491-1" data-line-number="1"><span class="kw">attr</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="st">&quot;class&quot;</span>)</a>
+<a class="sourceLine" id="cb491-2" data-line-number="2"><span class="co">#&gt; NULL</span></a>
+<a class="sourceLine" id="cb491-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb491-4" data-line-number="4"><span class="kw">attr</span>(mtcars, <span class="st">&quot;class&quot;</span>)</a>
+<a class="sourceLine" id="cb491-5" data-line-number="5"><span class="co">#&gt; [1] &quot;data.frame&quot;</span></a></code></pre></div>
 <p>You may already be familiar with the <code>class()</code> function. This function is safe to apply to S3 and S4 objects, but it returns misleading results when applied to base objects. It’s safer to use <code>sloop::s3_class()</code>, which returns the implicit class that the S3 and S4 systems will use to pick methods. You’ll learn more about <code>s3_class()</code> in Section <a href="s3.html#implicit-class">13.7.1</a>.</p>
-<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb493-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">nrow =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb493-2" data-line-number="2"><span class="kw">class</span>(x)</a>
-<a class="sourceLine" id="cb493-3" data-line-number="3"><span class="co">#&gt; [1] &quot;matrix&quot;</span></a>
-<a class="sourceLine" id="cb493-4" data-line-number="4">sloop<span class="op">::</span><span class="kw">s3_class</span>(x)</a>
-<a class="sourceLine" id="cb493-5" data-line-number="5"><span class="co">#&gt; [1] &quot;matrix&quot;  &quot;integer&quot; &quot;numeric&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb492-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">nrow =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb492-2" data-line-number="2"><span class="kw">class</span>(x)</a>
+<a class="sourceLine" id="cb492-3" data-line-number="3"><span class="co">#&gt; [1] &quot;matrix&quot;</span></a>
+<a class="sourceLine" id="cb492-4" data-line-number="4">sloop<span class="op">::</span><span class="kw">s3_class</span>(x)</a>
+<a class="sourceLine" id="cb492-5" data-line-number="5"><span class="co">#&gt; [1] &quot;matrix&quot;  &quot;integer&quot; &quot;numeric&quot;</span></a></code></pre></div>
 </div>
 <div id="base-types-2" class="section level2">
 <h2><span class="header-section-number">12.3</span> Base types</h2>
 
 <p>While only OO objects have a class attribute, every object has a <strong>base type</strong>:</p>
-<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb494-1" data-line-number="1"><span class="kw">typeof</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb494-2" data-line-number="2"><span class="co">#&gt; [1] &quot;integer&quot;</span></a>
-<a class="sourceLine" id="cb494-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb494-4" data-line-number="4"><span class="kw">typeof</span>(mtcars)</a>
-<a class="sourceLine" id="cb494-5" data-line-number="5"><span class="co">#&gt; [1] &quot;list&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb493-1" data-line-number="1"><span class="kw">typeof</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb493-2" data-line-number="2"><span class="co">#&gt; [1] &quot;integer&quot;</span></a>
+<a class="sourceLine" id="cb493-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb493-4" data-line-number="4"><span class="kw">typeof</span>(mtcars)</a>
+<a class="sourceLine" id="cb493-5" data-line-number="5"><span class="co">#&gt; [1] &quot;list&quot;</span></a></code></pre></div>
 <p>Base types do not form an OOP system because functions that behave differently for different base types are primarily written in C code that uses switch statements. This means that only R-core can create new types, and creating a new type is a lot of work because every switch statement needs to be modified to handle a new case. As a consequence, new base types are rarely added. The most recent change, in 2011, added two exotic types that you never see in R itself, but are needed for diagnosing memory problems. Prior to that, the last type added was a special base type for S4 objects added in 2005.</p>
+<!-- 
+https://github.com/wch/r-source/blob/f5bb85782509ddadbcec94ab7648886c2d008bda/src/main/util.c#L185-L211-->
 <p>In total, there are 25 different base types. They are listed below, loosely grouped according to where they’re discussed in this book. These types are most important in C code, so you’ll often see them called by their C type names. I’ve included those in parentheses.</p>
 <ul>
 <li><p>Vectors, Chapter <a href="vectors-chap.html#vectors-chap">3</a>, include types <code>NULL</code> (<code>NULLSXP</code>),
 <code>logical</code> (<code>LGLSXP</code>), <code>integer</code> (<code>INTSXP</code>), <code>double</code> (<code>REALSXP</code>), <code>complex</code>
 (<code>CPLSXP</code>), <code>character</code> (<code>STRSXP</code>), <code>list</code> (<code>VECSXP</code>), and <code>raw</code> (<code>RAWSXP</code>).</p>
-<div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb495-1" data-line-number="1"><span class="kw">typeof</span>(<span class="ot">NULL</span>)</a>
-<a class="sourceLine" id="cb495-2" data-line-number="2"><span class="co">#&gt; [1] &quot;NULL&quot;</span></a>
-<a class="sourceLine" id="cb495-3" data-line-number="3"><span class="kw">typeof</span>(1L)</a>
-<a class="sourceLine" id="cb495-4" data-line-number="4"><span class="co">#&gt; [1] &quot;integer&quot;</span></a>
-<a class="sourceLine" id="cb495-5" data-line-number="5"><span class="kw">typeof</span>(1i)</a>
-<a class="sourceLine" id="cb495-6" data-line-number="6"><span class="co">#&gt; [1] &quot;complex&quot;</span></a></code></pre></div></li>
+<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb494-1" data-line-number="1"><span class="kw">typeof</span>(<span class="ot">NULL</span>)</a>
+<a class="sourceLine" id="cb494-2" data-line-number="2"><span class="co">#&gt; [1] &quot;NULL&quot;</span></a>
+<a class="sourceLine" id="cb494-3" data-line-number="3"><span class="kw">typeof</span>(1L)</a>
+<a class="sourceLine" id="cb494-4" data-line-number="4"><span class="co">#&gt; [1] &quot;integer&quot;</span></a>
+<a class="sourceLine" id="cb494-5" data-line-number="5"><span class="kw">typeof</span>(1i)</a>
+<a class="sourceLine" id="cb494-6" data-line-number="6"><span class="co">#&gt; [1] &quot;complex&quot;</span></a></code></pre></div></li>
 <li><p>Functions, Chapter <a href="functions.html#functions">5</a>, include types <code>closure</code> (regular R
 functions, <code>CLOSXP</code>), <code>special</code> (internal functions, <code>SPECIALSXP</code>), and
 <code>builtin</code> (primitive functions, <code>BUILTINSXP</code>).</p>
-<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb496-1" data-line-number="1"><span class="kw">typeof</span>(mean)</a>
-<a class="sourceLine" id="cb496-2" data-line-number="2"><span class="co">#&gt; [1] &quot;closure&quot;</span></a>
-<a class="sourceLine" id="cb496-3" data-line-number="3"><span class="kw">typeof</span>(<span class="st">`</span><span class="dt">[</span><span class="st">`</span>)</a>
-<a class="sourceLine" id="cb496-4" data-line-number="4"><span class="co">#&gt; [1] &quot;special&quot;</span></a>
-<a class="sourceLine" id="cb496-5" data-line-number="5"><span class="kw">typeof</span>(sum)    </a>
-<a class="sourceLine" id="cb496-6" data-line-number="6"><span class="co">#&gt; [1] &quot;builtin&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb495-1" data-line-number="1"><span class="kw">typeof</span>(mean)</a>
+<a class="sourceLine" id="cb495-2" data-line-number="2"><span class="co">#&gt; [1] &quot;closure&quot;</span></a>
+<a class="sourceLine" id="cb495-3" data-line-number="3"><span class="kw">typeof</span>(<span class="st">`</span><span class="dt">[</span><span class="st">`</span>)</a>
+<a class="sourceLine" id="cb495-4" data-line-number="4"><span class="co">#&gt; [1] &quot;special&quot;</span></a>
+<a class="sourceLine" id="cb495-5" data-line-number="5"><span class="kw">typeof</span>(sum)    </a>
+<a class="sourceLine" id="cb495-6" data-line-number="6"><span class="co">#&gt; [1] &quot;builtin&quot;</span></a></code></pre></div>
 <p>Internal and primitive functions are described in Section
 <a href="functions.html#primitive-functions">5.2.3</a>.</p></li>
 <li><p>Environments, Chapter <a href="environments.html#environments">6</a>, have type <code>environment</code>
 (<code>ENVSXP</code>).</p>
-<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb497-1" data-line-number="1"><span class="kw">typeof</span>(<span class="kw">globalenv</span>())</a>
-<a class="sourceLine" id="cb497-2" data-line-number="2"><span class="co">#&gt; [1] &quot;environment&quot;</span></a></code></pre></div></li>
+<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb496-1" data-line-number="1"><span class="kw">typeof</span>(<span class="kw">globalenv</span>())</a>
+<a class="sourceLine" id="cb496-2" data-line-number="2"><span class="co">#&gt; [1] &quot;environment&quot;</span></a></code></pre></div></li>
 <li><p>The <code>S4</code> type (<code>S4SXP</code>), Chapter <a href="s4.html#s4">15</a>, is used for S4 classes that
 don’t inherit from an existing base type.</p>
-<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb498-1" data-line-number="1">mle_obj &lt;-<span class="st"> </span>stats4<span class="op">::</span><span class="kw">mle</span>(<span class="cf">function</span>(<span class="dt">x =</span> <span class="dv">1</span>) (x <span class="op">-</span><span class="st"> </span><span class="dv">2</span>) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb498-2" data-line-number="2"><span class="kw">typeof</span>(mle_obj)</a>
-<a class="sourceLine" id="cb498-3" data-line-number="3"><span class="co">#&gt; [1] &quot;S4&quot;</span></a></code></pre></div></li>
+<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb497-1" data-line-number="1">mle_obj &lt;-<span class="st"> </span>stats4<span class="op">::</span><span class="kw">mle</span>(<span class="cf">function</span>(<span class="dt">x =</span> <span class="dv">1</span>) (x <span class="op">-</span><span class="st"> </span><span class="dv">2</span>) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb497-2" data-line-number="2"><span class="kw">typeof</span>(mle_obj)</a>
+<a class="sourceLine" id="cb497-3" data-line-number="3"><span class="co">#&gt; [1] &quot;S4&quot;</span></a></code></pre></div></li>
 <li><p>Language components, Chapter <a href="expressions.html#expressions">17</a>, include <code>symbol</code> (aka
 name, <code>SYMSXP</code>), <code>language</code> (usually called calls, <code>LANGSXP</code>), and
 <code>pairlist</code> (used for function arguments, <code>LISTSXP</code>) types.</p>
-<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb499-1" data-line-number="1"><span class="kw">typeof</span>(<span class="kw">quote</span>(a))</a>
-<a class="sourceLine" id="cb499-2" data-line-number="2"><span class="co">#&gt; [1] &quot;symbol&quot;</span></a>
-<a class="sourceLine" id="cb499-3" data-line-number="3"><span class="kw">typeof</span>(<span class="kw">quote</span>(a <span class="op">+</span><span class="st"> </span><span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb499-4" data-line-number="4"><span class="co">#&gt; [1] &quot;language&quot;</span></a>
-<a class="sourceLine" id="cb499-5" data-line-number="5"><span class="kw">typeof</span>(<span class="kw">formals</span>(mean))</a>
-<a class="sourceLine" id="cb499-6" data-line-number="6"><span class="co">#&gt; [1] &quot;pairlist&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb498-1" data-line-number="1"><span class="kw">typeof</span>(<span class="kw">quote</span>(a))</a>
+<a class="sourceLine" id="cb498-2" data-line-number="2"><span class="co">#&gt; [1] &quot;symbol&quot;</span></a>
+<a class="sourceLine" id="cb498-3" data-line-number="3"><span class="kw">typeof</span>(<span class="kw">quote</span>(a <span class="op">+</span><span class="st"> </span><span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb498-4" data-line-number="4"><span class="co">#&gt; [1] &quot;language&quot;</span></a>
+<a class="sourceLine" id="cb498-5" data-line-number="5"><span class="kw">typeof</span>(<span class="kw">formals</span>(mean))</a>
+<a class="sourceLine" id="cb498-6" data-line-number="6"><span class="co">#&gt; [1] &quot;pairlist&quot;</span></a></code></pre></div>
 <p><code>expression</code> (<code>EXPRSXP</code>) is a special purpose type that’s only returned by
 <code>parse()</code> and <code>expression()</code>. Expressions are generally not needed in user
 code.</p></li>
@@ -1003,17 +1005,17 @@ identical to <code>double()</code>.</p>
 place that you’re likely to encounter this in practice.)</p></li>
 <li><p>In the S3 and S4 systems, numeric is used as a shorthand for either
 integer or double type, and is used when picking methods:</p>
-<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb500-1" data-line-number="1">sloop<span class="op">::</span><span class="kw">s3_class</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb500-2" data-line-number="2"><span class="co">#&gt; [1] &quot;double&quot;  &quot;numeric&quot;</span></a>
-<a class="sourceLine" id="cb500-3" data-line-number="3">sloop<span class="op">::</span><span class="kw">s3_class</span>(1L)</a>
-<a class="sourceLine" id="cb500-4" data-line-number="4"><span class="co">#&gt; [1] &quot;integer&quot; &quot;numeric&quot;</span></a></code></pre></div></li>
+<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb499-1" data-line-number="1">sloop<span class="op">::</span><span class="kw">s3_class</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb499-2" data-line-number="2"><span class="co">#&gt; [1] &quot;double&quot;  &quot;numeric&quot;</span></a>
+<a class="sourceLine" id="cb499-3" data-line-number="3">sloop<span class="op">::</span><span class="kw">s3_class</span>(1L)</a>
+<a class="sourceLine" id="cb499-4" data-line-number="4"><span class="co">#&gt; [1] &quot;integer&quot; &quot;numeric&quot;</span></a></code></pre></div></li>
 <li><p><code>is.numeric()</code> tests for objects that <em>behave</em> like numbers. For example,
 factors have type “integer” but don’t behave like numbers (i.e. it doesn’t
 make sense to take the mean of factor).</p>
-<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb501-1" data-line-number="1"><span class="kw">typeof</span>(<span class="kw">factor</span>(<span class="st">&quot;x&quot;</span>))</a>
-<a class="sourceLine" id="cb501-2" data-line-number="2"><span class="co">#&gt; [1] &quot;integer&quot;</span></a>
-<a class="sourceLine" id="cb501-3" data-line-number="3"><span class="kw">is.numeric</span>(<span class="kw">factor</span>(<span class="st">&quot;x&quot;</span>))</a>
-<a class="sourceLine" id="cb501-4" data-line-number="4"><span class="co">#&gt; [1] FALSE</span></a></code></pre></div></li>
+<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb500-1" data-line-number="1"><span class="kw">typeof</span>(<span class="kw">factor</span>(<span class="st">&quot;x&quot;</span>))</a>
+<a class="sourceLine" id="cb500-2" data-line-number="2"><span class="co">#&gt; [1] &quot;integer&quot;</span></a>
+<a class="sourceLine" id="cb500-3" data-line-number="3"><span class="kw">is.numeric</span>(<span class="kw">factor</span>(<span class="st">&quot;x&quot;</span>))</a>
+<a class="sourceLine" id="cb500-4" data-line-number="4"><span class="co">#&gt; [1] FALSE</span></a></code></pre></div></li>
 </ol>
 <p>In this book, I consistently use numeric to mean an object of type integer or double.</p>
 
@@ -1049,7 +1051,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/base-types.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

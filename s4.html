@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -940,47 +940,47 @@ you how to use them together.</p></li>
 <div id="prerequisites-8" class="section level3 unnumbered">
 <h3>Prerequisites</h3>
 <p>All functions related to S4 live in the methods package. This package is always available when you’re running R interactively, but may not be available when running R in batch mode, i.e. from <code>Rscript</code><a href="#fn50" class="footnote-ref" id="fnref50"><sup>50</sup></a>. For this reason, it’s a good idea to call <code>library(methods)</code> whenever you use S4. This also signals to the reader that you’ll be using the S4 object system.</p>
-<div class="sourceCode" id="cb588"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb588-1" data-line-number="1"><span class="kw">library</span>(methods)</a></code></pre></div>
+<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb587-1" data-line-number="1"><span class="kw">library</span>(methods)</a></code></pre></div>
 </div>
 </div>
 <div id="s4-basics" class="section level2">
 <h2><span class="header-section-number">15.2</span> Basics</h2>
 <p>We’ll start with a quick overview of the main components of S4. You define a S4 class by calling <code>setClass()</code> with the class name and a definition of its slots, the names and classes of the class data:</p>
-<div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb589-1" data-line-number="1"><span class="kw">setClass</span>(<span class="st">&quot;Person&quot;</span>, </a>
-<a class="sourceLine" id="cb589-2" data-line-number="2">  <span class="dt">slots =</span> <span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb589-3" data-line-number="3">    <span class="dt">name =</span> <span class="st">&quot;character&quot;</span>, </a>
-<a class="sourceLine" id="cb589-4" data-line-number="4">    <span class="dt">age =</span> <span class="st">&quot;numeric&quot;</span></a>
-<a class="sourceLine" id="cb589-5" data-line-number="5">  )</a>
-<a class="sourceLine" id="cb589-6" data-line-number="6">)</a></code></pre></div>
+<div class="sourceCode" id="cb588"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb588-1" data-line-number="1"><span class="kw">setClass</span>(<span class="st">&quot;Person&quot;</span>, </a>
+<a class="sourceLine" id="cb588-2" data-line-number="2">  <span class="dt">slots =</span> <span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb588-3" data-line-number="3">    <span class="dt">name =</span> <span class="st">&quot;character&quot;</span>, </a>
+<a class="sourceLine" id="cb588-4" data-line-number="4">    <span class="dt">age =</span> <span class="st">&quot;numeric&quot;</span></a>
+<a class="sourceLine" id="cb588-5" data-line-number="5">  )</a>
+<a class="sourceLine" id="cb588-6" data-line-number="6">)</a></code></pre></div>
 <p>Once the class is defined, you can construct new objects from it by calling <code>new()</code> with the name of the class and a value for each slot:</p>
-<div class="sourceCode" id="cb590"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb590-1" data-line-number="1">john &lt;-<span class="st"> </span><span class="kw">new</span>(<span class="st">&quot;Person&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;John Smith&quot;</span>, <span class="dt">age =</span> <span class="ot">NA_real_</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb589-1" data-line-number="1">john &lt;-<span class="st"> </span><span class="kw">new</span>(<span class="st">&quot;Person&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;John Smith&quot;</span>, <span class="dt">age =</span> <span class="ot">NA_real_</span>)</a></code></pre></div>
 <p>Given an S4 object you can see it’s class with <code>is()</code> and access slots with <code>@</code> (equivalent to <code>$</code>) and <code>slot()</code> (equivalent to <code>[[</code>):</p>
-<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb591-1" data-line-number="1"><span class="kw">is</span>(john)</a>
-<a class="sourceLine" id="cb591-2" data-line-number="2"><span class="co">#&gt; [1] &quot;Person&quot;</span></a>
-<a class="sourceLine" id="cb591-3" data-line-number="3">john<span class="op">@</span>name</a>
-<a class="sourceLine" id="cb591-4" data-line-number="4"><span class="co">#&gt; [1] &quot;John Smith&quot;</span></a>
-<a class="sourceLine" id="cb591-5" data-line-number="5"><span class="kw">slot</span>(john, <span class="st">&quot;age&quot;</span>)</a>
-<a class="sourceLine" id="cb591-6" data-line-number="6"><span class="co">#&gt; [1] NA</span></a></code></pre></div>
+<div class="sourceCode" id="cb590"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb590-1" data-line-number="1"><span class="kw">is</span>(john)</a>
+<a class="sourceLine" id="cb590-2" data-line-number="2"><span class="co">#&gt; [1] &quot;Person&quot;</span></a>
+<a class="sourceLine" id="cb590-3" data-line-number="3">john<span class="op">@</span>name</a>
+<a class="sourceLine" id="cb590-4" data-line-number="4"><span class="co">#&gt; [1] &quot;John Smith&quot;</span></a>
+<a class="sourceLine" id="cb590-5" data-line-number="5"><span class="kw">slot</span>(john, <span class="st">&quot;age&quot;</span>)</a>
+<a class="sourceLine" id="cb590-6" data-line-number="6"><span class="co">#&gt; [1] NA</span></a></code></pre></div>
 <p>Generally, you should only use <code>@</code> in your methods. If you’re working with someone else’s class, look for <strong>accessor</strong> functions that allow you to safely set and get slot values. As the developer of a class, you should also provide your own accessor functions. Accessors are typically S4 generics allowing multiple classes to share the same external interface.</p>
 <p>Here we’ll create a setter and getter for the <code>age</code> slot by first creating generics with <code>setGeneric()</code>:</p>
-<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb592-1" data-line-number="1"><span class="kw">setGeneric</span>(<span class="st">&quot;age&quot;</span>, <span class="cf">function</span>(x) <span class="kw">standardGeneric</span>(<span class="st">&quot;age&quot;</span>))</a>
-<a class="sourceLine" id="cb592-2" data-line-number="2"><span class="kw">setGeneric</span>(<span class="st">&quot;age&lt;-&quot;</span>, <span class="cf">function</span>(x, value) <span class="kw">standardGeneric</span>(<span class="st">&quot;age&lt;-&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb591-1" data-line-number="1"><span class="kw">setGeneric</span>(<span class="st">&quot;age&quot;</span>, <span class="cf">function</span>(x) <span class="kw">standardGeneric</span>(<span class="st">&quot;age&quot;</span>))</a>
+<a class="sourceLine" id="cb591-2" data-line-number="2"><span class="kw">setGeneric</span>(<span class="st">&quot;age&lt;-&quot;</span>, <span class="cf">function</span>(x, value) <span class="kw">standardGeneric</span>(<span class="st">&quot;age&lt;-&quot;</span>))</a></code></pre></div>
 <p>And then defining methods with <code>setMethod()</code>:</p>
-<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb593-1" data-line-number="1"><span class="kw">setMethod</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(x) x<span class="op">@</span>age)</a>
-<a class="sourceLine" id="cb593-2" data-line-number="2"><span class="kw">setMethod</span>(<span class="st">&quot;age&lt;-&quot;</span>, <span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(x, value) {</a>
-<a class="sourceLine" id="cb593-3" data-line-number="3">  x<span class="op">@</span>age &lt;-<span class="st"> </span>value</a>
-<a class="sourceLine" id="cb593-4" data-line-number="4">  x</a>
-<a class="sourceLine" id="cb593-5" data-line-number="5">})</a>
-<a class="sourceLine" id="cb593-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb593-7" data-line-number="7"><span class="kw">age</span>(john) &lt;-<span class="st"> </span><span class="dv">50</span></a>
-<a class="sourceLine" id="cb593-8" data-line-number="8"><span class="kw">age</span>(john)</a>
-<a class="sourceLine" id="cb593-9" data-line-number="9"><span class="co">#&gt; [1] 50</span></a></code></pre></div>
+<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb592-1" data-line-number="1"><span class="kw">setMethod</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(x) x<span class="op">@</span>age)</a>
+<a class="sourceLine" id="cb592-2" data-line-number="2"><span class="kw">setMethod</span>(<span class="st">&quot;age&lt;-&quot;</span>, <span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(x, value) {</a>
+<a class="sourceLine" id="cb592-3" data-line-number="3">  x<span class="op">@</span>age &lt;-<span class="st"> </span>value</a>
+<a class="sourceLine" id="cb592-4" data-line-number="4">  x</a>
+<a class="sourceLine" id="cb592-5" data-line-number="5">})</a>
+<a class="sourceLine" id="cb592-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb592-7" data-line-number="7"><span class="kw">age</span>(john) &lt;-<span class="st"> </span><span class="dv">50</span></a>
+<a class="sourceLine" id="cb592-8" data-line-number="8"><span class="kw">age</span>(john)</a>
+<a class="sourceLine" id="cb592-9" data-line-number="9"><span class="co">#&gt; [1] 50</span></a></code></pre></div>
 <p>If you’re using an S4 class defined in a package, you can get help on it with <code>class?Person</code>. To get help for a method, put <code>?</code> in front of a call (e.g. <code>?age(john)</code>) and <code>?</code> will use the class of the arguments to figure out which help file you need.</p>
 <p>Finally, you can use sloop functions to identify S4 objects and generics found in the wild:</p>
-<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb594-1" data-line-number="1">sloop<span class="op">::</span><span class="kw">otype</span>(john)</a>
-<a class="sourceLine" id="cb594-2" data-line-number="2"><span class="co">#&gt; [1] &quot;S4&quot;</span></a>
-<a class="sourceLine" id="cb594-3" data-line-number="3">sloop<span class="op">::</span><span class="kw">ftype</span>(age)</a>
-<a class="sourceLine" id="cb594-4" data-line-number="4"><span class="co">#&gt; [1] &quot;S4&quot;      &quot;generic&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb593-1" data-line-number="1">sloop<span class="op">::</span><span class="kw">otype</span>(john)</a>
+<a class="sourceLine" id="cb593-2" data-line-number="2"><span class="co">#&gt; [1] &quot;S4&quot;</span></a>
+<a class="sourceLine" id="cb593-3" data-line-number="3">sloop<span class="op">::</span><span class="kw">ftype</span>(age)</a>
+<a class="sourceLine" id="cb593-4" data-line-number="4"><span class="co">#&gt; [1] &quot;S4&quot;      &quot;generic&quot;</span></a></code></pre></div>
 <div id="exercises-45" class="section level3">
 <h3><span class="header-section-number">15.2.1</span> Exercises</h3>
 <ol style="list-style-type: decimal">
@@ -1005,67 +1005,67 @@ pseudo-class <code>ANY</code> allows a slot to accept objects of any type.</p></
 the prototype is optional<a href="#fn51" class="footnote-ref" id="fnref51"><sup>51</sup></a>, but you should always provide it.</p></li>
 </ul>
 <p>The code below illustrates the three arguments by creating a <code>Person</code> class with character <code>name</code> and numeric <code>age</code> slots.</p>
-<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb595-1" data-line-number="1"><span class="kw">setClass</span>(<span class="st">&quot;Person&quot;</span>, </a>
-<a class="sourceLine" id="cb595-2" data-line-number="2">  <span class="dt">slots =</span> <span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb595-3" data-line-number="3">    <span class="dt">name =</span> <span class="st">&quot;character&quot;</span>, </a>
-<a class="sourceLine" id="cb595-4" data-line-number="4">    <span class="dt">age =</span> <span class="st">&quot;numeric&quot;</span></a>
-<a class="sourceLine" id="cb595-5" data-line-number="5">  ), </a>
-<a class="sourceLine" id="cb595-6" data-line-number="6">  <span class="dt">prototype =</span> <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb595-7" data-line-number="7">    <span class="dt">name =</span> <span class="ot">NA_character_</span>,</a>
-<a class="sourceLine" id="cb595-8" data-line-number="8">    <span class="dt">age =</span> <span class="ot">NA_real_</span></a>
-<a class="sourceLine" id="cb595-9" data-line-number="9">  )</a>
-<a class="sourceLine" id="cb595-10" data-line-number="10">)</a>
-<a class="sourceLine" id="cb595-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb595-12" data-line-number="12">me &lt;-<span class="st"> </span><span class="kw">new</span>(<span class="st">&quot;Person&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;Hadley&quot;</span>)</a>
-<a class="sourceLine" id="cb595-13" data-line-number="13"><span class="kw">str</span>(me)</a>
-<a class="sourceLine" id="cb595-14" data-line-number="14"><span class="co">#&gt; Formal class &#39;Person&#39; [package &quot;.GlobalEnv&quot;] with 2 slots</span></a>
-<a class="sourceLine" id="cb595-15" data-line-number="15"><span class="co">#&gt;   ..@ name: chr &quot;Hadley&quot;</span></a>
-<a class="sourceLine" id="cb595-16" data-line-number="16"><span class="co">#&gt;   ..@ age : num NA</span></a></code></pre></div>
+<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb594-1" data-line-number="1"><span class="kw">setClass</span>(<span class="st">&quot;Person&quot;</span>, </a>
+<a class="sourceLine" id="cb594-2" data-line-number="2">  <span class="dt">slots =</span> <span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb594-3" data-line-number="3">    <span class="dt">name =</span> <span class="st">&quot;character&quot;</span>, </a>
+<a class="sourceLine" id="cb594-4" data-line-number="4">    <span class="dt">age =</span> <span class="st">&quot;numeric&quot;</span></a>
+<a class="sourceLine" id="cb594-5" data-line-number="5">  ), </a>
+<a class="sourceLine" id="cb594-6" data-line-number="6">  <span class="dt">prototype =</span> <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb594-7" data-line-number="7">    <span class="dt">name =</span> <span class="ot">NA_character_</span>,</a>
+<a class="sourceLine" id="cb594-8" data-line-number="8">    <span class="dt">age =</span> <span class="ot">NA_real_</span></a>
+<a class="sourceLine" id="cb594-9" data-line-number="9">  )</a>
+<a class="sourceLine" id="cb594-10" data-line-number="10">)</a>
+<a class="sourceLine" id="cb594-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb594-12" data-line-number="12">me &lt;-<span class="st"> </span><span class="kw">new</span>(<span class="st">&quot;Person&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;Hadley&quot;</span>)</a>
+<a class="sourceLine" id="cb594-13" data-line-number="13"><span class="kw">str</span>(me)</a>
+<a class="sourceLine" id="cb594-14" data-line-number="14"><span class="co">#&gt; Formal class &#39;Person&#39; [package &quot;.GlobalEnv&quot;] with 2 slots</span></a>
+<a class="sourceLine" id="cb594-15" data-line-number="15"><span class="co">#&gt;   ..@ name: chr &quot;Hadley&quot;</span></a>
+<a class="sourceLine" id="cb594-16" data-line-number="16"><span class="co">#&gt;   ..@ age : num NA</span></a></code></pre></div>
 <div id="inheritance-1" class="section level3">
 <h3><span class="header-section-number">15.3.1</span> Inheritance</h3>
 <p>There is one other important argument to <code>setClass()</code>: <code>contains</code>. This specifies a class (or classes) to inherit slots and behaviour from. For example, we can create an <code>Employee</code> class that inherits from the <code>Person</code> class, adding an extra slot desribes their <code>boss</code>.</p>
-<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb596-1" data-line-number="1"><span class="kw">setClass</span>(<span class="st">&quot;Employee&quot;</span>, </a>
-<a class="sourceLine" id="cb596-2" data-line-number="2">  <span class="dt">contains =</span> <span class="st">&quot;Person&quot;</span>, </a>
-<a class="sourceLine" id="cb596-3" data-line-number="3">  <span class="dt">slots =</span> <span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb596-4" data-line-number="4">    <span class="dt">boss =</span> <span class="st">&quot;Person&quot;</span></a>
-<a class="sourceLine" id="cb596-5" data-line-number="5">  ),</a>
-<a class="sourceLine" id="cb596-6" data-line-number="6">  <span class="dt">prototype =</span> <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb596-7" data-line-number="7">    <span class="dt">boss =</span> <span class="kw">new</span>(<span class="st">&quot;Person&quot;</span>)</a>
-<a class="sourceLine" id="cb596-8" data-line-number="8">  )</a>
-<a class="sourceLine" id="cb596-9" data-line-number="9">)</a>
-<a class="sourceLine" id="cb596-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb596-11" data-line-number="11"><span class="kw">str</span>(<span class="kw">new</span>(<span class="st">&quot;Employee&quot;</span>))</a>
-<a class="sourceLine" id="cb596-12" data-line-number="12"><span class="co">#&gt; Formal class &#39;Employee&#39; [package &quot;.GlobalEnv&quot;] with 3 slots</span></a>
-<a class="sourceLine" id="cb596-13" data-line-number="13"><span class="co">#&gt;   ..@ boss:Formal class &#39;Person&#39; [package &quot;.GlobalEnv&quot;] with 2 slots</span></a>
-<a class="sourceLine" id="cb596-14" data-line-number="14"><span class="co">#&gt;   .. .. ..@ name: chr NA</span></a>
-<a class="sourceLine" id="cb596-15" data-line-number="15"><span class="co">#&gt;   .. .. ..@ age : num NA</span></a>
-<a class="sourceLine" id="cb596-16" data-line-number="16"><span class="co">#&gt;   ..@ name: chr NA</span></a>
-<a class="sourceLine" id="cb596-17" data-line-number="17"><span class="co">#&gt;   ..@ age : num NA</span></a></code></pre></div>
+<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb595-1" data-line-number="1"><span class="kw">setClass</span>(<span class="st">&quot;Employee&quot;</span>, </a>
+<a class="sourceLine" id="cb595-2" data-line-number="2">  <span class="dt">contains =</span> <span class="st">&quot;Person&quot;</span>, </a>
+<a class="sourceLine" id="cb595-3" data-line-number="3">  <span class="dt">slots =</span> <span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb595-4" data-line-number="4">    <span class="dt">boss =</span> <span class="st">&quot;Person&quot;</span></a>
+<a class="sourceLine" id="cb595-5" data-line-number="5">  ),</a>
+<a class="sourceLine" id="cb595-6" data-line-number="6">  <span class="dt">prototype =</span> <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb595-7" data-line-number="7">    <span class="dt">boss =</span> <span class="kw">new</span>(<span class="st">&quot;Person&quot;</span>)</a>
+<a class="sourceLine" id="cb595-8" data-line-number="8">  )</a>
+<a class="sourceLine" id="cb595-9" data-line-number="9">)</a>
+<a class="sourceLine" id="cb595-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb595-11" data-line-number="11"><span class="kw">str</span>(<span class="kw">new</span>(<span class="st">&quot;Employee&quot;</span>))</a>
+<a class="sourceLine" id="cb595-12" data-line-number="12"><span class="co">#&gt; Formal class &#39;Employee&#39; [package &quot;.GlobalEnv&quot;] with 3 slots</span></a>
+<a class="sourceLine" id="cb595-13" data-line-number="13"><span class="co">#&gt;   ..@ boss:Formal class &#39;Person&#39; [package &quot;.GlobalEnv&quot;] with 2 slots</span></a>
+<a class="sourceLine" id="cb595-14" data-line-number="14"><span class="co">#&gt;   .. .. ..@ name: chr NA</span></a>
+<a class="sourceLine" id="cb595-15" data-line-number="15"><span class="co">#&gt;   .. .. ..@ age : num NA</span></a>
+<a class="sourceLine" id="cb595-16" data-line-number="16"><span class="co">#&gt;   ..@ name: chr NA</span></a>
+<a class="sourceLine" id="cb595-17" data-line-number="17"><span class="co">#&gt;   ..@ age : num NA</span></a></code></pre></div>
 <p><code>setClass()</code> has 9 other arguments but they are either deprecated or not recommended.</p>
 </div>
 <div id="introspection-1" class="section level3">
 <h3><span class="header-section-number">15.3.2</span> Introspection</h3>
 <p>To determine what classes an object inherits from, use <code>is()</code>:</p>
-<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb597-1" data-line-number="1"><span class="kw">is</span>(<span class="kw">new</span>(<span class="st">&quot;Person&quot;</span>))</a>
-<a class="sourceLine" id="cb597-2" data-line-number="2"><span class="co">#&gt; [1] &quot;Person&quot;</span></a>
-<a class="sourceLine" id="cb597-3" data-line-number="3"><span class="kw">is</span>(<span class="kw">new</span>(<span class="st">&quot;Employee&quot;</span>))</a>
-<a class="sourceLine" id="cb597-4" data-line-number="4"><span class="co">#&gt; [1] &quot;Employee&quot; &quot;Person&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb596-1" data-line-number="1"><span class="kw">is</span>(<span class="kw">new</span>(<span class="st">&quot;Person&quot;</span>))</a>
+<a class="sourceLine" id="cb596-2" data-line-number="2"><span class="co">#&gt; [1] &quot;Person&quot;</span></a>
+<a class="sourceLine" id="cb596-3" data-line-number="3"><span class="kw">is</span>(<span class="kw">new</span>(<span class="st">&quot;Employee&quot;</span>))</a>
+<a class="sourceLine" id="cb596-4" data-line-number="4"><span class="co">#&gt; [1] &quot;Employee&quot; &quot;Person&quot;</span></a></code></pre></div>
 <p>To test if an object inherits from a specific class, use the second argument of <code>is()</code>:</p>
-<div class="sourceCode" id="cb598"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb598-1" data-line-number="1"><span class="kw">is</span>(john, <span class="st">&quot;person&quot;</span>)</a>
-<a class="sourceLine" id="cb598-2" data-line-number="2"><span class="co">#&gt; [1] FALSE</span></a></code></pre></div>
+<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb597-1" data-line-number="1"><span class="kw">is</span>(john, <span class="st">&quot;person&quot;</span>)</a>
+<a class="sourceLine" id="cb597-2" data-line-number="2"><span class="co">#&gt; [1] FALSE</span></a></code></pre></div>
 </div>
 <div id="redefinition" class="section level3">
 <h3><span class="header-section-number">15.3.3</span> Redefinition</h3>
 <p>In most programming languages, class definition occurs at compile-time and object construction occurs later, at run-time. In R, however, both definition and construction occur at run time. When you call <code>setClass()</code>, you are registering a class definition in a (hidden) global variable. As with all state-modifying functions you need to use <code>setClass()</code> with care. It’s possible to create invalid objects if you redefine a class after already having instantiated an object:</p>
-<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb599-1" data-line-number="1"><span class="kw">setClass</span>(<span class="st">&quot;A&quot;</span>, <span class="dt">slots =</span> <span class="kw">c</span>(<span class="dt">x =</span> <span class="st">&quot;numeric&quot;</span>))</a>
-<a class="sourceLine" id="cb599-2" data-line-number="2">a &lt;-<span class="st"> </span><span class="kw">new</span>(<span class="st">&quot;A&quot;</span>, <span class="dt">x =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb599-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb599-4" data-line-number="4"><span class="kw">setClass</span>(<span class="st">&quot;A&quot;</span>, <span class="dt">slots =</span> <span class="kw">c</span>(<span class="dt">a_different_slot =</span> <span class="st">&quot;numeric&quot;</span>))</a>
-<a class="sourceLine" id="cb599-5" data-line-number="5">a</a>
-<a class="sourceLine" id="cb599-6" data-line-number="6"><span class="co">#&gt; An object of class &quot;A&quot;</span></a>
-<a class="sourceLine" id="cb599-7" data-line-number="7"><span class="co">#&gt; Slot &quot;a_different_slot&quot;:</span></a>
-<a class="sourceLine" id="cb599-8" data-line-number="8"><span class="co">#&gt; Error in slot(object, what):</span></a>
-<a class="sourceLine" id="cb599-9" data-line-number="9"><span class="co">#&gt;   no slot of name &quot;a_different_slot&quot; for this object of class &quot;A&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb598"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb598-1" data-line-number="1"><span class="kw">setClass</span>(<span class="st">&quot;A&quot;</span>, <span class="dt">slots =</span> <span class="kw">c</span>(<span class="dt">x =</span> <span class="st">&quot;numeric&quot;</span>))</a>
+<a class="sourceLine" id="cb598-2" data-line-number="2">a &lt;-<span class="st"> </span><span class="kw">new</span>(<span class="st">&quot;A&quot;</span>, <span class="dt">x =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb598-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb598-4" data-line-number="4"><span class="kw">setClass</span>(<span class="st">&quot;A&quot;</span>, <span class="dt">slots =</span> <span class="kw">c</span>(<span class="dt">a_different_slot =</span> <span class="st">&quot;numeric&quot;</span>))</a>
+<a class="sourceLine" id="cb598-5" data-line-number="5">a</a>
+<a class="sourceLine" id="cb598-6" data-line-number="6"><span class="co">#&gt; An object of class &quot;A&quot;</span></a>
+<a class="sourceLine" id="cb598-7" data-line-number="7"><span class="co">#&gt; Slot &quot;a_different_slot&quot;:</span></a>
+<a class="sourceLine" id="cb598-8" data-line-number="8"><span class="co">#&gt; Error in slot(object, what):</span></a>
+<a class="sourceLine" id="cb598-9" data-line-number="9"><span class="co">#&gt;   no slot of name &quot;a_different_slot&quot; for this object of class &quot;A&quot;</span></a></code></pre></div>
 <p>This can cause confusion during interactive creation of new classes. (R6 classes have the same problem, as described in Section <a href="r6.html#r6-important-methods">14.2.2</a>.)</p>
 </div>
 <div id="helper" class="section level3">
@@ -1079,55 +1079,55 @@ values and useful conversions.</p></li>
 <li><p>Finish by calling by calling <code>methods::new()</code>.</p></li>
 </ul>
 <p>The <code>Person</code> class is so simple so a helper is almost superfluous, but we can use it to clearly define the contract: <code>age</code> is optional but <code>name</code> is required. We’ll also coerce age to a dobule so the helper also works when passed an integer.</p>
-<div class="sourceCode" id="cb600"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb600-1" data-line-number="1">Person &lt;-<span class="st"> </span><span class="cf">function</span>(name, <span class="dt">age =</span> <span class="ot">NA</span>) {</a>
-<a class="sourceLine" id="cb600-2" data-line-number="2">  age &lt;-<span class="st"> </span><span class="kw">as.double</span>(age)</a>
-<a class="sourceLine" id="cb600-3" data-line-number="3">  </a>
-<a class="sourceLine" id="cb600-4" data-line-number="4">  <span class="kw">new</span>(<span class="st">&quot;Person&quot;</span>, <span class="dt">name =</span> name, <span class="dt">age =</span> age)</a>
-<a class="sourceLine" id="cb600-5" data-line-number="5">}</a>
-<a class="sourceLine" id="cb600-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb600-7" data-line-number="7"><span class="kw">Person</span>(<span class="st">&quot;Hadley&quot;</span>)</a>
-<a class="sourceLine" id="cb600-8" data-line-number="8"><span class="co">#&gt; An object of class &quot;Person&quot;</span></a>
-<a class="sourceLine" id="cb600-9" data-line-number="9"><span class="co">#&gt; Slot &quot;name&quot;:</span></a>
-<a class="sourceLine" id="cb600-10" data-line-number="10"><span class="co">#&gt; [1] &quot;Hadley&quot;</span></a>
-<a class="sourceLine" id="cb600-11" data-line-number="11"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb600-12" data-line-number="12"><span class="co">#&gt; Slot &quot;age&quot;:</span></a>
-<a class="sourceLine" id="cb600-13" data-line-number="13"><span class="co">#&gt; [1] NA</span></a></code></pre></div>
+<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb599-1" data-line-number="1">Person &lt;-<span class="st"> </span><span class="cf">function</span>(name, <span class="dt">age =</span> <span class="ot">NA</span>) {</a>
+<a class="sourceLine" id="cb599-2" data-line-number="2">  age &lt;-<span class="st"> </span><span class="kw">as.double</span>(age)</a>
+<a class="sourceLine" id="cb599-3" data-line-number="3">  </a>
+<a class="sourceLine" id="cb599-4" data-line-number="4">  <span class="kw">new</span>(<span class="st">&quot;Person&quot;</span>, <span class="dt">name =</span> name, <span class="dt">age =</span> age)</a>
+<a class="sourceLine" id="cb599-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb599-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb599-7" data-line-number="7"><span class="kw">Person</span>(<span class="st">&quot;Hadley&quot;</span>)</a>
+<a class="sourceLine" id="cb599-8" data-line-number="8"><span class="co">#&gt; An object of class &quot;Person&quot;</span></a>
+<a class="sourceLine" id="cb599-9" data-line-number="9"><span class="co">#&gt; Slot &quot;name&quot;:</span></a>
+<a class="sourceLine" id="cb599-10" data-line-number="10"><span class="co">#&gt; [1] &quot;Hadley&quot;</span></a>
+<a class="sourceLine" id="cb599-11" data-line-number="11"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb599-12" data-line-number="12"><span class="co">#&gt; Slot &quot;age&quot;:</span></a>
+<a class="sourceLine" id="cb599-13" data-line-number="13"><span class="co">#&gt; [1] NA</span></a></code></pre></div>
 </div>
 <div id="validator" class="section level3">
 <h3><span class="header-section-number">15.3.5</span> Validator</h3>
 <p>The constructor automatically checks that the slots have correct classes:</p>
-<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb601-1" data-line-number="1"><span class="kw">Person</span>(mtcars)</a>
-<a class="sourceLine" id="cb601-2" data-line-number="2"><span class="co">#&gt; Error in validObject(.Object):</span></a>
-<a class="sourceLine" id="cb601-3" data-line-number="3"><span class="co">#&gt;   Error in validObject(.Object): invalid class &quot;Person&quot; object: invalid</span></a>
-<a class="sourceLine" id="cb601-4" data-line-number="4"><span class="co">#&gt;   object for slot &quot;name&quot; in class &quot;Person&quot;: got class &quot;data.frame&quot;, should</span></a>
-<a class="sourceLine" id="cb601-5" data-line-number="5"><span class="co">#&gt;   be or extend class &quot;character&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb600"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb600-1" data-line-number="1"><span class="kw">Person</span>(mtcars)</a>
+<a class="sourceLine" id="cb600-2" data-line-number="2"><span class="co">#&gt; Error in validObject(.Object):</span></a>
+<a class="sourceLine" id="cb600-3" data-line-number="3"><span class="co">#&gt;   Error in validObject(.Object): invalid class &quot;Person&quot; object: invalid</span></a>
+<a class="sourceLine" id="cb600-4" data-line-number="4"><span class="co">#&gt;   object for slot &quot;name&quot; in class &quot;Person&quot;: got class &quot;data.frame&quot;, should</span></a>
+<a class="sourceLine" id="cb600-5" data-line-number="5"><span class="co">#&gt;   be or extend class &quot;character&quot;</span></a></code></pre></div>
 <p>You will need to implement more complicated checks (i.e. checks that involve lengths, or multiple slots) yourself. For example, we might want to make it clear that the Person class is a vector class, and can store data about multiple people. That’s not currently clear because <code>@name</code> and <code>@age</code> can be different lengths:</p>
-<div class="sourceCode" id="cb602"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb602-1" data-line-number="1"><span class="kw">Person</span>(<span class="st">&quot;Hadley&quot;</span>, <span class="dt">age =</span> <span class="kw">c</span>(<span class="dv">30</span>, <span class="dv">37</span>))</a>
-<a class="sourceLine" id="cb602-2" data-line-number="2"><span class="co">#&gt; An object of class &quot;Person&quot;</span></a>
-<a class="sourceLine" id="cb602-3" data-line-number="3"><span class="co">#&gt; Slot &quot;name&quot;:</span></a>
-<a class="sourceLine" id="cb602-4" data-line-number="4"><span class="co">#&gt; [1] &quot;Hadley&quot;</span></a>
-<a class="sourceLine" id="cb602-5" data-line-number="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb602-6" data-line-number="6"><span class="co">#&gt; Slot &quot;age&quot;:</span></a>
-<a class="sourceLine" id="cb602-7" data-line-number="7"><span class="co">#&gt; [1] 30 37</span></a></code></pre></div>
+<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb601-1" data-line-number="1"><span class="kw">Person</span>(<span class="st">&quot;Hadley&quot;</span>, <span class="dt">age =</span> <span class="kw">c</span>(<span class="dv">30</span>, <span class="dv">37</span>))</a>
+<a class="sourceLine" id="cb601-2" data-line-number="2"><span class="co">#&gt; An object of class &quot;Person&quot;</span></a>
+<a class="sourceLine" id="cb601-3" data-line-number="3"><span class="co">#&gt; Slot &quot;name&quot;:</span></a>
+<a class="sourceLine" id="cb601-4" data-line-number="4"><span class="co">#&gt; [1] &quot;Hadley&quot;</span></a>
+<a class="sourceLine" id="cb601-5" data-line-number="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb601-6" data-line-number="6"><span class="co">#&gt; Slot &quot;age&quot;:</span></a>
+<a class="sourceLine" id="cb601-7" data-line-number="7"><span class="co">#&gt; [1] 30 37</span></a></code></pre></div>
 <p>To enforce these additional constraints we write a validator with <code>setValidity()</code>. It takes class and a function that returns <code>TRUE</code> if the input is valid, and otherwise returns a character vector describing the problem(s):</p>
-<div class="sourceCode" id="cb603"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb603-1" data-line-number="1"><span class="kw">setValidity</span>(<span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(object) {</a>
-<a class="sourceLine" id="cb603-2" data-line-number="2">  <span class="cf">if</span> (<span class="kw">length</span>(object<span class="op">@</span>name) <span class="op">!=</span><span class="st"> </span><span class="kw">length</span>(object<span class="op">@</span>age)) {</a>
-<a class="sourceLine" id="cb603-3" data-line-number="3">    <span class="st">&quot;@name and @age must be same length&quot;</span></a>
-<a class="sourceLine" id="cb603-4" data-line-number="4">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb603-5" data-line-number="5">    <span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb603-6" data-line-number="6">  }</a>
-<a class="sourceLine" id="cb603-7" data-line-number="7">})</a></code></pre></div>
+<div class="sourceCode" id="cb602"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb602-1" data-line-number="1"><span class="kw">setValidity</span>(<span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(object) {</a>
+<a class="sourceLine" id="cb602-2" data-line-number="2">  <span class="cf">if</span> (<span class="kw">length</span>(object<span class="op">@</span>name) <span class="op">!=</span><span class="st"> </span><span class="kw">length</span>(object<span class="op">@</span>age)) {</a>
+<a class="sourceLine" id="cb602-3" data-line-number="3">    <span class="st">&quot;@name and @age must be same length&quot;</span></a>
+<a class="sourceLine" id="cb602-4" data-line-number="4">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb602-5" data-line-number="5">    <span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb602-6" data-line-number="6">  }</a>
+<a class="sourceLine" id="cb602-7" data-line-number="7">})</a></code></pre></div>
 <p>Now we can no longer create an invalid object:</p>
-<div class="sourceCode" id="cb604"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb604-1" data-line-number="1"><span class="kw">Person</span>(<span class="st">&quot;Hadley&quot;</span>, <span class="dt">age =</span> <span class="kw">c</span>(<span class="dv">30</span>, <span class="dv">37</span>))</a>
-<a class="sourceLine" id="cb604-2" data-line-number="2"><span class="co">#&gt; Error in validObject(.Object):</span></a>
-<a class="sourceLine" id="cb604-3" data-line-number="3"><span class="co">#&gt;   invalid class &quot;Person&quot; object: @name and @age must be same length</span></a></code></pre></div>
+<div class="sourceCode" id="cb603"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb603-1" data-line-number="1"><span class="kw">Person</span>(<span class="st">&quot;Hadley&quot;</span>, <span class="dt">age =</span> <span class="kw">c</span>(<span class="dv">30</span>, <span class="dv">37</span>))</a>
+<a class="sourceLine" id="cb603-2" data-line-number="2"><span class="co">#&gt; Error in validObject(.Object):</span></a>
+<a class="sourceLine" id="cb603-3" data-line-number="3"><span class="co">#&gt;   invalid class &quot;Person&quot; object: @name and @age must be same length</span></a></code></pre></div>
 <p>Note that the validity method is only called automatically by <code>new()</code>, so you can still create an invalid object by modifying it:</p>
-<div class="sourceCode" id="cb605"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb605-1" data-line-number="1">alex &lt;-<span class="st"> </span><span class="kw">Person</span>(<span class="st">&quot;Alex&quot;</span>, <span class="dt">age =</span> <span class="dv">30</span>)</a>
-<a class="sourceLine" id="cb605-2" data-line-number="2">alex<span class="op">@</span>age &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></a></code></pre></div>
+<div class="sourceCode" id="cb604"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb604-1" data-line-number="1">alex &lt;-<span class="st"> </span><span class="kw">Person</span>(<span class="st">&quot;Alex&quot;</span>, <span class="dt">age =</span> <span class="dv">30</span>)</a>
+<a class="sourceLine" id="cb604-2" data-line-number="2">alex<span class="op">@</span>age &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></a></code></pre></div>
 <p>You can explicitly check the validity yourself by calling <code>validObject()</code>:</p>
-<div class="sourceCode" id="cb606"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb606-1" data-line-number="1"><span class="kw">validObject</span>(alex)</a>
-<a class="sourceLine" id="cb606-2" data-line-number="2"><span class="co">#&gt; Error in validObject(alex):</span></a>
-<a class="sourceLine" id="cb606-3" data-line-number="3"><span class="co">#&gt;   invalid class &quot;Person&quot; object: @name and @age must be same length</span></a></code></pre></div>
+<div class="sourceCode" id="cb605"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb605-1" data-line-number="1"><span class="kw">validObject</span>(alex)</a>
+<a class="sourceLine" id="cb605-2" data-line-number="2"><span class="co">#&gt; Error in validObject(alex):</span></a>
+<a class="sourceLine" id="cb605-3" data-line-number="3"><span class="co">#&gt;   invalid class &quot;Person&quot; object: @name and @age must be same length</span></a></code></pre></div>
 <p>In Section <a href="s4.html#accessors">15.4.4</a>, we’ll use <code>validObject()</code> to create accessors can not create invalid objects.</p>
 </div>
 <div id="exercises-46" class="section level3">
@@ -1154,75 +1154,75 @@ classes. Think about appropriate <code>slots</code> and <code>prototype</code>.<
 </p>
 <p>The job of a generic is to perform method dispatch, i.e. find the specific implementation for the combination of classes passed to the generic. Here you’ll learn how to define S4 generics and methods, then in the next section we’ll explore precisely how S4 method dispatch works.</p>
 <p>To create a new S4 generic, call <code>setGeneric()</code> with a function that calls <code>standardGeneric()</code>:</p>
-<div class="sourceCode" id="cb607"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb607-1" data-line-number="1"><span class="kw">setGeneric</span>(<span class="st">&quot;myGeneric&quot;</span>, <span class="cf">function</span>(x) <span class="kw">standardGeneric</span>(<span class="st">&quot;myGeneric&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb606"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb606-1" data-line-number="1"><span class="kw">setGeneric</span>(<span class="st">&quot;myGeneric&quot;</span>, <span class="cf">function</span>(x) <span class="kw">standardGeneric</span>(<span class="st">&quot;myGeneric&quot;</span>))</a></code></pre></div>
 <p>By convention, new S4 generics should use <code>lowerCamelCase</code>.</p>
 <p>It is bad practice to use <code>{}</code> in the generic as it triggers a special case that is more expensive, and generally best avoided.</p>
-<div class="sourceCode" id="cb608"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb608-1" data-line-number="1"><span class="co"># Don&#39;t do this!</span></a>
-<a class="sourceLine" id="cb608-2" data-line-number="2"><span class="kw">setGeneric</span>(<span class="st">&quot;myGeneric&quot;</span>, <span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb608-3" data-line-number="3">  <span class="kw">standardGeneric</span>(<span class="st">&quot;myGeneric&quot;</span>)</a>
-<a class="sourceLine" id="cb608-4" data-line-number="4">})</a></code></pre></div>
+<div class="sourceCode" id="cb607"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb607-1" data-line-number="1"><span class="co"># Don&#39;t do this!</span></a>
+<a class="sourceLine" id="cb607-2" data-line-number="2"><span class="kw">setGeneric</span>(<span class="st">&quot;myGeneric&quot;</span>, <span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb607-3" data-line-number="3">  <span class="kw">standardGeneric</span>(<span class="st">&quot;myGeneric&quot;</span>)</a>
+<a class="sourceLine" id="cb607-4" data-line-number="4">})</a></code></pre></div>
 <div id="signature" class="section level3">
 <h3><span class="header-section-number">15.4.1</span> Signature</h3>
 <p>Like <code>setClass()</code>, <code>setGeneric()</code> has many other arguments. There is only one that you need to know about: <code>signature</code>. This allows you to control the arguments that are used for method dispatch. If <code>signature</code> is not supplied, all arguments (apart from <code>...</code>) are used. It is occassionally useful to remove arguments from dispatch. This allows you to require that methods provide arguments like <code>verbose = TRUE</code> or <code>quiet = FALSE</code>, but they don’t take part in dispatch.</p>
-<div class="sourceCode" id="cb609"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb609-1" data-line-number="1"><span class="kw">setGeneric</span>(<span class="st">&quot;myGeneric&quot;</span>, </a>
-<a class="sourceLine" id="cb609-2" data-line-number="2">  <span class="cf">function</span>(x, ..., <span class="dt">verbose =</span> <span class="ot">TRUE</span>) <span class="kw">standardGeneric</span>(<span class="st">&quot;myGeneric&quot;</span>),</a>
-<a class="sourceLine" id="cb609-3" data-line-number="3">  <span class="dt">signature =</span> <span class="st">&quot;x&quot;</span></a>
-<a class="sourceLine" id="cb609-4" data-line-number="4">)</a></code></pre></div>
+<div class="sourceCode" id="cb608"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb608-1" data-line-number="1"><span class="kw">setGeneric</span>(<span class="st">&quot;myGeneric&quot;</span>, </a>
+<a class="sourceLine" id="cb608-2" data-line-number="2">  <span class="cf">function</span>(x, ..., <span class="dt">verbose =</span> <span class="ot">TRUE</span>) <span class="kw">standardGeneric</span>(<span class="st">&quot;myGeneric&quot;</span>),</a>
+<a class="sourceLine" id="cb608-3" data-line-number="3">  <span class="dt">signature =</span> <span class="st">&quot;x&quot;</span></a>
+<a class="sourceLine" id="cb608-4" data-line-number="4">)</a></code></pre></div>
 </div>
 <div id="methods" class="section level3">
 <h3><span class="header-section-number">15.4.2</span> Methods</h3>
 
 <p>A generic isn’t useful without some methods, and in S4 you define methods with <code>setMethod()</code>. There are three important arguments: the name of the generic, the name of the class, and the method itself.</p>
-<div class="sourceCode" id="cb610"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb610-1" data-line-number="1"><span class="kw">setMethod</span>(<span class="st">&quot;myGeneric&quot;</span>, <span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb610-2" data-line-number="2">  <span class="co"># method implementation</span></a>
-<a class="sourceLine" id="cb610-3" data-line-number="3">})</a></code></pre></div>
+<div class="sourceCode" id="cb609"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb609-1" data-line-number="1"><span class="kw">setMethod</span>(<span class="st">&quot;myGeneric&quot;</span>, <span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb609-2" data-line-number="2">  <span class="co"># method implementation</span></a>
+<a class="sourceLine" id="cb609-3" data-line-number="3">})</a></code></pre></div>
 <p>More formally, the second argument to <code>setMethod()</code> is called the <strong>signature</strong>. In S4, unlike S3, the signature can include multiple arguments. This makes method dispatch in S4 substantially more complicated, but avoids having to implement double-dispatch as specially. We’ll talk more about multiple dispatch in the next section. <code>setMethod()</code> has other arguments, but you should never use them.</p>
 <p>To list all the methods that belong to a generic, or that are associated with a class, use <code>methods(&quot;generic&quot;)</code> or <code>methods(class = &quot;class&quot;)</code>; to find the implementation of a specific method, use <code>selectMethod(&quot;generic&quot;, &quot;class&quot;)</code>.</p>
 </div>
 <div id="show-method" class="section level3">
 <h3><span class="header-section-number">15.4.3</span> Show method</h3>
 <p>The most commonly defined S4 method controls printing is <code>show()</code>, which controls how the object appears when it is printed. To define a method for an existing generic, you must first determine the arguments. You can get those from the documentation or by looking at the <code>args()</code> of the generic:</p>
-<div class="sourceCode" id="cb611"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb611-1" data-line-number="1"><span class="kw">args</span>(<span class="kw">getGeneric</span>(<span class="st">&quot;show&quot;</span>))</a>
-<a class="sourceLine" id="cb611-2" data-line-number="2"><span class="co">#&gt; function (object) </span></a>
-<a class="sourceLine" id="cb611-3" data-line-number="3"><span class="co">#&gt; NULL</span></a></code></pre></div>
+<div class="sourceCode" id="cb610"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb610-1" data-line-number="1"><span class="kw">args</span>(<span class="kw">getGeneric</span>(<span class="st">&quot;show&quot;</span>))</a>
+<a class="sourceLine" id="cb610-2" data-line-number="2"><span class="co">#&gt; function (object) </span></a>
+<a class="sourceLine" id="cb610-3" data-line-number="3"><span class="co">#&gt; NULL</span></a></code></pre></div>
 <p>Our show method needs to have a single argument <code>object</code>:</p>
-<div class="sourceCode" id="cb612"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb612-1" data-line-number="1"><span class="kw">setMethod</span>(<span class="st">&quot;show&quot;</span>, <span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(object) {</a>
-<a class="sourceLine" id="cb612-2" data-line-number="2">  <span class="kw">cat</span>(<span class="kw">is</span>(object)[[<span class="dv">1</span>]], <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>,</a>
-<a class="sourceLine" id="cb612-3" data-line-number="3">      <span class="st">&quot;  Name: &quot;</span>, object<span class="op">@</span>name, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>,</a>
-<a class="sourceLine" id="cb612-4" data-line-number="4">      <span class="st">&quot;  Age:  &quot;</span>, object<span class="op">@</span>age, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>,</a>
-<a class="sourceLine" id="cb612-5" data-line-number="5">      <span class="dt">sep =</span> <span class="st">&quot;&quot;</span></a>
-<a class="sourceLine" id="cb612-6" data-line-number="6">  )</a>
-<a class="sourceLine" id="cb612-7" data-line-number="7">})</a>
-<a class="sourceLine" id="cb612-8" data-line-number="8">john</a>
-<a class="sourceLine" id="cb612-9" data-line-number="9"><span class="co">#&gt; Person</span></a>
-<a class="sourceLine" id="cb612-10" data-line-number="10"><span class="co">#&gt;   Name: John Smith</span></a>
-<a class="sourceLine" id="cb612-11" data-line-number="11"><span class="co">#&gt;   Age:  50</span></a></code></pre></div>
+<div class="sourceCode" id="cb611"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb611-1" data-line-number="1"><span class="kw">setMethod</span>(<span class="st">&quot;show&quot;</span>, <span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(object) {</a>
+<a class="sourceLine" id="cb611-2" data-line-number="2">  <span class="kw">cat</span>(<span class="kw">is</span>(object)[[<span class="dv">1</span>]], <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>,</a>
+<a class="sourceLine" id="cb611-3" data-line-number="3">      <span class="st">&quot;  Name: &quot;</span>, object<span class="op">@</span>name, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>,</a>
+<a class="sourceLine" id="cb611-4" data-line-number="4">      <span class="st">&quot;  Age:  &quot;</span>, object<span class="op">@</span>age, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>,</a>
+<a class="sourceLine" id="cb611-5" data-line-number="5">      <span class="dt">sep =</span> <span class="st">&quot;&quot;</span></a>
+<a class="sourceLine" id="cb611-6" data-line-number="6">  )</a>
+<a class="sourceLine" id="cb611-7" data-line-number="7">})</a>
+<a class="sourceLine" id="cb611-8" data-line-number="8">john</a>
+<a class="sourceLine" id="cb611-9" data-line-number="9"><span class="co">#&gt; Person</span></a>
+<a class="sourceLine" id="cb611-10" data-line-number="10"><span class="co">#&gt;   Name: John Smith</span></a>
+<a class="sourceLine" id="cb611-11" data-line-number="11"><span class="co">#&gt;   Age:  50</span></a></code></pre></div>
 </div>
 <div id="accessors" class="section level3">
 <h3><span class="header-section-number">15.4.4</span> Accessors</h3>
 <p>Slots should be considered an internal implementation detail: they can change without warning and user code should avoid accessing them directly. Instead, all user-accessible slots should be accompanied by a pair of <strong>accessors</strong>. If the slot is unique to the class, this can just be a function:</p>
-<div class="sourceCode" id="cb613"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb613-1" data-line-number="1">person_name &lt;-<span class="st"> </span><span class="cf">function</span>(x) x<span class="op">@</span>name</a></code></pre></div>
+<div class="sourceCode" id="cb612"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb612-1" data-line-number="1">person_name &lt;-<span class="st"> </span><span class="cf">function</span>(x) x<span class="op">@</span>name</a></code></pre></div>
 <p>Typically, however, you’ll define a generic so that multiple classes can use the same interface:</p>
-<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb614-1" data-line-number="1"><span class="kw">setGeneric</span>(<span class="st">&quot;name&quot;</span>, <span class="cf">function</span>(x) <span class="kw">standardGeneric</span>(<span class="st">&quot;name&quot;</span>))</a>
-<a class="sourceLine" id="cb614-2" data-line-number="2"><span class="kw">setMethod</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(x) x<span class="op">@</span>name)</a>
-<a class="sourceLine" id="cb614-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb614-4" data-line-number="4"><span class="kw">name</span>(john)</a>
-<a class="sourceLine" id="cb614-5" data-line-number="5"><span class="co">#&gt; [1] &quot;John Smith&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb613"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb613-1" data-line-number="1"><span class="kw">setGeneric</span>(<span class="st">&quot;name&quot;</span>, <span class="cf">function</span>(x) <span class="kw">standardGeneric</span>(<span class="st">&quot;name&quot;</span>))</a>
+<a class="sourceLine" id="cb613-2" data-line-number="2"><span class="kw">setMethod</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(x) x<span class="op">@</span>name)</a>
+<a class="sourceLine" id="cb613-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb613-4" data-line-number="4"><span class="kw">name</span>(john)</a>
+<a class="sourceLine" id="cb613-5" data-line-number="5"><span class="co">#&gt; [1] &quot;John Smith&quot;</span></a></code></pre></div>
 <p>If the slot is also writeable, you should provide a setter function. You should always <code>validObject()</code> in the setter to prevent the user from creating invalid objects.</p>
-<div class="sourceCode" id="cb615"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb615-1" data-line-number="1"><span class="kw">setGeneric</span>(<span class="st">&quot;name&lt;-&quot;</span>, <span class="cf">function</span>(x, value) <span class="kw">standardGeneric</span>(<span class="st">&quot;name&lt;-&quot;</span>))</a>
-<a class="sourceLine" id="cb615-2" data-line-number="2"><span class="kw">setMethod</span>(<span class="st">&quot;name&lt;-&quot;</span>, <span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(x, value) {</a>
-<a class="sourceLine" id="cb615-3" data-line-number="3">  x<span class="op">@</span>name &lt;-<span class="st"> </span>value</a>
-<a class="sourceLine" id="cb615-4" data-line-number="4">  <span class="kw">validObject</span>(x)</a>
-<a class="sourceLine" id="cb615-5" data-line-number="5">  x</a>
-<a class="sourceLine" id="cb615-6" data-line-number="6">})</a>
-<a class="sourceLine" id="cb615-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb615-8" data-line-number="8"><span class="kw">name</span>(john) &lt;-<span class="st"> &quot;Jon Smythe&quot;</span></a>
-<a class="sourceLine" id="cb615-9" data-line-number="9"><span class="kw">name</span>(john)</a>
-<a class="sourceLine" id="cb615-10" data-line-number="10"><span class="co">#&gt; [1] &quot;Jon Smythe&quot;</span></a>
-<a class="sourceLine" id="cb615-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb615-12" data-line-number="12"><span class="kw">name</span>(john) &lt;-<span class="st"> </span>letters</a>
-<a class="sourceLine" id="cb615-13" data-line-number="13"><span class="co">#&gt; Error in validObject(x):</span></a>
-<a class="sourceLine" id="cb615-14" data-line-number="14"><span class="co">#&gt;   invalid class &quot;Person&quot; object: @name and @age must be same length</span></a></code></pre></div>
+<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb614-1" data-line-number="1"><span class="kw">setGeneric</span>(<span class="st">&quot;name&lt;-&quot;</span>, <span class="cf">function</span>(x, value) <span class="kw">standardGeneric</span>(<span class="st">&quot;name&lt;-&quot;</span>))</a>
+<a class="sourceLine" id="cb614-2" data-line-number="2"><span class="kw">setMethod</span>(<span class="st">&quot;name&lt;-&quot;</span>, <span class="st">&quot;Person&quot;</span>, <span class="cf">function</span>(x, value) {</a>
+<a class="sourceLine" id="cb614-3" data-line-number="3">  x<span class="op">@</span>name &lt;-<span class="st"> </span>value</a>
+<a class="sourceLine" id="cb614-4" data-line-number="4">  <span class="kw">validObject</span>(x)</a>
+<a class="sourceLine" id="cb614-5" data-line-number="5">  x</a>
+<a class="sourceLine" id="cb614-6" data-line-number="6">})</a>
+<a class="sourceLine" id="cb614-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb614-8" data-line-number="8"><span class="kw">name</span>(john) &lt;-<span class="st"> &quot;Jon Smythe&quot;</span></a>
+<a class="sourceLine" id="cb614-9" data-line-number="9"><span class="kw">name</span>(john)</a>
+<a class="sourceLine" id="cb614-10" data-line-number="10"><span class="co">#&gt; [1] &quot;Jon Smythe&quot;</span></a>
+<a class="sourceLine" id="cb614-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb614-12" data-line-number="12"><span class="kw">name</span>(john) &lt;-<span class="st"> </span>letters</a>
+<a class="sourceLine" id="cb614-13" data-line-number="13"><span class="co">#&gt; Error in validObject(x):</span></a>
+<a class="sourceLine" id="cb614-14" data-line-number="14"><span class="co">#&gt;   invalid class &quot;Person&quot; object: @name and @age must be same length</span></a></code></pre></div>
 <p>(If the <code>name&lt;-</code> notation is unfamiliar, review Section <a href="functions.html#function-forms">5.8</a>.)</p>
 </div>
 <div id="exercises-47" class="section level3">
@@ -1319,53 +1319,53 @@ terminal classes? Why does method dispatch not save us much work here?</p></li>
 <div id="classes" class="section level3">
 <h3><span class="header-section-number">15.6.1</span> Classes</h3>
 <p>In <code>slots</code> and <code>contains</code> you can use S4 classes, S3 classes, or the implicit class (Section <a href="s3.html#implicit-class">13.7.1</a>) of a base type. To use an S3 class, you must first register it with <code>setOldClass()</code>. You call this function once for each S3 class, giving it the class attribute. For example, the following definitions are already provided by base R:</p>
-<div class="sourceCode" id="cb616"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb616-1" data-line-number="1"><span class="kw">setOldClass</span>(<span class="st">&quot;data.frame&quot;</span>)</a>
-<a class="sourceLine" id="cb616-2" data-line-number="2"><span class="kw">setOldClass</span>(<span class="kw">c</span>(<span class="st">&quot;ordered&quot;</span>, <span class="st">&quot;factor&quot;</span>))</a>
-<a class="sourceLine" id="cb616-3" data-line-number="3"><span class="kw">setOldClass</span>(<span class="kw">c</span>(<span class="st">&quot;glm&quot;</span>, <span class="st">&quot;lm&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb615"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb615-1" data-line-number="1"><span class="kw">setOldClass</span>(<span class="st">&quot;data.frame&quot;</span>)</a>
+<a class="sourceLine" id="cb615-2" data-line-number="2"><span class="kw">setOldClass</span>(<span class="kw">c</span>(<span class="st">&quot;ordered&quot;</span>, <span class="st">&quot;factor&quot;</span>))</a>
+<a class="sourceLine" id="cb615-3" data-line-number="3"><span class="kw">setOldClass</span>(<span class="kw">c</span>(<span class="st">&quot;glm&quot;</span>, <span class="st">&quot;lm&quot;</span>))</a></code></pre></div>
 <p>However, it’s generally better to be more specific and provide a full S4 definition with <code>slots</code> and a <code>prototype</code>:</p>
-<div class="sourceCode" id="cb617"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb617-1" data-line-number="1"><span class="kw">setClass</span>(<span class="st">&quot;factor&quot;</span>,</a>
-<a class="sourceLine" id="cb617-2" data-line-number="2">  <span class="dt">contains =</span> <span class="st">&quot;integer&quot;</span>,</a>
-<a class="sourceLine" id="cb617-3" data-line-number="3">  <span class="dt">slots =</span> <span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb617-4" data-line-number="4">    <span class="dt">levels =</span> <span class="st">&quot;character&quot;</span></a>
-<a class="sourceLine" id="cb617-5" data-line-number="5">  ),</a>
-<a class="sourceLine" id="cb617-6" data-line-number="6">  <span class="dt">prototype =</span> <span class="kw">structure</span>(</a>
-<a class="sourceLine" id="cb617-7" data-line-number="7">    <span class="kw">integer</span>(),</a>
-<a class="sourceLine" id="cb617-8" data-line-number="8">    <span class="dt">levels =</span> <span class="kw">character</span>()</a>
-<a class="sourceLine" id="cb617-9" data-line-number="9">  )</a>
-<a class="sourceLine" id="cb617-10" data-line-number="10">)</a>
-<a class="sourceLine" id="cb617-11" data-line-number="11"><span class="kw">setOldClass</span>(<span class="st">&quot;factor&quot;</span>, <span class="dt">S4Class =</span> <span class="st">&quot;factor&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb616"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb616-1" data-line-number="1"><span class="kw">setClass</span>(<span class="st">&quot;factor&quot;</span>,</a>
+<a class="sourceLine" id="cb616-2" data-line-number="2">  <span class="dt">contains =</span> <span class="st">&quot;integer&quot;</span>,</a>
+<a class="sourceLine" id="cb616-3" data-line-number="3">  <span class="dt">slots =</span> <span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb616-4" data-line-number="4">    <span class="dt">levels =</span> <span class="st">&quot;character&quot;</span></a>
+<a class="sourceLine" id="cb616-5" data-line-number="5">  ),</a>
+<a class="sourceLine" id="cb616-6" data-line-number="6">  <span class="dt">prototype =</span> <span class="kw">structure</span>(</a>
+<a class="sourceLine" id="cb616-7" data-line-number="7">    <span class="kw">integer</span>(),</a>
+<a class="sourceLine" id="cb616-8" data-line-number="8">    <span class="dt">levels =</span> <span class="kw">character</span>()</a>
+<a class="sourceLine" id="cb616-9" data-line-number="9">  )</a>
+<a class="sourceLine" id="cb616-10" data-line-number="10">)</a>
+<a class="sourceLine" id="cb616-11" data-line-number="11"><span class="kw">setOldClass</span>(<span class="st">&quot;factor&quot;</span>, <span class="dt">S4Class =</span> <span class="st">&quot;factor&quot;</span>)</a></code></pre></div>
 <p>Generally, these definitions should be provided by the creator of the S3 class. If you’re trying to build an S4 class on top of an S3 class provided by a package, you should request that the package maintainer add this call to their package, rather than adding it to your own code.</p>
 <p>If an S4 object inherits from an S3 class or a base type, it will have a special virtual slot called <code>.Data</code>. This contains the underlying base type or S3 object: </p>
-<div class="sourceCode" id="cb618"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb618-1" data-line-number="1">RangedNumeric &lt;-<span class="st"> </span><span class="kw">setClass</span>(</a>
-<a class="sourceLine" id="cb618-2" data-line-number="2">  <span class="st">&quot;RangedNumeric&quot;</span>,</a>
-<a class="sourceLine" id="cb618-3" data-line-number="3">  <span class="dt">contains =</span> <span class="st">&quot;numeric&quot;</span>,</a>
-<a class="sourceLine" id="cb618-4" data-line-number="4">  <span class="dt">slots =</span> <span class="kw">c</span>(<span class="dt">min =</span> <span class="st">&quot;numeric&quot;</span>, <span class="dt">max =</span> <span class="st">&quot;numeric&quot;</span>),</a>
-<a class="sourceLine" id="cb618-5" data-line-number="5">  <span class="dt">prototype =</span> <span class="kw">structure</span>(<span class="kw">numeric</span>(), <span class="dt">min =</span> <span class="ot">NA_real_</span>, <span class="dt">max =</span> <span class="ot">NA_real_</span>)</a>
-<a class="sourceLine" id="cb618-6" data-line-number="6">)</a>
-<a class="sourceLine" id="cb618-7" data-line-number="7">rn &lt;-<span class="st"> </span><span class="kw">RangedNumeric</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">min =</span> <span class="dv">1</span>, <span class="dt">max =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb618-8" data-line-number="8">rn<span class="op">@</span>min</a>
-<a class="sourceLine" id="cb618-9" data-line-number="9"><span class="co">#&gt; [1] 1</span></a>
-<a class="sourceLine" id="cb618-10" data-line-number="10">rn<span class="op">@</span>.Data</a>
-<a class="sourceLine" id="cb618-11" data-line-number="11"><span class="co">#&gt;  [1]  1  2  3  4  5  6  7  8  9 10</span></a></code></pre></div>
+<div class="sourceCode" id="cb617"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb617-1" data-line-number="1">RangedNumeric &lt;-<span class="st"> </span><span class="kw">setClass</span>(</a>
+<a class="sourceLine" id="cb617-2" data-line-number="2">  <span class="st">&quot;RangedNumeric&quot;</span>,</a>
+<a class="sourceLine" id="cb617-3" data-line-number="3">  <span class="dt">contains =</span> <span class="st">&quot;numeric&quot;</span>,</a>
+<a class="sourceLine" id="cb617-4" data-line-number="4">  <span class="dt">slots =</span> <span class="kw">c</span>(<span class="dt">min =</span> <span class="st">&quot;numeric&quot;</span>, <span class="dt">max =</span> <span class="st">&quot;numeric&quot;</span>),</a>
+<a class="sourceLine" id="cb617-5" data-line-number="5">  <span class="dt">prototype =</span> <span class="kw">structure</span>(<span class="kw">numeric</span>(), <span class="dt">min =</span> <span class="ot">NA_real_</span>, <span class="dt">max =</span> <span class="ot">NA_real_</span>)</a>
+<a class="sourceLine" id="cb617-6" data-line-number="6">)</a>
+<a class="sourceLine" id="cb617-7" data-line-number="7">rn &lt;-<span class="st"> </span><span class="kw">RangedNumeric</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">min =</span> <span class="dv">1</span>, <span class="dt">max =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb617-8" data-line-number="8">rn<span class="op">@</span>min</a>
+<a class="sourceLine" id="cb617-9" data-line-number="9"><span class="co">#&gt; [1] 1</span></a>
+<a class="sourceLine" id="cb617-10" data-line-number="10">rn<span class="op">@</span>.Data</a>
+<a class="sourceLine" id="cb617-11" data-line-number="11"><span class="co">#&gt;  [1]  1  2  3  4  5  6  7  8  9 10</span></a></code></pre></div>
 <p>It is possible to define S3 methods for S4 generics, and S4 methods for S3 generics (provided you’ve called <code>setOldClass()</code>). However, it’s more complicated than it might appear at first glance, so make sure you thoroughly read <code>?Methods_for_S3</code>.</p>
 </div>
 <div id="generics" class="section level3">
 <h3><span class="header-section-number">15.6.2</span> Generics</h3>
 <p>As well as creating a new generic from scratch, it’s also possible to convert an existing S3 generic to an S4 generic:</p>
-<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb619-1" data-line-number="1"><span class="kw">setGeneric</span>(<span class="st">&quot;mean&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb618"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb618-1" data-line-number="1"><span class="kw">setGeneric</span>(<span class="st">&quot;mean&quot;</span>)</a></code></pre></div>
 <p>In this case, the existing function becomes the default (<code>ANY</code>) method:</p>
-<div class="sourceCode" id="cb620"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb620-1" data-line-number="1"><span class="kw">selectMethod</span>(<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;ANY&quot;</span>)</a>
-<a class="sourceLine" id="cb620-2" data-line-number="2"><span class="co">#&gt; Method Definition (Class &quot;derivedDefaultMethod&quot;):</span></a>
-<a class="sourceLine" id="cb620-3" data-line-number="3"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb620-4" data-line-number="4"><span class="co">#&gt; function (x, ...) </span></a>
-<a class="sourceLine" id="cb620-5" data-line-number="5"><span class="co">#&gt; UseMethod(&quot;mean&quot;)</span></a>
-<a class="sourceLine" id="cb620-6" data-line-number="6"><span class="co">#&gt; &lt;bytecode: 0x33930d0&gt;</span></a>
-<a class="sourceLine" id="cb620-7" data-line-number="7"><span class="co">#&gt; &lt;environment: namespace:base&gt;</span></a>
-<a class="sourceLine" id="cb620-8" data-line-number="8"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb620-9" data-line-number="9"><span class="co">#&gt; Signatures:</span></a>
-<a class="sourceLine" id="cb620-10" data-line-number="10"><span class="co">#&gt;         x    </span></a>
-<a class="sourceLine" id="cb620-11" data-line-number="11"><span class="co">#&gt; target  &quot;ANY&quot;</span></a>
-<a class="sourceLine" id="cb620-12" data-line-number="12"><span class="co">#&gt; defined &quot;ANY&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb619-1" data-line-number="1"><span class="kw">selectMethod</span>(<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;ANY&quot;</span>)</a>
+<a class="sourceLine" id="cb619-2" data-line-number="2"><span class="co">#&gt; Method Definition (Class &quot;derivedDefaultMethod&quot;):</span></a>
+<a class="sourceLine" id="cb619-3" data-line-number="3"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb619-4" data-line-number="4"><span class="co">#&gt; function (x, ...) </span></a>
+<a class="sourceLine" id="cb619-5" data-line-number="5"><span class="co">#&gt; UseMethod(&quot;mean&quot;)</span></a>
+<a class="sourceLine" id="cb619-6" data-line-number="6"><span class="co">#&gt; &lt;bytecode: 0x33930d0&gt;</span></a>
+<a class="sourceLine" id="cb619-7" data-line-number="7"><span class="co">#&gt; &lt;environment: namespace:base&gt;</span></a>
+<a class="sourceLine" id="cb619-8" data-line-number="8"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb619-9" data-line-number="9"><span class="co">#&gt; Signatures:</span></a>
+<a class="sourceLine" id="cb619-10" data-line-number="10"><span class="co">#&gt;         x    </span></a>
+<a class="sourceLine" id="cb619-11" data-line-number="11"><span class="co">#&gt; target  &quot;ANY&quot;</span></a>
+<a class="sourceLine" id="cb619-12" data-line-number="12"><span class="co">#&gt; defined &quot;ANY&quot;</span></a></code></pre></div>
 <p>Note that <code>setMethod()</code> will automatically call <code>setGeneric()</code> if the first argument isn’t already a generic, enabling you to turn any existing function into an S4 generic. It is ok to convert an existing S3 generic to S4, but you should avoid converting regular functions to S4 generics in packages because requires careful coordination if done by multiple packages.</p>
 </div>
 <div id="exercises-49" class="section level3">
@@ -1424,7 +1424,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/S4.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

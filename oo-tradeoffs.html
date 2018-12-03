@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -936,16 +936,16 @@ to the pipe.</p></li>
 </ul>
 <p>The advantage of a global namespace is that multiple packages can use the same verbs for working with different types of objects. Generic functions provide a uniform API that makes it easier to perform typical actions with a new object because there are strong naming conventions. This works well for data analysis because you often want to do the same thing to different types of objects. In particular, this is one reason that R’s modelling system is so useful: regardless of where the model has been implemented you always work with it using the same set of tools (<code>summary()</code>, <code>predict()</code>, …).</p>
 <p>The disadvantage of a global namespace is that it forces you to think more deeply about naming. You want to avoid multiple generics with the same name in different packages because it requires the user to type <code>::</code> frequently. This can be hard because function names are usually English verbs, and verbs often have multiple meanings. Take <code>plot()</code> for example:</p>
-<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb621-1" data-line-number="1"><span class="kw">plot</span>(data)       <span class="co"># plot some data</span></a>
-<a class="sourceLine" id="cb621-2" data-line-number="2"><span class="kw">plot</span>(bank_heist) <span class="co"># plot a crime</span></a>
-<a class="sourceLine" id="cb621-3" data-line-number="3"><span class="kw">plot</span>(land)       <span class="co"># create a new plot of land</span></a>
-<a class="sourceLine" id="cb621-4" data-line-number="4"><span class="kw">plot</span>(movie)      <span class="co"># extract plot of a movie</span></a></code></pre></div>
+<div class="sourceCode" id="cb620"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb620-1" data-line-number="1"><span class="kw">plot</span>(data)       <span class="co"># plot some data</span></a>
+<a class="sourceLine" id="cb620-2" data-line-number="2"><span class="kw">plot</span>(bank_heist) <span class="co"># plot a crime</span></a>
+<a class="sourceLine" id="cb620-3" data-line-number="3"><span class="kw">plot</span>(land)       <span class="co"># create a new plot of land</span></a>
+<a class="sourceLine" id="cb620-4" data-line-number="4"><span class="kw">plot</span>(movie)      <span class="co"># extract plot of a movie</span></a></code></pre></div>
 <p>Generally, you should avoid methods that are homonyms of the original generic, and instead define a new generic.</p>
 <p>This problem doesn’t occur with R6 methods because they are scoped to the object. The following code is fine, because there is no implication that the plot method of two different R6 objects has the same meaning:</p>
-<div class="sourceCode" id="cb622"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb622-1" data-line-number="1">data<span class="op">$</span><span class="kw">plot</span>()</a>
-<a class="sourceLine" id="cb622-2" data-line-number="2">bank_heist<span class="op">$</span><span class="kw">plot</span>()</a>
-<a class="sourceLine" id="cb622-3" data-line-number="3">land<span class="op">$</span><span class="kw">plot</span>()</a>
-<a class="sourceLine" id="cb622-4" data-line-number="4">movie<span class="op">$</span><span class="kw">plot</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb621-1" data-line-number="1">data<span class="op">$</span><span class="kw">plot</span>()</a>
+<a class="sourceLine" id="cb621-2" data-line-number="2">bank_heist<span class="op">$</span><span class="kw">plot</span>()</a>
+<a class="sourceLine" id="cb621-3" data-line-number="3">land<span class="op">$</span><span class="kw">plot</span>()</a>
+<a class="sourceLine" id="cb621-4" data-line-number="4">movie<span class="op">$</span><span class="kw">plot</span>()</a></code></pre></div>
 <p>These considerations also apply to the arguments to the generic. S3 generics must have the same core arguments, which mean they generally have non-specific names like <code>x</code> or <code>.data</code>. S3 generics generally need <code>...</code> to pass on additional arguments to methods, but this has the downside that mispelled argument names will not create an error. In comparison, R6 methods can vary more widely and use more specific and evocative argument names.</p>
 <p>A secondary advantage of local namespacing is that creating an R6 method is very cheap. Most encapsulated OO languages encourage you to create many small methods, each doing one thing well with an evocative name. Creating a new S3 method is more expensive, because you may also have to create a generic, and think about the naming issues described above. That means that the advice to create many small methods does not apply to S3. It’s still a good idea to break your code down into small, easily understood chunks, but they should generally just be regular functions, not methods.</p>
 </div>
@@ -958,81 +958,81 @@ to the pipe.</p></li>
 <li><code>pop()</code> returns the top most value, and removes it from the stack.</li>
 </ul>
 <p>The implementation of the constructor and the <code>push()</code> method is straightforward. A stack contains a list of items, and pushing an object to the stack simply appends to this list.</p>
-<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb623-1" data-line-number="1">new_stack &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">items =</span> <span class="kw">list</span>()) {</a>
-<a class="sourceLine" id="cb623-2" data-line-number="2">  <span class="kw">structure</span>(<span class="kw">list</span>(<span class="dt">items =</span> items), <span class="dt">class =</span> <span class="st">&quot;stack&quot;</span>)</a>
-<a class="sourceLine" id="cb623-3" data-line-number="3">}</a>
-<a class="sourceLine" id="cb623-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb623-5" data-line-number="5">push &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) {</a>
-<a class="sourceLine" id="cb623-6" data-line-number="6">  x<span class="op">$</span>items &lt;-<span class="st"> </span><span class="kw">c</span>(x<span class="op">$</span>items, <span class="kw">list</span>(y))</a>
-<a class="sourceLine" id="cb623-7" data-line-number="7">  x</a>
-<a class="sourceLine" id="cb623-8" data-line-number="8">}</a></code></pre></div>
+<div class="sourceCode" id="cb622"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb622-1" data-line-number="1">new_stack &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">items =</span> <span class="kw">list</span>()) {</a>
+<a class="sourceLine" id="cb622-2" data-line-number="2">  <span class="kw">structure</span>(<span class="kw">list</span>(<span class="dt">items =</span> items), <span class="dt">class =</span> <span class="st">&quot;stack&quot;</span>)</a>
+<a class="sourceLine" id="cb622-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb622-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb622-5" data-line-number="5">push &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) {</a>
+<a class="sourceLine" id="cb622-6" data-line-number="6">  x<span class="op">$</span>items &lt;-<span class="st"> </span><span class="kw">c</span>(x<span class="op">$</span>items, <span class="kw">list</span>(y))</a>
+<a class="sourceLine" id="cb622-7" data-line-number="7">  x</a>
+<a class="sourceLine" id="cb622-8" data-line-number="8">}</a></code></pre></div>
 <p>(Note that I haven’t created a real method for <code>push()</code> because making it generic would just make this example more complicated for no real benefit.)</p>
 <p>Implementing <code>pop()</code> is more challenging because it has to both return a value (the object at the top of the stack), and have a side-effect (remove that object from that top). Since we can’t modify the input object in S3 we need to return two things: the value, and the updated object.</p>
-<div class="sourceCode" id="cb624"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb624-1" data-line-number="1">pop &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb624-2" data-line-number="2">  n &lt;-<span class="st"> </span><span class="kw">length</span>(x<span class="op">$</span>items)</a>
-<a class="sourceLine" id="cb624-3" data-line-number="3">  </a>
-<a class="sourceLine" id="cb624-4" data-line-number="4">  item &lt;-<span class="st"> </span>x<span class="op">$</span>items[[n]]</a>
-<a class="sourceLine" id="cb624-5" data-line-number="5">  x<span class="op">$</span>items &lt;-<span class="st"> </span>x<span class="op">$</span>items[<span class="op">-</span>n]</a>
-<a class="sourceLine" id="cb624-6" data-line-number="6">  </a>
-<a class="sourceLine" id="cb624-7" data-line-number="7">  <span class="kw">list</span>(<span class="dt">item =</span> item, <span class="dt">x =</span> x)</a>
-<a class="sourceLine" id="cb624-8" data-line-number="8">}</a></code></pre></div>
+<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb623-1" data-line-number="1">pop &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb623-2" data-line-number="2">  n &lt;-<span class="st"> </span><span class="kw">length</span>(x<span class="op">$</span>items)</a>
+<a class="sourceLine" id="cb623-3" data-line-number="3">  </a>
+<a class="sourceLine" id="cb623-4" data-line-number="4">  item &lt;-<span class="st"> </span>x<span class="op">$</span>items[[n]]</a>
+<a class="sourceLine" id="cb623-5" data-line-number="5">  x<span class="op">$</span>items &lt;-<span class="st"> </span>x<span class="op">$</span>items[<span class="op">-</span>n]</a>
+<a class="sourceLine" id="cb623-6" data-line-number="6">  </a>
+<a class="sourceLine" id="cb623-7" data-line-number="7">  <span class="kw">list</span>(<span class="dt">item =</span> item, <span class="dt">x =</span> x)</a>
+<a class="sourceLine" id="cb623-8" data-line-number="8">}</a></code></pre></div>
 <p>This leads to rather awkward usage:</p>
-<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb625-1" data-line-number="1">s &lt;-<span class="st"> </span><span class="kw">new_stack</span>()</a>
-<a class="sourceLine" id="cb625-2" data-line-number="2">s &lt;-<span class="st"> </span><span class="kw">push</span>(s, <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb625-3" data-line-number="3">s &lt;-<span class="st"> </span><span class="kw">push</span>(s, <span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb625-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb625-5" data-line-number="5">out &lt;-<span class="st"> </span><span class="kw">pop</span>(s)</a>
-<a class="sourceLine" id="cb625-6" data-line-number="6">out<span class="op">$</span>item</a>
-<a class="sourceLine" id="cb625-7" data-line-number="7"><span class="co">#&gt; [1] 20</span></a>
-<a class="sourceLine" id="cb625-8" data-line-number="8">s &lt;-<span class="st"> </span>out<span class="op">$</span>x</a>
-<a class="sourceLine" id="cb625-9" data-line-number="9">s</a>
-<a class="sourceLine" id="cb625-10" data-line-number="10"><span class="co">#&gt; $items</span></a>
-<a class="sourceLine" id="cb625-11" data-line-number="11"><span class="co">#&gt; $items[[1]]</span></a>
-<a class="sourceLine" id="cb625-12" data-line-number="12"><span class="co">#&gt; [1] 10</span></a>
-<a class="sourceLine" id="cb625-13" data-line-number="13"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb625-14" data-line-number="14"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb625-15" data-line-number="15"><span class="co">#&gt; attr(,&quot;class&quot;)</span></a>
-<a class="sourceLine" id="cb625-16" data-line-number="16"><span class="co">#&gt; [1] &quot;stack&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb624"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb624-1" data-line-number="1">s &lt;-<span class="st"> </span><span class="kw">new_stack</span>()</a>
+<a class="sourceLine" id="cb624-2" data-line-number="2">s &lt;-<span class="st"> </span><span class="kw">push</span>(s, <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb624-3" data-line-number="3">s &lt;-<span class="st"> </span><span class="kw">push</span>(s, <span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb624-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb624-5" data-line-number="5">out &lt;-<span class="st"> </span><span class="kw">pop</span>(s)</a>
+<a class="sourceLine" id="cb624-6" data-line-number="6">out<span class="op">$</span>item</a>
+<a class="sourceLine" id="cb624-7" data-line-number="7"><span class="co">#&gt; [1] 20</span></a>
+<a class="sourceLine" id="cb624-8" data-line-number="8">s &lt;-<span class="st"> </span>out<span class="op">$</span>x</a>
+<a class="sourceLine" id="cb624-9" data-line-number="9">s</a>
+<a class="sourceLine" id="cb624-10" data-line-number="10"><span class="co">#&gt; $items</span></a>
+<a class="sourceLine" id="cb624-11" data-line-number="11"><span class="co">#&gt; $items[[1]]</span></a>
+<a class="sourceLine" id="cb624-12" data-line-number="12"><span class="co">#&gt; [1] 10</span></a>
+<a class="sourceLine" id="cb624-13" data-line-number="13"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb624-14" data-line-number="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb624-15" data-line-number="15"><span class="co">#&gt; attr(,&quot;class&quot;)</span></a>
+<a class="sourceLine" id="cb624-16" data-line-number="16"><span class="co">#&gt; [1] &quot;stack&quot;</span></a></code></pre></div>
 <p>This problem is known as <strong>threading state</strong> or <strong>accumulator programming</strong>, because no matter how deeply the <code>pop()</code> is called, you have to thread the modified stack object all the way back to where it lives.</p>
 <p>One way that other FP languages deal with this challenge is to provide a <strong>multiple assign</strong> (or destructuring bind) operator that allows you to assign multiple values in a single step. The zeallot package <span class="citation">(Teetor <a href="#ref-zeallot">2018</a>)</span> provides multi-assign for R with <code>%&lt;-%</code>. This makes the code more elegant, but doesn’t solve the key problem:</p>
-<div class="sourceCode" id="cb626"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb626-1" data-line-number="1"><span class="kw">library</span>(zeallot)</a>
-<a class="sourceLine" id="cb626-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb626-3" data-line-number="3"><span class="kw">c</span>(value, s) <span class="op">%&lt;-%</span><span class="st"> </span><span class="kw">pop</span>(s)</a>
-<a class="sourceLine" id="cb626-4" data-line-number="4">value</a>
-<a class="sourceLine" id="cb626-5" data-line-number="5"><span class="co">#&gt; [1] 10</span></a></code></pre></div>
+<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb625-1" data-line-number="1"><span class="kw">library</span>(zeallot)</a>
+<a class="sourceLine" id="cb625-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb625-3" data-line-number="3"><span class="kw">c</span>(value, s) <span class="op">%&lt;-%</span><span class="st"> </span><span class="kw">pop</span>(s)</a>
+<a class="sourceLine" id="cb625-4" data-line-number="4">value</a>
+<a class="sourceLine" id="cb625-5" data-line-number="5"><span class="co">#&gt; [1] 10</span></a></code></pre></div>
 <p>An R6 implementation of a stack is simpler because <code>$pop()</code> can modify the object in place, and return only the top-most value:</p>
-<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb627-1" data-line-number="1">Stack &lt;-<span class="st"> </span>R6<span class="op">::</span><span class="kw">R6Class</span>(<span class="st">&quot;Stack&quot;</span>, <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb627-2" data-line-number="2">  <span class="dt">items =</span> <span class="kw">list</span>(),</a>
-<a class="sourceLine" id="cb627-3" data-line-number="3">  <span class="dt">push =</span> <span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb627-4" data-line-number="4">    self<span class="op">$</span>items &lt;-<span class="st"> </span><span class="kw">c</span>(self<span class="op">$</span>items, x)</a>
-<a class="sourceLine" id="cb627-5" data-line-number="5">    <span class="kw">invisible</span>(self)</a>
-<a class="sourceLine" id="cb627-6" data-line-number="6">  },</a>
-<a class="sourceLine" id="cb627-7" data-line-number="7">  <span class="dt">pop =</span> <span class="cf">function</span>() {</a>
-<a class="sourceLine" id="cb627-8" data-line-number="8">    item &lt;-<span class="st"> </span>self<span class="op">$</span>items[[self<span class="op">$</span><span class="kw">length</span>()]]</a>
-<a class="sourceLine" id="cb627-9" data-line-number="9">    self<span class="op">$</span>items &lt;-<span class="st"> </span>self<span class="op">$</span>items[<span class="op">-</span>self<span class="op">$</span><span class="kw">length</span>()]</a>
-<a class="sourceLine" id="cb627-10" data-line-number="10">    item</a>
-<a class="sourceLine" id="cb627-11" data-line-number="11">  },</a>
-<a class="sourceLine" id="cb627-12" data-line-number="12">  <span class="dt">length =</span> <span class="cf">function</span>() {</a>
-<a class="sourceLine" id="cb627-13" data-line-number="13">    <span class="kw">length</span>(self<span class="op">$</span>items)</a>
-<a class="sourceLine" id="cb627-14" data-line-number="14">  }</a>
-<a class="sourceLine" id="cb627-15" data-line-number="15">))</a></code></pre></div>
+<div class="sourceCode" id="cb626"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb626-1" data-line-number="1">Stack &lt;-<span class="st"> </span>R6<span class="op">::</span><span class="kw">R6Class</span>(<span class="st">&quot;Stack&quot;</span>, <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb626-2" data-line-number="2">  <span class="dt">items =</span> <span class="kw">list</span>(),</a>
+<a class="sourceLine" id="cb626-3" data-line-number="3">  <span class="dt">push =</span> <span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb626-4" data-line-number="4">    self<span class="op">$</span>items &lt;-<span class="st"> </span><span class="kw">c</span>(self<span class="op">$</span>items, x)</a>
+<a class="sourceLine" id="cb626-5" data-line-number="5">    <span class="kw">invisible</span>(self)</a>
+<a class="sourceLine" id="cb626-6" data-line-number="6">  },</a>
+<a class="sourceLine" id="cb626-7" data-line-number="7">  <span class="dt">pop =</span> <span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb626-8" data-line-number="8">    item &lt;-<span class="st"> </span>self<span class="op">$</span>items[[self<span class="op">$</span><span class="kw">length</span>()]]</a>
+<a class="sourceLine" id="cb626-9" data-line-number="9">    self<span class="op">$</span>items &lt;-<span class="st"> </span>self<span class="op">$</span>items[<span class="op">-</span>self<span class="op">$</span><span class="kw">length</span>()]</a>
+<a class="sourceLine" id="cb626-10" data-line-number="10">    item</a>
+<a class="sourceLine" id="cb626-11" data-line-number="11">  },</a>
+<a class="sourceLine" id="cb626-12" data-line-number="12">  <span class="dt">length =</span> <span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb626-13" data-line-number="13">    <span class="kw">length</span>(self<span class="op">$</span>items)</a>
+<a class="sourceLine" id="cb626-14" data-line-number="14">  }</a>
+<a class="sourceLine" id="cb626-15" data-line-number="15">))</a></code></pre></div>
 <p>This leads to more natural code:</p>
-<div class="sourceCode" id="cb628"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb628-1" data-line-number="1">s &lt;-<span class="st"> </span>Stack<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb628-2" data-line-number="2">s<span class="op">$</span><span class="kw">push</span>(<span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb628-3" data-line-number="3">s<span class="op">$</span><span class="kw">push</span>(<span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb628-4" data-line-number="4">s<span class="op">$</span><span class="kw">pop</span>()</a>
-<a class="sourceLine" id="cb628-5" data-line-number="5"><span class="co">#&gt; [1] 20</span></a></code></pre></div>
+<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb627-1" data-line-number="1">s &lt;-<span class="st"> </span>Stack<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb627-2" data-line-number="2">s<span class="op">$</span><span class="kw">push</span>(<span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb627-3" data-line-number="3">s<span class="op">$</span><span class="kw">push</span>(<span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb627-4" data-line-number="4">s<span class="op">$</span><span class="kw">pop</span>()</a>
+<a class="sourceLine" id="cb627-5" data-line-number="5"><span class="co">#&gt; [1] 20</span></a></code></pre></div>
 <p>I encounted a real-life example of threading state in ggplot2 scales. Scales are complex because they need to combine data across every facet and every layer. I originally used S3 classes, but it required passing scale data to and from many functions. Switching to R6 made the code substantially simpler. However, it also introduced some problems because I forgot to call to <code>$clone()</code> when modifying a plot. This allowed independent plots to share the same scale data, creating a subtle bug that was hard to track down.</p>
 </div>
 <div id="tradeoffs-pipe" class="section level3">
 <h3><span class="header-section-number">16.3.3</span> Method chaining</h3>
 <p>The pipe, <code>%&gt;%</code>, is useful because it provides an infix operator that makes it easy to compose functions from left-to-right. Interestingly, the pipe is not so important for R6 objects because they already use an infix operator: <code>$</code>. This allows the user to chain together multiple method calls in a single expression, a technique known as <strong>method chaining</strong>:</p>
-<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb629-1" data-line-number="1">s &lt;-<span class="st"> </span>Stack<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb629-2" data-line-number="2">s<span class="op">$</span></a>
-<a class="sourceLine" id="cb629-3" data-line-number="3"><span class="st">  </span><span class="kw">push</span>(<span class="dv">10</span>)<span class="op">$</span></a>
-<a class="sourceLine" id="cb629-4" data-line-number="4"><span class="st">  </span><span class="kw">push</span>(<span class="dv">20</span>)<span class="op">$</span></a>
-<a class="sourceLine" id="cb629-5" data-line-number="5"><span class="st">  </span><span class="kw">pop</span>()</a>
-<a class="sourceLine" id="cb629-6" data-line-number="6"><span class="co">#&gt; [1] 20</span></a></code></pre></div>
+<div class="sourceCode" id="cb628"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb628-1" data-line-number="1">s &lt;-<span class="st"> </span>Stack<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb628-2" data-line-number="2">s<span class="op">$</span></a>
+<a class="sourceLine" id="cb628-3" data-line-number="3"><span class="st">  </span><span class="kw">push</span>(<span class="dv">10</span>)<span class="op">$</span></a>
+<a class="sourceLine" id="cb628-4" data-line-number="4"><span class="st">  </span><span class="kw">push</span>(<span class="dv">20</span>)<span class="op">$</span></a>
+<a class="sourceLine" id="cb628-5" data-line-number="5"><span class="st">  </span><span class="kw">pop</span>()</a>
+<a class="sourceLine" id="cb628-6" data-line-number="6"><span class="co">#&gt; [1] 20</span></a></code></pre></div>
 <p>This technique is commonly used in other programming languages, like Python and JavaScript, and is made possible with one convention: any R6 method that is primarily called for its side-effects (usually modifying the object) should return <code>invisible(self)</code>.</p>
 <p>The primary advantage of method chaining is that you can get useful autocomplete; the primary disadvantage is that only the creator of the class can add new methods (and there’s no way to use multiple dispatch).</p>
 
@@ -1080,7 +1080,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/OO-tradeoffs.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

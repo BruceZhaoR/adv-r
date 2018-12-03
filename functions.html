@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -978,6 +978,7 @@ form to better understand what’s going on.</p></li>
 <p>In R, you’ll often see functions called <strong>closures</strong>. This name reflects the fact that R functions capture, or <strong>enclose</strong>, their environments.</p>
 <div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb156-1" data-line-number="1"><span class="kw">typeof</span>(f01)</a>
 <a class="sourceLine" id="cb156-2" data-line-number="2"><span class="co">#&gt; [1] &quot;closure&quot;</span></a></code></pre></div>
+<!-- GVW: move this mention of closures down to the discussion of environments? Feels dangling here -->
 </div>
 <div id="function-components" class="section level3">
 <h3><span class="header-section-number">5.2.2</span> Function components</h3>
@@ -1046,8 +1047,11 @@ the values associated with the names.</p></li>
 <div id="exercises-12" class="section level3">
 <h3><span class="header-section-number">5.2.4</span> Exercises</h3>
 <ol style="list-style-type: decimal">
-<li><p>Given a function, like <code>&quot;mean&quot;</code>, <code>match.fun()</code> lets you find a function.
-Given a function, can you find its name? Why doesn’t that make sense in R?</p></li>
+<li>Given a function, like <code>&quot;mean&quot;</code>, <code>match.fun()</code> lets you find a function.
+Given a function, can you find its name? Why doesn’t that make sense in R?</li>
+</ol>
+<!-- GVW: should the first sentence be, "Given a **name**"? -->
+<ol style="list-style-type: decimal">
 <li><p>It’s possible (although typically not useful) to call an anonymous function.
 Which of the two approaches below is correct? Why?</p>
 <div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb162-1" data-line-number="1"><span class="cf">function</span>(x) <span class="dv">3</span>()</a>
@@ -1102,6 +1106,7 @@ functions?</p></li>
 <a class="sourceLine" id="cb167-7" data-line-number="7"><span class="st">  </span><span class="kw">sqrt</span>()</a>
 <a class="sourceLine" id="cb167-8" data-line-number="8"><span class="co">#&gt; [1] 0.274</span></a></code></pre></div>
 <p><code>x %&gt;% f()</code> is equivalent to <code>f(x)</code>; <code>x %&gt;% f(y)</code> is equivalent to <code>f(x, y)</code>. The pipe is related to <strong>tacit</strong> or <strong>point-free programming</strong><a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a>. In this style of programming, you don’t explicitly refer to variables. Instead, you focus on the high-level composition of functions rather than the low-level flow of data; the focus is on what’s being done (the verbs), rather that on what’s being modified (the nouns). This style is common in Haskell and F#, the main inspiration for magrittr, and is the default style in stack based programming languages like Forth and Factor.  </p>
+<!-- GVW: if the terminology "tacit" and "point-free" isn't used anywhere else, I wouldn't introduce it here. -->
 <p>Each of the three options has its own strengths and weaknesses:</p>
 <ul>
 <li><p>Nesting, <code>f(g(x))</code>, is concise, and well suited for short sequences. But
@@ -1141,6 +1146,7 @@ the reader understands piping.</p></li>
 <li>A fresh start</li>
 <li>Dynamic lookup</li>
 </ul>
+<!-- GVW: what does "NSE" stand for? -->
 <div id="name-masking" class="section level3">
 <h3><span class="header-section-number">5.4.1</span> Name masking</h3>
 <p>The basic principle of lexical scoping is that names defined inside a function mask names defined outside a function. This is illustrated in the following example.</p>
@@ -1161,6 +1167,17 @@ the reader understands piping.</p></li>
 <a class="sourceLine" id="cb170-5" data-line-number="5">}</a>
 <a class="sourceLine" id="cb170-6" data-line-number="6"><span class="kw">g03</span>()</a>
 <a class="sourceLine" id="cb170-7" data-line-number="7"><span class="co">#&gt; [1] 2 1</span></a></code></pre></div>
+<!-- GVW: I frequently use an example like this to clarify that names are only overriden when the new name appears (i.e., definitions aren't hosted to top of scope):
+
+    x <- 1
+    greg <- function() {
+      y <- x
+      x <- 2
+      c(x, y)
+    }
+    greg()
+
+-->
 <p>The same rules apply if a function is defined inside another function. First, R looks inside the current function. Then, it looks where that function was defined (and so on, all the way up to the global environment). Finally, it looks in other loaded packages.</p>
 <p>Run the following code in your head, then confirm the result by running the code.<a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a></p>
 <div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb171-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="dv">1</span></a>
@@ -1186,6 +1203,7 @@ the reader understands piping.</p></li>
 <a class="sourceLine" id="cb172-10" data-line-number="10">g06 &lt;-<span class="st"> </span><span class="kw">g05</span>()</a>
 <a class="sourceLine" id="cb172-11" data-line-number="11"><span class="kw">g06</span>()</a></code></pre></div>
 <p>This seems a little magical: how does R know what the value of <code>y</code> is after <code>g05()</code> is returned? R knows because <code>g06()</code> preserves the environment where it was defined and that environment includes the value of <code>y</code>. You’ll learn more about how environments work in Chapter <a href="environments.html#environments">6</a>.</p>
+<!-- GVW: in which case I'd defer this discussion until environments have been introduced, even if it means doubling back to scope... -->
 </div>
 <div id="functions-vs.variables" class="section level3">
 <h3><span class="header-section-number">5.4.2</span> Functions vs. variables</h3>
@@ -1206,6 +1224,7 @@ the reader understands piping.</p></li>
 <a class="sourceLine" id="cb174-6" data-line-number="6"><span class="kw">g10</span>()</a>
 <a class="sourceLine" id="cb174-7" data-line-number="7"><span class="co">#&gt; [1] 110</span></a></code></pre></div>
 <p>Note that for the record, using the same name for two different things makes for confusing code, and is something best avoided!</p>
+<!-- GVW: no kidding.  I had no idea R ignored non-funcs when looking up names like this... :-( -->
 </div>
 <div id="fresh-start" class="section level3">
 <h3><span class="header-section-number">5.4.3</span> A fresh start</h3>
@@ -1293,6 +1312,7 @@ running the code yourself.</p>
 <a class="sourceLine" id="cb182-7" data-line-number="7"><span class="co">#&gt;   This is an error!</span></a></code></pre></div>
 <p>It’s usually not necessary to force evaluation. However, it is important for certain functional programming techniques, like the one we’ll cover in detail in <a href="function-operators.html#function-operators">function operators</a>. Here, I’m just going to show you what the basic issue is.</p>
 <p>Consider this small but surprisingly tricky function. It takes a single argument <code>x</code>, and returns a function that returns <code>x</code> when called.</p>
+<!-- GVW: at this point I'm finding names like `g10` and `capture1` and the like pretty hard to keep track of... -->
 <div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb183-1" data-line-number="1">capture1 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
 <a class="sourceLine" id="cb183-2" data-line-number="2">  <span class="cf">function</span>() {</a>
 <a class="sourceLine" id="cb183-3" data-line-number="3">    x</a>
@@ -1350,6 +1370,22 @@ when the expression is evaluated in the specified environment.</p></li>
 <a class="sourceLine" id="cb187-4" data-line-number="4"></a>
 <a class="sourceLine" id="cb187-5" data-line-number="5"><span class="kw">h06</span>(<span class="kw">runif</span>(<span class="dv">1</span>))</a>
 <a class="sourceLine" id="cb187-6" data-line-number="6"><span class="co">#&gt; [1] 0.806 0.806 0.806</span></a></code></pre></div>
+<!-- GVW: in order to make sure I understood this I wrote the following:
+
+> e <- function() {
++   message("in e")
++   1
++ }
+> greg <- function(x){
++   message("top of greg")
++   c(x, x)
++ }
+> greg(e())
+top of greg
+in e
+[1] 1 1
+
+-->
 <p>You can also create promises “by hand” using <code>delayedAssign()</code>:</p>
 <div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb188-1" data-line-number="1"><span class="kw">delayedAssign</span>(<span class="st">&quot;x&quot;</span>, {<span class="kw">print</span>(<span class="st">&quot;Executing code&quot;</span>); <span class="kw">runif</span>(<span class="dv">1</span>)})</a>
 <a class="sourceLine" id="cb188-2" data-line-number="2">x</a>
@@ -1358,6 +1394,7 @@ when the expression is evaluated in the specified environment.</p></li>
 <a class="sourceLine" id="cb188-5" data-line-number="5">x</a>
 <a class="sourceLine" id="cb188-6" data-line-number="6"><span class="co">#&gt; [1] 0.814</span></a></code></pre></div>
 <p>You’ll see this idea again in <a href="environments.html#advanced-bindings">advanced bindings</a>.</p>
+<p>You cannot manipulate promises with R code. Promises are like a quantum state: any attempt to inspect them with R code will force an immediate evaluation, making the promise disappear. Later, in Section <a href="evaluation.html#quosures">19.3</a>, you’ll learn about quosures, which reify promises into an R object where you can easily inspect the expression and the environment.</p>
 </div>
 <div id="default-arguments" class="section level3">
 <h3><span class="header-section-number">5.5.3</span> Default arguments</h3>
@@ -1415,6 +1452,7 @@ when the expression is evaluated in the specified environment.</p></li>
 <a class="sourceLine" id="cb193-6" data-line-number="6">  x[<span class="kw">sample.int</span>(<span class="kw">length</span>(x), size, <span class="dt">replace =</span> replace, <span class="dt">prob =</span> prob)]</a>
 <a class="sourceLine" id="cb193-7" data-line-number="7">}</a></code></pre></div>
 <p>With the binary pattern created by the <code>%||%</code> infix function, which uses the LHS if it’s not <code>NULL</code> and the RHS otherwise, we can further simplify <code>sample()</code>:</p>
+<!-- GVW: "left side" and "right side" rather than "LHS" and "RHS" (jargon) -->
 <div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb194-1" data-line-number="1"><span class="st">`</span><span class="dt">%||%</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="cf">function</span>(lhs, rhs) {</a>
 <a class="sourceLine" id="cb194-2" data-line-number="2">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(lhs)) {</a>
 <a class="sourceLine" id="cb194-3" data-line-number="3">    lhs</a>
@@ -1512,6 +1550,7 @@ value for <code>breaks</code> is <code>&quot;Sturges&quot;</code>, and</p>
 <a class="sourceLine" id="cb202-11" data-line-number="11"><span class="co">#&gt;  $ y: num 2</span></a>
 <a class="sourceLine" id="cb202-12" data-line-number="12"><span class="co">#&gt;  $ z: num 3</span></a></code></pre></div>
 <p>Using a special syntax, it’s possible (but rarely useful) to refer to elements of <code>...</code> by position:</p>
+<!-- GVW: "using a special form `..N`" -->
 <div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb203-1" data-line-number="1">i03 &lt;-<span class="st"> </span><span class="cf">function</span>(...) {</a>
 <a class="sourceLine" id="cb203-2" data-line-number="2">  <span class="kw">list</span>(<span class="dt">first =</span> ..<span class="dv">1</span>, <span class="dt">third =</span> ..<span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb203-3" data-line-number="3">}</a>
@@ -1560,6 +1599,7 @@ typos to go unnoticed:</p>
 <div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb207-1" data-line-number="1"><span class="kw">sum</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="ot">NA</span>, <span class="dt">na_rm =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb207-2" data-line-number="2"><span class="co">#&gt; [1] NA</span></a></code></pre></div></li>
 </ul>
+<!-- GVW: I think the line below is redundant given discussion above. -->
 <p><code>...</code> is a powerful tool, but be aware of the downsides.</p>
 <div id="exercises-15" class="section level3">
 <h3><span class="header-section-number">5.6.1</span> Exercises</h3>
@@ -1614,7 +1654,7 @@ or labels? Read the source code of <code>plot.default()</code> to find out.</p><
 <a class="sourceLine" id="cb211-7" data-line-number="7">}</a></code></pre></div></li>
 </ul>
 </div>
-<div id="invisible-values" class="section level3">
+<div id="invisible" class="section level3">
 <h3><span class="header-section-number">5.7.2</span> Invisible values</h3>
 
 <p></p>
@@ -1655,12 +1695,15 @@ The most common function that returns invisibly is <code>&lt;-</code>:</p>
 <a class="sourceLine" id="cb218-5" data-line-number="5"><span class="kw">j05</span>()</a>
 <a class="sourceLine" id="cb218-6" data-line-number="6"><span class="co">#&gt; Error in j05():</span></a>
 <a class="sourceLine" id="cb218-7" data-line-number="7"><span class="co">#&gt;   I&#39;m an error</span></a></code></pre></div>
+<!-- GVW: I would write "Go" and "Rust" -->
 <p>An error indicates that something has gone wrong, and forces the user to deal with the problem. Some languages (like C, Go, and Rust) rely on special return values to indicate problems, but in R you should always throw an error. You’ll learn more about errors, and how to handle them, in <a href="conditions.html#conditions">Conditions</a>.</p>
 </div>
 <div id="on-exit" class="section level3">
 <h3><span class="header-section-number">5.7.4</span> Exit handlers</h3>
 
 <p></p>
+<!-- GVW: you call it "exit handler" in the section title but "exiting handler" below -->
+<!-- GVW: switching from singular to plural in the first sentence below: "a temporary change" -> "these changes" -->
 <p>Sometimes a function needs to make temporary changes to the global state. But having to cleanup those changes can be painful (what happens if there’s an error?). To ensure that your changes are undone and that the global state is restored when the function completes, set up an <strong>exit handler</strong> . You do so by calling <code>on.exit()</code> with the code to be run. When the function exits, this code executes regardless of whether the function returns a value or throws an error.</p>
 <p>To setup an exit handler:</p>
 <div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb219-1" data-line-number="1">j06 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
@@ -1687,7 +1730,9 @@ The most common function that returns invisibly is <code>&lt;-</code>:</p>
 <div class="sidebar">
 <p>Always set <code>add = TRUE</code> when using <code>on.exit()</code>. If you don’t, each call to <code>on.exit()</code> will overwrite the previous exit handler. Even when only registering a single handler, it’s good practice to set <code>add = TRUE</code> so that you won’t get any unpleasant surprises if you later add more exit handlers</p>
 </div>
+<!-- GVW: need full stop after "more exit handlers" above -->
 <p><code>on.exit()</code> is important because it allows you to place clean-up actions next to other actions.</p>
+<!-- GVW: previous sentence is confusing "clean-up actions next to actions" -->
 <div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb220-1" data-line-number="1">cleanup &lt;-<span class="st"> </span><span class="cf">function</span>(dir, code) {</a>
 <a class="sourceLine" id="cb220-2" data-line-number="2">  old_dir &lt;-<span class="st"> </span><span class="kw">setwd</span>(dir)</a>
 <a class="sourceLine" id="cb220-3" data-line-number="3">  <span class="kw">on.exit</span>(<span class="kw">setwd</span>(old_dir), <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
@@ -1777,7 +1822,7 @@ user-defined functions that begin and end with <code>%</code>.</p></li>
 consistent structure, they play important roles in R’s syntax.</p></li>
 </ul>
 <p>While there are four forms, you actually only need one because any call can be written in prefix form. I’ll demonstrate this property, and then you’ll learn about each of the forms in turn.</p>
-<div id="prefix-form" class="section level3">
+<div id="prefix-transform" class="section level3">
 <h3><span class="header-section-number">5.8.1</span> Rewriting to prefix form</h3>
 
 <p></p>
@@ -1791,7 +1836,8 @@ consistent structure, they play important roles in R’s syntax.</p></li>
 <a class="sourceLine" id="cb225-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb225-7" data-line-number="7"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="kw">print</span>(i)</a>
 <a class="sourceLine" id="cb225-8" data-line-number="8"><span class="st">`</span><span class="dt">for</span><span class="st">`</span>(i, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="kw">print</span>(i))</a></code></pre></div>
-<p>Knowing the function name of a non-prefix function allows you to override its behaviour. For example, if you’re ever feeling particularly evil, run the following code while a friend is away from their computer. It will introduce a fun bug: 10% of the time, 1 will be added to any numeric calculation inside of parentheses.</p>
+<!-- GVW: `for` is a function?? -->
+<p>Knowing the function name of a non-prefix function allows you to override its behaviour. For example, if you’re ever feeling particularly evil, run the following code while a friend is away from their computer. It will introduce a fun bug: 10% of the time, it will add 1 to any numeric calculation inside the parentheses.</p>
 <div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb226-1" data-line-number="1"><span class="st">`</span><span class="dt">(</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="cf">function</span>(e1) {</a>
 <a class="sourceLine" id="cb226-2" data-line-number="2">  <span class="cf">if</span> (<span class="kw">is.numeric</span>(e1) <span class="op">&amp;&amp;</span><span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>) <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.1</span>) {</a>
 <a class="sourceLine" id="cb226-3" data-line-number="3">    e1 <span class="op">+</span><span class="st"> </span><span class="dv">1</span></a>
@@ -1803,8 +1849,9 @@ consistent structure, they play important roles in R’s syntax.</p></li>
 <a class="sourceLine" id="cb226-9" data-line-number="9"><span class="co">#&gt;  [1] 3 3 3 3 3 3 3 3 3 3 4 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3</span></a>
 <a class="sourceLine" id="cb226-10" data-line-number="10"><span class="co">#&gt; [36] 3 4 3 4 3 3 3 3 4 3 3 3 3 3 3</span></a>
 <a class="sourceLine" id="cb226-11" data-line-number="11"><span class="kw">rm</span>(<span class="st">&quot;(&quot;</span>)</a></code></pre></div>
-<p>Of course, overriding built-in functions like this is a bad idea, but, as you’ll learn about in <a href="meta.html#meta">metaprogramming</a>, it’s possible to apply it only to selected code blocks. This provides a clean and elegant approach to writing domain specific languages and translators to other languages.</p>
-<p>A more useful technique is to use this knowledge when using functional programming tools. For example, you could use <code>sapply()</code> to add 3 to every element of a list by first defining a function <code>add()</code>, like this: </p>
+<!-- GVW: `(` is a *function*?? -->
+<p>Of course, overriding built-in functions like this is a bad idea, but, as you’ll learn in <a href="meta.html#meta">metaprogramming</a>, it’s possible to apply it only to selected code blocks. This provides a clean and elegant approach to writing domain specific languages and translators to other languages.</p>
+<p>A more useful application comes up when using functional programming tools. For example, you could use <code>sapply()</code> to add 3 to every element of a list by first defining a function <code>add()</code>: </p>
 <div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb227-1" data-line-number="1">add &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) x <span class="op">+</span><span class="st"> </span>y</a>
 <a class="sourceLine" id="cb227-2" data-line-number="2"><span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, add, <span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb227-3" data-line-number="3"><span class="co">#&gt;  [1]  4  5  6  7  8  9 10 11 12 13</span></a></code></pre></div>
@@ -1819,7 +1866,7 @@ consistent structure, they play important roles in R’s syntax.</p></li>
 <p>The prefix form is the most common form in R code, and indeed in the majority of programming languages. Prefix calls in R are a little special because you can specify arguments in three ways:</p>
 <ul>
 <li>By position, like <code>help(mean)</code>.</li>
-<li>Using partial matching, like <code>help(to = mean)</code>.</li>
+<li>Using partial matching, like <code>help(to = mean)</code>. <!-- GVW: took me a moment to realize this is the same as `topic = mean` --></li>
 <li>By name, like <code>help(topic = mean)</code>.</li>
 </ul>
 <p>As illustrated by the following chunk, arguments are matched by exact name, then with unique prefixes, and finally by position.</p>
@@ -1849,6 +1896,7 @@ consistent structure, they play important roles in R’s syntax.</p></li>
 <a class="sourceLine" id="cb229-24" data-line-number="24"><span class="co">#&gt; Error in k01(1, 3, b = 1):</span></a>
 <a class="sourceLine" id="cb229-25" data-line-number="25"><span class="co">#&gt;   argument 3 matches multiple formal arguments</span></a></code></pre></div>
 <p>Generally, only use positional matching for the first one or two arguments; they will be the most commonly used, and most readers will know what they are. Avoid using positional matching for less commonly used arguments, and never use partial matching. See the tidyverse style guide, <a href="http://style.tidyverse.org/syntax.html#argument-names" class="uri">http://style.tidyverse.org/syntax.html#argument-names</a>, for more advice.</p>
+<!-- GVW: is there any way to turn off partial matching? -->
 </div>
 <div id="infix-functions" class="section level3">
 <h3><span class="header-section-number">5.8.3</span> Infix functions</h3>
@@ -1888,6 +1936,7 @@ consistent structure, they play important roles in R’s syntax.</p></li>
 <a class="sourceLine" id="cb234-2" data-line-number="2">  x[<span class="dv">2</span>] &lt;-<span class="st"> </span>value</a>
 <a class="sourceLine" id="cb234-3" data-line-number="3">  x</a>
 <a class="sourceLine" id="cb234-4" data-line-number="4">}</a></code></pre></div>
+<!-- GVW: "left side" rather than "LHS" -->
 <p>Replacement functions are used by placing the function call on the LHS of <code>&lt;-</code>:</p>
 <div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb235-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></a>
 <a class="sourceLine" id="cb235-2" data-line-number="2"><span class="kw">second</span>(x) &lt;-<span class="st"> </span>5L</a>
@@ -1902,6 +1951,7 @@ consistent structure, they play important roles in R’s syntax.</p></li>
 <a class="sourceLine" id="cb236-6" data-line-number="6"><span class="co">#&gt; tracemem[0x7ffae71bd880 -&gt; 0x7ffae61b5480]: </span></a>
 <a class="sourceLine" id="cb236-7" data-line-number="7"><span class="co">#&gt; tracemem[0x7ffae61b5480 -&gt; 0x7ffae73f0408]: second&lt;- </span></a></code></pre></div>
 <p>If you want to supply additional arguments, they go in between <code>x</code> and <code>value</code>:</p>
+<!-- GVW: "...and appear inside the parentheses on the left." -->
 <div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb237-1" data-line-number="1"><span class="st">`</span><span class="dt">modify&lt;-</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="cf">function</span>(x, position, value) {</a>
 <a class="sourceLine" id="cb237-2" data-line-number="2">  x[position] &lt;-<span class="st"> </span>value</a>
 <a class="sourceLine" id="cb237-3" data-line-number="3">  x</a>
@@ -1955,6 +2005,7 @@ consistent structure, they play important roles in R’s syntax.</p></li>
 <p>Note that all special forms are implemented as primitive functions (i.e. in C); that means printing these functions is not informative:</p>
 <div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb241-1" data-line-number="1"><span class="st">`</span><span class="dt">for</span><span class="st">`</span></a>
 <a class="sourceLine" id="cb241-2" data-line-number="2"><span class="co">#&gt; .Primitive(&quot;for&quot;)</span></a></code></pre></div>
+<!-- GVW: question: does this mean I can change the behavior of `(` and the like for my own classes via S3? If so, maybe a forward ref? -->
 </div>
 </div>
 <div id="invoking-a-function" class="section level2">
@@ -2068,7 +2119,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Functions.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

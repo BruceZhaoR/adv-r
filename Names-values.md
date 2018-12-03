@@ -120,9 +120,9 @@ You can access an object's identifier with `lobstr::obj_addr()`. Doing so allows
 
 ```r
 obj_addr(x)
-#> [1] "0x572ade8"
+#> [1] "0x24a4418"
 obj_addr(y)
-#> [1] "0x572ade8"
+#> [1] "0x24a4418"
 ```
 
 These identifiers are long, and change every time you restart R.
@@ -146,6 +146,8 @@ if <- 10
 ```
 
 [^letters]: Surprisingly, what constitutes a letter is determined by your current locale. That means that the syntax of R code can actually differ from computer to computer, and that it's possible for a file that works on one computer to not even parse on another!
+
+<!-- GVW: please add a line to this footnote describing the safe character set to use in programs, or a link to the style guide section. -->
 
 It's possible to override these rules and use any name, i.e., any sequence of characters, by surrounding it with backticks:
 
@@ -208,6 +210,7 @@ Consider the following code. It binds `x` and `y` to the same underlying value, 
 
 [^double-bracket]: You may be surprised to see `[[` used with a numeric vector. We'll come back to this in Section \@ref(subset-single), but in brief, I think you should always use `[[` when you are getting or setting a single element.
 
+<!-- GVW: should I be surprised that `[[` is used with a numeric vector as subscript, or that it's being used to subscript a numeric vector? (I'm new enough that I don't know what should surprise me.) -->
 
 
 ```r
@@ -238,6 +241,7 @@ cat(tracemem(x), "\n")
 
 From then on, whenever that object is copied, `tracemem()` will print a message telling you which object was copied, its new address, and the sequence of calls that led to the copy:
 
+<!-- GVW: that's cool. -->
 
 
 ```r
@@ -248,6 +252,7 @@ y[[3]] <- 4L
 
 Note that if you modify `y` again, it won't get copied. That's because the new object now only has a single name bound to it, so R applies modify-in-place optimisation. We'll come back to this shortly.
 
+<!-- GVW: forward link to section that resolves the "shortly". -->
 
 
 ```r
@@ -270,7 +275,7 @@ f <- function(a) {
 
 x <- c(1, 2, 3)
 cat(tracemem(x), "\n")
-#> <0x5629ae8>
+#> <0x8b96428>
 
 z <- f(x)
 # there's no copy here!
@@ -284,6 +289,7 @@ While `f()` is running, the `a` inside the function points to the same value as 
 
 (You'll learn more about the conventions used in this diagram in [Execution environments].)
 
+<!-- GVW: I think I've figured out what the colors and curves mean, but I'm not sure... -->
 
 Once `f()` completes, `x` and `z` will point to the same object. `0x74b` never gets copied because it never gets modified. If `f()` did modify `x`, R would create a new copy, and then `z` would bind that object.
 
@@ -300,6 +306,7 @@ l1 <- list(1, 2, 3)
 
 The internal representation of a list is actually quite different from that of a vector. A list is really a vector of references:
 
+<!-- GVW: isn't this exactly the same as the structure of a vector, just storing a different type? -->
 
 <img src="diagrams/name-value/list.png" width="189" style="display: block; margin: auto;" />
 
@@ -323,19 +330,20 @@ Like vectors, lists use copy-on-modify behaviour; the original list is left unch
 
 To see values that are shared across lists, use `lobstr::ref()`. `ref()` prints the memory address of each object, along with a local ID so that you can easily cross-reference shared components.
 
+<!-- GVW: install.packages("lobstr") produces "package 'lobstr' is not available (for R version 3.5.1).", but devtools::install_github("r-lib/lobstr") works. -->
 
 
 ```r
 ref(l1, l2)
-#> █ [1:0x5828ce8] <list> 
-#> ├─[2:0x5892680] <dbl> 
-#> ├─[3:0x5892648] <dbl> 
-#> └─[4:0x5892610] <dbl> 
+#> █ [1:0x14b4038] <list> 
+#> ├─[2:0x3adeb08] <dbl> 
+#> ├─[3:0x3adead0] <dbl> 
+#> └─[4:0x3adea98] <dbl> 
 #>  
-#> █ [5:0x88d9fa8] <list> 
-#> ├─[2:0x5892680] 
-#> ├─[3:0x5892648] 
-#> └─[6:0x89e6c08] <dbl>
+#> █ [5:0x6fd2cc8] <list> 
+#> ├─[2:0x3adeb08] 
+#> ├─[3:0x3adead0] 
+#> └─[6:0x7067ed0] <dbl>
 ```
 
 ### Data frames {#df-modify}
@@ -359,6 +367,7 @@ d2[, 2] <- d2[, 2] * 2
 
 However, if you modify a row, there is no way to share data with the previous version of the data frame: every column must be copied-and-modified.
 
+<!-- GVW: "if you modify a row, every column is modified, which means every column must be copied" -->
 
 
 ```r
@@ -382,17 +391,18 @@ But this is a polite fiction. R actually uses a __global string pool__ where eac
 
 <img src="diagrams/name-value/character-2.png" width="250" style="display: block; margin: auto;" />
 
+<!-- GVW: what I brought with me from other languages was that "character vector" referred to a single string (a vector of characters), but what I now understand is that "character vector" means "a vector of character strings".  Might be worth footnoting this for people who make the same mistake I did? -->
 
 You can request that `ref()` show these references by setting the `character` argument to `TRUE`:
 
 
 ```r
 ref(x, character = TRUE)
-#> █ [1:0x4a62008] <chr> 
-#> ├─[2:0x26ab738] <string: "a"> 
-#> ├─[2:0x26ab738] 
-#> ├─[3:0x4c93ea8] <string: "abc"> 
-#> └─[4:0x2b61ad8] <string: "d">
+#> █ [1:0x39b25f8] <chr> 
+#> ├─[2:0x9af738] <string: "a"> 
+#> ├─[2:0x9af738] 
+#> ├─[3:0x30b4ec8] <string: "abc"> 
+#> └─[4:0xe65ad8] <string: "d">
 ```
 
 This has a profound impact on the amount of memory a character vector uses but is otherwise generally unimportant, so elsewhere in the book I'll draw character vectors as if the strings lived inside a vector.
@@ -470,6 +480,8 @@ obj_size(list(NULL, NULL, NULL))
 ```
 
 [^32bit]: If you're running the 32-bit version of R you'll see slightly different sizes.
+
+<!-- GVW: "On a 64-bit machine --- if you're running 32-bit R ..." -->
 
 Similarly, because R uses a global string pool character vectors take up less memory than you might expect: repeating a string 1000 times does not make it take up 1000 times as much memory.
 
@@ -672,13 +684,14 @@ e <- rlang::env()
 e$self <- e
 
 ref(e)
-#> █ [1:0x2d9cc68] <env> 
-#> └─self = [1:0x2d9cc68]
+#> █ [1:0x133ac38] <env> 
+#> └─self = [1:0x133ac38]
 ```
 <img src="diagrams/name-value/e-self.png" width="142" style="display: block; margin: auto;" />
 
 This is a unique property of environments!
 
+<!-- GVW: having people explain why `x <- list(); x[[1]] <- x` *doesn't* produce a circular list might be a good exercise. -->
 
 ### Exercises
 
@@ -723,13 +736,14 @@ The garbage collector (GC) is run automatically whenever R needs more memory to 
 
 You can force the garbage collector to run by calling `gc()`. Despite what you might have read elsewhere, there's never any _need_ to call `gc()` yourself. You may _want_ to call `gc()` to ask R to return memory to your operating system, or for its side-effect of telling you how much memory is currently being used:  
 
+<!-- GVW: why would I want to ask R to return memory the OS? -->
 
 
 ```r
 gc() 
 #>           used (Mb) gc trigger (Mb) max used (Mb)
-#> Ncells  678666 36.3    1289580 68.9  1289580 68.9
-#> Vcells 3684272 28.2   11793208 90.0 11790055 90.0
+#> Ncells  675422 36.1    1280297 68.4  1280297 68.4
+#> Vcells 3675745 28.1   11782978 89.9 11780651 89.9
 ```
 
 `lobstr::mem_used()` is a wrapper around `gc()` that just prints the total number of bytes used:
@@ -737,7 +751,7 @@ gc()
 
 ```r
 mem_used()
-#> 67,461,464 B
+#> 67,211,584 B
 ```
 
 This number won't agree with the amount of memory reported by your operating system for three reasons:

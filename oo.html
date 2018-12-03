@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -930,15 +930,15 @@ is in order to contribute to that project.</p></li>
 <p>Different people use OOP terms in different ways, so this section provides a quick overview of important vocabulary. The explanations are necessarily compressed, but we will come back to these ideas multiple times.</p>
 <p>The main reason to use OOP is <strong>polymorphism</strong> (literally: many shapes). Polymorphism means that a developer can consider a function’s interface separately from its implementation, making it possible to use the same function form for different types of input. This is closely related to the idea of <strong>encapsulation</strong>: the user doesn’t need to worry about details of an object because they are encapsulated behind a standard interface.</p>
 <p>To be concrete, polymorphism is what allows <code>summary()</code> to produce different outputs for numeric and factor variables:</p>
-<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb488-1" data-line-number="1">diamonds &lt;-<span class="st"> </span>ggplot2<span class="op">::</span>diamonds</a>
-<a class="sourceLine" id="cb488-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb488-3" data-line-number="3"><span class="kw">summary</span>(diamonds<span class="op">$</span>carat)</a>
-<a class="sourceLine" id="cb488-4" data-line-number="4"><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></a>
-<a class="sourceLine" id="cb488-5" data-line-number="5"><span class="co">#&gt;    0.20    0.40    0.70    0.80    1.04    5.01</span></a>
-<a class="sourceLine" id="cb488-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb488-7" data-line-number="7"><span class="kw">summary</span>(diamonds<span class="op">$</span>cut)</a>
-<a class="sourceLine" id="cb488-8" data-line-number="8"><span class="co">#&gt;      Fair      Good Very Good   Premium     Ideal </span></a>
-<a class="sourceLine" id="cb488-9" data-line-number="9"><span class="co">#&gt;      1610      4906     12082     13791     21551</span></a></code></pre></div>
+<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb487-1" data-line-number="1">diamonds &lt;-<span class="st"> </span>ggplot2<span class="op">::</span>diamonds</a>
+<a class="sourceLine" id="cb487-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb487-3" data-line-number="3"><span class="kw">summary</span>(diamonds<span class="op">$</span>carat)</a>
+<a class="sourceLine" id="cb487-4" data-line-number="4"><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></a>
+<a class="sourceLine" id="cb487-5" data-line-number="5"><span class="co">#&gt;    0.20    0.40    0.70    0.80    1.04    5.01</span></a>
+<a class="sourceLine" id="cb487-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb487-7" data-line-number="7"><span class="kw">summary</span>(diamonds<span class="op">$</span>cut)</a>
+<a class="sourceLine" id="cb487-8" data-line-number="8"><span class="co">#&gt;      Fair      Good Very Good   Premium     Ideal </span></a>
+<a class="sourceLine" id="cb487-9" data-line-number="9"><span class="co">#&gt;      1610      4906     12082     13791     21551</span></a></code></pre></div>
 <p>You could imagine <code>summary()</code> containing a series of if-else statements, but that would mean only the original author could add new implementations. An OOP system makes it possible for any developer to extend the interface with implementations for new types of input.</p>
 <p>To be more precise, OO systems call the “type” of an object its <strong>class</strong>, and an implementation for a specific class is called a <strong>method</strong>. Roughly speaking, a class defines what an object <em>is</em> and methods describe what that object can <em>do</em>.
 The class defines the <strong>fields</strong>, the data possessed by every instance of that class. Classes are organised in a hierarchy so that if a method does not exist for one class, its parent’s method is used, and the child is said to <strong>inherit</strong> behaviour. For example, in R, an ordered factor inherits from a regular factor, and a generalised linear model inherits from a linear model. The process of finding the correct method given a class is called <strong>method dispatch</strong>.</p>
@@ -997,18 +997,18 @@ stick with the standard forms.</p></li>
 <div id="sloop" class="section level2 unnumbered">
 <h2>sloop</h2>
 <p>Before we go on I want to introduce the sloop package:</p>
-<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb489-1" data-line-number="1"><span class="co"># install_github(&quot;r-lib/sloop&quot;)</span></a>
-<a class="sourceLine" id="cb489-2" data-line-number="2"><span class="kw">library</span>(sloop)</a></code></pre></div>
+<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb488-1" data-line-number="1"><span class="co"># install_github(&quot;r-lib/sloop&quot;)</span></a>
+<a class="sourceLine" id="cb488-2" data-line-number="2"><span class="kw">library</span>(sloop)</a></code></pre></div>
 <p>The sloop package (think “sail the seas of OOP”) provides a number of helpers that fill in missing pieces in base R. The first of these is <code>sloop::otype()</code>. It makes it easy to figure out the OOP system used by a wild-caught object:</p>
-<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb490-1" data-line-number="1"><span class="kw">otype</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb490-2" data-line-number="2"><span class="co">#&gt; [1] &quot;base&quot;</span></a>
-<a class="sourceLine" id="cb490-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb490-4" data-line-number="4"><span class="kw">otype</span>(mtcars)</a>
-<a class="sourceLine" id="cb490-5" data-line-number="5"><span class="co">#&gt; [1] &quot;S3&quot;</span></a>
-<a class="sourceLine" id="cb490-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb490-7" data-line-number="7">mle_obj &lt;-<span class="st"> </span>stats4<span class="op">::</span><span class="kw">mle</span>(<span class="cf">function</span>(<span class="dt">x =</span> <span class="dv">1</span>) (x <span class="op">-</span><span class="st"> </span><span class="dv">2</span>) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb490-8" data-line-number="8"><span class="kw">otype</span>(mle_obj)</a>
-<a class="sourceLine" id="cb490-9" data-line-number="9"><span class="co">#&gt; [1] &quot;S4&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb489-1" data-line-number="1"><span class="kw">otype</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb489-2" data-line-number="2"><span class="co">#&gt; [1] &quot;base&quot;</span></a>
+<a class="sourceLine" id="cb489-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb489-4" data-line-number="4"><span class="kw">otype</span>(mtcars)</a>
+<a class="sourceLine" id="cb489-5" data-line-number="5"><span class="co">#&gt; [1] &quot;S3&quot;</span></a>
+<a class="sourceLine" id="cb489-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb489-7" data-line-number="7">mle_obj &lt;-<span class="st"> </span>stats4<span class="op">::</span><span class="kw">mle</span>(<span class="cf">function</span>(<span class="dt">x =</span> <span class="dv">1</span>) (x <span class="op">-</span><span class="st"> </span><span class="dv">2</span>) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb489-8" data-line-number="8"><span class="kw">otype</span>(mle_obj)</a>
+<a class="sourceLine" id="cb489-9" data-line-number="9"><span class="co">#&gt; [1] &quot;S4&quot;</span></a></code></pre></div>
 <p>Use this function to figure out which chapter to read to understand how to work with an existing object.</p>
 
 </div>
@@ -1072,7 +1072,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/OO.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

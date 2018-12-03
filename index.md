@@ -11,6 +11,7 @@ site: bookdown::bookdown_site
 documentclass: krantz
 bibliography: book.bib
 link-citations: yes
+date: "2018-12-03"
 ---
 
  

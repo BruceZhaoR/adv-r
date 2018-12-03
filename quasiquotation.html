@@ -25,6 +25,7 @@
 <meta name="author" content="Hadley Wickham">
 
 
+<meta name="date" content="2018-12-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -285,13 +286,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.7" data-path="functions.html"><a href="functions.html#exiting-a-function"><i class="fa fa-check"></i><b>5.7</b> Exiting a function</a><ul>
 <li class="chapter" data-level="5.7.1" data-path="functions.html"><a href="functions.html#implicit-vs.explicit-returns"><i class="fa fa-check"></i><b>5.7.1</b> Implicit vs. explicit returns</a></li>
-<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible-values"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
+<li class="chapter" data-level="5.7.2" data-path="functions.html"><a href="functions.html#invisible"><i class="fa fa-check"></i><b>5.7.2</b> Invisible values</a></li>
 <li class="chapter" data-level="5.7.3" data-path="functions.html"><a href="functions.html#errors"><i class="fa fa-check"></i><b>5.7.3</b> Errors</a></li>
 <li class="chapter" data-level="5.7.4" data-path="functions.html"><a href="functions.html#on-exit"><i class="fa fa-check"></i><b>5.7.4</b> Exit handlers</a></li>
 <li class="chapter" data-level="5.7.5" data-path="functions.html"><a href="functions.html#exercises-16"><i class="fa fa-check"></i><b>5.7.5</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="5.8" data-path="functions.html"><a href="functions.html#function-forms"><i class="fa fa-check"></i><b>5.8</b> Function forms</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
+<li class="chapter" data-level="5.8.1" data-path="functions.html"><a href="functions.html#prefix-transform"><i class="fa fa-check"></i><b>5.8.1</b> Rewriting to prefix form</a></li>
 <li class="chapter" data-level="5.8.2" data-path="functions.html"><a href="functions.html#prefix-form"><i class="fa fa-check"></i><b>5.8.2</b> Prefix form</a></li>
 <li class="chapter" data-level="5.8.3" data-path="functions.html"><a href="functions.html#infix-functions"><i class="fa fa-check"></i><b>5.8.3</b> Infix functions</a></li>
 <li class="chapter" data-level="5.8.4" data-path="functions.html"><a href="functions.html#replacement-functions"><i class="fa fa-check"></i><b>5.8.4</b> Replacement functions</a></li>
@@ -458,7 +459,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.1" data-path="function-operators.html"><a href="function-operators.html#introduction-9"><i class="fa fa-check"></i><b>11.1</b> Introduction</a><ul>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#outline-7"><i class="fa fa-check"></i>Outline</a></li>
 <li class="chapter" data-level="" data-path="function-operators.html"><a href="function-operators.html#prerequisites-5"><i class="fa fa-check"></i>Prerequisites</a></li>
-<li class="chapter" data-level="11.1.1" data-path="function-operators.html"><a href="function-operators.html#in-other-languages"><i class="fa fa-check"></i><b>11.1.1</b> In other languages</a></li>
 </ul></li>
 <li class="chapter" data-level="11.2" data-path="function-operators.html"><a href="function-operators.html#existing-fos"><i class="fa fa-check"></i><b>11.2</b> Existing FOs</a><ul>
 <li class="chapter" data-level="11.2.1" data-path="function-operators.html"><a href="function-operators.html#safely"><i class="fa fa-check"></i><b>11.2.1</b> Capturing errors with <code>purrr::safely()</code></a></li>
@@ -923,8 +923,8 @@ problems that naturally require some code generation.</p></li>
 <h3>Prerequisites</h3>
 <p>Make sure you’ve read the metaprogramming overview in Chapter <a href="meta.html#meta"><strong>??</strong></a> to get a broad overview of the motivation and the basic vocabulary, and that you’re familiar with the tree structure of expressions as described in Section <a href="expressions.html#expressions">17</a>.</p>
 <p>Code-wise, we’ll mostly be using the tools from rlang, but at the end of the chapter you’ll also see some powerful applications in conjunction with purrr.</p>
-<div class="sourceCode" id="cb724"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb724-1" data-line-number="1"><span class="kw">library</span>(rlang)</a>
-<a class="sourceLine" id="cb724-2" data-line-number="2"><span class="kw">library</span>(purrr)</a></code></pre></div>
+<div class="sourceCode" id="cb723"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb723-1" data-line-number="1"><span class="kw">library</span>(rlang)</a>
+<a class="sourceLine" id="cb723-2" data-line-number="2"><span class="kw">library</span>(purrr)</a></code></pre></div>
 </div>
 <div id="related-work" class="section level3 unnumbered">
 <h3>Related work</h3>
@@ -936,37 +936,37 @@ problems that naturally require some code generation.</p></li>
 <div id="quasi-motivation" class="section level2">
 <h2><span class="header-section-number">18.2</span> Motivation</h2>
 <p>We’ll start with a simple and concrete example that helps motivate the need for unquoting, and hence quasiquotation. Imagine you’re creating a lot of strings by joining together words:</p>
-<div class="sourceCode" id="cb725"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb725-1" data-line-number="1"><span class="kw">paste</span>(<span class="st">&quot;Good&quot;</span>, <span class="st">&quot;morning&quot;</span>, <span class="st">&quot;Hadley&quot;</span>)</a>
-<a class="sourceLine" id="cb725-2" data-line-number="2"><span class="co">#&gt; [1] &quot;Good morning Hadley&quot;</span></a>
-<a class="sourceLine" id="cb725-3" data-line-number="3"><span class="kw">paste</span>(<span class="st">&quot;Good&quot;</span>, <span class="st">&quot;afternoon&quot;</span>, <span class="st">&quot;Alice&quot;</span>)</a>
-<a class="sourceLine" id="cb725-4" data-line-number="4"><span class="co">#&gt; [1] &quot;Good afternoon Alice&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb724"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb724-1" data-line-number="1"><span class="kw">paste</span>(<span class="st">&quot;Good&quot;</span>, <span class="st">&quot;morning&quot;</span>, <span class="st">&quot;Hadley&quot;</span>)</a>
+<a class="sourceLine" id="cb724-2" data-line-number="2"><span class="co">#&gt; [1] &quot;Good morning Hadley&quot;</span></a>
+<a class="sourceLine" id="cb724-3" data-line-number="3"><span class="kw">paste</span>(<span class="st">&quot;Good&quot;</span>, <span class="st">&quot;afternoon&quot;</span>, <span class="st">&quot;Alice&quot;</span>)</a>
+<a class="sourceLine" id="cb724-4" data-line-number="4"><span class="co">#&gt; [1] &quot;Good afternoon Alice&quot;</span></a></code></pre></div>
 <p>You are sick and tired of writing all those quotes, and instead you just want to use bare words. To that end, you’ve written the following function:</p>
-<div class="sourceCode" id="cb726"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb726-1" data-line-number="1">cement &lt;-<span class="st"> </span><span class="cf">function</span>(...) {</a>
-<a class="sourceLine" id="cb726-2" data-line-number="2">  args &lt;-<span class="st"> </span><span class="kw">ensyms</span>(...)</a>
-<a class="sourceLine" id="cb726-3" data-line-number="3">  <span class="kw">paste</span>(purrr<span class="op">::</span><span class="kw">map</span>(args, as_string), <span class="dt">collapse =</span> <span class="st">&quot; &quot;</span>)</a>
-<a class="sourceLine" id="cb726-4" data-line-number="4">}</a>
-<a class="sourceLine" id="cb726-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb726-6" data-line-number="6"><span class="kw">cement</span>(Good, morning, Hadley)</a>
-<a class="sourceLine" id="cb726-7" data-line-number="7"><span class="co">#&gt; [1] &quot;Good morning Hadley&quot;</span></a>
-<a class="sourceLine" id="cb726-8" data-line-number="8"><span class="kw">cement</span>(Good, afternoon, Alice)</a>
-<a class="sourceLine" id="cb726-9" data-line-number="9"><span class="co">#&gt; [1] &quot;Good afternoon Alice&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb725"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb725-1" data-line-number="1">cement &lt;-<span class="st"> </span><span class="cf">function</span>(...) {</a>
+<a class="sourceLine" id="cb725-2" data-line-number="2">  args &lt;-<span class="st"> </span><span class="kw">ensyms</span>(...)</a>
+<a class="sourceLine" id="cb725-3" data-line-number="3">  <span class="kw">paste</span>(purrr<span class="op">::</span><span class="kw">map</span>(args, as_string), <span class="dt">collapse =</span> <span class="st">&quot; &quot;</span>)</a>
+<a class="sourceLine" id="cb725-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb725-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb725-6" data-line-number="6"><span class="kw">cement</span>(Good, morning, Hadley)</a>
+<a class="sourceLine" id="cb725-7" data-line-number="7"><span class="co">#&gt; [1] &quot;Good morning Hadley&quot;</span></a>
+<a class="sourceLine" id="cb725-8" data-line-number="8"><span class="kw">cement</span>(Good, afternoon, Alice)</a>
+<a class="sourceLine" id="cb725-9" data-line-number="9"><span class="co">#&gt; [1] &quot;Good afternoon Alice&quot;</span></a></code></pre></div>
 <p>(You’ll learn what <code>ensyms()</code> does shortly; for now just look at the results.)</p>
 <p>Formally, this function <em>quotes</em> the arguments in <code>...</code>. You can think of it as automatically putting quotation marks around each argument. That’s not precisely true as the intermediate objects it generates are expressions, not strings, but it’s a useful approximation, and meaning at the root of the term “quote”.</p>
 <p>This function is nice because we no longer need to type quotation marks. The problem, however, comes when we want to use variables. It’s easy to use variables with <code>paste()</code>: just don’t surround them with quotation marks.</p>
-<div class="sourceCode" id="cb727"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb727-1" data-line-number="1">name &lt;-<span class="st"> &quot;Hadley&quot;</span></a>
-<a class="sourceLine" id="cb727-2" data-line-number="2">time &lt;-<span class="st"> &quot;morning&quot;</span></a>
-<a class="sourceLine" id="cb727-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb727-4" data-line-number="4"><span class="kw">paste</span>(<span class="st">&quot;Good&quot;</span>, time, name)</a>
-<a class="sourceLine" id="cb727-5" data-line-number="5"><span class="co">#&gt; [1] &quot;Good morning Hadley&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb726"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb726-1" data-line-number="1">name &lt;-<span class="st"> &quot;Hadley&quot;</span></a>
+<a class="sourceLine" id="cb726-2" data-line-number="2">time &lt;-<span class="st"> &quot;morning&quot;</span></a>
+<a class="sourceLine" id="cb726-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb726-4" data-line-number="4"><span class="kw">paste</span>(<span class="st">&quot;Good&quot;</span>, time, name)</a>
+<a class="sourceLine" id="cb726-5" data-line-number="5"><span class="co">#&gt; [1] &quot;Good morning Hadley&quot;</span></a></code></pre></div>
 <p>Obviously this doesn’t work with <code>cement()</code> because every input is automatically quoted:</p>
-<div class="sourceCode" id="cb728"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb728-1" data-line-number="1"><span class="kw">cement</span>(Good, time, name)</a>
-<a class="sourceLine" id="cb728-2" data-line-number="2"><span class="co">#&gt; [1] &quot;Good time name&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb727"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb727-1" data-line-number="1"><span class="kw">cement</span>(Good, time, name)</a>
+<a class="sourceLine" id="cb727-2" data-line-number="2"><span class="co">#&gt; [1] &quot;Good time name&quot;</span></a></code></pre></div>
 <p>We need some way to explicitly <em>unquote</em> the input, to tell <code>cement()</code> to remove the automatic quote marks. Here we need <code>time</code> and <code>name</code> to be treated differently to <code>Good</code>. Quasiquotation gives us a standard tool to do so: <code>!!</code>, called “unquote”, and pronounced bang-bang. <code>!!</code> tells a quoting function to drop the implicit quotes:</p>
-<div class="sourceCode" id="cb729"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb729-1" data-line-number="1"><span class="kw">cement</span>(Good, <span class="op">!!</span>time, <span class="op">!!</span>name)</a>
-<a class="sourceLine" id="cb729-2" data-line-number="2"><span class="co">#&gt; [1] &quot;Good morning Hadley&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb728"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb728-1" data-line-number="1"><span class="kw">cement</span>(Good, <span class="op">!!</span>time, <span class="op">!!</span>name)</a>
+<a class="sourceLine" id="cb728-2" data-line-number="2"><span class="co">#&gt; [1] &quot;Good morning Hadley&quot;</span></a></code></pre></div>
 <p>It’s useful to compare <code>cement()</code> and <code>paste()</code> directly. <code>paste()</code> evaluates its arguments, so we need to quote where needed; <code>cement()</code> quotes its arguments, so we need to unquote where needed.</p>
-<div class="sourceCode" id="cb730"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb730-1" data-line-number="1"><span class="kw">paste</span>(<span class="st">&quot;Good&quot;</span>, time, name)</a>
-<a class="sourceLine" id="cb730-2" data-line-number="2"><span class="kw">cement</span>(Good, <span class="op">!!</span>time, <span class="op">!!</span>name)</a></code></pre></div>
+<div class="sourceCode" id="cb729"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb729-1" data-line-number="1"><span class="kw">paste</span>(<span class="st">&quot;Good&quot;</span>, time, name)</a>
+<a class="sourceLine" id="cb729-2" data-line-number="2"><span class="kw">cement</span>(Good, <span class="op">!!</span>time, <span class="op">!!</span>name)</a></code></pre></div>
 <div id="vocabulary-1" class="section level3">
 <h3><span class="header-section-number">18.2.1</span> Vocabulary</h3>
 <p>The distinction between quoted and evaluated arguments is important:</p>
@@ -977,13 +977,13 @@ will happen.</p></li>
 </ul>
 <p><code>paste()</code> evaluates all its arguments; <code>cement()</code> quotes all its arguments.</p>
 <p>If you’re ever unsure about whether an argument is quoted or evaluated, try executing the code outside of the function. If it doesn’t work (or does something profoundly different), then that argument is quoted. For example, you can use this technique to determine that the first argument to <code>library()</code> is quoted:</p>
-<div class="sourceCode" id="cb731"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb731-1" data-line-number="1"><span class="co"># works</span></a>
-<a class="sourceLine" id="cb731-2" data-line-number="2"><span class="kw">library</span>(MASS)</a>
-<a class="sourceLine" id="cb731-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb731-4" data-line-number="4"><span class="co"># fails</span></a>
-<a class="sourceLine" id="cb731-5" data-line-number="5">MASS</a>
-<a class="sourceLine" id="cb731-6" data-line-number="6"><span class="co">#&gt; Error in eval(expr, envir, enclos):</span></a>
-<a class="sourceLine" id="cb731-7" data-line-number="7"><span class="co">#&gt;   object &#39;MASS&#39; not found</span></a></code></pre></div>
+<div class="sourceCode" id="cb730"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb730-1" data-line-number="1"><span class="co"># works</span></a>
+<a class="sourceLine" id="cb730-2" data-line-number="2"><span class="kw">library</span>(MASS)</a>
+<a class="sourceLine" id="cb730-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb730-4" data-line-number="4"><span class="co"># fails</span></a>
+<a class="sourceLine" id="cb730-5" data-line-number="5">MASS</a>
+<a class="sourceLine" id="cb730-6" data-line-number="6"><span class="co">#&gt; Error in eval(expr, envir, enclos):</span></a>
+<a class="sourceLine" id="cb730-7" data-line-number="7"><span class="co">#&gt;   object &#39;MASS&#39; not found</span></a></code></pre></div>
 <p>Talking about whether an argument is quoted or evaluated is a more precise way of stating whether or not a function uses non-standard evaluation (NSE). I will sometimes use “quoting function” as short-hand for a “function that quotes one or more arguments”, but generally, I’ll refer to quoted arguments since that is the level at which the difference applies.</p>
 </div>
 <div id="history" class="section level3">
@@ -1007,24 +1007,24 @@ like <code>subset()</code> and friends.</p></li>
 <ol style="list-style-type: decimal">
 <li><p>For each function in the following base R code, identify which arguments
 are quoted and which are evaluated.</p>
-<div class="sourceCode" id="cb732"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb732-1" data-line-number="1"><span class="kw">library</span>(MASS)</a>
-<a class="sourceLine" id="cb732-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb732-3" data-line-number="3">mtcars2 &lt;-<span class="st"> </span><span class="kw">subset</span>(mtcars, cyl <span class="op">==</span><span class="st"> </span><span class="dv">4</span>)</a>
-<a class="sourceLine" id="cb732-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb732-5" data-line-number="5"><span class="kw">with</span>(mtcars2, <span class="kw">sum</span>(vs))</a>
-<a class="sourceLine" id="cb732-6" data-line-number="6"><span class="kw">sum</span>(mtcars2<span class="op">$</span>am)</a>
-<a class="sourceLine" id="cb732-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb732-8" data-line-number="8"><span class="kw">rm</span>(mtcars2)</a></code></pre></div></li>
+<div class="sourceCode" id="cb731"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb731-1" data-line-number="1"><span class="kw">library</span>(MASS)</a>
+<a class="sourceLine" id="cb731-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb731-3" data-line-number="3">mtcars2 &lt;-<span class="st"> </span><span class="kw">subset</span>(mtcars, cyl <span class="op">==</span><span class="st"> </span><span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb731-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb731-5" data-line-number="5"><span class="kw">with</span>(mtcars2, <span class="kw">sum</span>(vs))</a>
+<a class="sourceLine" id="cb731-6" data-line-number="6"><span class="kw">sum</span>(mtcars2<span class="op">$</span>am)</a>
+<a class="sourceLine" id="cb731-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb731-8" data-line-number="8"><span class="kw">rm</span>(mtcars2)</a></code></pre></div></li>
 <li><p>For each function in the following tidyverse code, identify which arguments
 are quoted and which are evaluated.</p>
-<div class="sourceCode" id="cb733"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb733-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb733-2" data-line-number="2"><span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb733-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb733-4" data-line-number="4">by_cyl &lt;-<span class="st"> </span>mtcars <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb733-5" data-line-number="5"><span class="st">  </span><span class="kw">group_by</span>(cyl) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb733-6" data-line-number="6"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(mpg))</a>
-<a class="sourceLine" id="cb733-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb733-8" data-line-number="8"><span class="kw">ggplot</span>(by_cyl, <span class="kw">aes</span>(cyl, mean)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>()</a></code></pre></div></li>
+<div class="sourceCode" id="cb732"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb732-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb732-2" data-line-number="2"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb732-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb732-4" data-line-number="4">by_cyl &lt;-<span class="st"> </span>mtcars <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb732-5" data-line-number="5"><span class="st">  </span><span class="kw">group_by</span>(cyl) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb732-6" data-line-number="6"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(mpg))</a>
+<a class="sourceLine" id="cb732-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb732-8" data-line-number="8"><span class="kw">ggplot</span>(by_cyl, <span class="kw">aes</span>(cyl, mean)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>()</a></code></pre></div></li>
 </ol>
 </div>
 </div>
@@ -1034,90 +1034,90 @@ are quoted and which are evaluated.</p>
 <div id="capturing-expressions" class="section level3">
 <h3><span class="header-section-number">18.3.1</span> Capturing expressions</h3>
 <p>There are four important quoting functions. For interactive exploration, the most important quoting function is <code>expr()</code>. It captures its argument exactly as provided:</p>
-<div class="sourceCode" id="cb734"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb734-1" data-line-number="1"><span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y)</a>
-<a class="sourceLine" id="cb734-2" data-line-number="2"><span class="co">#&gt; x + y</span></a>
-<a class="sourceLine" id="cb734-3" data-line-number="3"><span class="kw">expr</span>(<span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="dv">2</span> <span class="op">/</span><span class="st"> </span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb734-4" data-line-number="4"><span class="co">#&gt; 1/2/3</span></a></code></pre></div>
+<div class="sourceCode" id="cb733"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb733-1" data-line-number="1"><span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y)</a>
+<a class="sourceLine" id="cb733-2" data-line-number="2"><span class="co">#&gt; x + y</span></a>
+<a class="sourceLine" id="cb733-3" data-line-number="3"><span class="kw">expr</span>(<span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="dv">2</span> <span class="op">/</span><span class="st"> </span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb733-4" data-line-number="4"><span class="co">#&gt; 1/2/3</span></a></code></pre></div>
 <p>(Remember that white space and comments are not part of the expression, so will not be captured by a quoting function.)</p>
 <p><code>expr()</code> is great for interactive exploration, because it captures what you, the developer, typed. It’s not so useful inside a function:</p>
-<div class="sourceCode" id="cb735"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb735-1" data-line-number="1">f1 &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">expr</span>(x)</a>
-<a class="sourceLine" id="cb735-2" data-line-number="2"><span class="kw">f1</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span>c)</a>
-<a class="sourceLine" id="cb735-3" data-line-number="3"><span class="co">#&gt; x</span></a></code></pre></div>
+<div class="sourceCode" id="cb734"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb734-1" data-line-number="1">f1 &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">expr</span>(x)</a>
+<a class="sourceLine" id="cb734-2" data-line-number="2"><span class="kw">f1</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span>c)</a>
+<a class="sourceLine" id="cb734-3" data-line-number="3"><span class="co">#&gt; x</span></a></code></pre></div>
 <p>We need another function to solve this problem: <code>enexpr()</code>. This captures what the caller supplied to the function by looking at the internal promise object that powers lazy evaluation (Section <a href="functions.html#promises">5.5.2</a>).</p>
-<div class="sourceCode" id="cb736"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb736-1" data-line-number="1">f2 &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">enexpr</span>(x)</a>
-<a class="sourceLine" id="cb736-2" data-line-number="2"><span class="kw">f2</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span>c)</a>
-<a class="sourceLine" id="cb736-3" data-line-number="3"><span class="co">#&gt; a + b + c</span></a></code></pre></div>
+<div class="sourceCode" id="cb735"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb735-1" data-line-number="1">f2 &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">enexpr</span>(x)</a>
+<a class="sourceLine" id="cb735-2" data-line-number="2"><span class="kw">f2</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span>c)</a>
+<a class="sourceLine" id="cb735-3" data-line-number="3"><span class="co">#&gt; a + b + c</span></a></code></pre></div>
 <p>To capture multiple arguments (e.g. all arguments in <code>...</code>), use <code>enexprs()</code>.</p>
-<div class="sourceCode" id="cb737"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb737-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="kw">enexprs</span>(...)</a>
-<a class="sourceLine" id="cb737-2" data-line-number="2"><span class="kw">f</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">10</span> <span class="op">*</span><span class="st"> </span>z)</a>
-<a class="sourceLine" id="cb737-3" data-line-number="3"><span class="co">#&gt; $x</span></a>
-<a class="sourceLine" id="cb737-4" data-line-number="4"><span class="co">#&gt; [1] 1</span></a>
-<a class="sourceLine" id="cb737-5" data-line-number="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb737-6" data-line-number="6"><span class="co">#&gt; $y</span></a>
-<a class="sourceLine" id="cb737-7" data-line-number="7"><span class="co">#&gt; 10 * z</span></a></code></pre></div>
+<div class="sourceCode" id="cb736"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb736-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="kw">enexprs</span>(...)</a>
+<a class="sourceLine" id="cb736-2" data-line-number="2"><span class="kw">f</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">10</span> <span class="op">*</span><span class="st"> </span>z)</a>
+<a class="sourceLine" id="cb736-3" data-line-number="3"><span class="co">#&gt; $x</span></a>
+<a class="sourceLine" id="cb736-4" data-line-number="4"><span class="co">#&gt; [1] 1</span></a>
+<a class="sourceLine" id="cb736-5" data-line-number="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb736-6" data-line-number="6"><span class="co">#&gt; $y</span></a>
+<a class="sourceLine" id="cb736-7" data-line-number="7"><span class="co">#&gt; 10 * z</span></a></code></pre></div>
 <p>Finally, <code>exprs()</code> is useful interactively to make a list of expressions:</p>
-<div class="sourceCode" id="cb738"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb738-1" data-line-number="1"><span class="kw">exprs</span>(<span class="dt">x =</span> x <span class="op">^</span><span class="st"> </span><span class="dv">2</span>, <span class="dt">y =</span> y <span class="op">^</span><span class="st"> </span><span class="dv">3</span>, <span class="dt">z =</span> z <span class="op">^</span><span class="st"> </span><span class="dv">4</span>)</a>
-<a class="sourceLine" id="cb738-2" data-line-number="2"><span class="co">#&gt; $x</span></a>
-<a class="sourceLine" id="cb738-3" data-line-number="3"><span class="co">#&gt; x^2</span></a>
-<a class="sourceLine" id="cb738-4" data-line-number="4"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb738-5" data-line-number="5"><span class="co">#&gt; $y</span></a>
-<a class="sourceLine" id="cb738-6" data-line-number="6"><span class="co">#&gt; y^3</span></a>
-<a class="sourceLine" id="cb738-7" data-line-number="7"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb738-8" data-line-number="8"><span class="co">#&gt; $z</span></a>
-<a class="sourceLine" id="cb738-9" data-line-number="9"><span class="co">#&gt; z^4</span></a>
-<a class="sourceLine" id="cb738-10" data-line-number="10"><span class="co"># shorthand for</span></a>
-<a class="sourceLine" id="cb738-11" data-line-number="11"><span class="co"># list(x = expr(x ^ 2), y = expr(y ^ 3), z = expr(z ^ 4))</span></a></code></pre></div>
+<div class="sourceCode" id="cb737"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb737-1" data-line-number="1"><span class="kw">exprs</span>(<span class="dt">x =</span> x <span class="op">^</span><span class="st"> </span><span class="dv">2</span>, <span class="dt">y =</span> y <span class="op">^</span><span class="st"> </span><span class="dv">3</span>, <span class="dt">z =</span> z <span class="op">^</span><span class="st"> </span><span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb737-2" data-line-number="2"><span class="co">#&gt; $x</span></a>
+<a class="sourceLine" id="cb737-3" data-line-number="3"><span class="co">#&gt; x^2</span></a>
+<a class="sourceLine" id="cb737-4" data-line-number="4"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb737-5" data-line-number="5"><span class="co">#&gt; $y</span></a>
+<a class="sourceLine" id="cb737-6" data-line-number="6"><span class="co">#&gt; y^3</span></a>
+<a class="sourceLine" id="cb737-7" data-line-number="7"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb737-8" data-line-number="8"><span class="co">#&gt; $z</span></a>
+<a class="sourceLine" id="cb737-9" data-line-number="9"><span class="co">#&gt; z^4</span></a>
+<a class="sourceLine" id="cb737-10" data-line-number="10"><span class="co"># shorthand for</span></a>
+<a class="sourceLine" id="cb737-11" data-line-number="11"><span class="co"># list(x = expr(x ^ 2), y = expr(y ^ 3), z = expr(z ^ 4))</span></a></code></pre></div>
 <p>In short, use <code>enexpr()</code> and <code>enexprs()</code> to capture the expressions supplied as arguments <em>by the user</em>. Use <code>expr()</code> and <code>exprs()</code> to capture expressions that <em>you</em> supply.</p>
 </div>
 <div id="capturing-symbols" class="section level3">
 <h3><span class="header-section-number">18.3.2</span> Capturing symbols</h3>
 <p>Sometimes you only want to allow the user to specify a variable name, not an arbtirary expression. In this case, you can use <code>ensym()</code> or <code>ensyms()</code>. These are variants of <code>enexpr()</code> and <code>enexprs()</code> that check the captured expression is either symbol or a string (which is converted to symbol<a href="#fn64" class="footnote-ref" id="fnref64"><sup>64</sup></a>).</p>
-<div class="sourceCode" id="cb739"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb739-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="kw">ensyms</span>(...)</a>
-<a class="sourceLine" id="cb739-2" data-line-number="2"><span class="kw">f</span>(x)</a>
-<a class="sourceLine" id="cb739-3" data-line-number="3"><span class="co">#&gt; [[1]]</span></a>
-<a class="sourceLine" id="cb739-4" data-line-number="4"><span class="co">#&gt; x</span></a>
-<a class="sourceLine" id="cb739-5" data-line-number="5"><span class="kw">f</span>(<span class="st">&quot;x&quot;</span>)</a>
-<a class="sourceLine" id="cb739-6" data-line-number="6"><span class="co">#&gt; [[1]]</span></a>
-<a class="sourceLine" id="cb739-7" data-line-number="7"><span class="co">#&gt; x</span></a></code></pre></div>
+<div class="sourceCode" id="cb738"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb738-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="kw">ensyms</span>(...)</a>
+<a class="sourceLine" id="cb738-2" data-line-number="2"><span class="kw">f</span>(x)</a>
+<a class="sourceLine" id="cb738-3" data-line-number="3"><span class="co">#&gt; [[1]]</span></a>
+<a class="sourceLine" id="cb738-4" data-line-number="4"><span class="co">#&gt; x</span></a>
+<a class="sourceLine" id="cb738-5" data-line-number="5"><span class="kw">f</span>(<span class="st">&quot;x&quot;</span>)</a>
+<a class="sourceLine" id="cb738-6" data-line-number="6"><span class="co">#&gt; [[1]]</span></a>
+<a class="sourceLine" id="cb738-7" data-line-number="7"><span class="co">#&gt; x</span></a></code></pre></div>
 <p><code>ensym()</code> and <code>ensyms()</code> throw an error if given anything else.</p>
 </div>
 <div id="with-base-r" class="section level3">
 <h3><span class="header-section-number">18.3.3</span> With base R</h3>
 <p>The base equivalent of <code>expr()</code> is <code>quote()</code>:</p>
-<div class="sourceCode" id="cb740"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb740-1" data-line-number="1"><span class="kw">quote</span>(x <span class="op">+</span><span class="st"> </span>y)</a>
-<a class="sourceLine" id="cb740-2" data-line-number="2"><span class="co">#&gt; x + y</span></a>
-<a class="sourceLine" id="cb740-3" data-line-number="3"><span class="kw">quote</span>(<span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="dv">2</span> <span class="op">/</span><span class="st"> </span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb740-4" data-line-number="4"><span class="co">#&gt; 1/2/3</span></a></code></pre></div>
+<div class="sourceCode" id="cb739"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb739-1" data-line-number="1"><span class="kw">quote</span>(x <span class="op">+</span><span class="st"> </span>y)</a>
+<a class="sourceLine" id="cb739-2" data-line-number="2"><span class="co">#&gt; x + y</span></a>
+<a class="sourceLine" id="cb739-3" data-line-number="3"><span class="kw">quote</span>(<span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="dv">2</span> <span class="op">/</span><span class="st"> </span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb739-4" data-line-number="4"><span class="co">#&gt; 1/2/3</span></a></code></pre></div>
 <p>It is identical to <code>expr()</code> except that it does not support unquoting (which we’ll talk about very soon). This makes it is a quoting function, not a quasiquoting function.</p>
 <p>The base function closest to <code>enexpr()</code> is <code>substitute()</code>:</p>
-<div class="sourceCode" id="cb741"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb741-1" data-line-number="1">f3 &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">substitute</span>(x)</a>
-<a class="sourceLine" id="cb741-2" data-line-number="2"><span class="kw">f3</span>(x <span class="op">+</span><span class="st"> </span>y <span class="op">+</span><span class="st"> </span>z)</a>
-<a class="sourceLine" id="cb741-3" data-line-number="3"><span class="co">#&gt; x + y + z</span></a></code></pre></div>
+<div class="sourceCode" id="cb740"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb740-1" data-line-number="1">f3 &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">substitute</span>(x)</a>
+<a class="sourceLine" id="cb740-2" data-line-number="2"><span class="kw">f3</span>(x <span class="op">+</span><span class="st"> </span>y <span class="op">+</span><span class="st"> </span>z)</a>
+<a class="sourceLine" id="cb740-3" data-line-number="3"><span class="co">#&gt; x + y + z</span></a></code></pre></div>
 <div class="sidebar">
 <p><strong>Substitution</strong></p>
 <p>You’ll most often see <code>substitute()</code> used to capture unevaluated arguments. However, as well as quoting, <code>substitute()</code> also does “substitution”: if you give it an expression, rather than a symbol, it will substitute in the values of symbols defined in the current environment.</p>
-<div class="sourceCode" id="cb742"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb742-1" data-line-number="1">f4 &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">substitute</span>(x <span class="op">*</span><span class="st"> </span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb742-2" data-line-number="2"><span class="kw">f4</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span>c)</a>
-<a class="sourceLine" id="cb742-3" data-line-number="3"><span class="co">#&gt; (a + b + c) * 2</span></a></code></pre></div>
+<div class="sourceCode" id="cb741"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb741-1" data-line-number="1">f4 &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">substitute</span>(x <span class="op">*</span><span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb741-2" data-line-number="2"><span class="kw">f4</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span>c)</a>
+<a class="sourceLine" id="cb741-3" data-line-number="3"><span class="co">#&gt; (a + b + c) * 2</span></a></code></pre></div>
 <p>I think this makes code hard to understand, because, taken out of context, you can’t tell if the goal of <code>substitute(x + y)</code> is to replace <code>x</code>, or, <code>y</code>, or both. If you do want to use <code>substitute()</code> for substitution, I recommend that you use the 2nd argument to make your goal clear:</p>
-<div class="sourceCode" id="cb743"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb743-1" data-line-number="1"><span class="kw">substitute</span>(x <span class="op">*</span><span class="st"> </span>y <span class="op">*</span><span class="st"> </span>z, <span class="kw">list</span>(<span class="dt">x =</span> <span class="dv">10</span>, <span class="dt">y =</span> <span class="kw">quote</span>(a <span class="op">+</span><span class="st"> </span>b)))</a>
-<a class="sourceLine" id="cb743-2" data-line-number="2"><span class="co">#&gt; 10 * (a + b) * z</span></a></code></pre></div>
+<div class="sourceCode" id="cb742"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb742-1" data-line-number="1"><span class="kw">substitute</span>(x <span class="op">*</span><span class="st"> </span>y <span class="op">*</span><span class="st"> </span>z, <span class="kw">list</span>(<span class="dt">x =</span> <span class="dv">10</span>, <span class="dt">y =</span> <span class="kw">quote</span>(a <span class="op">+</span><span class="st"> </span>b)))</a>
+<a class="sourceLine" id="cb742-2" data-line-number="2"><span class="co">#&gt; 10 * (a + b) * z</span></a></code></pre></div>
 </div>
 <p>The base equivalent to <code>exprs()</code> is <code>alist()</code>:</p>
-<div class="sourceCode" id="cb744"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb744-1" data-line-number="1"><span class="kw">alist</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> x <span class="op">+</span><span class="st"> </span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb744-2" data-line-number="2"><span class="co">#&gt; $x</span></a>
-<a class="sourceLine" id="cb744-3" data-line-number="3"><span class="co">#&gt; [1] 1</span></a>
-<a class="sourceLine" id="cb744-4" data-line-number="4"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb744-5" data-line-number="5"><span class="co">#&gt; $y</span></a>
-<a class="sourceLine" id="cb744-6" data-line-number="6"><span class="co">#&gt; x + 2</span></a></code></pre></div>
+<div class="sourceCode" id="cb743"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb743-1" data-line-number="1"><span class="kw">alist</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> x <span class="op">+</span><span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb743-2" data-line-number="2"><span class="co">#&gt; $x</span></a>
+<a class="sourceLine" id="cb743-3" data-line-number="3"><span class="co">#&gt; [1] 1</span></a>
+<a class="sourceLine" id="cb743-4" data-line-number="4"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb743-5" data-line-number="5"><span class="co">#&gt; $y</span></a>
+<a class="sourceLine" id="cb743-6" data-line-number="6"><span class="co">#&gt; x + 2</span></a></code></pre></div>
 <p>There the equivalent to <code>enexprs()</code> is an undocumented feature of <code>substitute()</code><a href="#fn65" class="footnote-ref" id="fnref65"><sup>65</sup></a>: you can pretend <code>...</code> is a function to capture all arguments in <code>...</code>:</p>
-<div class="sourceCode" id="cb745"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb745-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="kw">as.list</span>(<span class="kw">substitute</span>(<span class="kw">...</span>()))</a>
-<a class="sourceLine" id="cb745-2" data-line-number="2"><span class="kw">f</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">10</span> <span class="op">*</span><span class="st"> </span>z)</a>
-<a class="sourceLine" id="cb745-3" data-line-number="3"><span class="co">#&gt; $x</span></a>
-<a class="sourceLine" id="cb745-4" data-line-number="4"><span class="co">#&gt; [1] 1</span></a>
-<a class="sourceLine" id="cb745-5" data-line-number="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb745-6" data-line-number="6"><span class="co">#&gt; $y</span></a>
-<a class="sourceLine" id="cb745-7" data-line-number="7"><span class="co">#&gt; 10 * z</span></a></code></pre></div>
+<div class="sourceCode" id="cb744"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb744-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="kw">as.list</span>(<span class="kw">substitute</span>(<span class="kw">...</span>()))</a>
+<a class="sourceLine" id="cb744-2" data-line-number="2"><span class="kw">f</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">10</span> <span class="op">*</span><span class="st"> </span>z)</a>
+<a class="sourceLine" id="cb744-3" data-line-number="3"><span class="co">#&gt; $x</span></a>
+<a class="sourceLine" id="cb744-4" data-line-number="4"><span class="co">#&gt; [1] 1</span></a>
+<a class="sourceLine" id="cb744-5" data-line-number="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb744-6" data-line-number="6"><span class="co">#&gt; $y</span></a>
+<a class="sourceLine" id="cb744-7" data-line-number="7"><span class="co">#&gt; 10 * z</span></a></code></pre></div>
 <p>There are two other important base quoting functions that we’ll cover elsewhere:</p>
 <ul>
 <li><p><code>bquote()</code> provides a limited form of quasiquotation, and is discussed in
@@ -1188,20 +1188,20 @@ via an argument?</p></li>
 <h3><span class="header-section-number">18.3.5</span> Exercises</h3>
 <ol style="list-style-type: decimal">
 <li><p>What does the following command return? What information is lost? Why?</p>
-<div class="sourceCode" id="cb746"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb746-1" data-line-number="1"><span class="kw">expr</span>({</a>
-<a class="sourceLine" id="cb746-2" data-line-number="2">  x <span class="op">+</span><span class="st">              </span>y <span class="co"># comment  </span></a>
-<a class="sourceLine" id="cb746-3" data-line-number="3">})</a></code></pre></div></li>
+<div class="sourceCode" id="cb745"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb745-1" data-line-number="1"><span class="kw">expr</span>({</a>
+<a class="sourceLine" id="cb745-2" data-line-number="2">  x <span class="op">+</span><span class="st">              </span>y <span class="co"># comment  </span></a>
+<a class="sourceLine" id="cb745-3" data-line-number="3">})</a></code></pre></div></li>
 <li><p>How is <code>expr()</code> implemented?</p></li>
 <li><p>Compare and contrast the following two functions. Can you predict the
 output before running them?</p>
-<div class="sourceCode" id="cb747"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb747-1" data-line-number="1">f1 &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) {</a>
-<a class="sourceLine" id="cb747-2" data-line-number="2">  <span class="kw">exprs</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y)</a>
-<a class="sourceLine" id="cb747-3" data-line-number="3">}</a>
-<a class="sourceLine" id="cb747-4" data-line-number="4">f2 &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) {</a>
-<a class="sourceLine" id="cb747-5" data-line-number="5">  <span class="kw">enexprs</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y)</a>
-<a class="sourceLine" id="cb747-6" data-line-number="6">}</a>
-<a class="sourceLine" id="cb747-7" data-line-number="7"><span class="kw">f1</span>(a <span class="op">+</span><span class="st"> </span>b, c <span class="op">+</span><span class="st"> </span>d)</a>
-<a class="sourceLine" id="cb747-8" data-line-number="8"><span class="kw">f2</span>(a <span class="op">+</span><span class="st"> </span>b, c <span class="op">+</span><span class="st"> </span>d)</a></code></pre></div></li>
+<div class="sourceCode" id="cb746"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb746-1" data-line-number="1">f1 &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) {</a>
+<a class="sourceLine" id="cb746-2" data-line-number="2">  <span class="kw">exprs</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y)</a>
+<a class="sourceLine" id="cb746-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb746-4" data-line-number="4">f2 &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) {</a>
+<a class="sourceLine" id="cb746-5" data-line-number="5">  <span class="kw">enexprs</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y)</a>
+<a class="sourceLine" id="cb746-6" data-line-number="6">}</a>
+<a class="sourceLine" id="cb746-7" data-line-number="7"><span class="kw">f1</span>(a <span class="op">+</span><span class="st"> </span>b, c <span class="op">+</span><span class="st"> </span>d)</a>
+<a class="sourceLine" id="cb746-8" data-line-number="8"><span class="kw">f2</span>(a <span class="op">+</span><span class="st"> </span>b, c <span class="op">+</span><span class="st"> </span>d)</a></code></pre></div></li>
 <li><p>What happens if you try to use <code>enexpr()</code> with an expression (i.e.
 <code>enexpr(x + y)</code> ? What happens if <code>enexpr()</code> is passed a missing argument?</p></li>
 <li><p>How are <code>exprs(a)</code> and <code>exprs(a = )</code> different? Think about both the
@@ -1233,30 +1233,30 @@ unchanged.</li>
 <div id="unquoting-one-argument" class="section level3">
 <h3><span class="header-section-number">18.4.1</span> Unquoting one argument</h3>
 <p>Use <code>!!</code> to unquote a single argument in a function call. <code>!!</code> takes a single expression, evaluates it, and inlines the result in to the AST.</p>
-<div class="sourceCode" id="cb748"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb748-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">expr</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span>c)</a>
-<a class="sourceLine" id="cb748-2" data-line-number="2"><span class="kw">expr</span>(<span class="kw">f</span>(<span class="op">!!</span>x, y))</a>
-<a class="sourceLine" id="cb748-3" data-line-number="3"><span class="co">#&gt; f(a + b + c, y)</span></a></code></pre></div>
+<div class="sourceCode" id="cb747"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb747-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">expr</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span>c)</a>
+<a class="sourceLine" id="cb747-2" data-line-number="2"><span class="kw">expr</span>(<span class="kw">f</span>(<span class="op">!!</span>x, y))</a>
+<a class="sourceLine" id="cb747-3" data-line-number="3"><span class="co">#&gt; f(a + b + c, y)</span></a></code></pre></div>
 <p>I think this is easiest to understand with a diagram. <code>!!</code> introduces a placeholder in the AST, shown with dotted borders. Here the placeholder <code>x</code> is replaced by an AST, illustrated by a dotted connection.</p>
 <p><img src="diagrams/quotation/bang-bang.png" width="260" style="display: block; margin: auto;" /></p>
 <p>As well as call objects, <code>!!</code> also works with symbols and constants:</p>
-<div class="sourceCode" id="cb749"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb749-1" data-line-number="1">a &lt;-<span class="st"> </span><span class="kw">sym</span>(<span class="st">&quot;y&quot;</span>)</a>
-<a class="sourceLine" id="cb749-2" data-line-number="2">b &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb749-3" data-line-number="3"><span class="kw">expr</span>(<span class="kw">f</span>(<span class="op">!!</span>a, <span class="op">!!</span>b))</a>
-<a class="sourceLine" id="cb749-4" data-line-number="4"><span class="co">#&gt; f(y, 1)</span></a></code></pre></div>
+<div class="sourceCode" id="cb748"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb748-1" data-line-number="1">a &lt;-<span class="st"> </span><span class="kw">sym</span>(<span class="st">&quot;y&quot;</span>)</a>
+<a class="sourceLine" id="cb748-2" data-line-number="2">b &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb748-3" data-line-number="3"><span class="kw">expr</span>(<span class="kw">f</span>(<span class="op">!!</span>a, <span class="op">!!</span>b))</a>
+<a class="sourceLine" id="cb748-4" data-line-number="4"><span class="co">#&gt; f(y, 1)</span></a></code></pre></div>
 <p><img src="diagrams/quotation/simple.png" width="226" style="display: block; margin: auto;" /></p>
 <p>Note that the right-hand side of <code>!!</code> can be a function call. <code>!!</code> will evaluate the call and insert the results in the AST:</p>
-<div class="sourceCode" id="cb750"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb750-1" data-line-number="1">mean_rm &lt;-<span class="st"> </span><span class="cf">function</span>(var) {</a>
-<a class="sourceLine" id="cb750-2" data-line-number="2">  var &lt;-<span class="st"> </span><span class="kw">ensym</span>(var)</a>
-<a class="sourceLine" id="cb750-3" data-line-number="3">  <span class="kw">expr</span>(<span class="kw">mean</span>(<span class="op">!!</span>var, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a>
-<a class="sourceLine" id="cb750-4" data-line-number="4">}</a>
-<a class="sourceLine" id="cb750-5" data-line-number="5"><span class="kw">expr</span>(<span class="op">!!</span><span class="kw">mean_rm</span>(x) <span class="op">+</span><span class="st"> </span><span class="op">!!</span><span class="kw">mean_rm</span>(y))</a>
-<a class="sourceLine" id="cb750-6" data-line-number="6"><span class="co">#&gt; mean(x, na.rm = TRUE) + mean(y, na.rm = TRUE)</span></a></code></pre></div>
+<div class="sourceCode" id="cb749"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb749-1" data-line-number="1">mean_rm &lt;-<span class="st"> </span><span class="cf">function</span>(var) {</a>
+<a class="sourceLine" id="cb749-2" data-line-number="2">  var &lt;-<span class="st"> </span><span class="kw">ensym</span>(var)</a>
+<a class="sourceLine" id="cb749-3" data-line-number="3">  <span class="kw">expr</span>(<span class="kw">mean</span>(<span class="op">!!</span>var, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb749-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb749-5" data-line-number="5"><span class="kw">expr</span>(<span class="op">!!</span><span class="kw">mean_rm</span>(x) <span class="op">+</span><span class="st"> </span><span class="op">!!</span><span class="kw">mean_rm</span>(y))</a>
+<a class="sourceLine" id="cb749-6" data-line-number="6"><span class="co">#&gt; mean(x, na.rm = TRUE) + mean(y, na.rm = TRUE)</span></a></code></pre></div>
 <p>Note that <code>!!</code> preserves operator precedence because it works with expressions.</p>
-<div class="sourceCode" id="cb751"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb751-1" data-line-number="1">x1 &lt;-<span class="st"> </span><span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb751-2" data-line-number="2">x2 &lt;-<span class="st"> </span><span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb751-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb751-4" data-line-number="4"><span class="kw">expr</span>(<span class="op">!!</span>x1 <span class="op">/</span><span class="st"> </span><span class="op">!!</span>x2)</a>
-<a class="sourceLine" id="cb751-5" data-line-number="5"><span class="co">#&gt; (x + 1)/(x + 2)</span></a></code></pre></div>
+<div class="sourceCode" id="cb750"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb750-1" data-line-number="1">x1 &lt;-<span class="st"> </span><span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb750-2" data-line-number="2">x2 &lt;-<span class="st"> </span><span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb750-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb750-4" data-line-number="4"><span class="kw">expr</span>(<span class="op">!!</span>x1 <span class="op">/</span><span class="st"> </span><span class="op">!!</span>x2)</a>
+<a class="sourceLine" id="cb750-5" data-line-number="5"><span class="co">#&gt; (x + 1)/(x + 2)</span></a></code></pre></div>
 <p><img src="diagrams/quotation/infix.png" width="430" style="display: block; margin: auto;" /></p>
 <p>If we simply pasted the text of the expressions together, we’d end up with <code>x + 1 / x + 2</code>, which has a very different AST:</p>
 <p><img src="diagrams/quotation/infix-bad.png" width="283" style="display: block; margin: auto;" /></p>
@@ -1264,69 +1264,69 @@ unchanged.</li>
 <div id="unquoting-a-function" class="section level3">
 <h3><span class="header-section-number">18.4.2</span> Unquoting a function</h3>
 <p><code>!!</code> is most commonly used to replace the arguments to a function, but you can also use it to replace the function itself. The only challenge here is operator precedence: <code>expr(!!f(x, y))</code> unquotes the result of <code>f(x, y)</code>, so you need an extra pair of parentheses.</p>
-<div class="sourceCode" id="cb752"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb752-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="kw">expr</span>(foo)</a>
-<a class="sourceLine" id="cb752-2" data-line-number="2"><span class="kw">expr</span>((<span class="op">!!</span>f)(x, y, z))</a>
-<a class="sourceLine" id="cb752-3" data-line-number="3"><span class="co">#&gt; foo(x, y, z)</span></a></code></pre></div>
+<div class="sourceCode" id="cb751"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb751-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="kw">expr</span>(foo)</a>
+<a class="sourceLine" id="cb751-2" data-line-number="2"><span class="kw">expr</span>((<span class="op">!!</span>f)(x, y, z))</a>
+<a class="sourceLine" id="cb751-3" data-line-number="3"><span class="co">#&gt; foo(x, y, z)</span></a></code></pre></div>
 <p>This also works when <code>f</code> is itself a call:</p>
-<div class="sourceCode" id="cb753"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb753-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="kw">expr</span>(pkg<span class="op">::</span>foo)</a>
-<a class="sourceLine" id="cb753-2" data-line-number="2"><span class="kw">expr</span>((<span class="op">!!</span>f)(x, y, z))</a>
-<a class="sourceLine" id="cb753-3" data-line-number="3"><span class="co">#&gt; pkg::foo(x, y, z)</span></a></code></pre></div>
+<div class="sourceCode" id="cb752"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb752-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="kw">expr</span>(pkg<span class="op">::</span>foo)</a>
+<a class="sourceLine" id="cb752-2" data-line-number="2"><span class="kw">expr</span>((<span class="op">!!</span>f)(x, y, z))</a>
+<a class="sourceLine" id="cb752-3" data-line-number="3"><span class="co">#&gt; pkg::foo(x, y, z)</span></a></code></pre></div>
 <p><img src="diagrams/quotation/fun.png" width="298" style="display: block; margin: auto;" /></p>
 <p>Because of the large number of parentheses involved, it can be more clear to use <code>rlang::call2()</code>:</p>
-<div class="sourceCode" id="cb754"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb754-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="kw">expr</span>(pkg<span class="op">::</span>foo)</a>
-<a class="sourceLine" id="cb754-2" data-line-number="2"><span class="kw">call2</span>(f, <span class="kw">expr</span>(x), <span class="kw">expr</span>(y))</a>
-<a class="sourceLine" id="cb754-3" data-line-number="3"><span class="co">#&gt; pkg::foo(x, y)</span></a></code></pre></div>
+<div class="sourceCode" id="cb753"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb753-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="kw">expr</span>(pkg<span class="op">::</span>foo)</a>
+<a class="sourceLine" id="cb753-2" data-line-number="2"><span class="kw">call2</span>(f, <span class="kw">expr</span>(x), <span class="kw">expr</span>(y))</a>
+<a class="sourceLine" id="cb753-3" data-line-number="3"><span class="co">#&gt; pkg::foo(x, y)</span></a></code></pre></div>
 </div>
 <div id="unquote-missing" class="section level3">
 <h3><span class="header-section-number">18.4.3</span> Unquoting a missing argument</h3>
 <p>Very occasionally it is useful to unquote a missing argument (Section <a href="expressions.html#empty-symbol">17.6.2</a>), but the naive approach doesn’t work:</p>
-<div class="sourceCode" id="cb755"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb755-1" data-line-number="1">arg &lt;-<span class="st"> </span><span class="kw">missing_arg</span>()</a>
-<a class="sourceLine" id="cb755-2" data-line-number="2"><span class="kw">expr</span>(<span class="kw">foo</span>(<span class="op">!!</span>arg, <span class="op">!!</span>arg))</a>
-<a class="sourceLine" id="cb755-3" data-line-number="3"><span class="co">#&gt; Error in enexpr(expr):</span></a>
-<a class="sourceLine" id="cb755-4" data-line-number="4"><span class="co">#&gt;   argument &quot;arg&quot; is missing, with no default</span></a></code></pre></div>
+<div class="sourceCode" id="cb754"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb754-1" data-line-number="1">arg &lt;-<span class="st"> </span><span class="kw">missing_arg</span>()</a>
+<a class="sourceLine" id="cb754-2" data-line-number="2"><span class="kw">expr</span>(<span class="kw">foo</span>(<span class="op">!!</span>arg, <span class="op">!!</span>arg))</a>
+<a class="sourceLine" id="cb754-3" data-line-number="3"><span class="co">#&gt; Error in enexpr(expr):</span></a>
+<a class="sourceLine" id="cb754-4" data-line-number="4"><span class="co">#&gt;   argument &quot;arg&quot; is missing, with no default</span></a></code></pre></div>
 <p>You can work around this with the <code>maybe_missing()</code> helper:</p>
-<div class="sourceCode" id="cb756"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb756-1" data-line-number="1"><span class="kw">expr</span>(<span class="kw">foo</span>(<span class="op">!!</span><span class="kw">maybe_missing</span>(arg), <span class="op">!!</span><span class="kw">maybe_missing</span>(arg)))</a>
-<a class="sourceLine" id="cb756-2" data-line-number="2"><span class="co">#&gt; foo(, )</span></a></code></pre></div>
+<div class="sourceCode" id="cb755"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb755-1" data-line-number="1"><span class="kw">expr</span>(<span class="kw">foo</span>(<span class="op">!!</span><span class="kw">maybe_missing</span>(arg), <span class="op">!!</span><span class="kw">maybe_missing</span>(arg)))</a>
+<a class="sourceLine" id="cb755-2" data-line-number="2"><span class="co">#&gt; foo(, )</span></a></code></pre></div>
 </div>
 <div id="unquoting-in-special-forms" class="section level3">
 <h3><span class="header-section-number">18.4.4</span> Unquoting in special forms</h3>
 <p>There are a few special forms where unquoting is a syntax error:</p>
-<div class="sourceCode" id="cb757"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb757-1" data-line-number="1"><span class="kw">expr</span>(df<span class="op">$!!</span>x)</a>
-<a class="sourceLine" id="cb757-2" data-line-number="2"><span class="co">#&gt; Error: unexpected &#39;!&#39; in &quot;expr(df$!&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb756"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb756-1" data-line-number="1"><span class="kw">expr</span>(df<span class="op">$!!</span>x)</a>
+<a class="sourceLine" id="cb756-2" data-line-number="2"><span class="co">#&gt; Error: unexpected &#39;!&#39; in &quot;expr(df$!&quot;</span></a></code></pre></div>
 <p>Here you need to use the prefix form:</p>
-<div class="sourceCode" id="cb758"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb758-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">expr</span>(x)</a>
-<a class="sourceLine" id="cb758-2" data-line-number="2"><span class="kw">expr</span>(<span class="st">`</span><span class="dt">$</span><span class="st">`</span>(df, <span class="op">!!</span>x))</a>
-<a class="sourceLine" id="cb758-3" data-line-number="3"><span class="co">#&gt; df$x</span></a></code></pre></div>
+<div class="sourceCode" id="cb757"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb757-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">expr</span>(x)</a>
+<a class="sourceLine" id="cb757-2" data-line-number="2"><span class="kw">expr</span>(<span class="st">`</span><span class="dt">$</span><span class="st">`</span>(df, <span class="op">!!</span>x))</a>
+<a class="sourceLine" id="cb757-3" data-line-number="3"><span class="co">#&gt; df$x</span></a></code></pre></div>
 </div>
 <div id="unquoting-many-arguments" class="section level3">
 <h3><span class="header-section-number">18.4.5</span> Unquoting many arguments</h3>
 <p><code>!!</code> is a one-to-one replacement. <code>!!!</code> (called “unquote-splice”, and pronounced bang-bang-bang) is a one-to-many replacement. It takes a list of expressions and inserts them at the location of the <code>!!!</code>:</p>
-<div class="sourceCode" id="cb759"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb759-1" data-line-number="1">xs &lt;-<span class="st"> </span><span class="kw">exprs</span>(<span class="dv">1</span>, a, <span class="op">-</span>b)</a>
-<a class="sourceLine" id="cb759-2" data-line-number="2"><span class="kw">expr</span>(<span class="kw">f</span>(<span class="op">!!!</span>xs, y))</a>
-<a class="sourceLine" id="cb759-3" data-line-number="3"><span class="co">#&gt; f(1, a, -b, y)</span></a></code></pre></div>
+<div class="sourceCode" id="cb758"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb758-1" data-line-number="1">xs &lt;-<span class="st"> </span><span class="kw">exprs</span>(<span class="dv">1</span>, a, <span class="op">-</span>b)</a>
+<a class="sourceLine" id="cb758-2" data-line-number="2"><span class="kw">expr</span>(<span class="kw">f</span>(<span class="op">!!!</span>xs, y))</a>
+<a class="sourceLine" id="cb758-3" data-line-number="3"><span class="co">#&gt; f(1, a, -b, y)</span></a></code></pre></div>
 <p><img src="diagrams/quotation/bang-bang-bang.png" width="373" style="display: block; margin: auto;" /></p>
 <p><code>!!!</code> can be used in any rlang function that takes <code>...</code> regardless of whether or not <code>...</code> is quoted or evaluated. We’ll come back to this in Section <a href="quasiquotation.html#tidy-dots">18.6</a>; for now note that this can be useful in <code>call2()</code>.</p>
-<div class="sourceCode" id="cb760"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb760-1" data-line-number="1"><span class="kw">call2</span>(<span class="st">&quot;f&quot;</span>, <span class="op">!!!</span>xs, <span class="kw">expr</span>(y))</a>
-<a class="sourceLine" id="cb760-2" data-line-number="2"><span class="co">#&gt; f(1, a, -b, y)</span></a></code></pre></div>
+<div class="sourceCode" id="cb759"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb759-1" data-line-number="1"><span class="kw">call2</span>(<span class="st">&quot;f&quot;</span>, <span class="op">!!!</span>xs, <span class="kw">expr</span>(y))</a>
+<a class="sourceLine" id="cb759-2" data-line-number="2"><span class="co">#&gt; f(1, a, -b, y)</span></a></code></pre></div>
 </div>
 <div id="the-polite-fiction-of" class="section level3">
 <h3><span class="header-section-number">18.4.6</span> The polite fiction of <code>!!</code></h3>
 <p>So far we have acted as if <code>!!</code> and <code>!!!</code> are regular prefix operators like <code>+</code> , <code>-</code>, and <code>!</code>. They’re not. From R’s perspective, <code>!!</code> and <code>!!!</code> are simply the repeated application of <code>!</code>:</p>
-<div class="sourceCode" id="cb761"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb761-1" data-line-number="1"><span class="op">!!</span><span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb761-2" data-line-number="2"><span class="co">#&gt; [1] TRUE</span></a>
-<a class="sourceLine" id="cb761-3" data-line-number="3"><span class="op">!!!</span><span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb761-4" data-line-number="4"><span class="co">#&gt; [1] FALSE</span></a></code></pre></div>
+<div class="sourceCode" id="cb760"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb760-1" data-line-number="1"><span class="op">!!</span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb760-2" data-line-number="2"><span class="co">#&gt; [1] TRUE</span></a>
+<a class="sourceLine" id="cb760-3" data-line-number="3"><span class="op">!!!</span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb760-4" data-line-number="4"><span class="co">#&gt; [1] FALSE</span></a></code></pre></div>
 <p><code>!!</code> and <code>!!!</code> behave specially inside all quoting functions powered by rlang, where they behave like real operators with precedence equivalent to unary <code>+</code> and <code>-</code>. This requires considerable work inside rlang, but means that you can write <code>!!x + !!y</code> instead of <code>(!!x) + (!!y)</code>.</p>
 <p>The biggest downside<a href="#fn66" class="footnote-ref" id="fnref66"><sup>66</sup></a> to using a fake operator is that you might get silent errors when misusing <code>!!</code> outside of quasiquoting functions. Most of the time this is not an issue because <code>!!</code> is typically used to unquote expressions or quosures. Since expressions are not supported by the negation operator, you will get an argument type error in this case:</p>
-<div class="sourceCode" id="cb762"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb762-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">quote</span>(variable)</a>
-<a class="sourceLine" id="cb762-2" data-line-number="2"><span class="op">!!</span>x</a>
-<a class="sourceLine" id="cb762-3" data-line-number="3"><span class="co">#&gt; Error in !x:</span></a>
-<a class="sourceLine" id="cb762-4" data-line-number="4"><span class="co">#&gt;   invalid argument type</span></a></code></pre></div>
+<div class="sourceCode" id="cb761"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb761-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">quote</span>(variable)</a>
+<a class="sourceLine" id="cb761-2" data-line-number="2"><span class="op">!!</span>x</a>
+<a class="sourceLine" id="cb761-3" data-line-number="3"><span class="co">#&gt; Error in !x:</span></a>
+<a class="sourceLine" id="cb761-4" data-line-number="4"><span class="co">#&gt;   invalid argument type</span></a></code></pre></div>
 <p>But you can get silently incorrect results when working with numeric values:</p>
-<div class="sourceCode" id="cb763"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb763-1" data-line-number="1">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb763-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="dv">100</span></a>
-<a class="sourceLine" id="cb763-3" data-line-number="3"><span class="kw">with</span>(df, x <span class="op">+</span><span class="st"> </span><span class="op">!!</span>y)</a>
-<a class="sourceLine" id="cb763-4" data-line-number="4"><span class="co">#&gt; [1] 2 3 4 5 6</span></a></code></pre></div>
+<div class="sourceCode" id="cb762"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb762-1" data-line-number="1">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb762-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb762-3" data-line-number="3"><span class="kw">with</span>(df, x <span class="op">+</span><span class="st"> </span><span class="op">!!</span>y)</a>
+<a class="sourceLine" id="cb762-4" data-line-number="4"><span class="co">#&gt; [1] 2 3 4 5 6</span></a></code></pre></div>
 <p>Given these drawbacks, you might wonder why we introduced new syntax instead of using regular function calls. Indeed, early versions of tidy eval used function calls like <code>UQ()</code> and <code>UQS()</code>, however they’re not really function calls, and pretending they leads to a misleading mental mode. We chose <code>!!</code> and <code>!!!</code> as the least-worst solution:</p>
 <ul>
 <li><p>The are visually strong and don’t look like existing syntax. When you
@@ -1340,55 +1340,55 @@ add parentheses <code>!(!x)</code>.</p></li>
 <h3><span class="header-section-number">18.4.7</span> Non-standard ASTs</h3>
 <p>With unquoting, it’s easy to create non-standard ASTs, i.e. ASTs that contain components that are not expressions. (It is also possible to create non-standard ASTs by directly manipulating the underlying objects, but it’s harder to do so accidentally.) These are valid, and occasionally useful, but their correct use is beyond the scope of this book. It’s important to learn about them, however, because they can be deparsed, and hence printed, in misleading ways.</p>
 <p>For example, if you inline more complex objects, their attributes are not printed. This can lead to confusing output:</p>
-<div class="sourceCode" id="cb764"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb764-1" data-line-number="1">x1 &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">class</span>(<span class="op">!!</span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">10</span>)))</a>
-<a class="sourceLine" id="cb764-2" data-line-number="2">x1</a>
-<a class="sourceLine" id="cb764-3" data-line-number="3"><span class="co">#&gt; class(list(x = 10))</span></a>
-<a class="sourceLine" id="cb764-4" data-line-number="4"><span class="kw">eval</span>(x1)</a>
-<a class="sourceLine" id="cb764-5" data-line-number="5"><span class="co">#&gt; [1] &quot;data.frame&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb763"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb763-1" data-line-number="1">x1 &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">class</span>(<span class="op">!!</span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">10</span>)))</a>
+<a class="sourceLine" id="cb763-2" data-line-number="2">x1</a>
+<a class="sourceLine" id="cb763-3" data-line-number="3"><span class="co">#&gt; class(list(x = 10))</span></a>
+<a class="sourceLine" id="cb763-4" data-line-number="4"><span class="kw">eval</span>(x1)</a>
+<a class="sourceLine" id="cb763-5" data-line-number="5"><span class="co">#&gt; [1] &quot;data.frame&quot;</span></a></code></pre></div>
 <p>You have two main tools to reduce this confusion: <code>rlang::expr_print()</code> and <code>lobstr::ast()</code>:</p>
-<div class="sourceCode" id="cb765"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb765-1" data-line-number="1"><span class="kw">expr_print</span>(x1)</a>
-<a class="sourceLine" id="cb765-2" data-line-number="2"><span class="co">#&gt; class(&lt;data.frame&gt;)</span></a>
-<a class="sourceLine" id="cb765-3" data-line-number="3">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>x1)</a>
-<a class="sourceLine" id="cb765-4" data-line-number="4"><span class="co">#&gt; █─class </span></a>
-<a class="sourceLine" id="cb765-5" data-line-number="5"><span class="co">#&gt; └─&lt;inline data.frame&gt;</span></a></code></pre></div>
+<div class="sourceCode" id="cb764"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb764-1" data-line-number="1"><span class="kw">expr_print</span>(x1)</a>
+<a class="sourceLine" id="cb764-2" data-line-number="2"><span class="co">#&gt; class(&lt;data.frame&gt;)</span></a>
+<a class="sourceLine" id="cb764-3" data-line-number="3">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>x1)</a>
+<a class="sourceLine" id="cb764-4" data-line-number="4"><span class="co">#&gt; █─class </span></a>
+<a class="sourceLine" id="cb764-5" data-line-number="5"><span class="co">#&gt; └─&lt;inline data.frame&gt;</span></a></code></pre></div>
 <p>Another confusing case arises if you inline an integer sequence:</p>
-<div class="sourceCode" id="cb766"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb766-1" data-line-number="1">x2 &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">f</span>(<span class="op">!!</span><span class="kw">c</span>(1L, 2L, 3L, 4L, 5L)))</a>
-<a class="sourceLine" id="cb766-2" data-line-number="2">x2</a>
-<a class="sourceLine" id="cb766-3" data-line-number="3"><span class="co">#&gt; f(1:5)</span></a>
-<a class="sourceLine" id="cb766-4" data-line-number="4"><span class="kw">expr_print</span>(x2)</a>
-<a class="sourceLine" id="cb766-5" data-line-number="5"><span class="co">#&gt; f(&lt;int: 1L, 2L, 3L, 4L, 5L&gt;)</span></a>
-<a class="sourceLine" id="cb766-6" data-line-number="6">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>x2)</a>
-<a class="sourceLine" id="cb766-7" data-line-number="7"><span class="co">#&gt; █─f </span></a>
-<a class="sourceLine" id="cb766-8" data-line-number="8"><span class="co">#&gt; └─&lt;inline integer&gt;</span></a></code></pre></div>
+<div class="sourceCode" id="cb765"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb765-1" data-line-number="1">x2 &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">f</span>(<span class="op">!!</span><span class="kw">c</span>(1L, 2L, 3L, 4L, 5L)))</a>
+<a class="sourceLine" id="cb765-2" data-line-number="2">x2</a>
+<a class="sourceLine" id="cb765-3" data-line-number="3"><span class="co">#&gt; f(1:5)</span></a>
+<a class="sourceLine" id="cb765-4" data-line-number="4"><span class="kw">expr_print</span>(x2)</a>
+<a class="sourceLine" id="cb765-5" data-line-number="5"><span class="co">#&gt; f(&lt;int: 1L, 2L, 3L, 4L, 5L&gt;)</span></a>
+<a class="sourceLine" id="cb765-6" data-line-number="6">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>x2)</a>
+<a class="sourceLine" id="cb765-7" data-line-number="7"><span class="co">#&gt; █─f </span></a>
+<a class="sourceLine" id="cb765-8" data-line-number="8"><span class="co">#&gt; └─&lt;inline integer&gt;</span></a></code></pre></div>
 <p>It’s also possible to create regular ASTs that can not be generated from code because of operator precedence. In this case, R will print parentheses that do not exist in the AST:</p>
-<div class="sourceCode" id="cb767"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb767-1" data-line-number="1">x3 &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="op">!!</span><span class="kw">expr</span>(<span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb767-2" data-line-number="2">x3</a>
-<a class="sourceLine" id="cb767-3" data-line-number="3"><span class="co">#&gt; 1 + (2 + 3)</span></a>
-<a class="sourceLine" id="cb767-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb767-5" data-line-number="5">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>x3)</a>
-<a class="sourceLine" id="cb767-6" data-line-number="6"><span class="co">#&gt; █─`+` </span></a>
-<a class="sourceLine" id="cb767-7" data-line-number="7"><span class="co">#&gt; ├─1 </span></a>
-<a class="sourceLine" id="cb767-8" data-line-number="8"><span class="co">#&gt; └─█─`+` </span></a>
-<a class="sourceLine" id="cb767-9" data-line-number="9"><span class="co">#&gt;   ├─2 </span></a>
-<a class="sourceLine" id="cb767-10" data-line-number="10"><span class="co">#&gt;   └─3</span></a></code></pre></div>
+<div class="sourceCode" id="cb766"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb766-1" data-line-number="1">x3 &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="op">!!</span><span class="kw">expr</span>(<span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb766-2" data-line-number="2">x3</a>
+<a class="sourceLine" id="cb766-3" data-line-number="3"><span class="co">#&gt; 1 + (2 + 3)</span></a>
+<a class="sourceLine" id="cb766-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb766-5" data-line-number="5">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>x3)</a>
+<a class="sourceLine" id="cb766-6" data-line-number="6"><span class="co">#&gt; █─`+` </span></a>
+<a class="sourceLine" id="cb766-7" data-line-number="7"><span class="co">#&gt; ├─1 </span></a>
+<a class="sourceLine" id="cb766-8" data-line-number="8"><span class="co">#&gt; └─█─`+` </span></a>
+<a class="sourceLine" id="cb766-9" data-line-number="9"><span class="co">#&gt;   ├─2 </span></a>
+<a class="sourceLine" id="cb766-10" data-line-number="10"><span class="co">#&gt;   └─3</span></a></code></pre></div>
 </div>
 <div id="exercises-56" class="section level3">
 <h3><span class="header-section-number">18.4.8</span> Exercises</h3>
 <ol style="list-style-type: decimal">
 <li><p>Given the following components:</p>
-<div class="sourceCode" id="cb768"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb768-1" data-line-number="1">xy &lt;-<span class="st"> </span><span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y)</a>
-<a class="sourceLine" id="cb768-2" data-line-number="2">xz &lt;-<span class="st"> </span><span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>z)</a>
-<a class="sourceLine" id="cb768-3" data-line-number="3">yz &lt;-<span class="st"> </span><span class="kw">expr</span>(y <span class="op">+</span><span class="st"> </span>z)</a>
-<a class="sourceLine" id="cb768-4" data-line-number="4">abc &lt;-<span class="st"> </span><span class="kw">exprs</span>(a, b, c)</a></code></pre></div>
+<div class="sourceCode" id="cb767"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb767-1" data-line-number="1">xy &lt;-<span class="st"> </span><span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>y)</a>
+<a class="sourceLine" id="cb767-2" data-line-number="2">xz &lt;-<span class="st"> </span><span class="kw">expr</span>(x <span class="op">+</span><span class="st"> </span>z)</a>
+<a class="sourceLine" id="cb767-3" data-line-number="3">yz &lt;-<span class="st"> </span><span class="kw">expr</span>(y <span class="op">+</span><span class="st"> </span>z)</a>
+<a class="sourceLine" id="cb767-4" data-line-number="4">abc &lt;-<span class="st"> </span><span class="kw">exprs</span>(a, b, c)</a></code></pre></div>
 <p>Use quasiquotation to construct the following calls:</p>
-<div class="sourceCode" id="cb769"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb769-1" data-line-number="1">(x <span class="op">+</span><span class="st"> </span>y) <span class="op">/</span><span class="st"> </span>(y <span class="op">+</span><span class="st"> </span>z)</a>
-<a class="sourceLine" id="cb769-2" data-line-number="2"><span class="op">-</span>(x <span class="op">+</span><span class="st"> </span>z) <span class="op">^</span><span class="st"> </span>(y <span class="op">+</span><span class="st"> </span>z)</a>
-<a class="sourceLine" id="cb769-3" data-line-number="3">(x <span class="op">+</span><span class="st"> </span>y) <span class="op">+</span><span class="st"> </span>(y <span class="op">+</span><span class="st"> </span>z) <span class="op">-</span><span class="st"> </span>(x <span class="op">+</span><span class="st"> </span>y)</a>
-<a class="sourceLine" id="cb769-4" data-line-number="4"><span class="kw">atan2</span>(x <span class="op">+</span><span class="st"> </span>y, y <span class="op">+</span><span class="st"> </span>z)</a>
-<a class="sourceLine" id="cb769-5" data-line-number="5"><span class="kw">sum</span>(x <span class="op">+</span><span class="st"> </span>y, x <span class="op">+</span><span class="st"> </span>y, y <span class="op">+</span><span class="st"> </span>z)</a>
-<a class="sourceLine" id="cb769-6" data-line-number="6"><span class="kw">sum</span>(a, b, c)</a>
-<a class="sourceLine" id="cb769-7" data-line-number="7"><span class="kw">mean</span>(<span class="kw">c</span>(a, b, c), <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb769-8" data-line-number="8"><span class="kw">foo</span>(<span class="dt">a =</span> x <span class="op">+</span><span class="st"> </span>y, <span class="dt">b =</span> y <span class="op">+</span><span class="st"> </span>z)</a></code></pre></div></li>
+<div class="sourceCode" id="cb768"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb768-1" data-line-number="1">(x <span class="op">+</span><span class="st"> </span>y) <span class="op">/</span><span class="st"> </span>(y <span class="op">+</span><span class="st"> </span>z)</a>
+<a class="sourceLine" id="cb768-2" data-line-number="2"><span class="op">-</span>(x <span class="op">+</span><span class="st"> </span>z) <span class="op">^</span><span class="st"> </span>(y <span class="op">+</span><span class="st"> </span>z)</a>
+<a class="sourceLine" id="cb768-3" data-line-number="3">(x <span class="op">+</span><span class="st"> </span>y) <span class="op">+</span><span class="st"> </span>(y <span class="op">+</span><span class="st"> </span>z) <span class="op">-</span><span class="st"> </span>(x <span class="op">+</span><span class="st"> </span>y)</a>
+<a class="sourceLine" id="cb768-4" data-line-number="4"><span class="kw">atan2</span>(x <span class="op">+</span><span class="st"> </span>y, y <span class="op">+</span><span class="st"> </span>z)</a>
+<a class="sourceLine" id="cb768-5" data-line-number="5"><span class="kw">sum</span>(x <span class="op">+</span><span class="st"> </span>y, x <span class="op">+</span><span class="st"> </span>y, y <span class="op">+</span><span class="st"> </span>z)</a>
+<a class="sourceLine" id="cb768-6" data-line-number="6"><span class="kw">sum</span>(a, b, c)</a>
+<a class="sourceLine" id="cb768-7" data-line-number="7"><span class="kw">mean</span>(<span class="kw">c</span>(a, b, c), <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb768-8" data-line-number="8"><span class="kw">foo</span>(<span class="dt">a =</span> x <span class="op">+</span><span class="st"> </span>y, <span class="dt">b =</span> y <span class="op">+</span><span class="st"> </span>z)</a></code></pre></div></li>
 <li><p>Explain why both <code>!0 + !0</code> and <code>!1 + !1</code> return <code>FALSE</code> while
 <code>!0 + !1</code> returns <code>TRUE</code>.</p></li>
 <li><p>Base functions <code>match.fun()</code>, <code>page()</code>, and <code>ls()</code> all try to
@@ -1397,12 +1397,12 @@ evaluation. Each uses a different approach. Figure out the essence
 of each approach by reading the source code, then compare and contrast
 the techniques.</p></li>
 <li><p>The following two calls print the same, but are actually different:</p>
-<div class="sourceCode" id="cb770"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb770-1" data-line-number="1">(a &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">mean</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)))</a>
-<a class="sourceLine" id="cb770-2" data-line-number="2"><span class="co">#&gt; mean(1:10)</span></a>
-<a class="sourceLine" id="cb770-3" data-line-number="3">(b &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">mean</span>(<span class="op">!!</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>))))</a>
-<a class="sourceLine" id="cb770-4" data-line-number="4"><span class="co">#&gt; mean(1:10)</span></a>
-<a class="sourceLine" id="cb770-5" data-line-number="5"><span class="kw">identical</span>(a, b)</a>
-<a class="sourceLine" id="cb770-6" data-line-number="6"><span class="co">#&gt; [1] FALSE</span></a></code></pre></div>
+<div class="sourceCode" id="cb769"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb769-1" data-line-number="1">(a &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">mean</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)))</a>
+<a class="sourceLine" id="cb769-2" data-line-number="2"><span class="co">#&gt; mean(1:10)</span></a>
+<a class="sourceLine" id="cb769-3" data-line-number="3">(b &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">mean</span>(<span class="op">!!</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>))))</a>
+<a class="sourceLine" id="cb769-4" data-line-number="4"><span class="co">#&gt; mean(1:10)</span></a>
+<a class="sourceLine" id="cb769-5" data-line-number="5"><span class="kw">identical</span>(a, b)</a>
+<a class="sourceLine" id="cb769-6" data-line-number="6"><span class="co">#&gt; [1] FALSE</span></a></code></pre></div>
 <p>What’s the difference? Which one is more natural?</p></li>
 </ol>
 </div>
@@ -1410,9 +1410,9 @@ the techniques.</p></li>
 <div id="base-nonquote" class="section level2">
 <h2><span class="header-section-number">18.5</span> Non-quoting in base R</h2>
 <p>Base R has one function that implements quasiquotation: <code>bquote()</code>. It uses <code>.()</code> for unquoting:</p>
-<div class="sourceCode" id="cb771"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb771-1" data-line-number="1">xyz &lt;-<span class="st"> </span><span class="kw">bquote</span>((x <span class="op">+</span><span class="st"> </span>y <span class="op">+</span><span class="st"> </span>z))</a>
-<a class="sourceLine" id="cb771-2" data-line-number="2"><span class="kw">bquote</span>(<span class="op">-</span>.(xyz) <span class="op">/</span><span class="st"> </span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb771-3" data-line-number="3"><span class="co">#&gt; -(x + y + z)/2</span></a></code></pre></div>
+<div class="sourceCode" id="cb770"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb770-1" data-line-number="1">xyz &lt;-<span class="st"> </span><span class="kw">bquote</span>((x <span class="op">+</span><span class="st"> </span>y <span class="op">+</span><span class="st"> </span>z))</a>
+<a class="sourceLine" id="cb770-2" data-line-number="2"><span class="kw">bquote</span>(<span class="op">-</span>.(xyz) <span class="op">/</span><span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb770-3" data-line-number="3"><span class="co">#&gt; -(x + y + z)/2</span></a></code></pre></div>
 <p>However, <code>bquote()</code> isn’t used in any other function in base R. Instead functions that quote an argument use some other technique to allow indirect specification. Rather than using use unquoting all base R approaches selectively turn quoting off, so I call them <strong>non-quoting</strong> techniques.</p>
 <p>There are four basic forms seen in base R:</p>
 <ul>
@@ -1421,13 +1421,13 @@ arguments, and the second argument is quoted. This is easier to see if you
 write in prefix form: <code>mtcars$cyl</code> is equivalent to <code>`$`(mtcars, cyl)</code>.
 If you want to refer to a variable indirectly, you use <code>[[</code>, as it
 takes the name of a variable as a string.</p>
-<div class="sourceCode" id="cb772"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb772-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">var =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb772-2" data-line-number="2">var &lt;-<span class="st"> &quot;y&quot;</span></a>
-<a class="sourceLine" id="cb772-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb772-4" data-line-number="4">x<span class="op">$</span>var</a>
-<a class="sourceLine" id="cb772-5" data-line-number="5"><span class="co">#&gt; [1] 1</span></a>
-<a class="sourceLine" id="cb772-6" data-line-number="6">x[[var]]</a>
-<a class="sourceLine" id="cb772-7" data-line-number="7"><span class="co">#&gt; [1] 2</span></a></code></pre></div>
+<div class="sourceCode" id="cb771"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb771-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">var =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb771-2" data-line-number="2">var &lt;-<span class="st"> &quot;y&quot;</span></a>
+<a class="sourceLine" id="cb771-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb771-4" data-line-number="4">x<span class="op">$</span>var</a>
+<a class="sourceLine" id="cb771-5" data-line-number="5"><span class="co">#&gt; [1] 1</span></a>
+<a class="sourceLine" id="cb771-6" data-line-number="6">x[[var]]</a>
+<a class="sourceLine" id="cb771-7" data-line-number="7"><span class="co">#&gt; [1] 2</span></a></code></pre></div>
 <p>There are three other quoting functions closely related to <code>$</code>: <code>subset()</code>,
 <code>transform()</code>, and <code>with()</code>. These are seen as wrappers around <code>$</code> only
 suitable for interactive use so they all have the same non-quoting
@@ -1436,43 +1436,43 @@ alternative: <code>[</code></p>
 <li><p>A pair of quoting and non-quoting arguments. For example, <code>rm()</code> allows
 you to provide bare variable names in <code>...</code>, or a character vector of
 variable names in <code>list</code>:</p>
-<div class="sourceCode" id="cb773"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb773-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb773-2" data-line-number="2"><span class="kw">rm</span>(x)</a>
-<a class="sourceLine" id="cb773-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb773-4" data-line-number="4">y &lt;-<span class="st"> </span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb773-5" data-line-number="5">vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;y&quot;</span>, <span class="st">&quot;vars&quot;</span>)</a>
-<a class="sourceLine" id="cb773-6" data-line-number="6"><span class="kw">rm</span>(<span class="dt">list =</span> vars)</a></code></pre></div>
+<div class="sourceCode" id="cb772"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb772-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb772-2" data-line-number="2"><span class="kw">rm</span>(x)</a>
+<a class="sourceLine" id="cb772-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb772-4" data-line-number="4">y &lt;-<span class="st"> </span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb772-5" data-line-number="5">vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;y&quot;</span>, <span class="st">&quot;vars&quot;</span>)</a>
+<a class="sourceLine" id="cb772-6" data-line-number="6"><span class="kw">rm</span>(<span class="dt">list =</span> vars)</a></code></pre></div>
 <p><code>data()</code> and <code>save()</code> work similarly.</p></li>
 <li><p>An argument that controls whether a different argument is quoting or
 non-quoting. For example, in <code>library()</code>, the <code>character.only</code> argument
 controls the quoting behaviour of the first argument, <code>package</code>:</p>
-<div class="sourceCode" id="cb774"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb774-1" data-line-number="1"><span class="kw">library</span>(MASS)</a>
-<a class="sourceLine" id="cb774-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb774-3" data-line-number="3">pkg &lt;-<span class="st"> &quot;MASS&quot;</span></a>
-<a class="sourceLine" id="cb774-4" data-line-number="4"><span class="kw">library</span>(pkg, <span class="dt">character.only =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb773"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb773-1" data-line-number="1"><span class="kw">library</span>(MASS)</a>
+<a class="sourceLine" id="cb773-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb773-3" data-line-number="3">pkg &lt;-<span class="st"> &quot;MASS&quot;</span></a>
+<a class="sourceLine" id="cb773-4" data-line-number="4"><span class="kw">library</span>(pkg, <span class="dt">character.only =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p><code>demo()</code>, <code>detach()</code>, <code>example()</code>, and <code>require()</code> work similarly.</p></li>
 <li><p>Quoting if evaluation fails. For example, the first argument to <code>help()</code>
 is non-quoting if it evaluates to a string; if evaluation fails, the
 first argument is quoted.</p>
-<div class="sourceCode" id="cb775"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb775-1" data-line-number="1"><span class="co"># Shows help for var</span></a>
-<a class="sourceLine" id="cb775-2" data-line-number="2"><span class="kw">help</span>(var)</a>
-<a class="sourceLine" id="cb775-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb775-4" data-line-number="4">var &lt;-<span class="st"> &quot;mean&quot;</span></a>
-<a class="sourceLine" id="cb775-5" data-line-number="5"><span class="co"># Shows help for mean</span></a>
-<a class="sourceLine" id="cb775-6" data-line-number="6"><span class="kw">help</span>(var)</a>
-<a class="sourceLine" id="cb775-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb775-8" data-line-number="8">var &lt;-<span class="st"> </span><span class="dv">10</span></a>
-<a class="sourceLine" id="cb775-9" data-line-number="9"><span class="co"># Shows help for var</span></a>
-<a class="sourceLine" id="cb775-10" data-line-number="10"><span class="kw">help</span>(var)</a></code></pre></div>
+<div class="sourceCode" id="cb774"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb774-1" data-line-number="1"><span class="co"># Shows help for var</span></a>
+<a class="sourceLine" id="cb774-2" data-line-number="2"><span class="kw">help</span>(var)</a>
+<a class="sourceLine" id="cb774-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb774-4" data-line-number="4">var &lt;-<span class="st"> &quot;mean&quot;</span></a>
+<a class="sourceLine" id="cb774-5" data-line-number="5"><span class="co"># Shows help for mean</span></a>
+<a class="sourceLine" id="cb774-6" data-line-number="6"><span class="kw">help</span>(var)</a>
+<a class="sourceLine" id="cb774-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb774-8" data-line-number="8">var &lt;-<span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb774-9" data-line-number="9"><span class="co"># Shows help for var</span></a>
+<a class="sourceLine" id="cb774-10" data-line-number="10"><span class="kw">help</span>(var)</a></code></pre></div>
 <p><code>ls()</code>, <code>page()</code>, and <code>match.fun()</code> work similarly.</p></li>
 </ul>
 <p>Another important class of quoting functions are the base modelling and plotting functions, which follow the so-called standard non-standard evaluation rules: <a href="http://developer.r-project.org/nonstandard-eval.pdf" class="uri">http://developer.r-project.org/nonstandard-eval.pdf</a>. For example, <code>lm()</code> quotes the <code>weight</code> and <code>subset</code> arguments, and when used with a formula argument, the plotting function quotes the aesthetic arguments (<code>col</code>, <code>cex</code>, etc):</p>
-<div class="sourceCode" id="cb776"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb776-1" data-line-number="1"><span class="kw">palette</span>(RColorBrewer<span class="op">::</span><span class="kw">brewer.pal</span>(<span class="dv">3</span>, <span class="st">&quot;Set1&quot;</span>))</a>
-<a class="sourceLine" id="cb776-2" data-line-number="2"><span class="kw">plot</span>(</a>
-<a class="sourceLine" id="cb776-3" data-line-number="3">  <span class="dt">data =</span> iris, </a>
-<a class="sourceLine" id="cb776-4" data-line-number="4">  Sepal.Length <span class="op">~</span><span class="st"> </span>Petal.Length, <span class="dt">col =</span> Species, </a>
-<a class="sourceLine" id="cb776-5" data-line-number="5">  <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">cex =</span> <span class="dv">2</span></a>
-<a class="sourceLine" id="cb776-6" data-line-number="6">)</a></code></pre></div>
+<div class="sourceCode" id="cb775"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb775-1" data-line-number="1"><span class="kw">palette</span>(RColorBrewer<span class="op">::</span><span class="kw">brewer.pal</span>(<span class="dv">3</span>, <span class="st">&quot;Set1&quot;</span>))</a>
+<a class="sourceLine" id="cb775-2" data-line-number="2"><span class="kw">plot</span>(</a>
+<a class="sourceLine" id="cb775-3" data-line-number="3">  <span class="dt">data =</span> iris, </a>
+<a class="sourceLine" id="cb775-4" data-line-number="4">  Sepal.Length <span class="op">~</span><span class="st"> </span>Petal.Length, <span class="dt">col =</span> Species, </a>
+<a class="sourceLine" id="cb775-5" data-line-number="5">  <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">cex =</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb775-6" data-line-number="6">)</a></code></pre></div>
 <p><img src="Quotation_files/figure-html/unnamed-chunk-59-1.png" width="70%" style="display: block; margin: auto;" /></p>
 <p>These functions have no built-in options for indirect specification, but you’ll learn how to simulate unquoting in Section <a href="evaluation.html#base-unquote">19.6.3</a>.</p>
 </div>
@@ -1483,17 +1483,17 @@ first argument is quoted.</p>
 <li><p>What do you do if the elements you want to put in <code>...</code> are already stored
 in a list? For example, imagine you have a list of data frames that
 you want to <code>rbind()</code> together:</p>
-<div class="sourceCode" id="cb777"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb777-1" data-line-number="1">dfs &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb777-2" data-line-number="2">  <span class="dt">a =</span> <span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb777-3" data-line-number="3">  <span class="dt">b =</span> <span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">3</span>, <span class="dt">y =</span> <span class="dv">4</span>)</a>
-<a class="sourceLine" id="cb777-4" data-line-number="4">)</a></code></pre></div>
+<div class="sourceCode" id="cb776"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb776-1" data-line-number="1">dfs &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb776-2" data-line-number="2">  <span class="dt">a =</span> <span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb776-3" data-line-number="3">  <span class="dt">b =</span> <span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">3</span>, <span class="dt">y =</span> <span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb776-4" data-line-number="4">)</a></code></pre></div>
 <p>You could solve this specific case with <code>rbind(dfs$a, df$b)</code>, but how
 do you generalise that solution to a list of arbitrary length?</p></li>
 <li><p>What do you do if you want to supply the argument name indirectly? For
 example, imagine you want to create a single column data frame where
 the name of the column is specified in a variable:</p>
-<div class="sourceCode" id="cb778"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb778-1" data-line-number="1">var &lt;-<span class="st"> &quot;x&quot;</span></a>
-<a class="sourceLine" id="cb778-2" data-line-number="2">val &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">9</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb777"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb777-1" data-line-number="1">var &lt;-<span class="st"> &quot;x&quot;</span></a>
+<a class="sourceLine" id="cb777-2" data-line-number="2">val &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">9</span>)</a></code></pre></div>
 <p>In this case, you could create a data frame and then change names
 (i.e. <code>setNames(data.frame(val), var)</code>), but this feels inelegant.
 How can we do better?</p></li>
@@ -1502,10 +1502,10 @@ How can we do better?</p></li>
 <ul>
 <li><p>Row-binding multiple data frames is like unquote-splicing: we want to inline
 individual elements of the list into the call:</p>
-<div class="sourceCode" id="cb779"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb779-1" data-line-number="1">dplyr<span class="op">::</span><span class="kw">bind_rows</span>(<span class="op">!!!</span>dfs)</a>
-<a class="sourceLine" id="cb779-2" data-line-number="2"><span class="co">#&gt;   x y</span></a>
-<a class="sourceLine" id="cb779-3" data-line-number="3"><span class="co">#&gt; 1 1 2</span></a>
-<a class="sourceLine" id="cb779-4" data-line-number="4"><span class="co">#&gt; 2 3 4</span></a></code></pre></div>
+<div class="sourceCode" id="cb778"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb778-1" data-line-number="1">dplyr<span class="op">::</span><span class="kw">bind_rows</span>(<span class="op">!!!</span>dfs)</a>
+<a class="sourceLine" id="cb778-2" data-line-number="2"><span class="co">#&gt;   x y</span></a>
+<a class="sourceLine" id="cb778-3" data-line-number="3"><span class="co">#&gt; 1 1 2</span></a>
+<a class="sourceLine" id="cb778-4" data-line-number="4"><span class="co">#&gt; 2 3 4</span></a></code></pre></div>
 <p>When used in this context, the behaviour of <code>!!!</code> is known as spatting in
 Ruby, Go, PHP, and Julia. It is closely related to <code>*args</code> (star-args) and
 <code>**kwarg</code> (star-star-kwargs) in Python, which are sometimes called argument
@@ -1513,21 +1513,21 @@ unpacking.</p></li>
 <li><p>The second problem is like unquoting the left-hand side of <code>=</code>: rather
 than interpreting <code>var</code> literally, we want to use the value stored in the
 variable called <code>var</code>:</p>
-<div class="sourceCode" id="cb780"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb780-1" data-line-number="1">tibble<span class="op">::</span><span class="kw">tibble</span>(<span class="op">!!</span>var <span class="op">:</span><span class="er">=</span><span class="st"> </span>val)</a>
-<a class="sourceLine" id="cb780-2" data-line-number="2"><span class="co">#&gt; Warning: `list_len()` is soft-deprecated as of rlang 0.2.0.</span></a>
-<a class="sourceLine" id="cb780-3" data-line-number="3"><span class="co">#&gt; Please use `new_list()` instead</span></a>
-<a class="sourceLine" id="cb780-4" data-line-number="4"><span class="co">#&gt; This warning is displayed once per session.</span></a>
-<a class="sourceLine" id="cb780-5" data-line-number="5"><span class="co">#&gt; # A tibble: 3 x 1</span></a>
-<a class="sourceLine" id="cb780-6" data-line-number="6"><span class="co">#&gt;       x</span></a>
-<a class="sourceLine" id="cb780-7" data-line-number="7"><span class="co">#&gt;   &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb780-8" data-line-number="8"><span class="co">#&gt; 1     4</span></a>
-<a class="sourceLine" id="cb780-9" data-line-number="9"><span class="co">#&gt; 2     3</span></a>
-<a class="sourceLine" id="cb780-10" data-line-number="10"><span class="co">#&gt; 3     9</span></a></code></pre></div>
+<div class="sourceCode" id="cb779"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb779-1" data-line-number="1">tibble<span class="op">::</span><span class="kw">tibble</span>(<span class="op">!!</span>var <span class="op">:</span><span class="er">=</span><span class="st"> </span>val)</a>
+<a class="sourceLine" id="cb779-2" data-line-number="2"><span class="co">#&gt; Warning: `list_len()` is soft-deprecated as of rlang 0.2.0.</span></a>
+<a class="sourceLine" id="cb779-3" data-line-number="3"><span class="co">#&gt; Please use `new_list()` instead</span></a>
+<a class="sourceLine" id="cb779-4" data-line-number="4"><span class="co">#&gt; This warning is displayed once per session.</span></a>
+<a class="sourceLine" id="cb779-5" data-line-number="5"><span class="co">#&gt; # A tibble: 3 x 1</span></a>
+<a class="sourceLine" id="cb779-6" data-line-number="6"><span class="co">#&gt;       x</span></a>
+<a class="sourceLine" id="cb779-7" data-line-number="7"><span class="co">#&gt;   &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb779-8" data-line-number="8"><span class="co">#&gt; 1     4</span></a>
+<a class="sourceLine" id="cb779-9" data-line-number="9"><span class="co">#&gt; 2     3</span></a>
+<a class="sourceLine" id="cb779-10" data-line-number="10"><span class="co">#&gt; 3     9</span></a></code></pre></div>
 <p>Note the use of <code>:=</code> (pronounced colon-equals) rather than <code>=</code>. Unfortunately
 we need this new operation because R’s grammar does not allow expressions as
 argument names:</p>
-<div class="sourceCode" id="cb781"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb781-1" data-line-number="1">tibble<span class="op">::</span><span class="kw">tibble</span>(<span class="op">!!</span><span class="dt">var =</span> value)</a>
-<a class="sourceLine" id="cb781-2" data-line-number="2"><span class="co">#&gt; Error: unexpected &#39;=&#39; in &quot;tibble::tibble(!!var =&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb780"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb780-1" data-line-number="1">tibble<span class="op">::</span><span class="kw">tibble</span>(<span class="op">!!</span><span class="dt">var =</span> value)</a>
+<a class="sourceLine" id="cb780-2" data-line-number="2"><span class="co">#&gt; Error: unexpected &#39;=&#39; in &quot;tibble::tibble(!!var =&quot;</span></a></code></pre></div>
 <p><code>:=</code> is like a vestigial organ: it’s recognised by R’s parser, but it
 doesn’t have any code associated with it. It looks like an <code>=</code> but allows
 expressions on either side, making it a more flexible alternative to <code>=</code>.
@@ -1538,69 +1538,69 @@ It is used in data.table for similar reasons.</p></li>
 <div id="examples" class="section level3">
 <h3><span class="header-section-number">18.6.1</span> Examples</h3>
 <p>One place we could use <code>list2()</code> is to create a wrapper around <code>attributes()</code> that allows us to flexibly set attributes:</p>
-<div class="sourceCode" id="cb782"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb782-1" data-line-number="1">set_attr &lt;-<span class="st"> </span><span class="cf">function</span>(.x, ...) {</a>
-<a class="sourceLine" id="cb782-2" data-line-number="2">  attr &lt;-<span class="st"> </span>rlang<span class="op">::</span><span class="kw">list2</span>(...)</a>
-<a class="sourceLine" id="cb782-3" data-line-number="3">  <span class="kw">attributes</span>(.x) &lt;-<span class="st"> </span>attr</a>
-<a class="sourceLine" id="cb782-4" data-line-number="4">  .x</a>
-<a class="sourceLine" id="cb782-5" data-line-number="5">}</a>
-<a class="sourceLine" id="cb782-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb782-7" data-line-number="7">attrs &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb782-8" data-line-number="8">attr_name &lt;-<span class="st"> &quot;z&quot;</span></a>
-<a class="sourceLine" id="cb782-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb782-10" data-line-number="10"><span class="dv">1</span><span class="op">:</span><span class="dv">10</span> <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb782-11" data-line-number="11"><span class="st">  </span><span class="kw">set_attr</span>(<span class="dt">w =</span> <span class="dv">0</span>, <span class="op">!!!</span>attrs, <span class="op">!!</span>attr_name <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="dv">3</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb782-12" data-line-number="12"><span class="st">  </span><span class="kw">str</span>()</a>
-<a class="sourceLine" id="cb782-13" data-line-number="13"><span class="co">#&gt;  int [1:10] 1 2 3 4 5 6 7 8 9 10</span></a>
-<a class="sourceLine" id="cb782-14" data-line-number="14"><span class="co">#&gt;  - attr(*, &quot;w&quot;)= num 0</span></a>
-<a class="sourceLine" id="cb782-15" data-line-number="15"><span class="co">#&gt;  - attr(*, &quot;x&quot;)= num 1</span></a>
-<a class="sourceLine" id="cb782-16" data-line-number="16"><span class="co">#&gt;  - attr(*, &quot;y&quot;)= num 2</span></a>
-<a class="sourceLine" id="cb782-17" data-line-number="17"><span class="co">#&gt;  - attr(*, &quot;z&quot;)= num 3</span></a></code></pre></div>
+<div class="sourceCode" id="cb781"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb781-1" data-line-number="1">set_attr &lt;-<span class="st"> </span><span class="cf">function</span>(.x, ...) {</a>
+<a class="sourceLine" id="cb781-2" data-line-number="2">  attr &lt;-<span class="st"> </span>rlang<span class="op">::</span><span class="kw">list2</span>(...)</a>
+<a class="sourceLine" id="cb781-3" data-line-number="3">  <span class="kw">attributes</span>(.x) &lt;-<span class="st"> </span>attr</a>
+<a class="sourceLine" id="cb781-4" data-line-number="4">  .x</a>
+<a class="sourceLine" id="cb781-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb781-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb781-7" data-line-number="7">attrs &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb781-8" data-line-number="8">attr_name &lt;-<span class="st"> &quot;z&quot;</span></a>
+<a class="sourceLine" id="cb781-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb781-10" data-line-number="10"><span class="dv">1</span><span class="op">:</span><span class="dv">10</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb781-11" data-line-number="11"><span class="st">  </span><span class="kw">set_attr</span>(<span class="dt">w =</span> <span class="dv">0</span>, <span class="op">!!!</span>attrs, <span class="op">!!</span>attr_name <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="dv">3</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb781-12" data-line-number="12"><span class="st">  </span><span class="kw">str</span>()</a>
+<a class="sourceLine" id="cb781-13" data-line-number="13"><span class="co">#&gt;  int [1:10] 1 2 3 4 5 6 7 8 9 10</span></a>
+<a class="sourceLine" id="cb781-14" data-line-number="14"><span class="co">#&gt;  - attr(*, &quot;w&quot;)= num 0</span></a>
+<a class="sourceLine" id="cb781-15" data-line-number="15"><span class="co">#&gt;  - attr(*, &quot;x&quot;)= num 1</span></a>
+<a class="sourceLine" id="cb781-16" data-line-number="16"><span class="co">#&gt;  - attr(*, &quot;y&quot;)= num 2</span></a>
+<a class="sourceLine" id="cb781-17" data-line-number="17"><span class="co">#&gt;  - attr(*, &quot;z&quot;)= num 3</span></a></code></pre></div>
 </div>
 <div id="exec" class="section level3">
 <h3><span class="header-section-number">18.6.2</span> <code>exec()</code></h3>
 <p>What if you want to use this technique with a function that doesn’t have tidy dots? One option is to use <code>rlang::exec()</code> which makes it easy to call functions with some arguments supplied directly (in …) and others indirectly (in a list):</p>
-<div class="sourceCode" id="cb783"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb783-1" data-line-number="1"><span class="co"># Directly</span></a>
-<a class="sourceLine" id="cb783-2" data-line-number="2"><span class="kw">exec</span>(<span class="st">&quot;mean&quot;</span>, <span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>, <span class="dt">trim =</span> <span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb783-3" data-line-number="3"><span class="co">#&gt; [1] 5.5</span></a>
-<a class="sourceLine" id="cb783-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb783-5" data-line-number="5"><span class="co"># Indirectly</span></a>
-<a class="sourceLine" id="cb783-6" data-line-number="6">args &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>, <span class="dt">trim =</span> <span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb783-7" data-line-number="7"><span class="kw">exec</span>(<span class="st">&quot;mean&quot;</span>, <span class="op">!!!</span>args)</a>
-<a class="sourceLine" id="cb783-8" data-line-number="8"><span class="co">#&gt; [1] 5.5</span></a>
-<a class="sourceLine" id="cb783-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb783-10" data-line-number="10"><span class="co"># Mixed</span></a>
-<a class="sourceLine" id="cb783-11" data-line-number="11">params &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">na.rm =</span> <span class="ot">TRUE</span>, <span class="dt">trim =</span> <span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb783-12" data-line-number="12"><span class="kw">exec</span>(<span class="st">&quot;mean&quot;</span>, <span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="op">!!!</span>params)</a>
-<a class="sourceLine" id="cb783-13" data-line-number="13"><span class="co">#&gt; [1] 5.5</span></a></code></pre></div>
+<div class="sourceCode" id="cb782"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb782-1" data-line-number="1"><span class="co"># Directly</span></a>
+<a class="sourceLine" id="cb782-2" data-line-number="2"><span class="kw">exec</span>(<span class="st">&quot;mean&quot;</span>, <span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>, <span class="dt">trim =</span> <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb782-3" data-line-number="3"><span class="co">#&gt; [1] 5.5</span></a>
+<a class="sourceLine" id="cb782-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb782-5" data-line-number="5"><span class="co"># Indirectly</span></a>
+<a class="sourceLine" id="cb782-6" data-line-number="6">args &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>, <span class="dt">trim =</span> <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb782-7" data-line-number="7"><span class="kw">exec</span>(<span class="st">&quot;mean&quot;</span>, <span class="op">!!!</span>args)</a>
+<a class="sourceLine" id="cb782-8" data-line-number="8"><span class="co">#&gt; [1] 5.5</span></a>
+<a class="sourceLine" id="cb782-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb782-10" data-line-number="10"><span class="co"># Mixed</span></a>
+<a class="sourceLine" id="cb782-11" data-line-number="11">params &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">na.rm =</span> <span class="ot">TRUE</span>, <span class="dt">trim =</span> <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb782-12" data-line-number="12"><span class="kw">exec</span>(<span class="st">&quot;mean&quot;</span>, <span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="op">!!!</span>params)</a>
+<a class="sourceLine" id="cb782-13" data-line-number="13"><span class="co">#&gt; [1] 5.5</span></a></code></pre></div>
 <p>And also makes it possible to supply argument names indirectly:</p>
-<div class="sourceCode" id="cb784"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb784-1" data-line-number="1">arg_name &lt;-<span class="st"> &quot;na.rm&quot;</span></a>
-<a class="sourceLine" id="cb784-2" data-line-number="2">arg_val &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb784-3" data-line-number="3"><span class="kw">exec</span>(<span class="st">&quot;mean&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="op">!!</span>arg_name <span class="op">:</span><span class="er">=</span><span class="st"> </span>arg_val)</a>
-<a class="sourceLine" id="cb784-4" data-line-number="4"><span class="co">#&gt; [1] 5.5</span></a></code></pre></div>
+<div class="sourceCode" id="cb783"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb783-1" data-line-number="1">arg_name &lt;-<span class="st"> &quot;na.rm&quot;</span></a>
+<a class="sourceLine" id="cb783-2" data-line-number="2">arg_val &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb783-3" data-line-number="3"><span class="kw">exec</span>(<span class="st">&quot;mean&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="op">!!</span>arg_name <span class="op">:</span><span class="er">=</span><span class="st"> </span>arg_val)</a>
+<a class="sourceLine" id="cb783-4" data-line-number="4"><span class="co">#&gt; [1] 5.5</span></a></code></pre></div>
 <p>And finally, it’s useful if you have a vector of function names or a list of functions that you want to call with the same arguments:</p>
-<div class="sourceCode" id="cb785"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb785-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">runif</span>(<span class="dv">10</span>), <span class="ot">NA</span>)</a>
-<a class="sourceLine" id="cb785-2" data-line-number="2">funs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;median&quot;</span>, <span class="st">&quot;sd&quot;</span>)</a>
-<a class="sourceLine" id="cb785-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb785-4" data-line-number="4">purrr<span class="op">:::</span><span class="kw">map_dbl</span>(funs, exec, x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb785-5" data-line-number="5"><span class="co">#&gt; [1] 0.444 0.482 0.298</span></a></code></pre></div>
+<div class="sourceCode" id="cb784"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb784-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">runif</span>(<span class="dv">10</span>), <span class="ot">NA</span>)</a>
+<a class="sourceLine" id="cb784-2" data-line-number="2">funs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;median&quot;</span>, <span class="st">&quot;sd&quot;</span>)</a>
+<a class="sourceLine" id="cb784-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb784-4" data-line-number="4">purrr<span class="op">:::</span><span class="kw">map_dbl</span>(funs, exec, x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb784-5" data-line-number="5"><span class="co">#&gt; [1] 0.444 0.482 0.298</span></a></code></pre></div>
 <p><code>exec()</code> is closely related to <code>call2()</code>; where <code>call2()</code> returns an expression, <code>exec()</code> evaluates it.</p>
 </div>
 <div id="dots_list" class="section level3">
 <h3><span class="header-section-number">18.6.3</span> <code>dots_list()</code></h3>
 <p><code>list2()</code> provides one other handy feature: by default it will ignore any empty arguments at the end. This is useful in functions like <code>tibble::tibble()</code> because it means that you can easily change the order of variables without worrying about the final comma:</p>
-<div class="sourceCode" id="cb786"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb786-1" data-line-number="1"><span class="co"># Can easily move x to first entry:</span></a>
-<a class="sourceLine" id="cb786-2" data-line-number="2">tibble<span class="op">::</span><span class="kw">tibble</span>(</a>
-<a class="sourceLine" id="cb786-3" data-line-number="3">  <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,</a>
-<a class="sourceLine" id="cb786-4" data-line-number="4">  <span class="dt">z =</span> <span class="dv">3</span><span class="op">:-</span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb786-5" data-line-number="5">  <span class="dt">x =</span> <span class="dv">5</span><span class="op">:</span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb786-6" data-line-number="6">)</a>
-<a class="sourceLine" id="cb786-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb786-8" data-line-number="8"><span class="co"># Need to remove comma from z and add comma to x</span></a>
-<a class="sourceLine" id="cb786-9" data-line-number="9"><span class="kw">data.frame</span>(</a>
-<a class="sourceLine" id="cb786-10" data-line-number="10">  <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,</a>
-<a class="sourceLine" id="cb786-11" data-line-number="11">  <span class="dt">z =</span> <span class="dv">3</span><span class="op">:-</span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb786-12" data-line-number="12">  <span class="dt">x =</span> <span class="dv">5</span><span class="op">:</span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb786-13" data-line-number="13">)</a></code></pre></div>
+<div class="sourceCode" id="cb785"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb785-1" data-line-number="1"><span class="co"># Can easily move x to first entry:</span></a>
+<a class="sourceLine" id="cb785-2" data-line-number="2">tibble<span class="op">::</span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb785-3" data-line-number="3">  <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,</a>
+<a class="sourceLine" id="cb785-4" data-line-number="4">  <span class="dt">z =</span> <span class="dv">3</span><span class="op">:-</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb785-5" data-line-number="5">  <span class="dt">x =</span> <span class="dv">5</span><span class="op">:</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb785-6" data-line-number="6">)</a>
+<a class="sourceLine" id="cb785-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb785-8" data-line-number="8"><span class="co"># Need to remove comma from z and add comma to x</span></a>
+<a class="sourceLine" id="cb785-9" data-line-number="9"><span class="kw">data.frame</span>(</a>
+<a class="sourceLine" id="cb785-10" data-line-number="10">  <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,</a>
+<a class="sourceLine" id="cb785-11" data-line-number="11">  <span class="dt">z =</span> <span class="dv">3</span><span class="op">:-</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb785-12" data-line-number="12">  <span class="dt">x =</span> <span class="dv">5</span><span class="op">:</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb785-13" data-line-number="13">)</a></code></pre></div>
 <p><code>list2()</code> is a wrapper around <code>rlang::dots_list()</code> with defaults set to the most commonly used settings. You can get more control by calling <code>dots_list()</code> directly:</p>
 <ul>
 <li><p><code>.ignore_empty</code> allows you to control exaclty which arguments are ignored.
@@ -1608,19 +1608,19 @@ The default ignores a single trailing argument to get the behaviour
 describe above, but you can choose to ignore all missing arguments, or
 no missing arguments.</p></li>
 <li><p><code>.homonoyms</code> controls what happens if multiple arguments use the same name:</p>
-<div class="sourceCode" id="cb787"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb787-1" data-line-number="1"><span class="kw">str</span>(<span class="kw">dots_list</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">x =</span> <span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb787-2" data-line-number="2"><span class="co">#&gt; List of 2</span></a>
-<a class="sourceLine" id="cb787-3" data-line-number="3"><span class="co">#&gt;  $ x: num 1</span></a>
-<a class="sourceLine" id="cb787-4" data-line-number="4"><span class="co">#&gt;  $ x: num 2</span></a>
-<a class="sourceLine" id="cb787-5" data-line-number="5"><span class="kw">str</span>(<span class="kw">dots_list</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">x =</span> <span class="dv">2</span>, <span class="dt">.homonyms =</span> <span class="st">&quot;first&quot;</span>))</a>
-<a class="sourceLine" id="cb787-6" data-line-number="6"><span class="co">#&gt; List of 1</span></a>
-<a class="sourceLine" id="cb787-7" data-line-number="7"><span class="co">#&gt;  $ x: num 1</span></a>
-<a class="sourceLine" id="cb787-8" data-line-number="8"><span class="kw">str</span>(<span class="kw">dots_list</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">x =</span> <span class="dv">2</span>, <span class="dt">.homonyms =</span> <span class="st">&quot;last&quot;</span>))</a>
-<a class="sourceLine" id="cb787-9" data-line-number="9"><span class="co">#&gt; List of 1</span></a>
-<a class="sourceLine" id="cb787-10" data-line-number="10"><span class="co">#&gt;  $ x: num 2</span></a>
-<a class="sourceLine" id="cb787-11" data-line-number="11"><span class="kw">str</span>(<span class="kw">dots_list</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">x =</span> <span class="dv">2</span>, <span class="dt">.homonyms =</span> <span class="st">&quot;error&quot;</span>))</a>
-<a class="sourceLine" id="cb787-12" data-line-number="12"><span class="co">#&gt; Error: Arguments can&#39;t have the same name.</span></a>
-<a class="sourceLine" id="cb787-13" data-line-number="13"><span class="co">#&gt; We found multiple arguments named `x` at positions 1 and 2</span></a></code></pre></div></li>
+<div class="sourceCode" id="cb786"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb786-1" data-line-number="1"><span class="kw">str</span>(<span class="kw">dots_list</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">x =</span> <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb786-2" data-line-number="2"><span class="co">#&gt; List of 2</span></a>
+<a class="sourceLine" id="cb786-3" data-line-number="3"><span class="co">#&gt;  $ x: num 1</span></a>
+<a class="sourceLine" id="cb786-4" data-line-number="4"><span class="co">#&gt;  $ x: num 2</span></a>
+<a class="sourceLine" id="cb786-5" data-line-number="5"><span class="kw">str</span>(<span class="kw">dots_list</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">x =</span> <span class="dv">2</span>, <span class="dt">.homonyms =</span> <span class="st">&quot;first&quot;</span>))</a>
+<a class="sourceLine" id="cb786-6" data-line-number="6"><span class="co">#&gt; List of 1</span></a>
+<a class="sourceLine" id="cb786-7" data-line-number="7"><span class="co">#&gt;  $ x: num 1</span></a>
+<a class="sourceLine" id="cb786-8" data-line-number="8"><span class="kw">str</span>(<span class="kw">dots_list</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">x =</span> <span class="dv">2</span>, <span class="dt">.homonyms =</span> <span class="st">&quot;last&quot;</span>))</a>
+<a class="sourceLine" id="cb786-9" data-line-number="9"><span class="co">#&gt; List of 1</span></a>
+<a class="sourceLine" id="cb786-10" data-line-number="10"><span class="co">#&gt;  $ x: num 2</span></a>
+<a class="sourceLine" id="cb786-11" data-line-number="11"><span class="kw">str</span>(<span class="kw">dots_list</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">x =</span> <span class="dv">2</span>, <span class="dt">.homonyms =</span> <span class="st">&quot;error&quot;</span>))</a>
+<a class="sourceLine" id="cb786-12" data-line-number="12"><span class="co">#&gt; Error: Arguments can&#39;t have the same name.</span></a>
+<a class="sourceLine" id="cb786-13" data-line-number="13"><span class="co">#&gt; We found multiple arguments named `x` at positions 1 and 2</span></a></code></pre></div></li>
 <li><p>If there are empty arguments that are not ignored, <code>.preserve_empty</code>
 controls what to do with them. The default throws an error; setting
 <code>.preserve_empty = TRUE</code> instead returns missing symbols. This is useful
@@ -1633,36 +1633,36 @@ if you’re using <code>dots_list()</code> to generate function calls.</p></li>
 <ul>
 <li><p><code>do.call()</code> gives a straightforward solution to <code>rbind()</code>ing together many
 data frames:</p>
-<div class="sourceCode" id="cb788"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb788-1" data-line-number="1"><span class="kw">do.call</span>(<span class="st">&quot;rbind&quot;</span>, dfs)</a>
-<a class="sourceLine" id="cb788-2" data-line-number="2"><span class="co">#&gt;   x y</span></a>
-<a class="sourceLine" id="cb788-3" data-line-number="3"><span class="co">#&gt; a 1 2</span></a>
-<a class="sourceLine" id="cb788-4" data-line-number="4"><span class="co">#&gt; b 3 4</span></a></code></pre></div></li>
+<div class="sourceCode" id="cb787"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb787-1" data-line-number="1"><span class="kw">do.call</span>(<span class="st">&quot;rbind&quot;</span>, dfs)</a>
+<a class="sourceLine" id="cb787-2" data-line-number="2"><span class="co">#&gt;   x y</span></a>
+<a class="sourceLine" id="cb787-3" data-line-number="3"><span class="co">#&gt; a 1 2</span></a>
+<a class="sourceLine" id="cb787-4" data-line-number="4"><span class="co">#&gt; b 3 4</span></a></code></pre></div></li>
 <li><p>With a little more work, we can use <code>do.call()</code> to solve the second problem.
 We first create a list of arguments, then name that, then use <code>do.call()</code>:</p>
-<div class="sourceCode" id="cb789"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb789-1" data-line-number="1">args &lt;-<span class="st"> </span><span class="kw">list</span>(val)</a>
-<a class="sourceLine" id="cb789-2" data-line-number="2"><span class="kw">names</span>(args) &lt;-<span class="st"> </span>var</a>
-<a class="sourceLine" id="cb789-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb789-4" data-line-number="4"><span class="kw">do.call</span>(<span class="st">&quot;data.frame&quot;</span>, args)</a>
-<a class="sourceLine" id="cb789-5" data-line-number="5"><span class="co">#&gt;   x</span></a>
-<a class="sourceLine" id="cb789-6" data-line-number="6"><span class="co">#&gt; 1 4</span></a>
-<a class="sourceLine" id="cb789-7" data-line-number="7"><span class="co">#&gt; 2 3</span></a>
-<a class="sourceLine" id="cb789-8" data-line-number="8"><span class="co">#&gt; 3 9</span></a></code></pre></div></li>
+<div class="sourceCode" id="cb788"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb788-1" data-line-number="1">args &lt;-<span class="st"> </span><span class="kw">list</span>(val)</a>
+<a class="sourceLine" id="cb788-2" data-line-number="2"><span class="kw">names</span>(args) &lt;-<span class="st"> </span>var</a>
+<a class="sourceLine" id="cb788-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb788-4" data-line-number="4"><span class="kw">do.call</span>(<span class="st">&quot;data.frame&quot;</span>, args)</a>
+<a class="sourceLine" id="cb788-5" data-line-number="5"><span class="co">#&gt;   x</span></a>
+<a class="sourceLine" id="cb788-6" data-line-number="6"><span class="co">#&gt; 1 4</span></a>
+<a class="sourceLine" id="cb788-7" data-line-number="7"><span class="co">#&gt; 2 3</span></a>
+<a class="sourceLine" id="cb788-8" data-line-number="8"><span class="co">#&gt; 3 9</span></a></code></pre></div></li>
 </ul>
 <p>Some base functions (including <code>interaction()</code>, <code>expand.grid()</code>, <code>options()</code>, and <code>par()</code>) use a trick to avoid <code>do.call()</code>: if the first component of <code>...</code> is a list, they’ll take its components instead of looking at the other elements of <code>...</code>. The implementation looks something like this:</p>
-<div class="sourceCode" id="cb790"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb790-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>(...) {</a>
-<a class="sourceLine" id="cb790-2" data-line-number="2">  dots &lt;-<span class="st"> </span><span class="kw">list</span>(...)</a>
-<a class="sourceLine" id="cb790-3" data-line-number="3">  <span class="cf">if</span> (<span class="kw">length</span>(dots) <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;&amp;</span><span class="st"> </span><span class="kw">is.list</span>(dots[[<span class="dv">1</span>]])) {</a>
-<a class="sourceLine" id="cb790-4" data-line-number="4">    dots &lt;-<span class="st"> </span>dots[[<span class="dv">1</span>]]</a>
-<a class="sourceLine" id="cb790-5" data-line-number="5">  }</a>
-<a class="sourceLine" id="cb790-6" data-line-number="6">  </a>
-<a class="sourceLine" id="cb790-7" data-line-number="7">  <span class="co"># Do something</span></a>
-<a class="sourceLine" id="cb790-8" data-line-number="8">  ...</a>
-<a class="sourceLine" id="cb790-9" data-line-number="9">}</a></code></pre></div>
+<div class="sourceCode" id="cb789"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb789-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>(...) {</a>
+<a class="sourceLine" id="cb789-2" data-line-number="2">  dots &lt;-<span class="st"> </span><span class="kw">list</span>(...)</a>
+<a class="sourceLine" id="cb789-3" data-line-number="3">  <span class="cf">if</span> (<span class="kw">length</span>(dots) <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;&amp;</span><span class="st"> </span><span class="kw">is.list</span>(dots[[<span class="dv">1</span>]])) {</a>
+<a class="sourceLine" id="cb789-4" data-line-number="4">    dots &lt;-<span class="st"> </span>dots[[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb789-5" data-line-number="5">  }</a>
+<a class="sourceLine" id="cb789-6" data-line-number="6">  </a>
+<a class="sourceLine" id="cb789-7" data-line-number="7">  <span class="co"># Do something</span></a>
+<a class="sourceLine" id="cb789-8" data-line-number="8">  ...</a>
+<a class="sourceLine" id="cb789-9" data-line-number="9">}</a></code></pre></div>
 <p>Another approach to avoiding <code>do.call()</code> is found in the <code>RCurl::getURL()</code> function written by Duncan Temple Lang. <code>getURL()</code> takes both <code>...</code> and <code>.opts</code> which are concatenated together. This looks something like this:</p>
-<div class="sourceCode" id="cb791"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb791-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>(..., .dots) {</a>
-<a class="sourceLine" id="cb791-2" data-line-number="2">  dots &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">list</span>(...), .dots)</a>
-<a class="sourceLine" id="cb791-3" data-line-number="3">  <span class="co"># Do something</span></a>
-<a class="sourceLine" id="cb791-4" data-line-number="4">}</a></code></pre></div>
+<div class="sourceCode" id="cb790"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb790-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="cf">function</span>(..., .dots) {</a>
+<a class="sourceLine" id="cb790-2" data-line-number="2">  dots &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">list</span>(...), .dots)</a>
+<a class="sourceLine" id="cb790-3" data-line-number="3">  <span class="co"># Do something</span></a>
+<a class="sourceLine" id="cb790-4" data-line-number="4">}</a></code></pre></div>
 <p>At the time I discovered it, I found this technique particularly compelling so you can see it used throughout the tidyverse. Now, however, I prefer the approach described next.</p>
 </div>
 <div id="exercises-57" class="section level3">
@@ -1670,22 +1670,22 @@ We first create a list of arguments, then name that, then use <code>do.call()</c
 <ol style="list-style-type: decimal">
 <li><p>One way to implement <code>exec()</code> below. Describe how it works. What are the
 key ideas?</p>
-<div class="sourceCode" id="cb792"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb792-1" data-line-number="1">exec &lt;-<span class="st"> </span><span class="cf">function</span>(f, ..., <span class="dt">.env =</span> <span class="kw">caller_env</span>()) {</a>
-<a class="sourceLine" id="cb792-2" data-line-number="2">  args &lt;-<span class="st"> </span><span class="kw">list2</span>(...)</a>
-<a class="sourceLine" id="cb792-3" data-line-number="3">  <span class="kw">do.call</span>(f, args, <span class="dt">envir =</span> .env)</a>
-<a class="sourceLine" id="cb792-4" data-line-number="4">}</a></code></pre></div></li>
+<div class="sourceCode" id="cb791"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb791-1" data-line-number="1">exec &lt;-<span class="st"> </span><span class="cf">function</span>(f, ..., <span class="dt">.env =</span> <span class="kw">caller_env</span>()) {</a>
+<a class="sourceLine" id="cb791-2" data-line-number="2">  args &lt;-<span class="st"> </span><span class="kw">list2</span>(...)</a>
+<a class="sourceLine" id="cb791-3" data-line-number="3">  <span class="kw">do.call</span>(f, args, <span class="dt">envir =</span> .env)</a>
+<a class="sourceLine" id="cb791-4" data-line-number="4">}</a></code></pre></div></li>
 <li><p>Carefully read the source code for <code>interaction()</code>, <code>expand.grid()</code>, and
 <code>par()</code>. Compare and contrast the techniques they use for switching
 between dots and list behaviour.</p></li>
 <li><p>Explain the problem with this definition of <code>set_attr()</code></p>
-<div class="sourceCode" id="cb793"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb793-1" data-line-number="1">set_attr &lt;-<span class="st"> </span><span class="cf">function</span>(x, ...) {</a>
-<a class="sourceLine" id="cb793-2" data-line-number="2">  attr &lt;-<span class="st"> </span>rlang<span class="op">::</span><span class="kw">list2</span>(...)</a>
-<a class="sourceLine" id="cb793-3" data-line-number="3">  <span class="kw">attributes</span>(x) &lt;-<span class="st"> </span>attr</a>
-<a class="sourceLine" id="cb793-4" data-line-number="4">  x</a>
-<a class="sourceLine" id="cb793-5" data-line-number="5">}</a>
-<a class="sourceLine" id="cb793-6" data-line-number="6"><span class="kw">set_attr</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">x =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb793-7" data-line-number="7"><span class="co">#&gt; Error in attributes(x) &lt;- attr:</span></a>
-<a class="sourceLine" id="cb793-8" data-line-number="8"><span class="co">#&gt;   attributes must be named</span></a></code></pre></div></li>
+<div class="sourceCode" id="cb792"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb792-1" data-line-number="1">set_attr &lt;-<span class="st"> </span><span class="cf">function</span>(x, ...) {</a>
+<a class="sourceLine" id="cb792-2" data-line-number="2">  attr &lt;-<span class="st"> </span>rlang<span class="op">::</span><span class="kw">list2</span>(...)</a>
+<a class="sourceLine" id="cb792-3" data-line-number="3">  <span class="kw">attributes</span>(x) &lt;-<span class="st"> </span>attr</a>
+<a class="sourceLine" id="cb792-4" data-line-number="4">  x</a>
+<a class="sourceLine" id="cb792-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb792-6" data-line-number="6"><span class="kw">set_attr</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">x =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb792-7" data-line-number="7"><span class="co">#&gt; Error in attributes(x) &lt;- attr:</span></a>
+<a class="sourceLine" id="cb792-8" data-line-number="8"><span class="co">#&gt;   attributes must be named</span></a></code></pre></div></li>
 </ol>
 </div>
 </div>
@@ -1694,172 +1694,172 @@ between dots and list behaviour.</p></li>
 <p>To make the ideas of quasiquotation concrete, this section contains a few smaller case studies that show how you can use it to solve real problems. Some of the case studies also use purrr: I find the combination of quasiquotation and functional programming to be particularly elegant.</p>
 <p>Most users of quasiquotation will not involve <code>expr()</code> or <code>exprs()</code> but will instead involve a function that calls <code>enexpr()</code> or <code>enexprs()</code>. You should be able tell if a function uses quasiquotation because the documentation will mention it, and consequently if you use <code>enexpr()</code> in a documented function, make sure to mention quasiquotation.</p>
 <p>This technique allows you to write functions that wrap around quasiquotation functions with a simple pattern: quote with <code>enexpr()</code> then unquote with <code>!!</code>:</p>
-<div class="sourceCode" id="cb794"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb794-1" data-line-number="1">cv &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb794-2" data-line-number="2">  x &lt;-<span class="st"> </span><span class="kw">enexpr</span>(x)</a>
-<a class="sourceLine" id="cb794-3" data-line-number="3">  <span class="kw">expr</span>(<span class="kw">sd</span>(<span class="op">!!</span>x) <span class="op">/</span><span class="st"> </span><span class="kw">mean</span>(<span class="op">!!</span>x))</a>
-<a class="sourceLine" id="cb794-4" data-line-number="4">}</a>
-<a class="sourceLine" id="cb794-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb794-6" data-line-number="6"><span class="kw">cv</span>(x <span class="op">+</span><span class="st"> </span>y)</a>
-<a class="sourceLine" id="cb794-7" data-line-number="7"><span class="co">#&gt; sd(x + y)/mean(x + y)</span></a></code></pre></div>
+<div class="sourceCode" id="cb793"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb793-1" data-line-number="1">cv &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb793-2" data-line-number="2">  x &lt;-<span class="st"> </span><span class="kw">enexpr</span>(x)</a>
+<a class="sourceLine" id="cb793-3" data-line-number="3">  <span class="kw">expr</span>(<span class="kw">sd</span>(<span class="op">!!</span>x) <span class="op">/</span><span class="st"> </span><span class="kw">mean</span>(<span class="op">!!</span>x))</a>
+<a class="sourceLine" id="cb793-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb793-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb793-6" data-line-number="6"><span class="kw">cv</span>(x <span class="op">+</span><span class="st"> </span>y)</a>
+<a class="sourceLine" id="cb793-7" data-line-number="7"><span class="co">#&gt; sd(x + y)/mean(x + y)</span></a></code></pre></div>
 <div id="lobstrast" class="section level3">
 <h3><span class="header-section-number">18.7.1</span> <code>lobstr::ast()</code></h3>
 <p>Quasiquotation allows us to solve an annoying problem with <code>lobstr::ast()</code>: what happens if we’ve already captured the expression?</p>
-<div class="sourceCode" id="cb795"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb795-1" data-line-number="1">z &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">foo</span>(x, y))</a>
-<a class="sourceLine" id="cb795-2" data-line-number="2">lobstr<span class="op">::</span><span class="kw">ast</span>(z)</a>
-<a class="sourceLine" id="cb795-3" data-line-number="3"><span class="co">#&gt; z</span></a></code></pre></div>
+<div class="sourceCode" id="cb794"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb794-1" data-line-number="1">z &lt;-<span class="st"> </span><span class="kw">expr</span>(<span class="kw">foo</span>(x, y))</a>
+<a class="sourceLine" id="cb794-2" data-line-number="2">lobstr<span class="op">::</span><span class="kw">ast</span>(z)</a>
+<a class="sourceLine" id="cb794-3" data-line-number="3"><span class="co">#&gt; z</span></a></code></pre></div>
 <p>Because <code>ast()</code> supports quasiquotation, we can use <code>!!</code>:</p>
-<div class="sourceCode" id="cb796"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb796-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>z)</a>
-<a class="sourceLine" id="cb796-2" data-line-number="2"><span class="co">#&gt; █─foo </span></a>
-<a class="sourceLine" id="cb796-3" data-line-number="3"><span class="co">#&gt; ├─x </span></a>
-<a class="sourceLine" id="cb796-4" data-line-number="4"><span class="co">#&gt; └─y</span></a></code></pre></div>
+<div class="sourceCode" id="cb795"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb795-1" data-line-number="1">lobstr<span class="op">::</span><span class="kw">ast</span>(<span class="op">!!</span>z)</a>
+<a class="sourceLine" id="cb795-2" data-line-number="2"><span class="co">#&gt; █─foo </span></a>
+<a class="sourceLine" id="cb795-3" data-line-number="3"><span class="co">#&gt; ├─x </span></a>
+<a class="sourceLine" id="cb795-4" data-line-number="4"><span class="co">#&gt; └─y</span></a></code></pre></div>
 </div>
 <div id="map-reduce-to-generate-code" class="section level3">
 <h3><span class="header-section-number">18.7.2</span> Map-reduce to generate code</h3>
 <p>Quasiquotation gives us powerful tools for generating code, particularly when combined with <code>purrr::map()</code> and <code>purr::reduce()</code>. For example, assume you have a linear model specified by the following coefficients:</p>
-<div class="sourceCode" id="cb797"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb797-1" data-line-number="1">intercept &lt;-<span class="st"> </span><span class="dv">10</span></a>
-<a class="sourceLine" id="cb797-2" data-line-number="2">coefs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dt">x1 =</span> <span class="dv">5</span>, <span class="dt">x2 =</span> <span class="dv">-4</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb796"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb796-1" data-line-number="1">intercept &lt;-<span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb796-2" data-line-number="2">coefs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dt">x1 =</span> <span class="dv">5</span>, <span class="dt">x2 =</span> <span class="dv">-4</span>)</a></code></pre></div>
 <p>And you want to convert it into an expression like <code>10 + (5 * x1) + (-4 * x2)</code>. The first thing we need to do is turn the character names vector into a list of symbols. <code>rlang::syms()</code> is designed precisely for this case:</p>
-<div class="sourceCode" id="cb798"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb798-1" data-line-number="1">coef_sym &lt;-<span class="st"> </span><span class="kw">syms</span>(<span class="kw">names</span>(coefs))</a>
-<a class="sourceLine" id="cb798-2" data-line-number="2">coef_sym</a>
+<div class="sourceCode" id="cb797"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb797-1" data-line-number="1">coef_sym &lt;-<span class="st"> </span><span class="kw">syms</span>(<span class="kw">names</span>(coefs))</a>
+<a class="sourceLine" id="cb797-2" data-line-number="2">coef_sym</a>
+<a class="sourceLine" id="cb797-3" data-line-number="3"><span class="co">#&gt; [[1]]</span></a>
+<a class="sourceLine" id="cb797-4" data-line-number="4"><span class="co">#&gt; x1</span></a>
+<a class="sourceLine" id="cb797-5" data-line-number="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb797-6" data-line-number="6"><span class="co">#&gt; [[2]]</span></a>
+<a class="sourceLine" id="cb797-7" data-line-number="7"><span class="co">#&gt; x2</span></a></code></pre></div>
+<p>Next we need to combine each variable name with its coefficient. We can do this by combining <code>rlang::expr()</code> with <code>purrr::map2()</code>:</p>
+<div class="sourceCode" id="cb798"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb798-1" data-line-number="1">summands &lt;-<span class="st"> </span><span class="kw">map2</span>(coef_sym, coefs, <span class="op">~</span><span class="st"> </span><span class="kw">expr</span>((<span class="op">!!</span>.x <span class="op">*</span><span class="st"> </span><span class="op">!!</span>.y)))</a>
+<a class="sourceLine" id="cb798-2" data-line-number="2">summands</a>
 <a class="sourceLine" id="cb798-3" data-line-number="3"><span class="co">#&gt; [[1]]</span></a>
-<a class="sourceLine" id="cb798-4" data-line-number="4"><span class="co">#&gt; x1</span></a>
+<a class="sourceLine" id="cb798-4" data-line-number="4"><span class="co">#&gt; (x1 * 5)</span></a>
 <a class="sourceLine" id="cb798-5" data-line-number="5"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb798-6" data-line-number="6"><span class="co">#&gt; [[2]]</span></a>
-<a class="sourceLine" id="cb798-7" data-line-number="7"><span class="co">#&gt; x2</span></a></code></pre></div>
-<p>Next we need to combine each variable name with its coefficient. We can do this by combining <code>rlang::expr()</code> with <code>purrr::map2()</code>:</p>
-<div class="sourceCode" id="cb799"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb799-1" data-line-number="1">summands &lt;-<span class="st"> </span><span class="kw">map2</span>(coef_sym, coefs, <span class="op">~</span><span class="st"> </span><span class="kw">expr</span>((<span class="op">!!</span>.x <span class="op">*</span><span class="st"> </span><span class="op">!!</span>.y)))</a>
+<a class="sourceLine" id="cb798-7" data-line-number="7"><span class="co">#&gt; (x2 * -4)</span></a></code></pre></div>
+<p>In this case, the intercept is also a part of the sum, although it doesn’t involve a multiplication. We can just add it to the start of the <code>summands</code> vector:</p>
+<div class="sourceCode" id="cb799"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb799-1" data-line-number="1">summands &lt;-<span class="st"> </span><span class="kw">c</span>(intercept, summands)</a>
 <a class="sourceLine" id="cb799-2" data-line-number="2">summands</a>
 <a class="sourceLine" id="cb799-3" data-line-number="3"><span class="co">#&gt; [[1]]</span></a>
-<a class="sourceLine" id="cb799-4" data-line-number="4"><span class="co">#&gt; (x1 * 5)</span></a>
+<a class="sourceLine" id="cb799-4" data-line-number="4"><span class="co">#&gt; [1] 10</span></a>
 <a class="sourceLine" id="cb799-5" data-line-number="5"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb799-6" data-line-number="6"><span class="co">#&gt; [[2]]</span></a>
-<a class="sourceLine" id="cb799-7" data-line-number="7"><span class="co">#&gt; (x2 * -4)</span></a></code></pre></div>
-<p>In this case, the intercept is also a part of the sum, although it doesn’t involve a multiplication. We can just add it to the start of the <code>summands</code> vector:</p>
-<div class="sourceCode" id="cb800"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb800-1" data-line-number="1">summands &lt;-<span class="st"> </span><span class="kw">c</span>(intercept, summands)</a>
-<a class="sourceLine" id="cb800-2" data-line-number="2">summands</a>
-<a class="sourceLine" id="cb800-3" data-line-number="3"><span class="co">#&gt; [[1]]</span></a>
-<a class="sourceLine" id="cb800-4" data-line-number="4"><span class="co">#&gt; [1] 10</span></a>
-<a class="sourceLine" id="cb800-5" data-line-number="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb800-6" data-line-number="6"><span class="co">#&gt; [[2]]</span></a>
-<a class="sourceLine" id="cb800-7" data-line-number="7"><span class="co">#&gt; (x1 * 5)</span></a>
-<a class="sourceLine" id="cb800-8" data-line-number="8"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb800-9" data-line-number="9"><span class="co">#&gt; [[3]]</span></a>
-<a class="sourceLine" id="cb800-10" data-line-number="10"><span class="co">#&gt; (x2 * -4)</span></a></code></pre></div>
+<a class="sourceLine" id="cb799-7" data-line-number="7"><span class="co">#&gt; (x1 * 5)</span></a>
+<a class="sourceLine" id="cb799-8" data-line-number="8"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb799-9" data-line-number="9"><span class="co">#&gt; [[3]]</span></a>
+<a class="sourceLine" id="cb799-10" data-line-number="10"><span class="co">#&gt; (x2 * -4)</span></a></code></pre></div>
 <p>Finally, we need to reduce the individual terms into a single sum by adding the pieces together:</p>
-<div class="sourceCode" id="cb801"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb801-1" data-line-number="1">eq &lt;-<span class="st"> </span><span class="kw">reduce</span>(summands, <span class="op">~</span><span class="st"> </span><span class="kw">expr</span>(<span class="op">!!</span>.x <span class="op">+</span><span class="st"> </span><span class="op">!!</span>.y))</a>
-<a class="sourceLine" id="cb801-2" data-line-number="2">eq</a>
-<a class="sourceLine" id="cb801-3" data-line-number="3"><span class="co">#&gt; 10 + (x1 * 5) + (x2 * -4)</span></a></code></pre></div>
+<div class="sourceCode" id="cb800"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb800-1" data-line-number="1">eq &lt;-<span class="st"> </span><span class="kw">reduce</span>(summands, <span class="op">~</span><span class="st"> </span><span class="kw">expr</span>(<span class="op">!!</span>.x <span class="op">+</span><span class="st"> </span><span class="op">!!</span>.y))</a>
+<a class="sourceLine" id="cb800-2" data-line-number="2">eq</a>
+<a class="sourceLine" id="cb800-3" data-line-number="3"><span class="co">#&gt; 10 + (x1 * 5) + (x2 * -4)</span></a></code></pre></div>
 <p>We could make this even more general by allowing the user to supply the name of the coefficient, and instead of assuming many different variables, index into a single one.</p>
-<div class="sourceCode" id="cb802"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb802-1" data-line-number="1">var &lt;-<span class="st"> </span><span class="kw">expr</span>(y)</a>
-<a class="sourceLine" id="cb802-2" data-line-number="2">coef_sym &lt;-<span class="st"> </span><span class="kw">map</span>(<span class="kw">seq_along</span>(coefs), <span class="op">~</span><span class="st"> </span><span class="kw">expr</span>((<span class="op">!!</span>var)[[<span class="op">!!</span>.x]]))</a>
-<a class="sourceLine" id="cb802-3" data-line-number="3">coef_sym</a>
-<a class="sourceLine" id="cb802-4" data-line-number="4"><span class="co">#&gt; [[1]]</span></a>
-<a class="sourceLine" id="cb802-5" data-line-number="5"><span class="co">#&gt; y[[1L]]</span></a>
-<a class="sourceLine" id="cb802-6" data-line-number="6"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb802-7" data-line-number="7"><span class="co">#&gt; [[2]]</span></a>
-<a class="sourceLine" id="cb802-8" data-line-number="8"><span class="co">#&gt; y[[2L]]</span></a></code></pre></div>
+<div class="sourceCode" id="cb801"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb801-1" data-line-number="1">var &lt;-<span class="st"> </span><span class="kw">expr</span>(y)</a>
+<a class="sourceLine" id="cb801-2" data-line-number="2">coef_sym &lt;-<span class="st"> </span><span class="kw">map</span>(<span class="kw">seq_along</span>(coefs), <span class="op">~</span><span class="st"> </span><span class="kw">expr</span>((<span class="op">!!</span>var)[[<span class="op">!!</span>.x]]))</a>
+<a class="sourceLine" id="cb801-3" data-line-number="3">coef_sym</a>
+<a class="sourceLine" id="cb801-4" data-line-number="4"><span class="co">#&gt; [[1]]</span></a>
+<a class="sourceLine" id="cb801-5" data-line-number="5"><span class="co">#&gt; y[[1L]]</span></a>
+<a class="sourceLine" id="cb801-6" data-line-number="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb801-7" data-line-number="7"><span class="co">#&gt; [[2]]</span></a>
+<a class="sourceLine" id="cb801-8" data-line-number="8"><span class="co">#&gt; y[[2L]]</span></a></code></pre></div>
 <p>And finish by wrapping this up into a function:</p>
-<div class="sourceCode" id="cb803"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb803-1" data-line-number="1">linear &lt;-<span class="st"> </span><span class="cf">function</span>(var, val) {</a>
-<a class="sourceLine" id="cb803-2" data-line-number="2">  var &lt;-<span class="st"> </span><span class="kw">ensym</span>(var)</a>
-<a class="sourceLine" id="cb803-3" data-line-number="3">  coef_name &lt;-<span class="st"> </span><span class="kw">map</span>(<span class="kw">seq_along</span>(val[<span class="op">-</span><span class="dv">1</span>]), <span class="op">~</span><span class="st"> </span><span class="kw">expr</span>((<span class="op">!!</span>var)[[<span class="op">!!</span>.x]]))</a>
-<a class="sourceLine" id="cb803-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb803-5" data-line-number="5">  summands &lt;-<span class="st"> </span><span class="kw">map2</span>(coefs, coef_name, <span class="op">~</span><span class="st"> </span><span class="kw">expr</span>((<span class="op">!!</span>.x <span class="op">*</span><span class="st"> </span><span class="op">!!</span>.y)))</a>
-<a class="sourceLine" id="cb803-6" data-line-number="6">  summands &lt;-<span class="st"> </span><span class="kw">c</span>(val[[<span class="dv">1</span>]], summands)</a>
-<a class="sourceLine" id="cb803-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb803-8" data-line-number="8">  <span class="kw">reduce</span>(summands, <span class="op">~</span><span class="st"> </span><span class="kw">expr</span>(<span class="op">!!</span>.x <span class="op">+</span><span class="st"> </span><span class="op">!!</span>.y))</a>
-<a class="sourceLine" id="cb803-9" data-line-number="9">}</a>
-<a class="sourceLine" id="cb803-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb803-11" data-line-number="11"><span class="kw">linear</span>(x, <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">-4</span>))</a>
-<a class="sourceLine" id="cb803-12" data-line-number="12"><span class="co">#&gt; 10 + (5 * x[[1L]]) + (-4 * x[[2L]])</span></a></code></pre></div>
+<div class="sourceCode" id="cb802"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb802-1" data-line-number="1">linear &lt;-<span class="st"> </span><span class="cf">function</span>(var, val) {</a>
+<a class="sourceLine" id="cb802-2" data-line-number="2">  var &lt;-<span class="st"> </span><span class="kw">ensym</span>(var)</a>
+<a class="sourceLine" id="cb802-3" data-line-number="3">  coef_name &lt;-<span class="st"> </span><span class="kw">map</span>(<span class="kw">seq_along</span>(val[<span class="op">-</span><span class="dv">1</span>]), <span class="op">~</span><span class="st"> </span><span class="kw">expr</span>((<span class="op">!!</span>var)[[<span class="op">!!</span>.x]]))</a>
+<a class="sourceLine" id="cb802-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb802-5" data-line-number="5">  summands &lt;-<span class="st"> </span><span class="kw">map2</span>(coefs, coef_name, <span class="op">~</span><span class="st"> </span><span class="kw">expr</span>((<span class="op">!!</span>.x <span class="op">*</span><span class="st"> </span><span class="op">!!</span>.y)))</a>
+<a class="sourceLine" id="cb802-6" data-line-number="6">  summands &lt;-<span class="st"> </span><span class="kw">c</span>(val[[<span class="dv">1</span>]], summands)</a>
+<a class="sourceLine" id="cb802-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb802-8" data-line-number="8">  <span class="kw">reduce</span>(summands, <span class="op">~</span><span class="st"> </span><span class="kw">expr</span>(<span class="op">!!</span>.x <span class="op">+</span><span class="st"> </span><span class="op">!!</span>.y))</a>
+<a class="sourceLine" id="cb802-9" data-line-number="9">}</a>
+<a class="sourceLine" id="cb802-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb802-11" data-line-number="11"><span class="kw">linear</span>(x, <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">-4</span>))</a>
+<a class="sourceLine" id="cb802-12" data-line-number="12"><span class="co">#&gt; 10 + (5 * x[[1L]]) + (-4 * x[[2L]])</span></a></code></pre></div>
 <p>Note the use of <code>ensym()</code>. We want the user to supply the name of a single variable, not a more complex expression.</p>
 <p>We could even make this into a function-generating function:</p>
-<div class="sourceCode" id="cb804"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb804-1" data-line-number="1">linear_fun &lt;-<span class="st"> </span><span class="cf">function</span>(var, val) {</a>
-<a class="sourceLine" id="cb804-2" data-line-number="2">  var &lt;-<span class="st"> </span><span class="kw">ensym</span>(var)</a>
-<a class="sourceLine" id="cb804-3" data-line-number="3">  </a>
-<a class="sourceLine" id="cb804-4" data-line-number="4">  <span class="kw">new_function</span>(</a>
-<a class="sourceLine" id="cb804-5" data-line-number="5">    <span class="kw">set_names</span>(<span class="kw">list</span>(<span class="kw">missing_arg</span>()), var), </a>
-<a class="sourceLine" id="cb804-6" data-line-number="6">    <span class="kw">linear</span>(<span class="op">!!</span>var, val),</a>
-<a class="sourceLine" id="cb804-7" data-line-number="7">    <span class="kw">caller_env</span>()</a>
-<a class="sourceLine" id="cb804-8" data-line-number="8">  )</a>
-<a class="sourceLine" id="cb804-9" data-line-number="9">}</a>
-<a class="sourceLine" id="cb804-10" data-line-number="10"><span class="kw">linear_fun</span>(x, <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">-4</span>))</a>
-<a class="sourceLine" id="cb804-11" data-line-number="11"><span class="co">#&gt; function (x) </span></a>
-<a class="sourceLine" id="cb804-12" data-line-number="12"><span class="co">#&gt; 10 + (5 * x[[1L]]) + (-4 * x[[2L]])</span></a></code></pre></div>
+<div class="sourceCode" id="cb803"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb803-1" data-line-number="1">linear_fun &lt;-<span class="st"> </span><span class="cf">function</span>(var, val) {</a>
+<a class="sourceLine" id="cb803-2" data-line-number="2">  var &lt;-<span class="st"> </span><span class="kw">ensym</span>(var)</a>
+<a class="sourceLine" id="cb803-3" data-line-number="3">  </a>
+<a class="sourceLine" id="cb803-4" data-line-number="4">  <span class="kw">new_function</span>(</a>
+<a class="sourceLine" id="cb803-5" data-line-number="5">    <span class="kw">set_names</span>(<span class="kw">list</span>(<span class="kw">missing_arg</span>()), var), </a>
+<a class="sourceLine" id="cb803-6" data-line-number="6">    <span class="kw">linear</span>(<span class="op">!!</span>var, val),</a>
+<a class="sourceLine" id="cb803-7" data-line-number="7">    <span class="kw">caller_env</span>()</a>
+<a class="sourceLine" id="cb803-8" data-line-number="8">  )</a>
+<a class="sourceLine" id="cb803-9" data-line-number="9">}</a>
+<a class="sourceLine" id="cb803-10" data-line-number="10"><span class="kw">linear_fun</span>(x, <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">-4</span>))</a>
+<a class="sourceLine" id="cb803-11" data-line-number="11"><span class="co">#&gt; function (x) </span></a>
+<a class="sourceLine" id="cb803-12" data-line-number="12"><span class="co">#&gt; 10 + (5 * x[[1L]]) + (-4 * x[[2L]])</span></a></code></pre></div>
 </div>
 <div id="slicing-an-array" class="section level3">
 <h3><span class="header-section-number">18.7.3</span> Slicing an array</h3>
 <p>An occassionally useful tool missing from base R is the ability to extract a slice of an array given a dimension and an index. For example, we’d like to write <code>slice(x, 2, 1)</code> to extract the first slice along the second dimension, which you can write as <code>x[, 1, ]</code>. This is a moderately challenging problem because it requires working with missing arguments.</p>
 <p>We’ll need to generate a call with multiple missing arguments. Fortunately that’s easy with <code>rep()</code> and <code>missing_arg()</code>. Once we have those arguments, we can unquote-splice them into a call:</p>
-<div class="sourceCode" id="cb805"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb805-1" data-line-number="1">indices &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">list</span>(<span class="kw">missing_arg</span>()), <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb805-2" data-line-number="2"><span class="kw">expr</span>(x[<span class="op">!!!</span>indices])</a>
-<a class="sourceLine" id="cb805-3" data-line-number="3"><span class="co">#&gt; x[, , ]</span></a></code></pre></div>
+<div class="sourceCode" id="cb804"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb804-1" data-line-number="1">indices &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">list</span>(<span class="kw">missing_arg</span>()), <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb804-2" data-line-number="2"><span class="kw">expr</span>(x[<span class="op">!!!</span>indices])</a>
+<a class="sourceLine" id="cb804-3" data-line-number="3"><span class="co">#&gt; x[, , ]</span></a></code></pre></div>
 <p>Then we use subset-assignment to insert the index in the desired position:</p>
-<div class="sourceCode" id="cb806"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb806-1" data-line-number="1">indices[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb806-2" data-line-number="2"><span class="kw">expr</span>(x[<span class="op">!!!</span>indices])</a>
-<a class="sourceLine" id="cb806-3" data-line-number="3"><span class="co">#&gt; x[, 1, ]</span></a></code></pre></div>
+<div class="sourceCode" id="cb805"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb805-1" data-line-number="1">indices[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb805-2" data-line-number="2"><span class="kw">expr</span>(x[<span class="op">!!!</span>indices])</a>
+<a class="sourceLine" id="cb805-3" data-line-number="3"><span class="co">#&gt; x[, 1, ]</span></a></code></pre></div>
 <p>We then wrap this into a function, using a couple of <code>stopifnot()</code>s to make the interface clear:</p>
-<div class="sourceCode" id="cb807"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb807-1" data-line-number="1">slice &lt;-<span class="st"> </span><span class="cf">function</span>(x, along, index) {</a>
-<a class="sourceLine" id="cb807-2" data-line-number="2">  <span class="kw">stopifnot</span>(<span class="kw">length</span>(along) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb807-3" data-line-number="3">  <span class="kw">stopifnot</span>(<span class="kw">length</span>(index) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb807-4" data-line-number="4">    </a>
-<a class="sourceLine" id="cb807-5" data-line-number="5">  nd &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">dim</span>(x))</a>
-<a class="sourceLine" id="cb807-6" data-line-number="6">  indices &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">list</span>(<span class="kw">missing_arg</span>()), nd)</a>
-<a class="sourceLine" id="cb807-7" data-line-number="7">  indices[[along]] &lt;-<span class="st"> </span>index</a>
-<a class="sourceLine" id="cb807-8" data-line-number="8">  </a>
-<a class="sourceLine" id="cb807-9" data-line-number="9">  <span class="kw">expr</span>(x[<span class="op">!!!</span>indices])</a>
-<a class="sourceLine" id="cb807-10" data-line-number="10">}</a>
-<a class="sourceLine" id="cb807-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb807-12" data-line-number="12">x &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="kw">sample</span>(<span class="dv">30</span>), <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb807-13" data-line-number="13"><span class="kw">slice</span>(x, <span class="dv">1</span>, <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb807-14" data-line-number="14"><span class="co">#&gt; x[3, , ]</span></a>
-<a class="sourceLine" id="cb807-15" data-line-number="15"><span class="kw">slice</span>(x, <span class="dv">2</span>, <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb807-16" data-line-number="16"><span class="co">#&gt; x[, 2, ]</span></a>
-<a class="sourceLine" id="cb807-17" data-line-number="17"><span class="kw">slice</span>(x, <span class="dv">3</span>, <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb807-18" data-line-number="18"><span class="co">#&gt; x[, , 1]</span></a></code></pre></div>
+<div class="sourceCode" id="cb806"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb806-1" data-line-number="1">slice &lt;-<span class="st"> </span><span class="cf">function</span>(x, along, index) {</a>
+<a class="sourceLine" id="cb806-2" data-line-number="2">  <span class="kw">stopifnot</span>(<span class="kw">length</span>(along) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb806-3" data-line-number="3">  <span class="kw">stopifnot</span>(<span class="kw">length</span>(index) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb806-4" data-line-number="4">    </a>
+<a class="sourceLine" id="cb806-5" data-line-number="5">  nd &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">dim</span>(x))</a>
+<a class="sourceLine" id="cb806-6" data-line-number="6">  indices &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">list</span>(<span class="kw">missing_arg</span>()), nd)</a>
+<a class="sourceLine" id="cb806-7" data-line-number="7">  indices[[along]] &lt;-<span class="st"> </span>index</a>
+<a class="sourceLine" id="cb806-8" data-line-number="8">  </a>
+<a class="sourceLine" id="cb806-9" data-line-number="9">  <span class="kw">expr</span>(x[<span class="op">!!!</span>indices])</a>
+<a class="sourceLine" id="cb806-10" data-line-number="10">}</a>
+<a class="sourceLine" id="cb806-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb806-12" data-line-number="12">x &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="kw">sample</span>(<span class="dv">30</span>), <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb806-13" data-line-number="13"><span class="kw">slice</span>(x, <span class="dv">1</span>, <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb806-14" data-line-number="14"><span class="co">#&gt; x[3, , ]</span></a>
+<a class="sourceLine" id="cb806-15" data-line-number="15"><span class="kw">slice</span>(x, <span class="dv">2</span>, <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb806-16" data-line-number="16"><span class="co">#&gt; x[, 2, ]</span></a>
+<a class="sourceLine" id="cb806-17" data-line-number="17"><span class="kw">slice</span>(x, <span class="dv">3</span>, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb806-18" data-line-number="18"><span class="co">#&gt; x[, , 1]</span></a></code></pre></div>
 <p>A real <code>slice()</code> would evaluate the generated call, but here I think it’s more illuminating to see the code that’s generated, as that’s the hard part of the challenge.</p>
 </div>
 <div id="new-function" class="section level3">
 <h3><span class="header-section-number">18.7.4</span> Creating functions</h3>
 <p> </p>
 <p>Another powerful application of quotation is creating functions “by hand”, using <code>rlang::new_function()</code>. It’s a function that create a function from its three components (Section <a href="functions.html#function-components">5.2.2</a>) arguments, body, and (optionally) environment:</p>
-<div class="sourceCode" id="cb808"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb808-1" data-line-number="1"><span class="kw">new_function</span>(</a>
-<a class="sourceLine" id="cb808-2" data-line-number="2">  <span class="kw">exprs</span>(<span class="dt">x =</span> , <span class="dt">y =</span> ), </a>
-<a class="sourceLine" id="cb808-3" data-line-number="3">  <span class="kw">expr</span>({x <span class="op">+</span><span class="st"> </span>y})</a>
-<a class="sourceLine" id="cb808-4" data-line-number="4">)</a>
-<a class="sourceLine" id="cb808-5" data-line-number="5"><span class="co">#&gt; function (x, y) </span></a>
-<a class="sourceLine" id="cb808-6" data-line-number="6"><span class="co">#&gt; {</span></a>
-<a class="sourceLine" id="cb808-7" data-line-number="7"><span class="co">#&gt;     x + y</span></a>
-<a class="sourceLine" id="cb808-8" data-line-number="8"><span class="co">#&gt; }</span></a></code></pre></div>
+<div class="sourceCode" id="cb807"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb807-1" data-line-number="1"><span class="kw">new_function</span>(</a>
+<a class="sourceLine" id="cb807-2" data-line-number="2">  <span class="kw">exprs</span>(<span class="dt">x =</span> , <span class="dt">y =</span> ), </a>
+<a class="sourceLine" id="cb807-3" data-line-number="3">  <span class="kw">expr</span>({x <span class="op">+</span><span class="st"> </span>y})</a>
+<a class="sourceLine" id="cb807-4" data-line-number="4">)</a>
+<a class="sourceLine" id="cb807-5" data-line-number="5"><span class="co">#&gt; function (x, y) </span></a>
+<a class="sourceLine" id="cb807-6" data-line-number="6"><span class="co">#&gt; {</span></a>
+<a class="sourceLine" id="cb807-7" data-line-number="7"><span class="co">#&gt;     x + y</span></a>
+<a class="sourceLine" id="cb807-8" data-line-number="8"><span class="co">#&gt; }</span></a></code></pre></div>
 <p>One use of <code>new_function()</code> is as an alternative to function factories with scalar or symbol arguments. For example, we could write a function that generates functions that raise a function to the power of a number.</p>
-<div class="sourceCode" id="cb809"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb809-1" data-line-number="1">power &lt;-<span class="st"> </span><span class="cf">function</span>(exponent) {</a>
-<a class="sourceLine" id="cb809-2" data-line-number="2">  <span class="kw">new_function</span>(</a>
-<a class="sourceLine" id="cb809-3" data-line-number="3">    <span class="kw">exprs</span>(<span class="dt">x =</span> ), </a>
-<a class="sourceLine" id="cb809-4" data-line-number="4">    <span class="kw">expr</span>({</a>
-<a class="sourceLine" id="cb809-5" data-line-number="5">      x <span class="op">^</span><span class="st"> </span><span class="op">!!</span>exponent</a>
-<a class="sourceLine" id="cb809-6" data-line-number="6">    }), </a>
-<a class="sourceLine" id="cb809-7" data-line-number="7">    <span class="kw">caller_env</span>()</a>
-<a class="sourceLine" id="cb809-8" data-line-number="8">  )</a>
-<a class="sourceLine" id="cb809-9" data-line-number="9">}</a>
-<a class="sourceLine" id="cb809-10" data-line-number="10"><span class="kw">power</span>(<span class="fl">0.5</span>)</a>
-<a class="sourceLine" id="cb809-11" data-line-number="11"><span class="co">#&gt; function (x) </span></a>
-<a class="sourceLine" id="cb809-12" data-line-number="12"><span class="co">#&gt; {</span></a>
-<a class="sourceLine" id="cb809-13" data-line-number="13"><span class="co">#&gt;     x^0.5</span></a>
-<a class="sourceLine" id="cb809-14" data-line-number="14"><span class="co">#&gt; }</span></a></code></pre></div>
+<div class="sourceCode" id="cb808"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb808-1" data-line-number="1">power &lt;-<span class="st"> </span><span class="cf">function</span>(exponent) {</a>
+<a class="sourceLine" id="cb808-2" data-line-number="2">  <span class="kw">new_function</span>(</a>
+<a class="sourceLine" id="cb808-3" data-line-number="3">    <span class="kw">exprs</span>(<span class="dt">x =</span> ), </a>
+<a class="sourceLine" id="cb808-4" data-line-number="4">    <span class="kw">expr</span>({</a>
+<a class="sourceLine" id="cb808-5" data-line-number="5">      x <span class="op">^</span><span class="st"> </span><span class="op">!!</span>exponent</a>
+<a class="sourceLine" id="cb808-6" data-line-number="6">    }), </a>
+<a class="sourceLine" id="cb808-7" data-line-number="7">    <span class="kw">caller_env</span>()</a>
+<a class="sourceLine" id="cb808-8" data-line-number="8">  )</a>
+<a class="sourceLine" id="cb808-9" data-line-number="9">}</a>
+<a class="sourceLine" id="cb808-10" data-line-number="10"><span class="kw">power</span>(<span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb808-11" data-line-number="11"><span class="co">#&gt; function (x) </span></a>
+<a class="sourceLine" id="cb808-12" data-line-number="12"><span class="co">#&gt; {</span></a>
+<a class="sourceLine" id="cb808-13" data-line-number="13"><span class="co">#&gt;     x^0.5</span></a>
+<a class="sourceLine" id="cb808-14" data-line-number="14"><span class="co">#&gt; }</span></a></code></pre></div>
 <p>(Note that <code>power()</code> is not a quotating function. It inlines the <em>value</em> of <code>exponent</code>, not the expression that generates it.)</p>
 <p>Another application of <code>new_function()</code> for functions that work like <code>graphics::curve()</code>. <code>curve()</code> allows you to plot a mathematical expression, without creating a function:</p>
-<div class="sourceCode" id="cb810"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb810-1" data-line-number="1"><span class="kw">curve</span>(<span class="kw">sin</span>(<span class="kw">exp</span>(<span class="dv">4</span> <span class="op">*</span><span class="st"> </span>x)), <span class="dt">n =</span> <span class="dv">1000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb809"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb809-1" data-line-number="1"><span class="kw">curve</span>(<span class="kw">sin</span>(<span class="kw">exp</span>(<span class="dv">4</span> <span class="op">*</span><span class="st"> </span>x)), <span class="dt">n =</span> <span class="dv">1000</span>)</a></code></pre></div>
 <p><img src="Quotation_files/figure-html/curve-demo-1.png" width="70%" style="display: block; margin: auto;" /></p>
 <p>Here <code>x</code> is a pronoun: it doesn’t represent a single concrete value, but is instead a placeholder that varies over the range of the plot. One way to implement <code>curve()</code> is to turn that expression into a function with a single argument, <code>x</code>, then call that function:</p>
-<div class="sourceCode" id="cb811"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb811-1" data-line-number="1">curve2 &lt;-<span class="st"> </span><span class="cf">function</span>(expr, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">n =</span> <span class="dv">100</span>) {</a>
-<a class="sourceLine" id="cb811-2" data-line-number="2">  expr &lt;-<span class="st"> </span><span class="kw">enexpr</span>(expr)</a>
-<a class="sourceLine" id="cb811-3" data-line-number="3">  f &lt;-<span class="st"> </span><span class="kw">new_function</span>(<span class="kw">exprs</span>(<span class="dt">x =</span> ), expr)</a>
-<a class="sourceLine" id="cb811-4" data-line-number="4">  </a>
-<a class="sourceLine" id="cb811-5" data-line-number="5">  x &lt;-<span class="st"> </span><span class="kw">seq</span>(xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], <span class="dt">length =</span> n)</a>
-<a class="sourceLine" id="cb811-6" data-line-number="6">  y &lt;-<span class="st"> </span><span class="kw">f</span>(x)</a>
-<a class="sourceLine" id="cb811-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb811-8" data-line-number="8">  <span class="kw">plot</span>(x, y, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">ylab =</span> <span class="kw">expr_text</span>(expr))</a>
-<a class="sourceLine" id="cb811-9" data-line-number="9">}</a>
-<a class="sourceLine" id="cb811-10" data-line-number="10"><span class="kw">curve2</span>(<span class="kw">sin</span>(<span class="kw">exp</span>(<span class="dv">4</span> <span class="op">*</span><span class="st"> </span>x)), <span class="dt">n =</span> <span class="dv">1000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb810"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb810-1" data-line-number="1">curve2 &lt;-<span class="st"> </span><span class="cf">function</span>(expr, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">n =</span> <span class="dv">100</span>) {</a>
+<a class="sourceLine" id="cb810-2" data-line-number="2">  expr &lt;-<span class="st"> </span><span class="kw">enexpr</span>(expr)</a>
+<a class="sourceLine" id="cb810-3" data-line-number="3">  f &lt;-<span class="st"> </span><span class="kw">new_function</span>(<span class="kw">exprs</span>(<span class="dt">x =</span> ), expr)</a>
+<a class="sourceLine" id="cb810-4" data-line-number="4">  </a>
+<a class="sourceLine" id="cb810-5" data-line-number="5">  x &lt;-<span class="st"> </span><span class="kw">seq</span>(xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], <span class="dt">length =</span> n)</a>
+<a class="sourceLine" id="cb810-6" data-line-number="6">  y &lt;-<span class="st"> </span><span class="kw">f</span>(x)</a>
+<a class="sourceLine" id="cb810-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb810-8" data-line-number="8">  <span class="kw">plot</span>(x, y, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">ylab =</span> <span class="kw">expr_text</span>(expr))</a>
+<a class="sourceLine" id="cb810-9" data-line-number="9">}</a>
+<a class="sourceLine" id="cb810-10" data-line-number="10"><span class="kw">curve2</span>(<span class="kw">sin</span>(<span class="kw">exp</span>(<span class="dv">4</span> <span class="op">*</span><span class="st"> </span>x)), <span class="dt">n =</span> <span class="dv">1000</span>)</a></code></pre></div>
 <p>Functions, like <code>curve()</code>, that use an expression containing a pronoun are known as <strong>anaphoric</strong> functions<a href="#fn69" class="footnote-ref" id="fnref69"><sup>69</sup></a>.</p>
 </div>
 <div id="exercises-58" class="section level3">
@@ -1871,18 +1871,18 @@ between dots and list behaviour.</p></li>
 approaches. Which do you think is easier to read?</p></li>
 <li><p>Re-implement the Box-Cox transform defined below using unquoting and
 <code>new_function()</code>:</p>
-<div class="sourceCode" id="cb812"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb812-1" data-line-number="1">bc &lt;-<span class="st"> </span><span class="cf">function</span>(lambda) {</a>
-<a class="sourceLine" id="cb812-2" data-line-number="2">  <span class="cf">if</span> (lambda <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) {</a>
-<a class="sourceLine" id="cb812-3" data-line-number="3">    <span class="cf">function</span>(x) <span class="kw">log</span>(x)</a>
-<a class="sourceLine" id="cb812-4" data-line-number="4">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb812-5" data-line-number="5">    <span class="cf">function</span>(x) (x <span class="op">^</span><span class="st"> </span>lambda <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">/</span><span class="st"> </span>lambda</a>
-<a class="sourceLine" id="cb812-6" data-line-number="6">  }</a>
-<a class="sourceLine" id="cb812-7" data-line-number="7">}</a></code></pre></div></li>
+<div class="sourceCode" id="cb811"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb811-1" data-line-number="1">bc &lt;-<span class="st"> </span><span class="cf">function</span>(lambda) {</a>
+<a class="sourceLine" id="cb811-2" data-line-number="2">  <span class="cf">if</span> (lambda <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb811-3" data-line-number="3">    <span class="cf">function</span>(x) <span class="kw">log</span>(x)</a>
+<a class="sourceLine" id="cb811-4" data-line-number="4">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb811-5" data-line-number="5">    <span class="cf">function</span>(x) (x <span class="op">^</span><span class="st"> </span>lambda <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">/</span><span class="st"> </span>lambda</a>
+<a class="sourceLine" id="cb811-6" data-line-number="6">  }</a>
+<a class="sourceLine" id="cb811-7" data-line-number="7">}</a></code></pre></div></li>
 <li><p>Re-implement the simple <code>compose()</code> defined below using quasiquotation and
 <code>new_function()</code>:</p>
-<div class="sourceCode" id="cb813"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb813-1" data-line-number="1">compose &lt;-<span class="st"> </span><span class="cf">function</span>(f, g) {</a>
-<a class="sourceLine" id="cb813-2" data-line-number="2">  <span class="cf">function</span>(...) <span class="kw">f</span>(<span class="kw">g</span>(...))</a>
-<a class="sourceLine" id="cb813-3" data-line-number="3">}</a></code></pre></div></li>
+<div class="sourceCode" id="cb812"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb812-1" data-line-number="1">compose &lt;-<span class="st"> </span><span class="cf">function</span>(f, g) {</a>
+<a class="sourceLine" id="cb812-2" data-line-number="2">  <span class="cf">function</span>(...) <span class="kw">f</span>(<span class="kw">g</span>(...))</a>
+<a class="sourceLine" id="cb812-3" data-line-number="3">}</a></code></pre></div></li>
 </ol>
 
 </div>
@@ -1939,7 +1939,7 @@ gitbook.start({
 "link": "https://github.com/hadley/adv-r/edit/master/Quotation.Rmd",
 "text": "Edit"
 },
-"download": ["adv-r.pdf", "adv-r.epub"],
+"download": [["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.pdf", "PDF"], ["https://github.com/BruceZhaoR/adv-r/raw/gh-pages/adv-r.epub", "EPUB3"]],
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

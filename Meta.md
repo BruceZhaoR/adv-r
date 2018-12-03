@@ -192,13 +192,6 @@ These techniques become yet more powerful when combined with functional programm
 
 ```r
 library(purrr)
-#> 
-#> Attaching package: 'purrr'
-#> The following objects are masked from 'package:rlang':
-#> 
-#>     %@%, %||%, as_function, flatten, flatten_chr, flatten_dbl,
-#>     flatten_int, flatten_lgl, invoke, list_along, modify, prepend,
-#>     rep_along, splice
 
 poly <- function(n) {
   i <- as.double(seq(2, n))
