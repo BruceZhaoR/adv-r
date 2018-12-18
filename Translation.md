@@ -10,14 +10,6 @@ The combination of first-class environments, lexical scoping, and metaprogrammin
 ```r
 library(dbplyr)
 translate_sql(x ^ 2)
-#> Warning: `new_overscope()` is soft-deprecated as of rlang 0.2.0.
-#> Please use `new_data_mask()` instead
-#> This warning is displayed once per session.
-#> Warning: `overscope_eval_next()` is soft-deprecated as of rlang 0.2.0.
-#> Please use `eval_tidy()` with a data mask instead
-#> This warning is displayed once per session.
-#> Warning: `overscope_clean()` is soft-deprecated as of rlang 0.2.0.
-#> This warning is displayed once per session.
 #> <SQL> POWER("x", 2.0)
 translate_sql(x < 5 & !is.na(x))
 #> <SQL> "x" < 5.0 AND NOT((("x") IS NULL))
@@ -41,6 +33,13 @@ This chapter together pulls together many techniques discussed elsewhere in the 
 ```r
 library(rlang)
 library(purrr)
+#> 
+#> Attaching package: 'purrr'
+#> The following objects are masked from 'package:rlang':
+#> 
+#>     %@%, %||%, as_function, flatten, flatten_chr, flatten_dbl,
+#>     flatten_int, flatten_lgl, invoke, list_along, modify, prepend,
+#>     rep_along, splice
 ```
 
 ## HTML {#html}
@@ -737,7 +736,7 @@ unknown_op("foo")
 #>     contents <- paste(..., collapse = ", ")
 #>     paste0("\\mathrm{foo}(", contents, ")")
 #> }
-#> <environment: 0x127df60>
+#> <environment: 0x28db5b8>
 ```
 
 And again we update `latex_env()`:

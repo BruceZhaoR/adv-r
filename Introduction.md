@@ -199,7 +199,7 @@ This version of the book was built with the following version of R and packages.
 
 |setting  |value                        |
 |:--------|:----------------------------|
-|version  |R version 3.5.1 (2017-01-27) |
+|version  |R version 3.5.1 (2018-12-12) |
 |os       |Ubuntu 14.04.5 LTS           |
 |system   |x86_64, linux-gnu            |
 |ui       |X11                          |
@@ -207,13 +207,13 @@ This version of the book was built with the following version of R and packages.
 |collate  |en_US.UTF-8                  |
 |ctype    |en_US.UTF-8                  |
 |tz       |UTC                          |
-|date     |2018-12-03                   |
+|date     |2018-12-18                   |
 
 
 |package        |version    |source                            |
 |:--------------|:----------|:---------------------------------|
 |assertthat     |0.2.0      |CRAN (R 3.5.1)                    |
-|backports      |1.1.2      |CRAN (R 3.5.1)                    |
+|backports      |1.1.3      |CRAN (R 3.5.1)                    |
 |base64enc      |0.1-3      |CRAN (R 3.5.1)                    |
 |bench          |1.0.1      |CRAN (R 3.5.1)                    |
 |BH             |1.66.0-1   |CRAN (R 3.5.1)                    |
@@ -222,7 +222,7 @@ This version of the book was built with the following version of R and packages.
 |bit            |1.1-14     |CRAN (R 3.5.1)                    |
 |bit64          |0.9-7      |CRAN (R 3.5.1)                    |
 |blob           |1.1.1      |CRAN (R 3.5.1)                    |
-|bookdown       |0.7        |CRAN (R 3.5.1)                    |
+|bookdown       |0.8        |CRAN (R 3.5.1)                    |
 |cli            |1.0.1      |CRAN (R 3.5.1)                    |
 |clipr          |0.4.1      |CRAN (R 3.5.1)                    |
 |codetools      |0.2-15     |CRAN (R 3.5.1)                    |
@@ -247,18 +247,18 @@ This version of the book was built with the following version of R and packages.
 |htmltools      |0.3.6      |CRAN (R 3.5.1)                    |
 |httpuv         |1.4.5      |CRAN (R 3.5.1)                    |
 |inline         |0.3.15     |CRAN (R 3.5.1)                    |
-|jsonlite       |1.5        |CRAN (R 3.5.1)                    |
-|knitr          |1.20       |CRAN (R 3.5.1)                    |
+|jsonlite       |1.6        |CRAN (R 3.5.1)                    |
+|knitr          |1.21       |CRAN (R 3.5.1)                    |
 |labeling       |0.3        |CRAN (R 3.5.1)                    |
 |later          |0.7.5      |CRAN (R 3.5.1)                    |
 |lattice        |0.20-35    |CRAN (R 3.5.1)                    |
 |lazyeval       |0.2.1      |CRAN (R 3.5.1)                    |
 |lineprof       |0.1.9001   |Github (hadley/lineprof\@972e71d) |
 |listenv        |0.7.0      |CRAN (R 3.5.1)                    |
-|lobstr         |1.0.0.9000 |Github (r-lib/lobstr\@8a0cfa0)    |
+|lobstr         |1.0.0.9000 |Github (r-lib/lobstr\@5479a8b)    |
 |lubridate      |1.7.4      |CRAN (R 3.5.1)                    |
 |magrittr       |1.5        |CRAN (R 3.5.1)                    |
-|markdown       |0.8        |CRAN (R 3.5.1)                    |
+|markdown       |0.9        |CRAN (R 3.5.1)                    |
 |MASS           |7.3-50     |CRAN (R 3.5.1)                    |
 |Matrix         |1.2-14     |CRAN (R 3.5.1)                    |
 |memoise        |1.1.0      |CRAN (R 3.5.1)                    |
@@ -267,7 +267,7 @@ This version of the book was built with the following version of R and packages.
 |mime           |0.6        |CRAN (R 3.5.1)                    |
 |munsell        |0.5.0      |CRAN (R 3.5.1)                    |
 |nlme           |3.1-137    |CRAN (R 3.5.1)                    |
-|pillar         |1.3.0      |CRAN (R 3.5.1)                    |
+|pillar         |1.3.1      |CRAN (R 3.5.1)                    |
 |pkgconfig      |2.0.2      |CRAN (R 3.5.1)                    |
 |plogr          |0.2.0      |CRAN (R 3.5.1)                    |
 |plyr           |1.8.4      |CRAN (R 3.5.1)                    |
@@ -281,16 +281,16 @@ This version of the book was built with the following version of R and packages.
 |R6             |2.3.0      |CRAN (R 3.5.1)                    |
 |RColorBrewer   |1.1-2      |CRAN (R 3.5.1)                    |
 |Rcpp           |1.0.0      |CRAN (R 3.5.1)                    |
-|readr          |1.2.1      |CRAN (R 3.5.1)                    |
+|readr          |1.3.0      |CRAN (R 3.5.1)                    |
 |reshape2       |1.4.3      |CRAN (R 3.5.1)                    |
-|rlang          |0.3.0.9000 |Github (r-lib/rlang\@035d279)     |
-|rmarkdown      |1.10       |CRAN (R 3.5.1)                    |
+|rlang          |0.3.0.1    |CRAN (R 3.5.1)                    |
+|rmarkdown      |1.11       |CRAN (R 3.5.1)                    |
 |rprojroot      |1.3-2      |CRAN (R 3.5.1)                    |
 |RSQLite        |2.1.1      |CRAN (R 3.5.1)                    |
 |scales         |1.0.0      |CRAN (R 3.5.1)                    |
 |sessioninfo    |1.1.1      |CRAN (R 3.5.1)                    |
-|shiny          |1.1.0      |CRAN (R 3.5.1)                    |
-|sloop          |1.0.0.9000 |Github (r-lib/sloop\@ae2e4e8)     |
+|shiny          |1.2.0      |CRAN (R 3.5.1)                    |
+|sloop          |1.0.0      |CRAN (R 3.5.1)                    |
 |sourcetools    |0.1.7      |CRAN (R 3.5.1)                    |
 |stringi        |1.2.4      |CRAN (R 3.5.1)                    |
 |stringr        |1.3.1      |CRAN (R 3.5.1)                    |
@@ -299,7 +299,7 @@ This version of the book was built with the following version of R and packages.
 |tidyselect     |0.2.5      |CRAN (R 3.5.1)                    |
 |tinytex        |0.9        |CRAN (R 3.5.1)                    |
 |utf8           |1.1.4      |CRAN (R 3.5.1)                    |
-|vctrs          |0.1.0.9000 |Github (r-lib/vctrs\@14dfeb2)     |
+|vctrs          |0.1.0.9000 |Github (r-lib/vctrs\@60d5edd)     |
 |viridisLite    |0.3.0      |CRAN (R 3.5.1)                    |
 |withr          |2.1.2      |CRAN (R 3.5.1)                    |
 |xfun           |0.4        |CRAN (R 3.5.1)                    |

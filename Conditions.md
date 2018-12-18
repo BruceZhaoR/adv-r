@@ -432,12 +432,12 @@ str(cnd)
 #>   .. ..$ : language base::force(expr)
 #>   ..$ parents: int [1:6] 0 1 2 3 4 1
 #>   ..$ envs   :List of 6
-#>   .. ..$ : chr "0x1da85b0"
-#>   .. ..$ : chr "0x1da87a8"
-#>   .. ..$ : chr "0x1da8e38"
-#>   .. ..$ : chr "0x1da9180"
-#>   .. ..$ : chr "0x1da94c8"
-#>   .. ..$ : chr "0x1da9810"
+#>   .. ..$ : chr "0x343ec78"
+#>   .. ..$ : chr "0x343ee70"
+#>   .. ..$ : chr "0x343f500"
+#>   .. ..$ : chr "0x343f848"
+#>   .. ..$ : chr "0x343fc00"
+#>   .. ..$ : chr "0x343ff48"
 #>   ..- attr(*, "class")= chr "rlang_trace"
 #>  $ parent : NULL
 #>  - attr(*, "class")= chr [1:3] "rlang_error" "error" "condition"
@@ -875,6 +875,11 @@ These structured condition objects are much easier to program with. The first pl
 
 ```r
 library(testthat)
+#> 
+#> Attaching package: 'testthat'
+#> The following objects are masked from 'package:rlang':
+#> 
+#>     is_false, is_null, is_true
 
 err <- catch_cnd(my_log("a"))
 expect_s3_class(err, "error_bad_argument")
@@ -1053,12 +1058,12 @@ str(safety(abort("Error!")))
 #>   .. .. ..$ : language base:::doTryCatch(return(expr), name, parentenv, h..
 #>   .. ..$ parents: int [1:6] 0 0 2 3 4 5
 #>   .. ..$ envs   :List of 6
-#>   .. .. ..$ : chr "0x59792e0"
-#>   .. .. ..$ : chr "0x597cf88"
-#>   .. .. ..$ : chr "0x5ad25a8"
-#>   .. .. ..$ : chr "0x5ad1ea8"
-#>   .. .. ..$ : chr "0x5ad1b60"
-#>   .. .. ..$ : chr "0x5ad1818"
+#>   .. .. ..$ : chr "0x543ce10"
+#>   .. .. ..$ : chr "0x543cc88"
+#>   .. .. ..$ : chr "0x55d0bb0"
+#>   .. .. ..$ : chr "0x55d8120"
+#>   .. .. ..$ : chr "0x55d7dd8"
+#>   .. .. ..$ : chr "0x55d7a90"
 #>   .. ..- attr(*, "class")= chr "rlang_trace"
 #>   ..$ parent : NULL
 #>   ..- attr(*, "class")= chr [1:3] "rlang_error" "error" "condition"

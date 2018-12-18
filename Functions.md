@@ -895,7 +895,7 @@ Because of lazy evaluation, you don't need to worry about unnecessary computatio
     force
     #> function (x) 
     #> x
-    #> <bytecode: 0x1320c98>
+    #> <bytecode: 0xd71cd8>
     #> <environment: namespace:base>
     ```
     
@@ -944,7 +944,7 @@ Because of lazy evaluation, you don't need to worry about unnecessary computatio
       print(x)
     }
     show_time()
-    #> [1] "2018-12-03 08:08:39 UTC"
+    #> [1] "2018-12-18 10:15:36 UTC"
     ```
 
 1.  How many arguments are required when calling `library()`?
@@ -1083,7 +1083,7 @@ Using `...` comes with two downsides:
     plot(1:10, col = "red", pch = 20, xlab = "x", col.lab = "blue")
     ```
     
-    <img src="Functions_files/figure-epub3/unnamed-chunk-63-1.png" width="70%" style="display: block; margin: auto;" />
+    <img src="Functions_files/figure-html/unnamed-chunk-63-1.png" width="70%" style="display: block; margin: auto;" />
     
 1.  Why does `plot(1:10, col = "red")` only colour the points, not the axes 
     or labels? Read the source code of `plot.default()` to find out.

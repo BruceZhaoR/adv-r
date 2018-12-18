@@ -192,6 +192,13 @@ These techniques become yet more powerful when combined with functional programm
 
 ```r
 library(purrr)
+#> 
+#> Attaching package: 'purrr'
+#> The following objects are masked from 'package:rlang':
+#> 
+#>     %@%, %||%, as_function, flatten, flatten_chr, flatten_dbl,
+#>     flatten_int, flatten_lgl, invoke, list_along, modify, prepend,
+#>     rep_along, splice
 
 poly <- function(n) {
   i <- as.double(seq(2, n))
@@ -265,6 +272,14 @@ dplyr takes this idea to the extreme, running code in an environment that genera
 
 ```r
 library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 
 con <- DBI::dbConnect(RSQLite::SQLite(), filename = ":memory:")
 mtcars_db <- copy_to(con, mtcars)

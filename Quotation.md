@@ -47,6 +47,13 @@ Code-wise, we'll mostly be using the tools from rlang, but at the end of the cha
 ```r
 library(rlang)
 library(purrr)
+#> 
+#> Attaching package: 'purrr'
+#> The following objects are masked from 'package:rlang':
+#> 
+#>     %@%, %||%, as_function, flatten, flatten_chr, flatten_dbl,
+#>     flatten_int, flatten_lgl, invoke, list_along, modify, prepend,
+#>     rep_along, splice
 ```
 
 ### Related work {-}
@@ -855,7 +862,7 @@ plot(
 )
 ```
 
-<img src="Quotation_files/figure-epub3/unnamed-chunk-59-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="Quotation_files/figure-html/unnamed-chunk-59-1.png" width="70%" style="display: block; margin: auto;" />
 
 These functions have no built-in options for indirect specification, but you'll learn how to simulate unquoting in Section \@ref(base-unquote).
 
@@ -1406,7 +1413,7 @@ Another application of `new_function()` for functions that work like `graphics::
 curve(sin(exp(4 * x)), n = 1000)
 ```
 
-<img src="Quotation_files/figure-epub3/curve-demo-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="Quotation_files/figure-html/curve-demo-1.png" width="70%" style="display: block; margin: auto;" />
 
 Here `x` is a pronoun: it doesn't represent a single concrete value, but is instead a placeholder that varies over the range of the plot. One way to implement `curve()` is to turn that expression into a function with a single argument, `x`, then call that function:
 

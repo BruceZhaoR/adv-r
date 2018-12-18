@@ -106,14 +106,14 @@ square
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <environment: 0x60e7c68>
+#> <environment: 0x1f8a790>
 
 cube
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <bytecode: 0x6494c60>
-#> <environment: 0x613eb68>
+#> <bytecode: 0x1dafe88>
+#> <environment: 0xf8c300>
 ```
 
 Printing manufactured functions is not revealing because the bodies are identical; it's the contents of the enclosing environment that's important. We can get a little more insight by using `rlang::env_print()`. That shows us that we have two different environments (each of which was originally an execution environment of `power1()`). The environments have the same parent, which is the enclosing environment of `power1()`, the global environment.
@@ -121,13 +121,13 @@ Printing manufactured functions is not revealing because the bodies are identica
 
 ```r
 env_print(square)
-#> <environment: 0x60e7c68>
+#> <environment: 0x1f8a790>
 #> parent: <environment: global>
 #> bindings:
 #>  * exp: <dbl>
 
 env_print(cube)
-#> <environment: 0x613eb68>
+#> <environment: 0xf8c300>
 #> parent: <environment: global>
 #> bindings:
 #>  * exp: <dbl>
@@ -387,7 +387,7 @@ core + scale_y_continuous(label = number_format(scale = 1e-3, suffix = " K"))
 core + scale_y_continuous(label = scientific_format())
 ```
 
-<img src="Function-factories_files/figure-epub3/unnamed-chunk-22-1.png" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-2.png" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-3.png" width="25%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-22-4.png" width="25%" />
+<img src="Function-factories_files/figure-html/unnamed-chunk-22-1.png" width="25%" /><img src="Function-factories_files/figure-html/unnamed-chunk-22-2.png" width="25%" /><img src="Function-factories_files/figure-html/unnamed-chunk-22-3.png" width="25%" /><img src="Function-factories_files/figure-html/unnamed-chunk-22-4.png" width="25%" />
 
 ### Histogram bins
 
@@ -409,7 +409,7 @@ ggplot(df, aes(x)) +
   labs(x = NULL)
 ```
 
-<img src="Function-factories_files/figure-epub3/unnamed-chunk-23-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="Function-factories_files/figure-html/unnamed-chunk-23-1.png" width="90%" style="display: block; margin: auto;" />
 
 Here each facet has the same number of observations, but the variability is very different. It would be nice if we could request that the binwidths vary so we get approximately the same number of observations in each bin. One way to do that is with a function factory that inputs the desired number of bins (`n`), and outputs a function that takes a numeric vector and returns a binwidth:
 
@@ -429,7 +429,7 @@ ggplot(df, aes(x)) +
   labs(x = NULL)
 ```
 
-<img src="Function-factories_files/figure-epub3/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="Function-factories_files/figure-html/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" />
 
 We could use this same pattern to wrap around the base R functions that automatically find the "optimal"[^optimal] binwidth, `nclass.Sturges()`, `nclass.scott()`, and `nclass.FD()`:
 
@@ -456,7 +456,7 @@ ggplot(df, aes(x)) +
   labs(x = NULL)
 ```
 
-<img src="Function-factories_files/figure-epub3/unnamed-chunk-25-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="Function-factories_files/figure-html/unnamed-chunk-25-1.png" width="90%" style="display: block; margin: auto;" />
 
 [^optimal]: ggplot2 doesn't expose these functions directly because I don't think the defintion of optimality needed to make the problem mathematically tractable is a good match to the actual needs of data exploration.
 
@@ -500,12 +500,12 @@ plot_dev <- function(ext, dpi = 96) {
 
 plot_dev("pdf")
 #> function(filename, ...) grDevices::pdf(file = filename, ...)
-#> <bytecode: 0x37e4818>
-#> <environment: 0x5994470>
+#> <bytecode: 0x12cf4b8>
+#> <environment: 0x6551b68>
 plot_dev("png")
 #> function(...) grDevices::png(..., res = dpi, units = "in")
-#> <bytecode: 0x22403f0>
-#> <environment: 0x4ceb5f0>
+#> <bytecode: 0xfe2a88>
+#> <environment: 0x4de8ac8>
 ```
 
 ### Exercises
@@ -567,7 +567,7 @@ ggplot(data.frame(x = c(0.01, 1)), aes(x)) +
   scale_colour_viridis_c(limits = c(0, 1.5))
 ```
 
-<img src="Function-factories_files/figure-epub3/unnamed-chunk-28-1.png" width="50%" /><img src="Function-factories_files/figure-epub3/unnamed-chunk-28-2.png" width="50%" />
+<img src="Function-factories_files/figure-html/unnamed-chunk-28-1.png" width="50%" /><img src="Function-factories_files/figure-html/unnamed-chunk-28-2.png" width="50%" />
 
 In general, this allows you to use a Box-Cox transformation with any function that accepts a unary transformation function: you don't have to worry about that function providing `...` to pass along additional arguments. I also think that the partitioning of `lambda` and `x` into two different function arguments is natural since `lambda` plays quite a different role than `x`. 
 
@@ -807,8 +807,8 @@ funs$root
 #> function(x) {
 #>     x ^ exp
 #>   }
-#> <bytecode: 0x6494c60>
-#> <environment: 0x1ec2810>
+#> <bytecode: 0x1dafe88>
+#> <environment: 0x4c97da0>
 ```
 
 This idea extends in a straightforward way if your function factory takes two (replace `map()` with `map2()`) or more (replace with `pmap()`) arguments.
@@ -898,7 +898,7 @@ funs$root
 #> {
 #>     x^0.5
 #> }
-#> <environment: 0x24370c0>
+#> <environment: 0x3b5fdc0>
 ```
 
 As well as `0.5` appearing directly in the body, note that the environment of the function is the global environment, not an execution environment of `power3()`.
