@@ -838,7 +838,9 @@ tibble(x = 1:4, y = 1)
 #> 3     3     1
 #> 4     4     1
 tibble(x = 1:4, y = 1:2)
-#> Error: Column `y` must be length 1 or 4, not 2
+#> Error: Tibble columns must have consistent lengths, only values of length one are recycled:
+#> * Length 2: Column `y`
+#> * Length 4: Column `x`
 ```
 
 There is one final difference: `tibble()` allows you to refer to newly created variables:
@@ -959,7 +961,7 @@ dplyr::starwars
 #>  8 R5-D4     97    32 <NA>       white, red red             NA   <NA>  
 #>  9 Bigg…    183    84 black      light      brown           24   male  
 #> 10 Obi-…    182    77 auburn, w… fair       blue-gray       57   male  
-#> # ... with 77 more rows, and 5 more variables: homeworld <chr>,
+#> # … with 77 more rows, and 5 more variables: homeworld <chr>,
 #> #   species <chr>, films <list>, vehicles <list>, starships <list>
 ```
 

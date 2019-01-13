@@ -924,9 +924,6 @@ One way to think about these problems is to draw explicit parallels to quasiquot
     
     ```r
     tibble::tibble(!!var := val)
-    #> Warning: `list_len()` is soft-deprecated as of rlang 0.2.0.
-    #> Please use `new_list()` instead
-    #> This warning is displayed once per session.
     #> # A tibble: 3 x 1
     #>       x
     #>   <dbl>

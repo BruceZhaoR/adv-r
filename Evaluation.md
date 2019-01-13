@@ -355,7 +355,7 @@ There are three ways to create quosures:
     new_quosure(expr(x + y), env(x = 1, y = 10))
     #> <quosure>
     #> expr: ^x + y
-    #> env:  0x6dd0848
+    #> env:  0x62b27e0
     ```
 
 ### Evaluating
@@ -426,7 +426,7 @@ g <- function(...) {
 x <- 0
 qs <- f(global = x)
 qs
-#> <listof<quosures>>
+#> <list_of<quosure>>
 #> 
 #> $global
 #> <quosure>
@@ -436,7 +436,7 @@ qs
 #> $f
 #> <quosure>
 #> expr: ^x
-#> env:  0x7b70b68
+#> env:  0x76ec220
 ```
 
 That means that when you evaluate them, you get the correct results:
@@ -515,19 +515,19 @@ An early version of tidy evaluation used formulas instead of quosures, as an att
     q1
     #> <quosure>
     #> expr: ^x
-    #> env:  0x6bb11c8
+    #> env:  0x605d738
     
     q2 <- new_quosure(expr(x + !!q1), env(x = 10))
     q2
     #> <quosure>
     #> expr: ^x + (^x)
-    #> env:  0x6d5d940
+    #> env:  0x6201980
     
     q3 <- new_quosure(expr(x + !!q2), env(x = 100))
     q3
     #> <quosure>
     #> expr: ^x + (^x + (^x))
-    #> env:  0x66404c8
+    #> env:  0x5ac6a48
     ```
 
 1.  Write an `enenv()` function that captures the environment associated
@@ -1298,7 +1298,7 @@ There are two basic ways to overcome this challenge:
       eval(lm_call, caller_env())
     }
     boot_lm2(y ~ x, data = df)
-    #> lm(y ~ x, data = df[sample(nrow(df), replace = TRUE)])
+    #> lm(y ~ x, data = df[sample(nrow(df), replace = TRUE), , drop = FALSE])
     #> 
     #> Call:
     #> lm(formula = y ~ x, data = df[sample(nrow(df), replace = TRUE), 

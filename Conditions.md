@@ -422,22 +422,25 @@ cnd <- catch_cnd(abort("An error"))
 str(cnd)
 #> List of 3
 #>  $ message: chr "An error"
-#>  $ trace  :List of 3
-#>   ..$ calls  :List of 6
+#>  $ trace  :List of 4
+#>   ..$ calls  :List of 7
 #>   .. ..$ : language rlang::catch_cnd(abort("An error"))
-#>   .. ..$ : language base::tryCatch(condition = identity, {     force(expr..
+#>   .. ..$ : language rlang::eval_bare(rlang::expr(tryCatch(!!!handlers, { ..
+#>   .. ..$ : language base::tryCatch(condition = function (x)  x, { ...
 #>   .. ..$ : language base:::tryCatchList(expr, classes, parentenv, handlers)
 #>   .. ..$ : language base:::tryCatchOne(expr, names, parentenv, handlers[[..
 #>   .. ..$ : language base:::doTryCatch(return(expr), name, parentenv, hand..
 #>   .. ..$ : language base::force(expr)
-#>   ..$ parents: int [1:6] 0 1 2 3 4 1
-#>   ..$ envs   :List of 6
-#>   .. ..$ : chr "0x343ec78"
-#>   .. ..$ : chr "0x343ee70"
-#>   .. ..$ : chr "0x343f500"
-#>   .. ..$ : chr "0x343f848"
-#>   .. ..$ : chr "0x343fc00"
-#>   .. ..$ : chr "0x343ff48"
+#>   ..$ parents: int [1:7] 0 1 1 3 4 5 1
+#>   ..$ envs   :List of 7
+#>   .. ..$ : chr "0x26f6038"
+#>   .. ..$ : chr "0x26e9570"
+#>   .. ..$ : chr "0x26e43b8"
+#>   .. ..$ : chr "0x26e4a48"
+#>   .. ..$ : chr "0x26e4d90"
+#>   .. ..$ : chr "0x26e50d8"
+#>   .. ..$ : chr "0x26e5490"
+#>   ..$ indices: int [1:7] 26 27 28 29 30 31 32
 #>   ..- attr(*, "class")= chr "rlang_trace"
 #>  $ parent : NULL
 #>  - attr(*, "class")= chr [1:3] "rlang_error" "error" "condition"
@@ -656,18 +659,18 @@ withCallingHandlers(f(), message = function(cnd) {
   lobstr::cst()
   cnd_muffle(cnd)
 })
-#> █
-#> ├─base::withCallingHandlers(...)
-#> ├─global::f()
-#> │ └─global::g()
-#> │   └─global::h()
-#> │     └─base::message("!")
-#> │       ├─base::withRestarts(...)
-#> │       │ └─base:::withOneRestart(expr, restarts[[1L]])
-#> │       │   └─base:::doWithOneRestart(return(expr), restart)
-#> │       └─base::signalCondition(cond)
-#> └─(function (cnd) ...
-#>   └─lobstr::cst()
+#>      █
+#>   1. ├─base::withCallingHandlers(...)
+#>   2. ├─global::f()
+#>   3. │ └─global::g()
+#>   4. │   └─global::h()
+#>   5. │     └─base::message("!")
+#>   6. │       ├─base::withRestarts(...)
+#>   7. │       │ └─base:::withOneRestart(expr, restarts[[1L]])
+#>   8. │       │   └─base:::doWithOneRestart(return(expr), restart)
+#>   9. │       └─base::signalCondition(cond)
+#>  10. └─(function (cnd) ...
+#>  11.   └─lobstr::cst()
 ```
 
 Whereas exiting handlers are called in the context of the call to `tryCatch()`:
@@ -675,12 +678,12 @@ Whereas exiting handlers are called in the context of the call to `tryCatch()`:
 
 ```r
 tryCatch(f(), message = function(cnd) lobstr::cst())
-#> █
-#> └─base::tryCatch(f(), message = function(cnd) lobstr::cst())
-#>   └─base:::tryCatchList(expr, classes, parentenv, handlers)
-#>     └─base:::tryCatchOne(expr, names, parentenv, handlers[[1L]])
-#>       └─value[[3L]](cond)
-#>         └─lobstr::cst()
+#>     █
+#>  1. └─base::tryCatch(f(), message = function(cnd) lobstr::cst())
+#>  2.   └─base:::tryCatchList(expr, classes, parentenv, handlers)
+#>  3.     └─base:::tryCatchOne(expr, names, parentenv, handlers[[1L]])
+#>  4.       └─value[[3L]](cond)
+#>  5.         └─lobstr::cst()
 ```
 
 ### Exercises
@@ -1046,7 +1049,7 @@ str(safety(abort("Error!")))
 #>  $ result: NULL
 #>  $ error :List of 3
 #>   ..$ message: chr "Error!"
-#>   ..$ trace  :List of 3
+#>   ..$ trace  :List of 4
 #>   .. ..$ calls  :List of 6
 #>   .. .. ..$ : language utils::str(safety(abort("Error!")))
 #>   .. .. ..$ : language global::safety(abort("Error!"))
@@ -1058,12 +1061,13 @@ str(safety(abort("Error!")))
 #>   .. .. ..$ : language base:::doTryCatch(return(expr), name, parentenv, h..
 #>   .. ..$ parents: int [1:6] 0 0 2 3 4 5
 #>   .. ..$ envs   :List of 6
-#>   .. .. ..$ : chr "0x543ce10"
-#>   .. .. ..$ : chr "0x543cc88"
-#>   .. .. ..$ : chr "0x55d0bb0"
-#>   .. .. ..$ : chr "0x55d8120"
-#>   .. .. ..$ : chr "0x55d7dd8"
-#>   .. .. ..$ : chr "0x55d7a90"
+#>   .. .. ..$ : chr "0x57c5eb0"
+#>   .. .. ..$ : chr "0x57c5d28"
+#>   .. .. ..$ : chr "0x519c0d8"
+#>   .. .. ..$ : chr "0x519b9d8"
+#>   .. .. ..$ : chr "0x519b690"
+#>   .. .. ..$ : chr "0x519b348"
+#>   .. ..$ indices: int [1:6] 26 27 28 29 30 31
 #>   .. ..- attr(*, "class")= chr "rlang_trace"
 #>   ..$ parent : NULL
 #>   ..- attr(*, "class")= chr [1:3] "rlang_error" "error" "condition"
@@ -1208,9 +1212,9 @@ catch_cnds({
 #> message: C
 #> class:   `rlang_error`
 #> backtrace:
-#>  ─global::catch_cnds(...)
-#>  ─base::withCallingHandlers(...)
-#> Call `summary(rlang::last_error())` to see the full backtrace
+#>  1. global::catch_cnds(...)
+#>  6. base::withCallingHandlers(...)
+#> Call `rlang::last_trace()` to see the full backtrace
 ```
 
 This is the key idea underlying the [evaluate](https://github.com/r-lib/evaluate) package which powers knitr: it captures every output into a special data structure so that it can be later replayed. As a whole, the evaluate package is quite a lot more complicated than the code here because it also needs to handle plots and text output.
