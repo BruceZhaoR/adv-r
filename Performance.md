@@ -49,9 +49,9 @@ microbenchmark(
   x ^ 0.5
 )
 #> Unit: nanoseconds
-#>     expr   min    lq  mean median    uq    max neval
-#>  sqrt(x)   837 1,120  1308  1,240 1,400  4,320   100
-#>    x^0.5 9,260 9,460 10195  9,650 9,900 35,900   100
+#>     expr   min    lq  mean median     uq    max neval
+#>  sqrt(x)   954 1,170  1451  1,320  1,510  7,660   100
+#>    x^0.5 9,360 9,670 10572  9,880 10,200 42,800   100
 ```
 
 
@@ -157,16 +157,16 @@ microbenchmark(
   RC = b$rc()
 )
 #> Unit: nanoseconds
-#>  expr    min     lq  mean median     uq     max neval
-#>   fun    163    186   252    218    238   1,850   100
-#>    S3    939  1,060  8977  1,130  1,400 764,000   100
-#>    S4 11,800 12,500 24556 12,800 13,800 922,000   100
-#>    RC  7,260  7,470 12903  7,690  7,990 474,000   100
+#>  expr    min     lq  mean median     uq       max neval
+#>   fun    176    205   444    224    242    19,500   100
+#>    S3    974  1,110 10101  1,210  1,340   859,000   100
+#>    S4 12,300 12,800 28497 13,200 14,100   918,000   100
+#>    RC  8,240  8,580 41480  8,790  9,140 3,220,000   100
 ```
 
 
 
-The bare function takes about 200 ns. S3 method dispatch takes an additional 900 ns; S4 dispatch, 10,000 ns; and RC dispatch, 7,000 ns. S3 and S4 method dispatch are expensive because R must search for the right method every time the generic is called; it might have changed between this call and the last. R could do better by caching methods between calls, but caching is hard to do correctly and a notorious source of bugs.
+The bare function takes about 200 ns. S3 method dispatch takes an additional 1,000 ns; S4 dispatch, 10,000 ns; and RC dispatch, 9,000 ns. S3 and S4 method dispatch are expensive because R must search for the right method every time the generic is called; it might have changed between this call and the last. R could do better by caching methods between calls, but caching is hard to do correctly and a notorious source of bugs.
 
 ### Name lookup with mutable environments
 
@@ -340,9 +340,9 @@ microbenchmark(
 )
 #> Unit: microseconds
 #>             expr   min    lq mean median    uq   max neval
-#>       squish_ife 20.50 21.90 49.7  23.00 26.50 2,410   100
-#>         squish_p 12.50 12.90 36.0  13.30 14.00 1,560   100
-#>  squish_in_place  2.96  3.22 31.7   3.57  3.92 2,780   100
+#>       squish_ife 19.80 22.80 53.8  28.10 33.30 2,370   100
+#>         squish_p 12.30 12.80 35.9  13.20 14.70 1,560   100
+#>  squish_in_place  2.95  3.37 32.5   3.73  4.63 2,850   100
 ```
 
 Using `pmin()` and `pmax()` is about 2x faster than `ifelse()`, and using subsetting directly is about 4x as fast again. We can often do even better by using C++. The following example compares the best R implementation to a relatively simple, if verbose, implementation in C++. Even if you've never used C++, you should still be able to follow the basic strategy: loop over every element in the vector and perform a different action depending on whether or not the value is less than `a` and/or greater than `b`. 
@@ -383,11 +383,11 @@ microbenchmark(
 )
 #> Unit: microseconds
 #>             expr  min   lq  mean median   uq     max neval
-#>  squish_in_place 3.52 4.17  5.17   4.53 5.01    30.4   100
-#>       squish_cpp 2.52 2.92 16.73   3.11 3.31 1,330.0   100
+#>  squish_in_place 3.44 4.38  5.28   4.71 5.11    32.2   100
+#>       squish_cpp 2.76 2.93 16.30   3.10 3.26 1,290.0   100
 ```
 
-The C++ implementation is around 1x faster than the best pure R implementation.
+The C++ implementation is around 2x faster than the best pure R implementation.
 
 ### Exercises
 
@@ -486,9 +486,9 @@ microbenchmark(
   unit = "ms"
 )
 #> Unit: milliseconds
-#>          expr   min    lq  mean median    uq   max neval
-#>  cond_sum_cpp  5.35  5.39  5.43    5.4  5.43  6.61   100
-#>    cond_sum_r 12.40 14.80 15.72   15.7 16.50 17.60   100
+#>          expr   min    lq  mean median    uq    max neval
+#>  cond_sum_cpp  5.29  5.33  5.44   5.37  5.47   6.61   100
+#>    cond_sum_r 11.70 13.90 15.68  14.30 14.70 150.00   100
 ```
 
 On my computer, this approach is about 3x faster than the vectorised R equivalent, which is already pretty fast.
