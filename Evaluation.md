@@ -35,9 +35,9 @@ library(purrr)
 #> Attaching package: 'purrr'
 #> The following objects are masked from 'package:rlang':
 #> 
-#>     %@%, %||%, as_function, flatten, flatten_chr, flatten_dbl,
-#>     flatten_int, flatten_lgl, invoke, list_along, modify, prepend,
-#>     rep_along, splice
+#>     %@%, as_function, flatten, flatten_chr, flatten_dbl,
+#>     flatten_int, flatten_lgl, flatten_raw, invoke, list_along,
+#>     modify, prepend, splice
 ```
 
 ## Evaluation basics {#eval}
@@ -355,7 +355,7 @@ There are three ways to create quosures:
     new_quosure(expr(x + y), env(x = 1, y = 10))
     #> <quosure>
     #> expr: ^x + y
-    #> env:  0x62b27e0
+    #> env:  0x6664ee8
     ```
 
 ### Evaluating
@@ -436,7 +436,7 @@ qs
 #> $f
 #> <quosure>
 #> expr: ^x
-#> env:  0x76ec220
+#> env:  0x73d96d0
 ```
 
 That means that when you evaluate them, you get the correct results:
@@ -515,19 +515,19 @@ An early version of tidy evaluation used formulas instead of quosures, as an att
     q1
     #> <quosure>
     #> expr: ^x
-    #> env:  0x605d738
+    #> env:  0x63f2040
     
     q2 <- new_quosure(expr(x + !!q1), env(x = 10))
     q2
     #> <quosure>
     #> expr: ^x + (^x)
-    #> env:  0x6201980
+    #> env:  0x6596898
     
     q3 <- new_quosure(expr(x + !!q2), env(x = 100))
     q3
     #> <quosure>
     #> expr: ^x + (^x + (^x))
-    #> env:  0x5ac6a48
+    #> env:  0x5e5c258
     ```
 
 1.  Write an `enenv()` function that captures the environment associated

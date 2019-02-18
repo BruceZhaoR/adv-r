@@ -37,9 +37,9 @@ library(purrr)
 #> Attaching package: 'purrr'
 #> The following objects are masked from 'package:rlang':
 #> 
-#>     %@%, %||%, as_function, flatten, flatten_chr, flatten_dbl,
-#>     flatten_int, flatten_lgl, invoke, list_along, modify, prepend,
-#>     rep_along, splice
+#>     %@%, as_function, flatten, flatten_chr, flatten_dbl,
+#>     flatten_int, flatten_lgl, flatten_raw, invoke, list_along,
+#>     modify, prepend, splice
 ```
 
 ## HTML {#html}
@@ -736,7 +736,7 @@ unknown_op("foo")
 #>     contents <- paste(..., collapse = ", ")
 #>     paste0("\\mathrm{foo}(", contents, ")")
 #> }
-#> <environment: 0x40e2d40>
+#> <environment: 0x59d2008>
 ```
 
 And again we update `latex_env()`:

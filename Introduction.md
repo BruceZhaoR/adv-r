@@ -207,7 +207,7 @@ This version of the book was built with the following version of R and packages.
 |collate  |en_US.UTF-8                  |
 |ctype    |en_US.UTF-8                  |
 |tz       |UTC                          |
-|date     |2019-01-13                   |
+|date     |2019-02-18                   |
 
 
 |package        |version    |source                            |
@@ -217,8 +217,6 @@ This version of the book was built with the following version of R and packages.
 |base64enc      |0.1-3      |CRAN (R 3.5.2)                    |
 |bench          |1.0.1      |CRAN (R 3.5.2)                    |
 |BH             |1.69.0-1   |CRAN (R 3.5.2)                    |
-|bindr          |0.1.1      |CRAN (R 3.5.2)                    |
-|bindrcpp       |0.2.2      |CRAN (R 3.5.2)                    |
 |bit            |1.1-14     |CRAN (R 3.5.2)                    |
 |bit64          |0.9-7      |CRAN (R 3.5.2)                    |
 |blob           |1.1.1      |CRAN (R 3.5.2)                    |
@@ -232,15 +230,15 @@ This version of the book was built with the following version of R and packages.
 |dbplyr         |1.3.0      |CRAN (R 3.5.2)                    |
 |desc           |1.2.0      |CRAN (R 3.5.2)                    |
 |digest         |0.6.18     |CRAN (R 3.5.2)                    |
-|dplyr          |0.7.8      |CRAN (R 3.5.2)                    |
+|dplyr          |0.8.0.1    |CRAN (R 3.5.2)                    |
 |emo            |0.0.0.9000 |Github (hadley/emo\@02a5206)      |
-|evaluate       |0.12       |CRAN (R 3.5.2)                    |
+|evaluate       |0.13       |CRAN (R 3.5.2)                    |
 |fansi          |0.4.0      |CRAN (R 3.5.2)                    |
 |furrr          |0.1.0      |CRAN (R 3.5.2)                    |
-|future         |1.10.0     |CRAN (R 3.5.2)                    |
+|future         |1.11.1.1   |CRAN (R 3.5.2)                    |
 |ggplot2        |3.1.0      |CRAN (R 3.5.2)                    |
 |globals        |0.12.4     |CRAN (R 3.5.2)                    |
-|glue           |1.3.0.9000 |Github (tidyverse/glue\@3f7012c)  |
+|glue           |1.3.0.9000 |Github (tidyverse/glue\@8188cea)  |
 |gtable         |0.2.0      |CRAN (R 3.5.2)                    |
 |highr          |0.7        |CRAN (R 3.5.2)                    |
 |hms            |0.4.2      |CRAN (R 3.5.2)                    |
@@ -250,12 +248,12 @@ This version of the book was built with the following version of R and packages.
 |jsonlite       |1.6        |CRAN (R 3.5.2)                    |
 |knitr          |1.21       |CRAN (R 3.5.2)                    |
 |labeling       |0.3        |CRAN (R 3.5.2)                    |
-|later          |0.7.5      |CRAN (R 3.5.2)                    |
+|later          |0.8.0      |CRAN (R 3.5.2)                    |
 |lattice        |0.20-38    |CRAN (R 3.5.2)                    |
 |lazyeval       |0.2.1      |CRAN (R 3.5.2)                    |
 |lineprof       |0.1.9001   |Github (hadley/lineprof\@972e71d) |
 |listenv        |0.7.0      |CRAN (R 3.5.2)                    |
-|lobstr         |1.0.1.9000 |Github (r-lib/lobstr\@9fcf642)    |
+|lobstr         |1.0.1.9000 |Github (r-lib/lobstr\@05935dc)    |
 |lubridate      |1.7.4      |CRAN (R 3.5.2)                    |
 |magrittr       |1.5        |CRAN (R 3.5.2)                    |
 |markdown       |0.9        |CRAN (R 3.5.2)                    |
@@ -277,8 +275,8 @@ This version of the book was built with the following version of R and packages.
 |profmem        |0.5.0      |CRAN (R 3.5.2)                    |
 |promises       |1.0.1      |CRAN (R 3.5.2)                    |
 |pryr           |0.1.4      |CRAN (R 3.5.2)                    |
-|purrr          |0.2.5      |CRAN (R 3.5.2)                    |
-|R6             |2.3.0      |CRAN (R 3.5.2)                    |
+|purrr          |0.3.0      |CRAN (R 3.5.2)                    |
+|R6             |2.4.0      |CRAN (R 3.5.2)                    |
 |RColorBrewer   |1.1-2      |CRAN (R 3.5.2)                    |
 |Rcpp           |1.0.0      |CRAN (R 3.5.2)                    |
 |readr          |1.3.1      |CRAN (R 3.5.2)                    |
@@ -290,16 +288,16 @@ This version of the book was built with the following version of R and packages.
 |scales         |1.0.0      |CRAN (R 3.5.2)                    |
 |sessioninfo    |1.1.1      |CRAN (R 3.5.2)                    |
 |shiny          |1.2.0      |CRAN (R 3.5.2)                    |
-|sloop          |1.0.0      |CRAN (R 3.5.2)                    |
+|sloop          |1.0.1      |CRAN (R 3.5.2)                    |
 |sourcetools    |0.1.7      |CRAN (R 3.5.2)                    |
-|stringi        |1.2.4      |CRAN (R 3.5.2)                    |
-|stringr        |1.3.1      |CRAN (R 3.5.2)                    |
+|stringi        |1.3.1      |CRAN (R 3.5.2)                    |
+|stringr        |1.4.0      |CRAN (R 3.5.2)                    |
 |testthat       |2.0.1      |CRAN (R 3.5.2)                    |
 |tibble         |2.0.1      |CRAN (R 3.5.2)                    |
 |tidyselect     |0.2.5      |CRAN (R 3.5.2)                    |
 |tinytex        |0.10       |CRAN (R 3.5.2)                    |
 |utf8           |1.1.4      |CRAN (R 3.5.2)                    |
-|vctrs          |0.1.0.9000 |Github (r-lib/vctrs\@40274ce)     |
+|vctrs          |0.1.0.9000 |Github (r-lib/vctrs\@2393a8e)     |
 |viridisLite    |0.3.0      |CRAN (R 3.5.2)                    |
 |withr          |2.1.2      |CRAN (R 3.5.2)                    |
 |xfun           |0.4        |CRAN (R 3.5.2)                    |

@@ -80,7 +80,7 @@ cppFunction('int add(int x, int y, int z) {
 # add works like a regular R function
 add
 #> function (x, y, z) 
-#> .Call(<pointer: 0x7f411e12b2d0>, x, y, z)
+#> .Call(<pointer: 0x7fa5a8cad2d0>, x, y, z)
 add(1, 2, 3)
 #> [1] 6
 ```
@@ -239,9 +239,9 @@ microbenchmark(
 )
 #> Unit: microseconds
 #>     expr   min    lq  mean median    uq      max neval
-#>   sum(x)  1.34  1.39  1.51   1.42  1.53     4.85   100
-#>  sumC(x)  3.29  3.54 14.11   3.77  4.28 1,010.00   100
-#>  sumR(x) 38.40 38.60 77.13  38.90 39.50 3,750.00   100
+#>   sum(x)  1.34  1.38  1.49   1.40  1.49     4.28   100
+#>  sumC(x)  3.33  3.58 13.14   3.81  4.23   899.00   100
+#>  sumR(x) 38.40 38.60 79.04  38.80 39.20 3,900.00   100
 ```
 
 ### Vector input, vector output
@@ -822,13 +822,13 @@ microbenchmark(
   any_naR(x2), any_naC(x2)
 )
 #> Unit: microseconds
-#>         expr    min     lq   mean median     uq     max neval
-#>  any_naR(x0) 588.00 612.00 729.35  622.0 636.00 5,790.0   100
-#>  any_naC(x0) 523.00 549.00 562.58  563.0 578.00   630.0   100
-#>  any_naR(x1) 566.00 611.00 628.66  626.0 638.00 1,110.0   100
-#>  any_naC(x1) 525.00 556.00 582.89  569.0 584.00 1,720.0   100
-#>  any_naR(x2) 320.00 439.00 467.61  453.0 471.00 1,790.0   100
-#>  any_naC(x2)   1.83   3.35   5.07    4.8   5.69    42.3   100
+#>         expr    min     lq   mean median    uq      max neval
+#>  any_naR(x0) 583.00 611.00 734.72 624.00 638.0 6,140.00   100
+#>  any_naC(x0) 523.00 542.00 559.45 562.00 574.0   610.00   100
+#>  any_naR(x1) 563.00 614.00 625.69 624.00 636.0   726.00   100
+#>  any_naC(x1) 524.00 552.00 577.37 564.00 578.0 1,740.00   100
+#>  any_naR(x2) 330.00 438.00 465.08 448.00 461.0 1,890.00   100
+#>  any_naC(x2)   2.17   3.39   4.68   4.11   5.8     9.73   100
 ```
 
 ### Vector views
@@ -1162,8 +1162,8 @@ microbenchmark(
 )
 #> Unit: microseconds
 #>                expr   min    lq mean median    uq    max neval
-#>    gibbs_r(100, 10) 5,860 6,060 7225  6,180 6,470 17,700   100
-#>  gibbs_cpp(100, 10)   298   350  386    370   394  1,840   100
+#>    gibbs_r(100, 10) 5,660 5,770 6738  5,870 6,220 16,300   100
+#>  gibbs_cpp(100, 10)   301   323  360    342   364  1,600   100
 ```
 
 ### R vectorisation vs. C++ vectorisation
@@ -1269,9 +1269,9 @@ microbenchmark(
 )
 #> Unit: microseconds
 #>   expr     min      lq   mean  median      uq   max neval
-#>  vacc1 1,770.0 1,900.0 2112.4 1,990.0 2,050.0 5,180   100
-#>  vacc2   109.0   124.0  219.6   150.0   178.0 6,400   100
-#>  vacc3    32.6    34.6   52.8    39.2    43.7 1,290   100
+#>  vacc1 1,760.0 1,890.0 2178.0 2,010.0 2,080.0 5,740   100
+#>  vacc2   110.0   128.0  221.1   146.0   174.0 6,640   100
+#>  vacc3    32.9    35.3   52.9    38.4    41.8 1,380   100
 ```
 
 Not surprisingly, our original approach with loops is very slow.  Vectorising in R gives a huge speedup, and we can eke out even more performance (~10x) with the C++ loop. I was a little surprised that the C++ was so much faster, but it is because the R version has to create 11 vectors to store intermediate results, where the C++ code only needs to create 1.

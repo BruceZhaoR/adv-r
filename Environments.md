@@ -111,7 +111,7 @@ Printing an environment just displays its memory address, which is not terribly 
 
 ```r
 e1
-#> <environment: 0x22f4a70>
+#> <environment: 0x27fe510>
 ```
 
 Instead, we'll use `env_print()` which gives us a little more information:
@@ -119,7 +119,7 @@ Instead, we'll use `env_print()` which gives us a little more information:
 
 ```r
 env_print(e1)
-#> <environment: 0x22f4a70>
+#> <environment: 0x27fe510>
 #> parent: <environment: global>
 #> bindings:
 #>  * a: <lgl>
@@ -183,7 +183,7 @@ You can find the parent of an environment with `env_parent()`:
 
 ```r
 env_parent(e2b)
-#> <environment: 0x4d59830>
+#> <environment: 0x5564d90>
 env_parent(e2a)
 #> <environment: R_GlobalEnv>
 ```
@@ -211,11 +211,11 @@ You can list all ancestors of an environment with `env_parents()`:
 
 ```r
 env_parents(e2b)
-#> [[1]]   <env: 0x4d59830>
+#> [[1]]   <env: 0x5564d90>
 #> [[2]] $ <env: global>
 
 env_parents(e2d)
-#> [[1]]   <env: 0x61969c8>
+#> [[1]]   <env: 0x699c680>
 #> [[2]] $ <env: empty>
 ```
 
@@ -713,7 +713,7 @@ sd
 #> function (x, na.rm = FALSE) 
 #> sqrt(var(if (is.vector(x) || is.factor(x)) x else as.double(x), 
 #>     na.rm = na.rm))
-#> <bytecode: 0x4cec1e0>
+#> <bytecode: 0x61e90b0>
 #> <environment: namespace:stats>
 ```
 
@@ -816,7 +816,7 @@ h2 <- function(x) {
 
 e <- h2(x = 10)
 env_print(e)
-#> <environment: 0x57c3be0>
+#> <environment: 0x5f987c0>
 #> parent: <environment: global>
 #> bindings:
 #>  * a: <dbl>
@@ -839,7 +839,7 @@ plus <- function(x) {
 plus_one <- plus(1)
 plus_one
 #> function(y) x + y
-#> <environment: 0x5172a80>
+#> <environment: 0x5953100>
 ```
 
 <img src="diagrams/environments/closure.png" width="189" style="display: block; margin: auto;" />

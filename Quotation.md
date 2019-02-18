@@ -51,9 +51,9 @@ library(purrr)
 #> Attaching package: 'purrr'
 #> The following objects are masked from 'package:rlang':
 #> 
-#>     %@%, %||%, as_function, flatten, flatten_chr, flatten_dbl,
-#>     flatten_int, flatten_lgl, invoke, list_along, modify, prepend,
-#>     rep_along, splice
+#>     %@%, as_function, flatten, flatten_chr, flatten_dbl,
+#>     flatten_int, flatten_lgl, flatten_raw, invoke, list_along,
+#>     modify, prepend, splice
 ```
 
 ### Related work {-}
